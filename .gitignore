@@ -28,7 +28,27 @@ vignettes/*.pdf
 /*_cache/
 /cache/
 
+# C object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md
 .Rproj.user
+
+local/
