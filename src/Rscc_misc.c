@@ -18,15 +18,26 @@
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ============================================================================== */
 
-#ifndef RSCCWRAP_MISC_HG
-#define RSCCWRAP_MISC_HG
+#include "Rscc_misc.h"
 
-#define iRsccwrap_error(msg) (iRsccwrap_error__(msg, __FILE__, __LINE__))
+#include <R.h>
+#include <Rinternals.h>
+#include <scclust.h>
 
-void iRsccwrap_error__(const char* msg,
-                       const char* file,
-                       int line);
 
-void iRsccwrap_scc_error();
+void iRsccwrap_error__(const char* const msg,
+                       const char* const file,
+                       const int line) {
+	char error_buffer[255];
+	if (snprintf(error_buffer, 255, "(%s:%d) %s", file, line, msg) < 0) {
+		error("Rscc_misc.h:35: Error printing error message.");
+	}
+	error(error_buffer);
+}
 
-#endif // ifndef RSCCWRAP_MISC_HG
+
+void iRsccwrap_scc_error(void) {
+	char error_buffer[255];
+	scc_get_latest_error(255, error_buffer);
+	error(error_buffer);
+}

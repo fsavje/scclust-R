@@ -1,6 +1,6 @@
 MAKECONF = $(R_HOME)/etc${R_ARCH}/Makeconf
 
-OBJECTS = Rscc_nng.o
+OBJECTS = Rscc_misc.o Rscc_nng.o
 
 PKG_LIBS = libscc/libscc.a
 
