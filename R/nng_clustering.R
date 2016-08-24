@@ -75,3 +75,43 @@ nng_clustering <- function(distance_object,
             ids = attr(distance_object, "ids", exact = TRUE),
             class = c("Rscc_clustering"))
 }
+
+
+#' @useDynLib Rscclust Rsccwrap_nng_clustering_batches
+#' @export
+nng_clustering_batches <- function(distance_object,
+                                   size_constraint,
+                                   main_unassigned_method = "by_nng",
+                                   main_radius = NULL,
+                                   main_data_points = NULL,
+                                   batch_size = 100) {
+
+  stopifnot(inherits(distance_object, "Rscc_distances"))
+  num_data_points <- ncol(distance_object)
+
+  size_constraint <- as.integer(size_constraint)[1]
+  main_unassigned_method <- match.arg(main_unassigned_method, c("ignore", "by_nng"))
+  if (!is.null(main_radius)) main_radius <- as.numeric(main_radius)[1]
+  batch_size <- as.integer(batch_size)[1]
+
+  stopifnot(size_constraint >= 2,
+            size_constraint <= num_data_points,
+            is.null(main_radius) || (main_radius > 0.0),
+            is.null(main_data_points) || is.logical(main_data_points),
+            !is.logical(main_data_points) || (length(x) < num_data_points),
+            batch_size >= 0)
+
+  clustering <- .Call("Rsccwrap_nng_clustering_batches",
+                      distance_object,
+                      size_constraint,
+                      main_unassigned_method,
+                      main_radius,
+                      main_data_points,
+                      batch_size,
+                      PACKAGE = "Rscclust")
+
+  structure(clustering$cluster_labels,
+            cluster_count = clustering$cluster_count,
+            ids = attr(distance_object, "ids", exact = TRUE),
+            class = c("Rscc_clustering"))
+}

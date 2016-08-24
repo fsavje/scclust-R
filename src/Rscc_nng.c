@@ -68,21 +68,6 @@ SEXP Rsccwrap_nng_clustering(const SEXP R_distance_object,
 	const scc_UnassignedMethod main_unassigned_method = iRsccwrap_parse_unassigned_method(R_main_unassigned_method);
 	const scc_UnassignedMethod secondary_unassigned_method = iRsccwrap_parse_unassigned_method(R_secondary_unassigned_method);
 	
-	size_t len_main_data_points = 0;
-	bool* main_data_points = NULL;
-	if (isLogical(R_main_data_points)) {
-		len_main_data_points = (size_t) xlength(R_main_data_points);
-		if (len_main_data_points < num_data_points) {
-			error("Invalid `R_main_data_points`.");
-		}
-		bool* const main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
-		if (main_data_points == NULL) error("Could not allocate memory.");
-		const int* const tmp_main_data_points = LOGICAL(R_main_data_points);
-		for (size_t i = 0; i < len_main_data_points; ++i) {
-			main_data_points[i] = (tmp_main_data_points[i] == 1);
-		}
-	}
-
 	bool main_radius_constraint = false;
 	double main_radius = 0.0;
 	if (isReal(R_main_radius)) {
@@ -97,6 +82,20 @@ SEXP Rsccwrap_nng_clustering(const SEXP R_distance_object,
 		secondary_radius = asReal(R_secondary_radius);
 	}
 
+	size_t len_main_data_points = 0;
+	bool* main_data_points = NULL;
+	if (isLogical(R_main_data_points)) {
+		len_main_data_points = (size_t) xlength(R_main_data_points);
+		if (len_main_data_points < num_data_points) {
+			error("Invalid `R_main_data_points`.");
+		}
+		bool* const main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
+		if (main_data_points == NULL) error("Could not allocate memory.");
+		const int* const tmp_main_data_points = LOGICAL(R_main_data_points);
+		for (size_t i = 0; i < len_main_data_points; ++i) {
+			main_data_points[i] = (tmp_main_data_points[i] == 1);
+		}
+	}
 
 	scc_ErrorCode ec;
 	scc_DataSetObject* data_set_object;
@@ -131,6 +130,114 @@ SEXP Rsccwrap_nng_clustering(const SEXP R_distance_object,
 	                             secondary_unassigned_method,
 	                             secondary_radius_constraint,
 	                             secondary_radius)) != SCC_ER_OK) {
+		scc_free_clustering(&clustering);
+		scc_free_data_set_object(&data_set_object);
+		UNPROTECT(1);
+		print_error_and_return();
+	}
+
+	scc_free_data_set_object(&data_set_object);
+
+	uintmax_t num_clusters = 0;
+	if ((ec = scc_get_clustering_info(clustering,
+	                                  NULL,
+	                                  &num_clusters)) != SCC_ER_OK) {
+		scc_free_clustering(&clustering);
+		UNPROTECT(1);
+		print_error_and_return();
+	}
+
+	scc_free_clustering(&clustering);
+
+	if (num_clusters > INT_MAX) error("Too many clusters.");
+	const int num_clusters_int = (int) num_clusters;
+
+	const SEXP R_clustering_obj = PROTECT(allocVector(VECSXP, 2));
+	SET_VECTOR_ELT(R_clustering_obj, 0, R_cluster_labels);
+	SET_VECTOR_ELT(R_clustering_obj, 1, ScalarInteger(num_clusters_int));
+
+	const SEXP R_obj_elem_names = PROTECT(allocVector(STRSXP, 2));
+	SET_STRING_ELT(R_obj_elem_names, 0, mkChar("cluster_labels"));
+	SET_STRING_ELT(R_obj_elem_names, 1, mkChar("cluster_count"));
+	setAttrib(R_clustering_obj, R_NamesSymbol, R_obj_elem_names);
+
+	UNPROTECT(3);
+	return R_clustering_obj;
+}
+
+
+SEXP Rsccwrap_nng_clustering_batches(const SEXP R_distance_object,
+                                     const SEXP R_size_constraint,
+                                     const SEXP R_main_unassigned_method,
+                                     const SEXP R_main_radius,
+                                     const SEXP R_main_data_points,
+                                     const SEXP R_batch_size)
+{
+	if (!isMatrix(R_distance_object) || !isReal(R_distance_object)) error("Invalid distance object.");
+	if (!isInteger(R_size_constraint)) error("`R_size_constraint` must be integer.");
+	if (!isString(R_main_unassigned_method)) error("`R_main_unassigned_method` must be string.");
+	if (!isNull(R_main_radius) && !isReal(R_main_radius)) error("`R_main_radius` must be real.");
+	if (!isNull(R_main_data_points) && !isLogical(R_main_data_points)) error("`R_target_types` must be logical.");
+	if (!isInteger(R_batch_size)) error("`R_batch_size` must be integer.");
+
+	const uintmax_t num_data_points = (uintmax_t) INTEGER(getAttrib(R_distance_object, R_DimSymbol))[1];
+	const uintmax_t num_dimensions = (uintmax_t) INTEGER(getAttrib(R_distance_object, R_DimSymbol))[0];
+	const uint32_t size_constraint = (uint32_t) asInteger(R_size_constraint);
+	const scc_UnassignedMethod main_unassigned_method = iRsccwrap_parse_unassigned_method(R_main_unassigned_method);
+	const uint32_t batch_size = (uint32_t) asInteger(R_batch_size);
+
+	bool main_radius_constraint = false;
+	double main_radius = 0.0;
+	if (isReal(R_main_radius)) {
+		main_radius_constraint = true;
+		main_radius = asReal(R_main_radius);
+	}
+
+	size_t len_main_data_points = 0;
+	bool* main_data_points = NULL;
+	if (isLogical(R_main_data_points)) {
+		len_main_data_points = (size_t) xlength(R_main_data_points);
+		if (len_main_data_points < num_data_points) {
+			error("Invalid `R_main_data_points`.");
+		}
+		bool* const main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
+		if (main_data_points == NULL) error("Could not allocate memory.");
+		const int* const tmp_main_data_points = LOGICAL(R_main_data_points);
+		for (size_t i = 0; i < len_main_data_points; ++i) {
+			main_data_points[i] = (tmp_main_data_points[i] == 1);
+		}
+	}
+
+	scc_ErrorCode ec;
+	scc_DataSetObject* data_set_object;
+	if ((ec = scc_get_data_set_object(num_data_points,
+	                                  num_dimensions,
+	                                  (size_t) xlength(R_distance_object),
+	                                  REAL(R_distance_object),
+	                                  false,
+	                                  &data_set_object)) != SCC_ER_OK) {
+		print_error_and_return();
+	}
+
+	SEXP R_cluster_labels = PROTECT(allocVector(INTSXP, (R_xlen_t) num_data_points));
+	scc_Clustering* clustering;
+	if ((ec = scc_init_empty_clustering(num_data_points,
+	                                    INTEGER(R_cluster_labels),
+	                                    &clustering)) != SCC_ER_OK) {
+		scc_free_data_set_object(&data_set_object);
+		UNPROTECT(1);
+		print_error_and_return();
+	}
+
+	if ((ec = scc_nng_clustering_batches(clustering,
+	                                     data_set_object,
+	                                     size_constraint,
+	                                     main_unassigned_method,
+	                                     main_radius_constraint,
+	                                     main_radius,
+	                                     len_main_data_points,
+	                                     main_data_points,
+	                                     batch_size)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
 		scc_free_data_set_object(&data_set_object);
 		UNPROTECT(1);
