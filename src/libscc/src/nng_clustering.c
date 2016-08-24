@@ -126,22 +126,22 @@ scc_ErrorCode scc_nng_clustering(scc_Clustering* const clustering,
 }
 
 
-scc_ErrorCode scc_nng_clustering_with_types(scc_Clustering* const clustering,
-                                            void* const data_set_object,
-                                            const uint32_t size_constraint,
-                                            const uintmax_t num_types,
-                                            const uint32_t type_size_constraints[const],
-                                            const size_t len_type_labels,
-                                            const scc_TypeLabel type_labels[const],
-                                            const scc_SeedMethod seed_method,
-                                            const scc_UnassignedMethod main_unassigned_method,
-                                            const bool main_radius_constraint,
-                                            const double main_radius,
-                                            const size_t len_main_data_points,
-                                            const bool main_data_points[const],
-                                            const scc_UnassignedMethod secondary_unassigned_method,
-                                            const bool secondary_radius_constraint,
-                                            const double secondary_radius)
+scc_ErrorCode scc_nng_clustering_types(scc_Clustering* const clustering,
+                                       void* const data_set_object,
+                                       const uint32_t size_constraint,
+                                       const uintmax_t num_types,
+                                       const uint32_t type_size_constraints[const],
+                                       const size_t len_type_labels,
+                                       const scc_TypeLabel type_labels[const],
+                                       const scc_SeedMethod seed_method,
+                                       const scc_UnassignedMethod main_unassigned_method,
+                                       const bool main_radius_constraint,
+                                       const double main_radius,
+                                       const size_t len_main_data_points,
+                                       const bool main_data_points[const],
+                                       const scc_UnassignedMethod secondary_unassigned_method,
+                                       const bool secondary_radius_constraint,
+                                       const double secondary_radius)
 {
 	if (!iscc_check_input_clustering(clustering)) return iscc_make_error(SCC_ER_INVALID_CLUSTERING);
 	if (!iscc_check_data_set_object(data_set_object, clustering->num_data_points)) return iscc_make_error(SCC_ER_INVALID_DATA_OBJ);

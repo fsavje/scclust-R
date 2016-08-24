@@ -275,16 +275,16 @@ SEXP Rsccwrap_nng_clustering_batches(const SEXP R_distance_object,
 }
 
 
-SEXP Rsccwrap_nng_clustering_with_types(const SEXP R_distance_object,
-                                        const SEXP R_size_constraint,
-                                        const SEXP R_type_size_constraints,
-                                        const SEXP R_type_labels,
-                                        const SEXP R_seed_method,
-                                        const SEXP R_main_unassigned_method,
-                                        const SEXP R_main_radius,
-                                        const SEXP R_main_data_points,
-                                        const SEXP R_secondary_unassigned_method,
-                                        const SEXP R_secondary_radius)
+SEXP Rsccwrap_nng_clustering_types(const SEXP R_distance_object,
+                                   const SEXP R_size_constraint,
+                                   const SEXP R_type_size_constraints,
+                                   const SEXP R_type_labels,
+                                   const SEXP R_seed_method,
+                                   const SEXP R_main_unassigned_method,
+                                   const SEXP R_main_radius,
+                                   const SEXP R_main_data_points,
+                                   const SEXP R_secondary_unassigned_method,
+                                   const SEXP R_secondary_radius)
 {
 	if (!isMatrix(R_distance_object) || !isReal(R_distance_object)) iRsccwrap_error("Invalid distance object.");
 	if (!isInteger(R_size_constraint)) iRsccwrap_error("`R_size_constraint` must be integer.");
@@ -365,22 +365,22 @@ SEXP Rsccwrap_nng_clustering_with_types(const SEXP R_distance_object,
 		iRsccwrap_scc_error();
 	}
 
-	if ((ec = scc_nng_clustering_with_types(clustering,
-	                                        data_set_object,
-	                                        size_constraint,
-	                                        num_types,
-	                                        type_size_constraints,
-	                                        len_type_labels,
-	                                        type_labels,
-	                                        seed_method,
-	                                        main_unassigned_method,
-	                                        main_radius_constraint,
-	                                        main_radius,
-	                                        len_main_data_points,
-	                                        main_data_points,
-	                                        secondary_unassigned_method,
-	                                        secondary_radius_constraint,
-	                                        secondary_radius)) != SCC_ER_OK) {
+	if ((ec = scc_nng_clustering_types(clustering,
+	                                   data_set_object,
+	                                   size_constraint,
+	                                   num_types,
+	                                   type_size_constraints,
+	                                   len_type_labels,
+	                                   type_labels,
+	                                   seed_method,
+	                                   main_unassigned_method,
+	                                   main_radius_constraint,
+	                                   main_radius,
+	                                   len_main_data_points,
+	                                   main_data_points,
+	                                   secondary_unassigned_method,
+	                                   secondary_radius_constraint,
+	                                   secondary_radius)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
 		scc_free_data_set_object(&data_set_object);
 		UNPROTECT(1);

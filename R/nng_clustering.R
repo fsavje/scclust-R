@@ -117,18 +117,18 @@ nng_clustering_batches <- function(distance_object,
 }
 
 
-#' @useDynLib Rscclust Rsccwrap_nng_clustering_with_types
+#' @useDynLib Rscclust Rsccwrap_nng_clustering_types
 #' @export
-nng_clustering_with_types <- function(distance_object,
-                                      type_labels,
-                                      type_size_constraints,
-                                      total_size_constraint = NULL,
-                                      seed_method = "exclusion_updating",
-                                      main_unassigned_method = "closest_seed",
-                                      main_radius = NULL,
-                                      main_data_points = NULL,
-                                      secondary_unassigned_method = "ignore",
-                                      secondary_radius = NULL) {
+nng_clustering_types <- function(distance_object,
+                                 type_labels,
+                                 type_size_constraints,
+                                 total_size_constraint = NULL,
+                                 seed_method = "exclusion_updating",
+                                 main_unassigned_method = "closest_seed",
+                                 main_radius = NULL,
+                                 main_data_points = NULL,
+                                 secondary_unassigned_method = "ignore",
+                                 secondary_radius = NULL) {
 
   stopifnot(inherits(distance_object, "Rscc_distances"))
   num_data_points <- ncol(distance_object)
@@ -191,7 +191,7 @@ nng_clustering_with_types <- function(distance_object,
             !is.logical(main_data_points) || (length(x) < num_data_points),
             is.null(secondary_radius) || (secondary_radius > 0.0))
 
-  clustering <- .Call("Rsccwrap_nng_clustering_with_types",
+  clustering <- .Call("Rsccwrap_nng_clustering_types",
                       distance_object,
                       total_size_constraint,
                       type_size_constraints,

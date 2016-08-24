@@ -281,22 +281,22 @@ scc_ErrorCode scc_nng_clustering_batches(scc_Clustering* clustering,
                                          const bool main_data_points[],
                                          uint32_t batch_size);
 
-scc_ErrorCode scc_nng_clustering_with_types(scc_Clustering* clustering,
-                                            void* data_set_object,
-                                            uint32_t size_constraint,
-                                            uintmax_t num_types,
-                                            const uint32_t type_size_constraints[],
-                                            size_t len_type_labels,
-                                            const scc_TypeLabel type_labels[],
-                                            scc_SeedMethod seed_method,
-                                            scc_UnassignedMethod main_unassigned_method,
-                                            bool main_radius_constraint,
-                                            double main_radius,
-                                            size_t len_main_data_points,
-                                            const bool main_data_points[],
-                                            scc_UnassignedMethod secondary_unassigned_method,
-                                            bool secondary_radius_constraint,
-                                            double secondary_radius);
+scc_ErrorCode scc_nng_clustering_types(scc_Clustering* clustering,
+                                       void* data_set_object,
+                                       uint32_t size_constraint,
+                                       uintmax_t num_types,
+                                       const uint32_t type_size_constraints[],
+                                       size_t len_type_labels,
+                                       const scc_TypeLabel type_labels[],
+                                       scc_SeedMethod seed_method,
+                                       scc_UnassignedMethod main_unassigned_method,
+                                       bool main_radius_constraint,
+                                       double main_radius,
+                                       size_t len_main_data_points,
+                                       const bool main_data_points[],
+                                       scc_UnassignedMethod secondary_unassigned_method,
+                                       bool secondary_radius_constraint,
+                                       double secondary_radius);
 
 
 // ==============================================================================
