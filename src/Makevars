@@ -1,0 +1,19 @@
+MAKECONF = $(R_HOME)/etc${R_ARCH}/Makeconf
+
+OBJECTS = Rscc_nng.o
+
+PKG_LIBS = libscc/libscc.a
+
+.PHONY: clean
+
+$(SHLIB): $(OBJECTS) libscc/libscc.a
+
+%.o: %.c
+	$(CC) -c $(ALL_CPPFLAGS) $(ALL_CFLAGS) -Ilibscc/include $< -o $@
+
+libscc/libscc.a:
+	(cd libscc && MAKECONF="$(MAKECONF)" $(MAKE) library) || exit 1;
+
+clean:
+	$(RM) $(SHLIB) *.o
+	(cd libscc && MAKECONF="$(MAKECONF)" $(MAKE) clean) || exit 1;

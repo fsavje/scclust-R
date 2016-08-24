@@ -3,3 +3,5 @@
 S3method(as.matrix,Rscc_distances)
 S3method(print,Rscc_distances)
 export(make_distances)
+export(nng_clustering)
+useDynLib(Rscclust,Rsccwrap_nng_clustering)
