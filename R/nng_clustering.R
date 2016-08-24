@@ -115,3 +115,97 @@ nng_clustering_batches <- function(distance_object,
             ids = attr(distance_object, "ids", exact = TRUE),
             class = c("Rscc_clustering"))
 }
+
+
+#' @useDynLib Rscclust Rsccwrap_nng_clustering_with_types
+#' @export
+nng_clustering_with_types <- function(distance_object,
+                                      type_labels,
+                                      type_size_constraints,
+                                      total_size_constraint = NULL,
+                                      seed_method = "exclusion_updating",
+                                      main_unassigned_method = "closest_seed",
+                                      main_radius = NULL,
+                                      main_data_points = NULL,
+                                      secondary_unassigned_method = "ignore",
+                                      secondary_radius = NULL) {
+
+  stopifnot(inherits(distance_object, "Rscc_distances"))
+  num_data_points <- ncol(distance_object)
+
+  stopifnot(is.factor(type_labels) || is.integer(type_labels),
+            all(!is.na(type_labels)))
+
+  if (is.factor(type_labels)) {
+    stopifnot(!is.null(names(type_size_constraints)),
+              !anyDuplicated(names(type_size_constraints)),
+              all(names(type_size_constraints) %in% levels(type_labels)))
+    save_type_size_constraints <- type_size_constraints
+    type_size_constraints <- rep(0L, nlevels(type_labels))
+    names(type_size_constraints) <- levels(type_labels)
+    type_size_constraints[names(save_type_size_constraints)] <- as.integer(save_type_size_constraints)
+    type_size_constraints <- c(0L, type_size_constraints)
+    rm(save_type_size_constraints)
+  } else {
+    stopifnot(min(type_labels) >= 0,
+              !is.null(names(type_size_constraints)),
+              !anyDuplicated(names(type_size_constraints)))
+    type_max <- max(type_labels)
+    save_type_size_constraints <- type_size_constraints
+    type_size_constraints <- rep(0L, type_max + 1)
+    names(type_size_constraints) <- as.character(0:type_max)
+    stopifnot(all(names(save_type_size_constraints) %in% names(type_size_constraints)))
+    type_size_constraints[names(save_type_size_constraints)] <- as.integer(save_type_size_constraints)
+    rm(save_type_size_constraints)
+  }
+
+  if (is.null(total_size_constraint)) {
+    total_size_constraint <- as.integer(sum(type_size_constraints))
+  } else {
+    total_size_constraint <- as.integer(total_size_constraint)[1]
+  }
+
+  seed_method <- match.arg(seed_method, c("lexical",
+                                          "inwards_order",
+                                          "inwards_updating",
+                                          "exclusion_order",
+                                          "exclusion_updating"))
+  main_unassigned_method <- match.arg(main_unassigned_method, c("ignore",
+                                                                "by_nng",
+                                                                "closest_assigned",
+                                                                "closest_seed",
+                                                                "estimated_radius_closest_seed"))
+  if (!is.null(main_radius)) main_radius <- as.numeric(main_radius)[1]
+  if (is.null(main_data_points)) secondary_unassigned_method <- "ignore"
+  secondary_unassigned_method <- match.arg(secondary_unassigned_method, c("ignore",
+                                                                          "closest_assigned",
+                                                                          "closest_seed",
+                                                                          "estimated_radius_closest_seed"))
+  if (!is.null(secondary_radius)) secondary_radius <- as.numeric(secondary_radius)[1]
+
+  stopifnot(min(type_size_constraints) >= 0,
+            total_size_constraint >= 2,
+            total_size_constraint <= num_data_points,
+            is.null(main_radius) || (main_radius > 0.0),
+            is.null(main_data_points) || is.logical(main_data_points),
+            !is.logical(main_data_points) || (length(x) < num_data_points),
+            is.null(secondary_radius) || (secondary_radius > 0.0))
+
+  clustering <- .Call("Rsccwrap_nng_clustering_with_types",
+                      distance_object,
+                      total_size_constraint,
+                      type_size_constraints,
+                      unclass(type_labels),
+                      seed_method,
+                      main_unassigned_method,
+                      main_radius,
+                      main_data_points,
+                      secondary_unassigned_method,
+                      secondary_radius,
+                      PACKAGE = "Rscclust")
+
+  structure(clustering$cluster_labels,
+            cluster_count = clustering$cluster_count,
+            ids = attr(distance_object, "ids", exact = TRUE),
+            class = c("Rscc_clustering"))
+}
