@@ -27,7 +27,7 @@
 SEXP Rsccwrap_top_down_greedy_clustering(SEXP R_distance_object,
                                          SEXP R_size_constraint,
                                          SEXP R_batch_assign,
-                                         SEXP R_existing_clustering,
+                                         SEXP R_existing_cluster_labels,
                                          SEXP R_existing_num_clusters,
                                          SEXP R_deep_copy);
 

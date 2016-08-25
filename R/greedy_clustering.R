@@ -39,30 +39,31 @@ top_down_greedy_clustering_internal <- function(distance_object,
                                                 existing_clustering = NULL,
                                                 deep_copy = TRUE) {
 
-  stopifnot(inherits(distance_object, "Rscc_distances"))
+  stopifnot(inherits(distance_object, "Rscc_distances"),
+            is.numeric(distance_object))
   num_data_points <- ncol(distance_object)
   existing_num_clusters <- 0L
   if (!is.null(existing_clustering)) {
     stopifnot(inherits(existing_clustering, "Rscc_clustering"),
-              "cluster_count" %in% names(attributes(cl3)))
+              is.integer(existing_clustering),
+              length(existing_clustering) == num_data_points,
+              "cluster_count" %in% names(attributes(existing_clustering)))
     existing_num_clusters <- as.integer(attr(existing_clustering, "cluster_count", exact = TRUE))[1]
+    stopifnot(existing_num_clusters > 0)
   }
 
   size_constraint <- as.integer(size_constraint)[1]
   batch_assign <- as.logical(batch_assign)[1]
   deep_copy <- as.logical(deep_copy)[1]
 
-  stopifnot(is.null(existing_clustering) || inherits(existing_clustering, "Rscc_clustering"),
-            is.null(existing_clustering) || (existing_num_clusters > 0),
-            !is.null(existing_clustering) || (existing_num_clusters == 0),
-            size_constraint >= 2,
+  stopifnot(size_constraint >= 2,
             size_constraint <= num_data_points)
 
   clustering <- .Call("Rsccwrap_top_down_greedy_clustering",
                       distance_object,
                       size_constraint,
                       batch_assign,
-                      unclass(existing_clustering),
+                      existing_clustering,
                       existing_num_clusters,
                       deep_copy,
                       PACKAGE = "Rscclust")

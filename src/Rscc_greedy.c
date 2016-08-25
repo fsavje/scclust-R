@@ -38,14 +38,14 @@
 SEXP Rsccwrap_top_down_greedy_clustering(const SEXP R_distance_object,
                                          const SEXP R_size_constraint,
                                          const SEXP R_batch_assign,
-                                         const SEXP R_existing_clustering,
+                                         const SEXP R_existing_cluster_labels,
                                          const SEXP R_existing_num_clusters,
                                          const SEXP R_deep_copy)
 {
 	if (!isMatrix(R_distance_object) || !isReal(R_distance_object)) iRsccwrap_error("Invalid distance object.");
 	if (!isInteger(R_size_constraint)) iRsccwrap_error("`R_size_constraint` must be integer.");
 	if (!isLogical(R_batch_assign)) iRsccwrap_error("`R_batch_assign` must be logical.");
-	if (!isNull(R_existing_clustering) && !isInteger(R_existing_clustering)) iRsccwrap_error("`R_existing_clustering` must be integer.");
+	if (!isNull(R_existing_cluster_labels) && !isInteger(R_existing_cluster_labels)) iRsccwrap_error("`R_existing_cluster_labels` must be integer.");
 	if (!isInteger(R_existing_num_clusters)) iRsccwrap_error("`R_existing_num_clusters` must be integer.");
 	if (!isLogical(R_deep_copy)) iRsccwrap_error("`R_deep_copy` must be logical.");
 
@@ -69,7 +69,7 @@ SEXP Rsccwrap_top_down_greedy_clustering(const SEXP R_distance_object,
 
 	SEXP R_cluster_labels;
 	scc_Clustering* clustering;
-	if (isNull(R_existing_clustering)) {
+	if (isNull(R_existing_cluster_labels)) {
 		if (existing_num_clusters > 0) iRsccwrap_error("`R_existing_num_clusters` must be zero when creating new clustering.");
 		R_cluster_labels = PROTECT(allocVector(INTSXP, (R_xlen_t) num_data_points));
 		if ((ec = scc_init_empty_clustering(num_data_points,
@@ -80,19 +80,23 @@ SEXP Rsccwrap_top_down_greedy_clustering(const SEXP R_distance_object,
 			iRsccwrap_scc_error();
 		}
 	} else {
-		if (!isInteger(R_existing_clustering)) iRsccwrap_error("`R_existing_clustering` must be integer.");
-		if (xlength(R_existing_clustering) != num_data_points) iRsccwrap_error("Existing clustering does not match distance object.");
+		if (!isInteger(R_existing_cluster_labels)) iRsccwrap_error("`R_existing_cluster_labels` must be integer.");
+		if (xlength(R_existing_cluster_labels) != num_data_points) iRsccwrap_error("Existing clustering does not match distance object.");
 		if (existing_num_clusters == 0) iRsccwrap_error("`R_existing_num_clusters` must be non-zero when using existing clustering.");
 
 		if (deep_copy) {
-			R_cluster_labels = PROTECT(duplicate(R_existing_clustering));
+			R_cluster_labels = PROTECT(duplicate(R_existing_cluster_labels));
 		} else {
-			R_cluster_labels = PROTECT(R_existing_clustering);
+			R_cluster_labels = PROTECT(R_existing_cluster_labels);
 		}
+
+		setAttrib(R_cluster_labels, install("class"), R_NilValue);
+		setAttrib(R_cluster_labels, install("cluster_count"), R_NilValue);
+		setAttrib(R_cluster_labels, install("ids"), R_NilValue);
 
 		if ((ec = scc_init_existing_clustering(num_data_points,
 		                                       existing_num_clusters,
-		                                       INTEGER(R_existing_clustering),
+		                                       INTEGER(R_cluster_labels),
 		                                       false,
 		                                       &clustering)) != SCC_ER_OK) {
 			scc_free_data_set_object(&data_set_object);

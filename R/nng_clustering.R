@@ -30,7 +30,8 @@ nng_clustering <- function(distance_object,
                            secondary_unassigned_method = "ignore",
                            secondary_radius = NULL) {
 
-  stopifnot(inherits(distance_object, "Rscc_distances"))
+  stopifnot(inherits(distance_object, "Rscc_distances"),
+            is.numeric(distance_object))
   num_data_points <- ncol(distance_object)
 
   size_constraint <- as.integer(size_constraint)[1]
@@ -86,7 +87,8 @@ nng_clustering_batches <- function(distance_object,
                                    main_data_points = NULL,
                                    batch_size = 100) {
 
-  stopifnot(inherits(distance_object, "Rscc_distances"))
+  stopifnot(inherits(distance_object, "Rscc_distances"),
+            is.numeric(distance_object))
   num_data_points <- ncol(distance_object)
 
   size_constraint <- as.integer(size_constraint)[1]
@@ -130,7 +132,8 @@ nng_clustering_types <- function(distance_object,
                                  secondary_unassigned_method = "ignore",
                                  secondary_radius = NULL) {
 
-  stopifnot(inherits(distance_object, "Rscc_distances"))
+  stopifnot(inherits(distance_object, "Rscc_distances"),
+            is.numeric(distance_object))
   num_data_points <- ncol(distance_object)
 
   stopifnot(is.factor(type_labels) || is.integer(type_labels),
@@ -195,7 +198,7 @@ nng_clustering_types <- function(distance_object,
                       distance_object,
                       total_size_constraint,
                       type_size_constraints,
-                      unclass(type_labels),
+                      type_labels,
                       seed_method,
                       main_unassigned_method,
                       main_radius,

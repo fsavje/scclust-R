@@ -87,9 +87,7 @@ SEXP Rsccwrap_nng_clustering(const SEXP R_distance_object,
 	bool* main_data_points = NULL;
 	if (isLogical(R_main_data_points)) {
 		len_main_data_points = (size_t) xlength(R_main_data_points);
-		if (len_main_data_points < num_data_points) {
-			error("Invalid `R_main_data_points`.");
-		}
+		if (len_main_data_points < num_data_points) iRsccwrap_error("Invalid `R_main_data_points`.");
 		bool* const main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
 		if (main_data_points == NULL) iRsccwrap_error("Could not allocate memory.");
 		const int* const tmp_main_data_points = LOGICAL(R_main_data_points);
@@ -198,9 +196,7 @@ SEXP Rsccwrap_nng_clustering_batches(const SEXP R_distance_object,
 	bool* main_data_points = NULL;
 	if (isLogical(R_main_data_points)) {
 		len_main_data_points = (size_t) xlength(R_main_data_points);
-		if (len_main_data_points < num_data_points) {
-			error("Invalid `R_main_data_points`.");
-		}
+		if (len_main_data_points < num_data_points) iRsccwrap_error("Invalid `R_main_data_points`.");
 		bool* const main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
 		if (main_data_points == NULL) iRsccwrap_error("Could not allocate memory.");
 		const int* const tmp_main_data_points = LOGICAL(R_main_data_points);
@@ -333,9 +329,7 @@ SEXP Rsccwrap_nng_clustering_types(const SEXP R_distance_object,
 	bool* main_data_points = NULL;
 	if (isLogical(R_main_data_points)) {
 		len_main_data_points = (size_t) xlength(R_main_data_points);
-		if (len_main_data_points < num_data_points) {
-			error("Invalid `R_main_data_points`.");
-		}
+		if (len_main_data_points < num_data_points) iRsccwrap_error("Invalid `R_main_data_points`.");
 		bool* const main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
 		if (main_data_points == NULL) iRsccwrap_error("Could not allocate memory.");
 		const int* const tmp_main_data_points = LOGICAL(R_main_data_points);
@@ -425,23 +419,22 @@ static scc_SeedMethod iRsccwrap_parse_seed_method(const SEXP R_seed_method)
 {
 	if (!isString(R_seed_method)) iRsccwrap_error("`R_seed_method` must be string.");
 
-	scc_SeedMethod seed_method;
 	const char* seed_method_string = CHAR(asChar(R_seed_method));
 	if (strcmp(seed_method_string, "lexical") == 0) {
-		seed_method = SCC_SM_LEXICAL;
+		return SCC_SM_LEXICAL;
 	} else if (strcmp(seed_method_string, "inwards_order") == 0) {
-		seed_method = SCC_SM_INWARDS_ORDER;
+		return SCC_SM_INWARDS_ORDER;
 	} else if (strcmp(seed_method_string, "inwards_updating") == 0) {
-		seed_method = SCC_SM_INWARDS_UPDATING;
+		return SCC_SM_INWARDS_UPDATING;
 	} else if (strcmp(seed_method_string, "exclusion_order") == 0) {
-		seed_method = SCC_SM_EXCLUSION_ORDER;
+		return SCC_SM_EXCLUSION_ORDER;
 	} else if (strcmp(seed_method_string, "exclusion_updating") == 0) {
-		seed_method = SCC_SM_EXCLUSION_UPDATING;
+		return SCC_SM_EXCLUSION_UPDATING;
 	} else {
-		error("Not a valid seed method.");
+		iRsccwrap_error("Not a valid seed method.");
 	}
 
-	return seed_method;
+	return 999; // Unreachable, but needed to silence compiler warning
 }
 
 
@@ -449,21 +442,20 @@ static scc_UnassignedMethod iRsccwrap_parse_unassigned_method(const SEXP R_unass
 {
 	if (!isString(R_unassigned_method)) iRsccwrap_error("`R_unassigned_method` must be string.");
 
-	scc_UnassignedMethod unassigned_method;
 	const char* unassigned_method_string = CHAR(asChar(R_unassigned_method));
 	if (strcmp(unassigned_method_string, "ignore") == 0) {
-		unassigned_method = SCC_UM_IGNORE;
+		return SCC_UM_IGNORE;
 	} else if (strcmp(unassigned_method_string, "by_nng") == 0) {
-		unassigned_method = SCC_UM_ASSIGN_BY_NNG;
+		return SCC_UM_ASSIGN_BY_NNG;
 	} else if (strcmp(unassigned_method_string, "closest_assigned") == 0) {
-		unassigned_method = SCC_UM_CLOSEST_ASSIGNED;
+		return SCC_UM_CLOSEST_ASSIGNED;
 	} else if (strcmp(unassigned_method_string, "closest_seed") == 0) {
-		unassigned_method = SCC_UM_CLOSEST_SEED;
+		return SCC_UM_CLOSEST_SEED;
 	} else if (strcmp(unassigned_method_string, "estimated_radius_closest_seed") == 0) {
-		unassigned_method = SCC_UM_CLOSEST_SEED_EST_RADIUS;
+		return SCC_UM_CLOSEST_SEED_EST_RADIUS;
 	} else {
-		error("Not a valid main unassigned method.");
+		iRsccwrap_error("Not a valid main unassigned method.");
 	}
 
-	return unassigned_method;
+	return 999; // Unreachable, but needed to silence compiler warning
 }
