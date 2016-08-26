@@ -8,12 +8,12 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see http://www.gnu.org/licenses/
 # ==============================================================================
@@ -29,9 +29,9 @@
 #' Let \eqn{x} and \eqn{y} be two data points in \code{data} described by two vectors. \code{make_distances}
 #' uses the following metric to derive the distance between \eqn{x} and \eqn{y}:
 #'
-#' \deqn{\sqrt{(x - y) N^{-0.5} W N^{-0.5} (x - y)}}{\sqrt((x - y) * N^-0.5 * W * N^-0.5 * (x - y))}
+#' \deqn{\sqrt{(x - y) N^{-0.5} W (N^{-0.5})' (x - y)}}{\sqrt((x - y) * N^-0.5 * W * (N^-0.5)' * (x - y))}
 #'
-#' where \eqn{N^{-0.5}}{N^-0.5} is the Cholesky decomposition of the inverse of the matrix speficied by \code{normalize}, and \eqn{W}
+#' where \eqn{N^{-0.5}}{N^-0.5} is the Cholesky decomposition (lower triangular) of the inverse of the matrix speficied by \code{normalize}, and \eqn{W}
 #' is matrix speficied by \code{weights}.
 #'
 #' When \code{normalize} is \code{var(data)} (i.e., using the \code{"mahalanobize"} option), this
@@ -44,9 +44,10 @@
 #' @param id_variable optional IDs of the data points.
 #'                    If \code{id_variable} is a single string and \code{data} is a data frame, the
 #'                    corresponding column in \code{data} will be taken as IDs. That column will be
-#'                    excluded from \code{data} when constructing distances. If \code{id_variable} is
-#'                    \code{NULL}, the IDs are set to \code{1:nrow(data)}. Otherwise, \code{id_variable}
-#'                    must be of length \code{nrow(data)} and will be used directly as IDs.
+#'                    excluded from \code{data} when constructing distances (unless it is listed in
+#'                    \code{dist_variables}). If \code{id_variable} is \code{NULL}, the IDs are set
+#'                    to \code{1:nrow(data)}. Otherwise, \code{id_variable} must be of length
+#'                    \code{nrow(data)} and will be used directly as IDs.
 #' @param dist_variables optional names of the columns in \code{data} that should
 #'                       be used when constructing distances. If \code{dist_variables} is \code{NULL},
 #'                       all columns will be used (net of eventual column specified by \code{id_variable}).
@@ -63,10 +64,9 @@
 #'                no weighting will be done (effectively setting \code{weights} to the identity matrix). If \code{weights}
 #'                is a matrix, that will be used in the weighting. If \code{normalize} is a vector, a diagonal matrix
 #'                with the supplied vector as its diagonal will be used. The matrix used for weighting must be
-#'                  positive-semidefinite.
+#'                positive-semidefinite.
 #'
-#' @return \code{make_distances} returns a distance object to be used when calling the clustering, blocking or matching
-#'         functions.
+#' @return \code{make_distances} returns a distance object to be used when calling the clustering functions.
 #'
 #' @export
 make_distances <- function(data,
@@ -75,96 +75,104 @@ make_distances <- function(data,
                            normalize = NULL,
                            weights = NULL) {
 
-   stopifnot((is.data.frame(data) || is.matrix(data)),
-             (is.data.frame(data) || is.null(dist_variables)),
-             (nrow(data) >= 2))
+  stopifnot((is.data.frame(data) || is.matrix(data)),
+            (is.data.frame(data) || is.null(dist_variables)),
+            (nrow(data) >= 2))
 
-   num_data_points <- nrow(data)
+  num_data_points <- nrow(data)
 
-   if (is.data.frame(data)) {
-      if (!is.null(id_variable) && (length(id_variable) == 1)) {
-         stopifnot(is.character(id_variable),
-                   (id_variable %in% colnames(data)))
-         if (is.null(dist_variables)) dist_variables <- colnames(data)
-         dist_variables <- setdiff(dist_variables, id_variable)
-         id_variable <- data[, id_variable, drop = TRUE]
+  if (is.data.frame(data)) {
+    if (!is.null(id_variable) && (length(id_variable) == 1)) {
+      stopifnot(is.character(id_variable),
+                (id_variable %in% colnames(data)))
+      if (is.null(dist_variables)) {
+        dist_variables <- setdiff(colnames(data), id_variable)
       }
-      if (!is.null(dist_variables)) {
-         stopifnot(is.character(dist_variables),
-                   (dist_variables %in% colnames(data)))
-         data <- data[, dist_variables, drop = FALSE]
-      }
-      data <- as.matrix(data)
-   }
+      id_variable <- data[, id_variable, drop = TRUE]
+    }
+    if (!is.null(dist_variables)) {
+      stopifnot(is.character(dist_variables),
+                (dist_variables %in% colnames(data)))
+      data <- data[, dist_variables, drop = FALSE]
+    }
+    data <- as.matrix(data)
+  }
 
-   stopifnot(is.matrix(data),
-             is.numeric(data),
-             all(!is.na(data)),
-             (is.null(id_variable) ||
-                 (length(id_variable) == num_data_points)))
+  data <- unname(data)
 
-   if (is.character(normalize)) {
-      if (normalize == "mahalanobis") normalize <- "mahalanobize"
-      normalize <- match.arg(normalize, c("none",
-                                          "mahalanobize",
-                                          "studentize"))
-      normalize <- switch(normalize,
-                          none = NULL,
-                          mahalanobize = var(data),
-                          studentize = diag(diag(var(data))))
-   }
+  stopifnot(is.matrix(data),
+            is.numeric(data),
+            all(!is.na(data)),
+            (is.null(id_variable) ||
+               (length(id_variable) == num_data_points)))
 
-   if (!is.null(normalize)) {
-      if (is.data.frame(normalize)) normalize <- as.matrix(normalize)
-      if (is.vector(normalize)) normalize <- diag(normalize)
+  if (is.character(normalize)) {
+    normalize <- normalize[1]
+    if (normalize == "mahalanobis") normalize <- "mahalanobize"
+    normalize <- match.arg(normalize, c("none",
+                                        "mahalanobize",
+                                        "studentize"))
+    normalize <- switch(normalize,
+                        none = NULL,
+                        mahalanobize = stats::var(data),
+                        studentize = diag(diag(stats::var(data))))
+  }
 
-      stopifnot(is.matrix(normalize),
-                is.numeric(normalize),
-                all(!is.na(normalize)),
-                isSymmetric(normalize),
-                ncol(normalize) == ncol(data))
-      if (any(eigen(normalize, symmetric = TRUE, only.values = TRUE)$values <= 2 * .Machine$double.eps)) {
-         stop("`normalize` must be positive-semidefinite.")
-      }
+  if (!is.null(normalize)) {
+    if (is.data.frame(normalize)) normalize <- as.matrix(normalize)
+    if (is.vector(normalize)) normalize <- diag(normalize)
 
-      data <- tcrossprod(data, chol(solve(normalize)))
-   } else {
-      normalize <- diag(ncol(data))
-   }
+    normalize <- unname(normalize)
 
-   if (!is.null(weights)) {
-      if (is.data.frame(weights)) weights <- as.matrix(weights)
-      if (is.vector(weights)) weights <- diag(weights)
-      stopifnot(is.matrix(weights),
-                is.numeric(weights),
-                all(!is.na(weights)),
-                isSymmetric(weights),
-                ncol(weights) == ncol(data))
-      if (any(eigen(weights, symmetric = TRUE, only.values = TRUE)$values <= 2 * .Machine$double.eps)) {
-         stop("`weights` must be positive-semidefinite.")
-      }
+    stopifnot(is.matrix(normalize),
+              is.numeric(normalize),
+              all(!is.na(normalize)),
+              isSymmetric(normalize),
+              ncol(normalize) == ncol(data))
+    if (any(eigen(normalize, symmetric = TRUE, only.values = TRUE)$values <= 2 * .Machine$double.eps)) {
+      stop("`normalize` must be positive-semidefinite.")
+    }
 
-      data <- tcrossprod(data, chol(weights))
-   } else {
-      weights <- diag(ncol(data))
-   }
+    data <- tcrossprod(data, chol(solve(normalize)))
+  } else {
+    normalize <- diag(ncol(data))
+  }
 
-   structure(t(data),
-             ids = id_variable,
-             normalization = normalize,
-             weights = weights,
-             class = c("Rscc_distances"))
+  if (!is.null(weights)) {
+    if (is.data.frame(weights)) weights <- as.matrix(weights)
+    if (is.vector(weights)) weights <- diag(weights)
+
+    weights <- unname(weights)
+
+    stopifnot(is.matrix(weights),
+              is.numeric(weights),
+              all(!is.na(weights)),
+              isSymmetric(weights),
+              ncol(weights) == ncol(data))
+    if (any(eigen(weights, symmetric = TRUE, only.values = TRUE)$values <= 2 * .Machine$double.eps)) {
+      stop("`weights` must be positive-semidefinite.")
+    }
+
+    data <- tcrossprod(data, chol(weights))
+  } else {
+    weights <- diag(ncol(data))
+  }
+
+  structure(t(data),
+            ids = unname(id_variable),
+            normalization = normalize,
+            weights = weights,
+            class = c("Rscc_distances"))
 }
 
 
 #' @export
-print.Rscc_distances <- function(x) {
-   cat("This is a Rscc_distances object. It's only purpose is to be used in the Rscclust package.",
-       "\nUse `as.matrix` to generate an R matrix with the distances (a very slow operation for large distance matrices).")
+print.Rscc_distances <- function(x, ...) {
+  message("This is a Rscc_distances object. It's only purpose is to be used in the Rscclust package. Use `as.matrix` to generate an R matrix with the distances (a very slow operation for large distance matrices).")
 }
 
 
 #' @export
-as.matrix.Rscc_distances <- function(x) {
-   as.matrix(dist(t(unclass(x))))
+as.matrix.Rscc_distances <- function(x, ...) {
+  as.matrix(stats::dist(t(unclass(x))))
 }

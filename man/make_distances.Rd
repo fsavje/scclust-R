@@ -13,9 +13,10 @@ make_distances(data, id_variable = NULL, dist_variables = NULL,
 \item{id_variable}{optional IDs of the data points.
 If \code{id_variable} is a single string and \code{data} is a data frame, the
 corresponding column in \code{data} will be taken as IDs. That column will be
-excluded from \code{data} when constructing distances. If \code{id_variable} is
-\code{NULL}, the IDs are set to \code{1:nrow(data)}. Otherwise, \code{id_variable}
-must be of length \code{nrow(data)} and will be used directly as IDs.}
+excluded from \code{data} when constructing distances (unless it is listed in
+\code{dist_variables}). If \code{id_variable} is \code{NULL}, the IDs are set
+to \code{1:nrow(data)}. Otherwise, \code{id_variable} must be of length
+\code{nrow(data)} and will be used directly as IDs.}
 
 \item{dist_variables}{optional names of the columns in \code{data} that should
 be used when constructing distances. If \code{dist_variables} is \code{NULL},
@@ -35,11 +36,10 @@ positive-semidefinite.}
 no weighting will be done (effectively setting \code{weights} to the identity matrix). If \code{weights}
 is a matrix, that will be used in the weighting. If \code{normalize} is a vector, a diagonal matrix
 with the supplied vector as its diagonal will be used. The matrix used for weighting must be
-  positive-semidefinite.}
+positive-semidefinite.}
 }
 \value{
-\code{make_distances} returns a distance object to be used when calling the clustering, blocking or matching
-        functions.
+\code{make_distances} returns a distance object to be used when calling the clustering functions.
 }
 \description{
 \code{make_distances} constructs Euclidean distances to be used in clustering
@@ -51,9 +51,9 @@ normalized Euclidean distances.
 Let \eqn{x} and \eqn{y} be two data points in \code{data} described by two vectors. \code{make_distances}
 uses the following metric to derive the distance between \eqn{x} and \eqn{y}:
 
-\deqn{\sqrt{(x - y) N^{-0.5} W N^{-0.5} (x - y)}}{\sqrt((x - y) * N^-0.5 * W * N^-0.5 * (x - y))}
+\deqn{\sqrt{(x - y) N^{-0.5} W (N^{-0.5})' (x - y)}}{\sqrt((x - y) * N^-0.5 * W * (N^-0.5)' * (x - y))}
 
-where \eqn{N^{-0.5}}{N^-0.5} is the Cholesky decomposition of the inverse of the matrix speficied by \code{normalize}, and \eqn{W}
+where \eqn{N^{-0.5}}{N^-0.5} is the Cholesky decomposition (lower triangular) of the inverse of the matrix speficied by \code{normalize}, and \eqn{W}
 is matrix speficied by \code{weights}.
 
 When \code{normalize} is \code{var(data)} (i.e., using the \code{"mahalanobize"} option), this

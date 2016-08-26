@@ -9,6 +9,7 @@ Description: Package that wraps the scclust C library for R. scclust provides
 Depends:
     R (>= 3.3.1)
 Imports:
+Suggests: testthat
 NeedsCompilation: yes
 License: GPL (>= 3) + file LICENSE
 LicenseNote: The Rscclust package includes the scclust library
