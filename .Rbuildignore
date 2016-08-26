@@ -1,4 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.travis\.yml$
 ^local$
-^src/update_scclust.sh$
+^src/update_scclust\.sh$
