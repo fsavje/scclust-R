@@ -1,0 +1,12 @@
+sudo: false
+language: r
+cache: packages
+
+compiler:
+  - clang
+  - gcc
+
+r:
+  - oldrel
+  - release
+  - devel
