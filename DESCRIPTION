@@ -10,7 +10,7 @@ Depends:
     R (>= 3.3.1)
 Imports:
 NeedsCompilation: yes
-License: GPL (>= 3)
+License: GPL (>= 3) + file LICENSE
 LicenseNote: The Rscclust package includes the scclust library
     (distributed under the LGPLv2.1 license) and the ANN library
     (distributed under the LGPLv2.1 license).

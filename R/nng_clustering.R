@@ -57,7 +57,7 @@ nng_clustering <- function(distance_object,
             size_constraint <= num_data_points,
             is.null(main_radius) || (main_radius > 0.0),
             is.null(main_data_points) || is.logical(main_data_points),
-            !is.logical(main_data_points) || (length(x) < num_data_points),
+            !is.logical(main_data_points) || (length(main_data_points) < num_data_points),
             is.null(secondary_radius) || (secondary_radius > 0.0))
 
   clustering <- .Call("Rsccwrap_nng_clustering",
@@ -100,7 +100,7 @@ nng_clustering_batches <- function(distance_object,
             size_constraint <= num_data_points,
             is.null(main_radius) || (main_radius > 0.0),
             is.null(main_data_points) || is.logical(main_data_points),
-            !is.logical(main_data_points) || (length(x) < num_data_points),
+            !is.logical(main_data_points) || (length(main_data_points) < num_data_points),
             batch_size >= 0)
 
   clustering <- .Call("Rsccwrap_nng_clustering_batches",
@@ -191,7 +191,7 @@ nng_clustering_types <- function(distance_object,
             total_size_constraint <= num_data_points,
             is.null(main_radius) || (main_radius > 0.0),
             is.null(main_data_points) || is.logical(main_data_points),
-            !is.logical(main_data_points) || (length(x) < num_data_points),
+            !is.logical(main_data_points) || (length(main_data_points) < num_data_points),
             is.null(secondary_radius) || (secondary_radius > 0.0))
 
   clustering <- .Call("Rsccwrap_nng_clustering_types",
