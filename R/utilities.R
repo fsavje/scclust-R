@@ -19,23 +19,6 @@
 # ==============================================================================
 
 
-#' @export
-Rscc_clustering <- function(cluster_labels,
-                            ids = NULL) {
-
-  factor_labels <- factor(as.vector(cluster_labels))
-
-  stopifnot(length(factor_labels) == 0,
-            is.null(ids) || is.vector(ids),
-            is.null(ids) || (length(factor_labels) == length(ids)))
-
-  structure(as.integer(factor_labels) - 1,
-            cluster_count = nlevels(factor_labels),
-            ids = ids,
-            class = c("Rscc_clustering"))
-}
-
-
 #' @useDynLib Rscclust Rsccwrap_check_clustering
 #' @export
 check_clustering <- function(clustering,
