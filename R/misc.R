@@ -23,6 +23,7 @@
 
 check_Rscc_distances <- function(distance_object) {
   stopifnot(inherits(distance_object, "Rscc_distances"),
+            is.matrix(distance_object),
             is.numeric(distance_object))
 }
 
@@ -54,7 +55,7 @@ check_main_data_points <- function(main_data_points,
                                    num_data_points) {
   if (!is.null(main_data_points)) {
     stopifnot(is.logical(main_data_points),
-              length(main_data_points) < num_data_points)
+              length(main_data_points) >= num_data_points)
   }
 }
 
@@ -90,6 +91,7 @@ get_seed_method <- function(seed_method) {
 
 get_radius <- function(radius) {
   if (!is.null(radius)) {
+    stopifnot(is.numeric(radius))
     radius <- as.numeric(radius)[1]
     stopifnot(radius > 0.0)
   }
