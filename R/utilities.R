@@ -23,16 +23,9 @@
 #' @export
 check_clustering <- function(clustering,
                              size_constraint) {
-
-  stopifnot(inherits(clustering, "Rscc_clustering"),
-            is.integer(clustering),
-            "cluster_count" %in% names(attributes(clustering)))
-
-  num_clusters <- as.integer(attr(clustering, "cluster_count", exact = TRUE))[1]
-  size_constraint <- as.integer(size_constraint)[1]
-
-  stopifnot(num_clusters > 0,
-            size_constraint >= 2)
+  check_Rscc_clustering(clustering)
+  num_clusters <- get_num_clusters(clustering)
+  size_constraint <- get_size_constraint(size_constraint)
 
   .Call("Rsccwrap_check_clustering",
         clustering,
@@ -48,47 +41,13 @@ check_clustering_types <- function(clustering,
                                    type_labels,
                                    type_size_constraints,
                                    total_size_constraint = NULL) {
-
-  stopifnot(inherits(clustering, "Rscc_clustering"),
-            is.integer(clustering),
-            "cluster_count" %in% names(attributes(clustering)),
-            is.factor(type_labels) || is.integer(type_labels),
-            all(!is.na(type_labels)))
-
-  num_clusters <- as.integer(attr(clustering, "cluster_count", exact = TRUE))[1]
-
-  if (is.factor(type_labels)) {
-    stopifnot(!is.null(names(type_size_constraints)),
-              !anyDuplicated(names(type_size_constraints)),
-              all(names(type_size_constraints) %in% levels(type_labels)))
-    save_type_size_constraints <- type_size_constraints
-    type_size_constraints <- rep(0L, nlevels(type_labels))
-    names(type_size_constraints) <- levels(type_labels)
-    type_size_constraints[names(save_type_size_constraints)] <- as.integer(save_type_size_constraints)
-    type_size_constraints <- c(0L, type_size_constraints)
-    rm(save_type_size_constraints)
-  } else {
-    stopifnot(min(type_labels) >= 0,
-              !is.null(names(type_size_constraints)),
-              !anyDuplicated(names(type_size_constraints)))
-    type_max <- max(type_labels)
-    save_type_size_constraints <- type_size_constraints
-    type_size_constraints <- rep(0L, type_max + 1)
-    names(type_size_constraints) <- as.character(0:type_max)
-    stopifnot(all(names(save_type_size_constraints) %in% names(type_size_constraints)))
-    type_size_constraints[names(save_type_size_constraints)] <- as.integer(save_type_size_constraints)
-    rm(save_type_size_constraints)
-  }
-
-  if (is.null(total_size_constraint)) {
-    total_size_constraint <- as.integer(sum(type_size_constraints))
-  } else {
-    total_size_constraint <- as.integer(total_size_constraint)[1]
-  }
-
-  stopifnot(num_clusters > 0,
-            min(type_size_constraints) >= 0,
-            total_size_constraint >= 2)
+  check_Rscc_clustering(clustering)
+  check_type_labels(type_labels)
+  num_clusters <- get_num_clusters(clustering)
+  type_size_constraints <- get_type_size_constraints(type_size_constraints,
+                                                     type_labels)
+  total_size_constraint <- get_total_size_constraint(total_size_constraint,
+                                                     type_size_constraints)
 
   .Call("Rsccwrap_check_clustering_types",
         clustering,
@@ -104,24 +63,17 @@ check_clustering_types <- function(clustering,
 #' @export
 get_clustering_stats <- function(clustering,
                                  distance_object) {
-
-  stopifnot(inherits(distance_object, "Rscc_distances"),
-            is.numeric(distance_object),
-            inherits(clustering, "Rscc_clustering"),
-            is.integer(clustering),
-            length(clustering) == ncol(distance_object),
-            "cluster_count" %in% names(attributes(clustering)))
-
-  num_clusters <- as.integer(attr(clustering, "cluster_count", exact = TRUE))[1]
-
-  stopifnot(num_clusters > 0)
+  check_Rscc_clustering(clustering)
+  num_clusters <- get_num_clusters(clustering)
+  check_Rscc_distances(distance_object)
+  num_data_points <- get_num_data_points(distance_object)
+  stopifnot(length(clustering) == num_data_points)
 
   clust_stats <- .Call("Rsccwrap_get_clustering_stats",
                        clustering,
                        num_clusters,
                        distance_object,
                        PACKAGE = "Rscclust")
-
   structure(clust_stats,
             class = c("Rscc_clustering_stats"))
 }

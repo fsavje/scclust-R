@@ -38,26 +38,18 @@ top_down_greedy_clustering_internal <- function(distance_object,
                                                 batch_assign = TRUE,
                                                 existing_clustering = NULL,
                                                 deep_copy = TRUE) {
-
-  stopifnot(inherits(distance_object, "Rscc_distances"),
-            is.numeric(distance_object))
-  num_data_points <- ncol(distance_object)
+  check_Rscc_distances(distance_object)
+  num_data_points <- get_num_data_points(distance_object)
   existing_num_clusters <- 0L
   if (!is.null(existing_clustering)) {
-    stopifnot(inherits(existing_clustering, "Rscc_clustering"),
-              is.integer(existing_clustering),
-              length(existing_clustering) == num_data_points,
-              "cluster_count" %in% names(attributes(existing_clustering)))
-    existing_num_clusters <- as.integer(attr(existing_clustering, "cluster_count", exact = TRUE))[1]
-    stopifnot(existing_num_clusters > 0)
+    check_Rscc_clustering(existing_clustering)
+    stopifnot(length(existing_clustering) == num_data_points)
+    existing_num_clusters <- get_num_clusters(existing_clustering)
   }
-
-  size_constraint <- as.integer(size_constraint)[1]
+  size_constraint <- get_size_constraint(size_constraint)
+  stopifnot(size_constraint <= num_data_points)
   batch_assign <- as.logical(batch_assign)[1]
   deep_copy <- as.logical(deep_copy)[1]
-
-  stopifnot(size_constraint >= 2,
-            size_constraint <= num_data_points)
 
   clustering <- .Call("Rsccwrap_top_down_greedy_clustering",
                       distance_object,
@@ -67,9 +59,7 @@ top_down_greedy_clustering_internal <- function(distance_object,
                       existing_num_clusters,
                       deep_copy,
                       PACKAGE = "Rscclust")
-
-  structure(clustering$cluster_labels,
-            cluster_count = clustering$cluster_count,
-            ids = attr(distance_object, "ids", exact = TRUE),
-            class = c("Rscc_clustering"))
+  make_Rscc_clustering(clustering$cluster_labels,
+                       clustering$cluster_count,
+                       attr(distance_object, "ids", exact = TRUE))
 }

@@ -33,6 +33,8 @@ test_that("`Rscc_clustering` makes correct output.", {
                cl_obj_wNA)
   expect_equal(Rscc_clustering(c("A", "A", "B", "C", "NONE", "C", "C", "0", "B", "B"), c("NONE", "0")),
                cl_obj_wNA)
+  expect_equal(Rscc_clustering(c(1, 1, 2, 3, 0, 3, 3, 0, 2, 2), 0),
+               cl_obj_wNA)
   expect_equal(Rscc_clustering(c("A", "A", "B", "C", "B", "C", "C", "A", "B", "B"), ids = letters[1:10]),
                cl_obj_wID)
   expect_equal(Rscc_clustering(c("A", "A", "B", "C", "NONE", "C", "C", "0", "B", "B"), c("NONE", "0", "nnn"), ids = letters[1:10]),

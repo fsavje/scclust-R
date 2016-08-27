@@ -74,14 +74,13 @@ Rscc_clustering <- function(cluster_labels,
   cluster_labels[cluster_labels %in% as.vector(unassigned_labels)] <- NA
   cluster_labels <- factor(cluster_labels)
 
-  stopifnot(length(cluster_labels) > 0,
+  stopifnot(length(cluster_labels) > 0L,
             is.null(ids) || is.vector(ids),
             is.null(ids) || (length(cluster_labels) == length(ids)))
 
-  structure(as.integer(cluster_labels) - 1,
-            cluster_count = nlevels(cluster_labels),
-            ids = ids,
-            class = c("Rscc_clustering"))
+  make_Rscc_clustering(as.integer(cluster_labels) - 1L,
+                       nlevels(cluster_labels),
+                       ids)
 }
 
 
