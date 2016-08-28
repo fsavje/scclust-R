@@ -82,7 +82,7 @@ SEXP Rsccwrap_check_clustering_types(const SEXP R_cluster_labels,
 	if (!isInteger(R_num_clusters)) iRsccwrap_error("`R_num_clusters` must be integer.");
 	if (!isInteger(R_size_constraint)) iRsccwrap_error("`R_size_constraint` must be integer.");
 	if (!isInteger(R_type_size_constraints)) iRsccwrap_error("`R_type_size_constraints` must be integer.");
-	if (!isInteger(R_type_labels)) iRsccwrap_error("`R_type_labels` must be factor.");
+	if (!isInteger(R_type_labels)) iRsccwrap_error("`R_type_labels` must be factor or integer.");
 
 	const uintmax_t num_data_points = (uintmax_t) xlength(R_cluster_labels);
 	const uintmax_t num_clusters = (uintmax_t) asInteger(R_num_clusters);

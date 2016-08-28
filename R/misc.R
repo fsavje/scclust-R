@@ -75,6 +75,7 @@ get_num_data_points <- function(distance_object) {
 
 
 get_size_constraint <- function(size_constraint) {
+  stopifnot(is.numeric(size_constraint))
   stopifnot(as.integer(size_constraint)[1] >= 2L)
   as.integer(size_constraint)[1]
 }

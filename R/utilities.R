@@ -54,7 +54,7 @@ check_clustering_types <- function(clustering,
         num_clusters,
         total_size_constraint,
         type_size_constraints,
-        type_labels,
+        unclass(type_labels),
         PACKAGE = "Rscclust")
 }
 

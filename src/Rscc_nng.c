@@ -285,7 +285,7 @@ SEXP Rsccwrap_nng_clustering_types(const SEXP R_distance_object,
 	if (!isMatrix(R_distance_object) || !isReal(R_distance_object)) iRsccwrap_error("Invalid distance object.");
 	if (!isInteger(R_size_constraint)) iRsccwrap_error("`R_size_constraint` must be integer.");
 	if (!isInteger(R_type_size_constraints)) iRsccwrap_error("`R_type_size_constraints` must be integer.");
-	if (!isInteger(R_type_labels)) iRsccwrap_error("`R_type_labels` must be factor.");
+	if (!isInteger(R_type_labels)) iRsccwrap_error("`R_type_labels` must be factor or integer.");
 	if (!isString(R_seed_method)) iRsccwrap_error("`R_seed_method` must be string.");
 	if (!isString(R_main_unassigned_method)) iRsccwrap_error("`R_main_unassigned_method` must be string.");
 	if (!isNull(R_main_radius) && !isReal(R_main_radius)) iRsccwrap_error("`R_main_radius` must be real.");

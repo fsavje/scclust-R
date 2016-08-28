@@ -78,6 +78,7 @@ test_that("`get_size_constraint` produces correct output.", {
   expect_error(get_size_constraint(1))
   expect_error(get_size_constraint(0))
   expect_error(get_size_constraint(-100L))
+  expect_error(get_size_constraint("a"))
 })
 
 

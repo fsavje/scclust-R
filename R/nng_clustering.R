@@ -19,6 +19,8 @@
 # ==============================================================================
 
 
+#' @keywords cluster
+#' @family clustering functions
 #' @useDynLib Rscclust Rsccwrap_nng_clustering
 #' @export
 nng_clustering <- function(distance_object,
@@ -135,7 +137,7 @@ nng_clustering_types <- function(distance_object,
                       distance_object,
                       total_size_constraint,
                       type_size_constraints,
-                      type_labels,
+                      unclass(type_labels),
                       seed_method,
                       main_unassigned_method,
                       main_radius,
