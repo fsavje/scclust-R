@@ -66,7 +66,7 @@ test_that("`make_distances` accepts matrix input.", {
   expect_error(make_distances(test_data_matrix_wNA))
   expect_is(make_distances(test_data_matrix, id_variable = idvar), "Rscc_distances")
   expect_equal(make_distances(test_data_matrix, id_variable = idvar), ref_out_ids)
-  expect_equal(as.matrix(make_distances(test_data_matrix, id_variable = idvar)), ref_dist_mat_simple)
+  expect_equal(unname(as.matrix(make_distances(test_data_matrix, id_variable = idvar))), unname(ref_dist_mat_simple))
   expect_error(make_distances(test_data_matrix, id_variable = idvar[1:50]))
   expect_error(make_distances(test_data_matrix, id_variable = "idcol"))
   expect_error(make_distances(test_data_matrix, dist_variables = c("cov1", "cov2", "cov3")))
@@ -79,7 +79,7 @@ test_that("`make_distances` accepts 1D matrix input.", {
   expect_equal(as.matrix(make_distances(test_data_matrix_single)), ref_dist_mat_simple_single)
   expect_is(make_distances(test_data_matrix_single, id_variable = idvar), "Rscc_distances")
   expect_equal(make_distances(test_data_matrix_single, id_variable = idvar), ref_out_ids_single)
-  expect_equal(as.matrix(make_distances(test_data_matrix_single, id_variable = idvar)), ref_dist_mat_simple_single)
+  expect_equal(unname(as.matrix(make_distances(test_data_matrix_single, id_variable = idvar))), unname(ref_dist_mat_simple_single))
   expect_error(make_distances(test_data_matrix_single, id_variable = idvar[1:50]))
   expect_error(make_distances(test_data_matrix_single, id_variable = "idcol"))
   expect_error(make_distances(test_data_matrix_single, dist_variables = c("cov1", "cov2", "cov3")))
@@ -93,12 +93,12 @@ test_that("`make_distances` accepts data.frame input.", {
   expect_error(make_distances(test_data_df1_wNA))
   expect_is(make_distances(test_data_df1, id_variable = idvar), "Rscc_distances")
   expect_equal(make_distances(test_data_df1, id_variable = idvar), ref_out_ids)
-  expect_equal(as.matrix(make_distances(test_data_df1, id_variable = idvar)), ref_dist_mat_simple)
+  expect_equal(unname(as.matrix(make_distances(test_data_df1, id_variable = idvar))), unname(ref_dist_mat_simple))
   expect_error(make_distances(test_data_df1, id_variable = idvar[1:50]))
 
   expect_is(make_distances(test_data_df3, id_variable = "idcol"), "Rscc_distances")
   expect_equal(make_distances(test_data_df3, id_variable = "idcol"), ref_out_ids)
-  expect_equal(as.matrix(make_distances(test_data_df3, id_variable = "idcol")), ref_dist_mat_simple)
+  expect_equal(unname(as.matrix(make_distances(test_data_df3, id_variable = "idcol"))), unname(ref_dist_mat_simple))
   expect_error(make_distances(test_data_df3, id_variable = "nonexisting"))
   expect_error(make_distances(test_data_df3, id_variable = 6L))
 
@@ -110,13 +110,13 @@ test_that("`make_distances` accepts data.frame input.", {
 
   expect_is(make_distances(test_data_df4, id_variable = "idcol", dist_variables = c("cov1", "cov2", "cov3")), "Rscc_distances")
   expect_equal(make_distances(test_data_df4, id_variable = "idcol", dist_variables = c("cov1", "cov2", "cov3")), ref_out_ids)
-  expect_equal(as.matrix(make_distances(test_data_df4, id_variable = "idcol", dist_variables = c("cov1", "cov2", "cov3"))), ref_dist_mat_simple)
+  expect_equal(unname(as.matrix(make_distances(test_data_df4, id_variable = "idcol", dist_variables = c("cov1", "cov2", "cov3")))), unname(ref_dist_mat_simple))
   expect_error(make_distances(test_data_df4, id_variable = "idcol", dist_variables = c("cov1", "nonexisting", "cov3")))
   expect_error(make_distances(test_data_df4, id_variable = "idcol", dist_variables = 1:3))
   expect_error(make_distances(test_data_df4, id_variable = "nonexisting", dist_variables = c("cov1", "cov2", "cov3")))
   expect_error(make_distances(test_data_df4, id_variable = 6L, dist_variables = c("cov1", "cov2", "cov3")))
 
-  expect_equal(as.matrix(make_distances(test_data_df4, id_variable = "cov1", dist_variables = c("cov1", "cov2", "cov3"))), ref_dist_mat_simple)
+  expect_equal(unname(as.matrix(make_distances(test_data_df4, id_variable = "cov1", dist_variables = c("cov1", "cov2", "cov3")))), unname(ref_dist_mat_simple))
 })
 
 
@@ -126,12 +126,12 @@ test_that("`make_distances` accepts 1D data.frame input.", {
   expect_equal(as.matrix(make_distances(test_data_df1_single)), ref_dist_mat_simple_single)
   expect_is(make_distances(test_data_df1_single, id_variable = idvar), "Rscc_distances")
   expect_equal(make_distances(test_data_df1_single, id_variable = idvar), ref_out_ids_single)
-  expect_equal(as.matrix(make_distances(test_data_df1_single, id_variable = idvar)), ref_dist_mat_simple_single)
+  expect_equal(unname(as.matrix(make_distances(test_data_df1_single, id_variable = idvar))), unname(ref_dist_mat_simple_single))
   expect_error(make_distances(test_data_df1_single, id_variable = idvar[1:50]))
 
   expect_is(make_distances(test_data_df3_single, id_variable = "idcol"), "Rscc_distances")
   expect_equal(make_distances(test_data_df3_single, id_variable = "idcol"), ref_out_ids_single)
-  expect_equal(as.matrix(make_distances(test_data_df3_single, id_variable = "idcol")), ref_dist_mat_simple_single)
+  expect_equal(unname(as.matrix(make_distances(test_data_df3_single, id_variable = "idcol"))), unname(ref_dist_mat_simple_single))
   expect_error(make_distances(test_data_df3_single, id_variable = "nonexisting"))
   expect_error(make_distances(test_data_df3_single, id_variable = 6L))
 
@@ -143,13 +143,13 @@ test_that("`make_distances` accepts 1D data.frame input.", {
 
   expect_is(make_distances(test_data_df4_single, id_variable = "idcol", dist_variables = c("cov1")), "Rscc_distances")
   expect_equal(make_distances(test_data_df4_single, id_variable = "idcol", dist_variables = c("cov1")), ref_out_ids_single)
-  expect_equal(as.matrix(make_distances(test_data_df4_single, id_variable = "idcol", dist_variables = c("cov1"))), ref_dist_mat_simple_single)
+  expect_equal(unname(as.matrix(make_distances(test_data_df4_single, id_variable = "idcol", dist_variables = c("cov1")))), unname(ref_dist_mat_simple_single))
   expect_error(make_distances(test_data_df4_single, id_variable = "idcol", dist_variables = c("nonexisting")))
   expect_error(make_distances(test_data_df4_single, id_variable = "idcol", dist_variables = 1L))
   expect_error(make_distances(test_data_df4_single, id_variable = "nonexisting", dist_variables = c("cov1")))
   expect_error(make_distances(test_data_df4_single, id_variable = 6L, dist_variables = c("cov1")))
 
-  expect_equal(as.matrix(make_distances(test_data_df4_single, id_variable = "cov1", dist_variables = c("cov1"))), ref_dist_mat_simple_single)
+  expect_equal(unname(as.matrix(make_distances(test_data_df4_single, id_variable = "cov1", dist_variables = c("cov1")))), unname(ref_dist_mat_simple_single))
 })
 
 
