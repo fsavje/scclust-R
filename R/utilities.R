@@ -77,3 +77,11 @@ get_clustering_stats <- function(clustering,
   structure(clust_stats,
             class = c("Rscc_clustering_stats"))
 }
+
+
+#' @export
+print.Rscc_clustering_stats <- function(x, ...) {
+  tmp_table <- as.table(format(as.matrix(unlist(x))))
+  colnames(tmp_table) <- "Value"
+  print(tmp_table)
+}
