@@ -1,15 +1,11 @@
-MAKECONF = $(R_HOME)/etc${R_ARCH}/Makeconf
+MAKECONF = $(R_HOME)/etc$(R_ARCH)/Makeconf
 
-OBJECTS = Rscc_greedy.o Rscc_misc.o Rscc_nng.o Rscc_utilities.o
-
-PKG_LIBS = libscc/libscc.a
+PKG_CPPFLAGS = -Ilibscc/include
+PKG_LIBS = libscc/libscc.a -lstdc++
 
 .PHONY: clean
 
-$(SHLIB): $(OBJECTS) libscc/libscc.a
-
-%.o: %.c
-	$(CC) -c $(ALL_CPPFLAGS) $(ALL_CFLAGS) -Ilibscc/include $< -o $@
+$(SHLIB): libscc/libscc.a
 
 libscc/libscc.a:
 	(cd libscc && MAKECONF="$(MAKECONF)" $(MAKE) library) || exit 1;

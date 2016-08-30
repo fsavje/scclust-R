@@ -1,7 +1,7 @@
 include $(MAKECONF)
 
 LIBOUT = libscc.a
-OBJECTS = $(addprefix src/,digraph_core.o digraph_operations.o dist_nnsearch_ANN.o dist_search.o error.o \
+SCC_OBJ = $(addprefix src/,digraph_core.o digraph_operations.o dist_nnsearch_ANN.o dist_search.o error.o \
                            greedy_bottom_clustering.o greedy_top_clustering.o nng_clustering.o \
                            nng_batch_clustering.o nng_core.o nng_findseeds.o scc_data_obj.o scclust.o) \
           $(addprefix exlib/libANN/src/,ANN.o brute.o kd_tree.o kd_util.o kd_split.o kd_dump.o \
@@ -16,7 +16,7 @@ XTRA_FLAGS = -DNDEBUG -DSCC_DPID_INT
 
 library: $(LIBOUT)
 
-$(LIBOUT): $(OBJECTS)
+$(LIBOUT): $(SCC_OBJ)
 	$(AR) -rcs $(LIBOUT) $^
 
 src/%.o: src/%.c
