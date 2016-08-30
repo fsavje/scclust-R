@@ -49,8 +49,8 @@ top_down_greedy_clustering_internal <- function(distance_object,
   }
   size_constraint <- get_size_constraint(size_constraint)
   stopifnot(size_constraint <= num_data_points)
-  batch_assign <- as.logical(batch_assign)[1]
-  deep_copy <- as.logical(deep_copy)[1]
+  batch_assign <- get_bool_scalar(batch_assign)
+  deep_copy <- get_bool_scalar(deep_copy)
 
   clustering <- .Call("Rsccwrap_top_down_greedy_clustering",
                       distance_object,

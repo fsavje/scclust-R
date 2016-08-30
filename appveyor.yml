@@ -37,12 +37,6 @@ environment:
   - R_VERSION: devel
     R_ARCH: i386
 
-  - R_VERSION: 3.3.1
-    R_ARCH: x64
-
-  - R_VERSION: 3.3.1
-    R_ARCH: i386
-
   - R_VERSION: 3.3.0
     R_ARCH: x64
 

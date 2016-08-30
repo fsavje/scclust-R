@@ -78,6 +78,10 @@ Rscc_clustering <- function(cluster_labels,
             is.null(ids) || is.vector(ids),
             is.null(ids) || (length(cluster_labels) == length(ids)))
 
+  if (!is.null(ids)) {
+    ids <- as.character(ids)
+  }
+
   make_Rscc_clustering(as.integer(cluster_labels) - 1L,
                        nlevels(cluster_labels),
                        ids)
@@ -101,8 +105,9 @@ as.data.frame.Rscc_clustering <- function(x,
 print.Rscc_clustering <- function(x,
                                   ...) {
   ids <- attr(x, "ids", exact = TRUE)
-  if (is.null(ids)) ids <- 1:length(x)
+  if (is.null(ids)) ids <- as.character(1:length(x))
+  stopifnot(is.character(ids))
   xx <- as.integer(x)
-  names(xx) <- as.character(ids)
+  names(xx) <- ids
   print(xx)
 }

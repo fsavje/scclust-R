@@ -73,7 +73,7 @@ nng_clustering_batches <- function(distance_object,
                                    main_unassigned_method = "by_nng",
                                    main_radius = NULL,
                                    main_data_points = NULL,
-                                   batch_size = 100) {
+                                   batch_size = 100L) {
   check_Rscc_distances(distance_object)
   num_data_points <- get_num_data_points(distance_object)
   size_constraint <- get_size_constraint(size_constraint)
@@ -81,8 +81,9 @@ nng_clustering_batches <- function(distance_object,
   main_unassigned_method <- match.arg(main_unassigned_method, c("ignore", "by_nng"))
   main_radius <- get_radius(main_radius)
   check_main_data_points(main_data_points, num_data_points)
-  batch_size <- as.integer(batch_size)[1]
-  stopifnot(batch_size >= 0)
+  batch_size <- suppressWarnings(as.integer(batch_size)[1])
+  stopifnot(!is.na(batch_size),
+            batch_size >= 0L)
 
   clustering <- .Call("Rsccwrap_nng_clustering_batches",
                       distance_object,

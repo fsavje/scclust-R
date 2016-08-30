@@ -69,6 +69,13 @@ check_type_labels <- function(type_labels) {
 
 # Get parameters ===============================================================
 
+get_bool_scalar <- function(bool_var) {
+  tmp_bool <- suppressWarnings(as.logical(bool_var)[1])
+  stopifnot(is.logical(tmp_bool),
+            !is.na(tmp_bool))
+  tmp_bool
+}
+
 get_num_data_points <- function(distance_object) {
   ncol(distance_object)
 }
@@ -126,7 +133,8 @@ get_type_size_constraints <- function(type_size_constraints,
     out_type_size_constraints[names(type_size_constraints)] <- as.integer(type_size_constraints)
   }
 
-  stopifnot(min(out_type_size_constraints) >= 0L)
+  stopifnot(!any(is.na(out_type_size_constraints)),
+            min(out_type_size_constraints) >= 0L)
 
   unname(out_type_size_constraints)
 }
@@ -141,7 +149,8 @@ get_total_size_constraint <- function(total_size_constraint,
     stopifnot(total_size_constraint >= as.integer(sum(type_size_constraints)))
   }
 
-  stopifnot(total_size_constraint >= 2L)
+  stopifnot(!is.na(total_size_constraint),
+            total_size_constraint >= 2L)
 
   total_size_constraint
 }
