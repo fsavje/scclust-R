@@ -19,6 +19,33 @@
 # ==============================================================================
 
 
+#' Top down greedy clustering function
+#'
+#' \code{top_down_greedy_clustering} derives a clustering statisfying a specified
+#' size-constraint using a greedy clustering algorithm. The primary purpose of
+#' this function is to refine clusterings produced by the nearest neighbor graph
+#' algorithms in the packages.
+#'
+#' To be written...
+#'
+#' @param distance_object a distance object as produced by \code{\link{make_distances}}.
+#' @param size_constraint an integer with the required minimum cluster size.
+#' @param batch_assign a bool indicating whether data points should be assigned in batches when
+#'                            spliting clusters.
+#' @param existing_clustering \code{NULL} or a \code{Rscc_clustering} object containing an existing
+#'                            non-empty clustering.
+#'
+#' @return Returns a Rscclust cluster object containing the derived clustering.
+#'
+#' @keywords cluster
+#' @family clustering functions
+#'
+#' @seealso \code{\link{nng_clustering}}, \code{\link{nng_clustering_batches}} and
+#'          \code{\link{nng_clustering_types}} are other clustering functions in the package.
+#'
+#'          Use \code{\link{Rscc_clustering}} to create Rscclust cluster objects from external
+#'          clusterings.
+#'
 #' @export
 top_down_greedy_clustering <- function(distance_object,
                                        size_constraint,
@@ -32,6 +59,35 @@ top_down_greedy_clustering <- function(distance_object,
 }
 
 
+#' Internal top down greedy clustering function
+#'
+#' ATTENTION! Using this function has side-effects on your R environment,
+#' ensure you properly understand what this does before using it.
+#' In most cases, \code{\link{top_down_greedy_clustering}} is the preferred
+#' choice.
+#'
+#' \code{top_down_greedy_clustering_internal} is identical to
+#' \code{\link{top_down_greedy_clustering}} except for the
+#' \code{deep_copy} parameter. When \code{deep_copy == TRUE}, the
+#' two functions are identical. However, when
+#' \code{deep_copy == FALSE}, \code{top_down_greedy_clustering_internal}
+#' will \strong{not} make a deep copy of \code{existing_clustering} before
+#' refining the clustering. That is, any changes will be made in place, and
+#' \code{existing_clustering} will be invalidated by calling
+#' this function. This is useful when refining an
+#' existing clustering and the inputted clustering is not of interest.
+#'
+#' See \code{\link{top_down_greedy_clustering}} for detailed documentation.
+#'
+#' @param deep_copy a bool indicating whether a deep copy of
+#'                  \code{existing_clustering} should be made before
+#'                  refining the clustering.
+#' @inheritParams top_down_greedy_clustering
+#'
+#' @return Returns a Rscclust cluster object containing the derived clustering.
+#'
+#' @keywords internal
+#'
 #' @useDynLib Rscclust Rsccwrap_top_down_greedy_clustering
 #' @export
 top_down_greedy_clustering_internal <- function(distance_object,
