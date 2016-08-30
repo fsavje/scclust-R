@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{check_clustering}
 \alias{check_clustering}
-\title{Check the validity of clustering.}
+\title{Check the validity of a clustering.}
 \usage{
 check_clustering(clustering, size_constraint)
 }

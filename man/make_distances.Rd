@@ -2,7 +2,7 @@
 % Please edit documentation in R/distances.R
 \name{make_distances}
 \alias{make_distances}
-\title{Construct distance metric object.}
+\title{Constructor for distance metric objects.}
 \usage{
 make_distances(data, id_variable = NULL, dist_variables = NULL,
   normalize = NULL, weights = NULL)

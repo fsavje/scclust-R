@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-#' Check the validity of clustering.
+#' Check the validity of a clustering.
 #'
 #' \code{check_clustering} checks so the inputted clustering satisfies the specified size
 #' constraint.
@@ -73,7 +73,7 @@ check_clustering <- function(clustering,
 }
 
 
-#' Check the validity of clustering with type constraints.
+#' Check the validity of a clustering with type constraints.
 #'
 #' \code{check_clustering_types} checks so the inputted clustering satisfies the specified type
 #' and overall size constraints.

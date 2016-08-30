@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{check_clustering_types}
 \alias{check_clustering_types}
-\title{Check the validity of clustering with type constraints.}
+\title{Check the validity of a clustering with type constraints.}
 \usage{
 check_clustering_types(clustering, type_labels, type_size_constraints,
   total_size_constraint = NULL)

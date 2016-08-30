@@ -2,7 +2,7 @@
 % Please edit documentation in R/Rscc_clustering.R
 \name{Rscc_clustering}
 \alias{Rscc_clustering}
-\title{Construct Rscclust clustering object.}
+\title{Constructor for Rscclust clustering objects.}
 \usage{
 Rscc_clustering(cluster_labels, unassigned_labels = NA, ids = NULL)
 }

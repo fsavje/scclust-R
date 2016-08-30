@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-#' Construct Rscclust clustering object.
+#' Constructor for Rscclust clustering objects.
 #'
 #' \code{Rscc_clustering} constructs a Rscclust clustering object from existing cluster
 #' labels. It is useful when using Rscclust's clustering functions to refine an

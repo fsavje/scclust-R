@@ -33,6 +33,7 @@ top_down_greedy_clustering <- function(distance_object,
 
 
 #' @useDynLib Rscclust Rsccwrap_top_down_greedy_clustering
+#' @export
 top_down_greedy_clustering_internal <- function(distance_object,
                                                 size_constraint,
                                                 batch_assign = TRUE,

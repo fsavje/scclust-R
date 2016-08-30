@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-#' Construct distance metric object.
+#' Constructor for distance metric objects.
 #'
 #' \code{make_distances} constructs Euclidean distances to be used in clustering
 #' problems (including blocking and matching problems). It optionally normalize and
