@@ -30,7 +30,7 @@ void iRsccwrap_error__(const char* const msg,
                        const int line) {
 	char error_buffer[255];
 	if (snprintf(error_buffer, 255, "(%s:%d) %s", file, line, msg) < 0) {
-		error("Rscc_misc.h:35: Error printing error message.");
+		error("Rscc_misc.c: Error printing error message.");
 	}
 	error(error_buffer);
 }

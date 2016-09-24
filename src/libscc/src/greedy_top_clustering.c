@@ -706,7 +706,8 @@ static scc_ErrorCode iscc_gr_find_centers(iscc_gr_ClusterItem* const cl,
 
 	size_t step = cl->size / ISCC_GR_NUM_TO_CHECK;
 	if (step < 2) step = 2;
-	uint_fast16_t num_to_check = ((uint_fast16_t) (1 + (cl->size - step) / step));
+	// num_to_check = ceil(size / step) = floor((size + step - 1) / step) = 1 + floor((size - 1) / step)
+	uint_fast16_t num_to_check = ((uint_fast16_t) (1 + (cl->size - 1) / step));
 	num_to_check = (ISCC_GR_NUM_TO_CHECK < num_to_check) ? ISCC_GR_NUM_TO_CHECK : num_to_check;
 	assert(num_to_check <= ISCC_GR_NUM_TO_CHECK);
 
