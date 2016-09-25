@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ============================================================================== */
@@ -42,7 +42,7 @@ static scc_UnassignedMethod iRsccwrap_parse_unassigned_method(SEXP R_unassigned_
 
 // ==============================================================================
 // External function implementations
-// ============================================================================== 
+// ==============================================================================
 
 SEXP Rsccwrap_nng_clustering(const SEXP R_distance_object,
                              const SEXP R_size_constraint,
@@ -68,7 +68,7 @@ SEXP Rsccwrap_nng_clustering(const SEXP R_distance_object,
 	const scc_SeedMethod seed_method = iRsccwrap_parse_seed_method(R_seed_method);
 	const scc_UnassignedMethod main_unassigned_method = iRsccwrap_parse_unassigned_method(R_main_unassigned_method);
 	const scc_UnassignedMethod secondary_unassigned_method = iRsccwrap_parse_unassigned_method(R_secondary_unassigned_method);
-	
+
 	bool main_radius_constraint = false;
 	double main_radius = 0.0;
 	if (isReal(R_main_radius)) {
@@ -88,7 +88,7 @@ SEXP Rsccwrap_nng_clustering(const SEXP R_distance_object,
 	if (isLogical(R_main_data_points)) {
 		len_main_data_points = (size_t) xlength(R_main_data_points);
 		if (len_main_data_points < num_data_points) iRsccwrap_error("Invalid `R_main_data_points`.");
-		bool* const main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
+		main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
 		if (main_data_points == NULL) iRsccwrap_error("Could not allocate memory.");
 		const int* const tmp_main_data_points = LOGICAL(R_main_data_points);
 		for (size_t i = 0; i < len_main_data_points; ++i) {
@@ -412,7 +412,7 @@ SEXP Rsccwrap_nng_clustering_types(const SEXP R_distance_object,
 
 
 // ==============================================================================
-// Internal function implementations 
+// Internal function implementations
 // ==============================================================================
 
 static scc_SeedMethod iRsccwrap_parse_seed_method(const SEXP R_seed_method)
