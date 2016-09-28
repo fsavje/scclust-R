@@ -227,6 +227,10 @@ enum scc_SeedMethod {
 	 */
 	SCC_SM_INWARDS_UPDATING,
 
+	/** ...
+	 */
+	SCC_SM_INWARDS_ALT_UPDATING,
+
 	/** Find seeds ordered by edge count in the exclusion graph.
 	 *
 	 *  The exclusion graph is the undirected graph where an edge is drawn between two vertices if they cannot both be seeds.

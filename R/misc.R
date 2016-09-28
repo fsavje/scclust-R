@@ -92,6 +92,7 @@ get_seed_method <- function(seed_method) {
   match.arg(seed_method, c("lexical",
                            "inwards_order",
                            "inwards_updating",
+                           "inwards_alt_updating",
                            "exclusion_order",
                            "exclusion_updating"))
 }

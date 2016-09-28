@@ -426,6 +426,8 @@ static scc_SeedMethod iRsccwrap_parse_seed_method(const SEXP R_seed_method)
 		return SCC_SM_INWARDS_ORDER;
 	} else if (strcmp(seed_method_string, "inwards_updating") == 0) {
 		return SCC_SM_INWARDS_UPDATING;
+	} else if (strcmp(seed_method_string, "inwards_alt_updating") == 0) {
+		return SCC_SM_INWARDS_ALT_UPDATING;
 	} else if (strcmp(seed_method_string, "exclusion_order") == 0) {
 		return SCC_SM_EXCLUSION_ORDER;
 	} else if (strcmp(seed_method_string, "exclusion_updating") == 0) {
