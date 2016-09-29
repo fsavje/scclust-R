@@ -8,9 +8,10 @@ SCC_OBJ = $(addprefix src/,digraph_core.o digraph_operations.o dist_nnsearch_ANN
                                         kd_search.o kd_pr_search.o kd_fix_rad_search.o bd_tree.o \
                                         bd_search.o bd_pr_search.o bd_fix_rad_search.o perf.o)
 
-# Use 64-bit arc ref "-DSCC_ARC64"
-# Use BD-tree "-DSCC_ANN_BDTREE"
-# Use Stable NNG clustering "-DSCC_STABLE_CLUSTERING"
+# Use 64-bit arc ref: -DSCC_ARC64
+# Use BD-tree: -DSCC_ANN_BDTREE
+# Use stable findseed: -DSCC_STABLE_FINDSEED
+# Use stable NNG: -DSCC_STABLE_NNG
 XTRA_FLAGS = -DNDEBUG -DSCC_DPID_INT
 
 .PHONY: clean library

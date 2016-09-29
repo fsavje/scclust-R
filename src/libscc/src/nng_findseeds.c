@@ -95,22 +95,22 @@ static inline void iscc_fs_decrease_v_in_sort(iscc_Dpid v_to_decrease,
                                               iscc_Dpid* bucket_index[restrict],
                                               iscc_Dpid* current_pos);
 
-#ifdef SCC_STABLE_CLUSTERING
+#ifdef SCC_STABLE_FINDSEED
 
 static inline void iscc_fs_debug_bucket_sort(const iscc_Dpid* bucket_start,
                                              iscc_Dpid* pos,
                                              const iscc_Dpid inwards_count[],
                                              iscc_Dpid* vertex_index[]);
 
-#endif // ifdef SCC_STABLE_CLUSTERING
+#endif // ifdef SCC_STABLE_FINDSEED
 
-#if defined(SCC_STABLE_CLUSTERING) && !defined(NDEBUG)
+#if defined(SCC_STABLE_FINDSEED) && !defined(NDEBUG)
 
 static inline void iscc_fs_debug_check_sort(const iscc_Dpid* current_pos,
                                             const iscc_Dpid* last_pos,
                                             const iscc_Dpid inwards_count[]);
 
-#endif // if defined(SCC_STABLE_CLUSTERING) && !defined(NDEBUG)
+#endif // if defined(SCC_STABLE_FINDSEED) && !defined(NDEBUG)
 
 
 // ==============================================================================
@@ -251,7 +251,7 @@ static scc_ErrorCode iscc_findseeds_inwards(const iscc_Digraph* const nng,
 	for (iscc_Dpid* sorted_v = sort.sorted_vertices;
 	        sorted_v != sorted_v_stop; ++sorted_v) {
 
-		#if defined(SCC_STABLE_CLUSTERING) && !defined(NDEBUG)
+		#if defined(SCC_STABLE_FINDSEED) && !defined(NDEBUG)
 			if (updating) iscc_fs_debug_check_sort(sorted_v, sorted_v_stop - 1, sort.inwards_count);
 		#endif
 
@@ -320,7 +320,7 @@ static scc_ErrorCode iscc_findseeds_inwards_alt(const iscc_Digraph* const nng,
 	for (iscc_Dpid* sorted_v = sort.sorted_vertices;
 	        sorted_v != sorted_v_stop; ++sorted_v) {
 
-		#if defined(SCC_STABLE_CLUSTERING) && !defined(NDEBUG)
+		#if defined(SCC_STABLE_FINDSEED) && !defined(NDEBUG)
 			iscc_fs_debug_check_sort(sorted_v, sorted_v_stop - 1, sort.inwards_count);
 		#endif
 
@@ -414,7 +414,7 @@ static scc_ErrorCode iscc_findseeds_exclusion(const iscc_Digraph* const nng,
 	for (iscc_Dpid* sorted_v = sort.sorted_vertices;
 	        sorted_v != sorted_v_stop; ++sorted_v) {
 
-		#if defined(SCC_STABLE_CLUSTERING) && !defined(NDEBUG)
+		#if defined(SCC_STABLE_FINDSEED) && !defined(NDEBUG)
 			if (updating) iscc_fs_debug_check_sort(sorted_v, sorted_v_stop - 1, sort.inwards_count);
 		#endif
 
@@ -724,7 +724,7 @@ static inline void iscc_fs_decrease_v_in_sort(const iscc_Dpid v_to_decrease,
 	vertex_index[*move_to] = move_to;
 	vertex_index[*move_from] = move_from;
 
-	#ifdef SCC_STABLE_CLUSTERING
+	#ifdef SCC_STABLE_FINDSEED
 		// Sort old bucket by vertex ID
 		if (move_to != move_from) {
 			iscc_fs_debug_bucket_sort(move_to + 1, move_from, inwards_count, vertex_index);
@@ -742,7 +742,7 @@ static inline void iscc_fs_decrease_v_in_sort(const iscc_Dpid v_to_decrease,
 }
 
 
-#ifdef SCC_STABLE_CLUSTERING
+#ifdef SCC_STABLE_FINDSEED
 
 static inline void iscc_fs_debug_bucket_sort(const iscc_Dpid* const bucket_start,
                                              iscc_Dpid* pos,
@@ -760,10 +760,10 @@ static inline void iscc_fs_debug_bucket_sort(const iscc_Dpid* const bucket_start
 	vertex_index[*pos] = pos;
 }
 
-#endif // ifdef SCC_STABLE_CLUSTERING
+#endif // ifdef SCC_STABLE_FINDSEED
 
 
-#if defined(SCC_STABLE_CLUSTERING) && !defined(NDEBUG)
+#if defined(SCC_STABLE_FINDSEED) && !defined(NDEBUG)
 
 static inline void iscc_fs_debug_check_sort(const iscc_Dpid* current_pos,
                                             const iscc_Dpid* const last_pos,
@@ -777,4 +777,4 @@ static inline void iscc_fs_debug_check_sort(const iscc_Dpid* current_pos,
 	}
 }
 
-#endif // if defined(SCC_STABLE_CLUSTERING) && !defined(NDEBUG)
+#endif // if defined(SCC_STABLE_FINDSEED) && !defined(NDEBUG)

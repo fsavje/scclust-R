@@ -105,6 +105,12 @@ static scc_ErrorCode iscc_assign_by_nn_search(scc_Clustering* clustering,
                                               bool radius_constraint,
                                               double radius);
 
+#ifdef SCC_STABLE_NNG
+
+static void iscc_sort_nng(iscc_Digraph* nng);
+
+#endif // ifdef SCC_STABLE_NNG
+
 
 // ==============================================================================
 // External function implementations
@@ -163,6 +169,10 @@ scc_ErrorCode iscc_get_nng_with_size_constraint(void* const data_set_object,
 		iscc_free_digraph(out_nng);
 		return ec;
 	}
+
+	#ifdef SCC_STABLE_NNG
+		iscc_sort_nng(out_nng);
+	#endif // ifdef SCC_STABLE_NNG
 
 	return iscc_no_error();
 }
@@ -333,6 +343,10 @@ scc_ErrorCode iscc_get_nng_with_type_constraint(void* const data_set_object,
 
 	free(seedable);
 
+	#ifdef SCC_STABLE_NNG
+		iscc_sort_nng(out_nng);
+	#endif // ifdef SCC_STABLE_NNG
+
 	return iscc_no_error();
 }
 
@@ -404,7 +418,6 @@ scc_ErrorCode iscc_make_nng_clusters_from_seeds(scc_Clustering* const clustering
                                                 void* const data_set_object,
                                                 const iscc_SeedResult* const seed_result,
                                                 iscc_Digraph* const nng,
-                                                const bool nng_is_ordered,
                                                 scc_UnassignedMethod main_unassigned_method,
                                                 const bool main_radius_constraint,
                                                 const double main_radius,
@@ -466,20 +479,15 @@ scc_ErrorCode iscc_make_nng_clusters_from_seeds(scc_Clustering* const clustering
 		return iscc_make_error(SCC_ER_NO_MEMORY);
 	}
 
-	// Run assignment by nng. When nng is ordered, we can use it for `SCC_UM_CLOSEST_ASSIGNED` as well.
-	// (NNG already contains radius constraint.)
-	if ((main_unassigned_method == SCC_UM_ASSIGN_BY_NNG) ||
-	        (nng_is_ordered && (main_unassigned_method == SCC_UM_CLOSEST_ASSIGNED))) {
+	// Run assignment by nng. (NNG already contains radius constraint.)
+	if (main_unassigned_method == SCC_UM_ASSIGN_BY_NNG) {
 		total_assigned += iscc_assign_by_nng(clustering, nng, main_assign); // Use `main_assign` as scratch
 
-		// Ignore remaining points if SCC_UM_ASSIGN_BY_NNG
-		if (main_unassigned_method == SCC_UM_ASSIGN_BY_NNG) {
-			main_unassigned_method = SCC_UM_IGNORE;
-		}
+		// Ignore remaining points
+		main_unassigned_method = SCC_UM_IGNORE;
 
 		// Are we done?
-		if ((total_assigned == clustering->num_data_points) ||
-		        ((main_unassigned_method == SCC_UM_IGNORE) && (secondary_unassigned_method == SCC_UM_IGNORE))) {
+		if ((total_assigned == clustering->num_data_points) || (secondary_unassigned_method == SCC_UM_IGNORE)) {
 			free(seed_or_neighbor);
 			free(main_assign);
 			return iscc_no_error();
@@ -1009,3 +1017,25 @@ static scc_ErrorCode iscc_assign_by_nn_search(scc_Clustering* const clustering,
 
 	return iscc_no_error();
 }
+
+
+#ifdef SCC_STABLE_NNG
+
+static int iscc_compare_Dpid(const void* const a, const void* const b)
+{
+    const iscc_Dpid arg1 = *(const iscc_Dpid* const)a;
+    const iscc_Dpid arg2 = *(const iscc_Dpid* const)b;
+    return (arg1 > arg2) - (arg1 < arg2);
+}
+
+static void iscc_sort_nng(iscc_Digraph* const nng)
+{
+	for (size_t v = 0; v < nng->vertices; ++v) {
+		const size_t count = nng->tail_ptr[v + 1] - nng->tail_ptr[v];
+		if (count > 1) {
+			qsort(nng->head + nng->tail_ptr[v], count, sizeof(iscc_Dpid), iscc_compare_Dpid);
+		}
+	}
+}
+
+#endif // ifdef SCC_STABLE_NNG
