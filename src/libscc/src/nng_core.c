@@ -418,6 +418,7 @@ scc_ErrorCode iscc_make_nng_clusters_from_seeds(scc_Clustering* const clustering
                                                 void* const data_set_object,
                                                 const iscc_SeedResult* const seed_result,
                                                 iscc_Digraph* const nng,
+                                                const bool nng_is_ordered,
                                                 scc_UnassignedMethod main_unassigned_method,
                                                 const bool main_radius_constraint,
                                                 const double main_radius,
@@ -479,15 +480,20 @@ scc_ErrorCode iscc_make_nng_clusters_from_seeds(scc_Clustering* const clustering
 		return iscc_make_error(SCC_ER_NO_MEMORY);
 	}
 
-	// Run assignment by nng. (NNG already contains radius constraint.)
-	if (main_unassigned_method == SCC_UM_ASSIGN_BY_NNG) {
+	// Run assignment by nng. When nng is ordered, we can use it for `SCC_UM_CLOSEST_ASSIGNED` as well.
+	// (NNG already contains radius constraint.)
+	if ((main_unassigned_method == SCC_UM_ASSIGN_BY_NNG) ||
+	        (nng_is_ordered && (main_unassigned_method == SCC_UM_CLOSEST_ASSIGNED))) {
 		total_assigned += iscc_assign_by_nng(clustering, nng, main_assign); // Use `main_assign` as scratch
 
-		// Ignore remaining points
-		main_unassigned_method = SCC_UM_IGNORE;
+		// Ignore remaining points if SCC_UM_ASSIGN_BY_NNG
+		if (main_unassigned_method == SCC_UM_ASSIGN_BY_NNG) {
+			main_unassigned_method = SCC_UM_IGNORE;
+		}
 
 		// Are we done?
-		if ((total_assigned == clustering->num_data_points) || (secondary_unassigned_method == SCC_UM_IGNORE)) {
+		if ((total_assigned == clustering->num_data_points) ||
+		        ((main_unassigned_method == SCC_UM_IGNORE) && (secondary_unassigned_method == SCC_UM_IGNORE))) {
 			free(seed_or_neighbor);
 			free(main_assign);
 			return iscc_no_error();

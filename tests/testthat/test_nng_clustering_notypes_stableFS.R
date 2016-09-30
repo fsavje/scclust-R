@@ -4,6 +4,7 @@ context("nng_clustering.R (no types, find seed stable)")
 source("../replica/replica_findseed.R", local = TRUE)
 source("../replica/replica_findseed_stable.R", local = TRUE)
 source("../replica/replica_nng.R", local = TRUE)
+source("../replica/replica_nng_stable.R", local = TRUE)
 source("utils_nng.R", local = TRUE)
 
 test_that("non-type nng clustering function cluster correctly all combinations", {

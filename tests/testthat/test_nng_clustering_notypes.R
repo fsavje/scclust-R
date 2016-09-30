@@ -272,23 +272,22 @@ test_that("non-type nng clustering function cluster correctly all combinations",
 
       sc_to_test <- c(2L, 3L, 6L)
       # scclust and the replica sorts the arcs for a vertex differently,
-      # this causes problems with `by_nng` and all updating seed finding
-      # functions when there's more than 1 arc (i.e., `size_constraint` >= 2) .
+      # this causes problems with all updating seed finding functions
+      # when there's more than 1 arc (i.e., `size_constraint` >= 2).
       # Here we only test options that produces the same results. Compiling
       # scclust with the -DSCC_STABLE_NNG flag make the arc order the same as
       # in R. See <test_nng_clustering_notypes_stable.R>.
-      if ((main_unassigned_method == "by_nng") ||
-        (seed_method %in% c("inwards_updating",
+      if (seed_method %in% c("inwards_updating",
                              "inwards_alt_updating",
-                             "exclusion_updating"))) {
+                             "exclusion_updating")) {
         sc_to_test <- 2L
       }
 
       for (size_constraint in sc_to_test) {
 
-        radius_to_use <- c(0, 0.1, 0.2, 0.3)
+        radius_to_use <- c(0, 0.1, 0.2)
         if (size_constraint == 6L) {
-          radius_to_use <- c(0, 0.3, 0.4)
+          radius_to_use <- c(0, 0.3)
         }
 
         for (main_radius in radius_to_use) {
@@ -310,6 +309,13 @@ test_that("non-type nng clustering function cluster correctly all combinations",
               use_secondary_radius <- secondary_radius
               if (use_secondary_radius == 0) use_secondary_radius <- NULL
 
+              cat(c(size_constraint,
+                    seed_method,
+                    main_unassigned_method,
+                    use_main_radius,
+                    is.null(use_main_data_points),
+                    use_secondary_unassigned_method,
+                    use_secondary_radius), "\n")
               test_nng_against_replica(test_distances1,
                                        size_constraint,
                                        seed_method,

@@ -34,6 +34,38 @@ assign_by_seed <- function(seeds, nng) {
 }
 
 
+match_n_assign <- function(cl_label,
+                           match,
+                           unassigned,
+                           radius,
+                           distances) {
+  if (!is.null(radius)) {
+    unassigned[unassigned] <- (apply(distances[unassigned, match, drop = FALSE], 1, sort)[1, ] <= radius)
+  }
+  if (sum(unassigned) > 0) {
+    cl_label[unassigned] <- cl_label[match[apply(distances[unassigned, match, drop = FALSE], 1, order)[1, ]]]
+  }
+  cl_label
+}
+
+
+by_nng_or_closest_assigned <- function(main_unassigned_method,
+                                       main_unassigned,
+                                       nng,
+                                       assigned,
+                                       main_radius,
+                                       cl_label,
+                                       distances) {
+  if (main_unassigned_method == "by_nng") {
+    main_unassigned <- apply(nng, 2, any) & main_unassigned
+  }
+  if (any(main_unassigned)) {
+    cl_label <- match_n_assign(cl_label, which(assigned), main_unassigned, main_radius, distances)
+  }
+  cl_label
+}
+
+
 assign_unassigned <- function(distances,
                               cl_label,
                               seeds,
@@ -51,33 +83,19 @@ assign_unassigned <- function(distances,
     main_unassigned <- main_unassigned & main_data_points
   }
 
-  match_n_assign <- function(cl_label,
-                             match,
-                             unassigned,
-                             radius) {
-    if (!is.null(radius)) {
-      unassigned[unassigned] <- (apply(distances[unassigned, match, drop = FALSE], 1, sort)[1, ] <= radius)
-    }
-    if (sum(unassigned) > 0) {
-      cl_label[unassigned] <- cl_label[match[apply(distances[unassigned, match, drop = FALSE], 1, order)[1, ]]]
-    }
-    cl_label
-  }
-
   if (any(main_unassigned)) {
     if (main_unassigned_method == "ignore") {
       # nothing
-    } else if (main_unassigned_method == "by_nng") {
-      for(i in which(main_unassigned)) {
-        pick <- intersect(which(nng[, i]), which(assigned))
-        if (length(pick) > 0) {
-          cl_label[i] <- cl_label[pick[1]]
-        }
-      }
-    } else if (main_unassigned_method == "closest_assigned") {
-      cl_label <- match_n_assign(cl_label, which(assigned), main_unassigned, main_radius)
+    } else if (main_unassigned_method == "by_nng" || main_unassigned_method == "closest_assigned") {
+      cl_label <- by_nng_or_closest_assigned(main_unassigned_method,
+                                             main_unassigned,
+                                             nng,
+                                             assigned,
+                                             main_radius,
+                                             cl_label,
+                                             distances)
     } else if (main_unassigned_method == "closest_seed") {
-      cl_label <- match_n_assign(cl_label, seeds, main_unassigned, main_radius)
+      cl_label <- match_n_assign(cl_label, seeds, main_unassigned, main_radius, distances)
     } else {
       stop("Unknown options.")
     }
@@ -87,9 +105,9 @@ assign_unassigned <- function(distances,
     if (secondary_unassigned_method == "ignore") {
       # nothing
     } else if (secondary_unassigned_method == "closest_assigned") {
-      cl_label <- match_n_assign(cl_label, which(assigned), second_unassigned, secondary_radius)
+      cl_label <- match_n_assign(cl_label, which(assigned), second_unassigned, secondary_radius, distances)
     } else if (secondary_unassigned_method == "closest_seed") {
-      cl_label <- match_n_assign(cl_label, seeds, second_unassigned, secondary_radius)
+      cl_label <- match_n_assign(cl_label, seeds, second_unassigned, secondary_radius, distances)
     } else {
       stop("Unknown options.")
     }
