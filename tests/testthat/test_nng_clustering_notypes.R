@@ -1,5 +1,5 @@
 library(Rscclust)
-context("nng_clustering.R no types")
+context("nng_clustering.R (no types)")
 
 source("../replica/replica_findseed.R", local = TRUE)
 source("../replica/replica_nng.R", local = TRUE)
