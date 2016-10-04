@@ -2,6 +2,7 @@ library(Rscclust)
 context("nng_clustering.R (no types)")
 
 source("../replica/replica_findseed.R", local = TRUE)
+source("../replica/replica_make_nng.R", local = TRUE)
 source("../replica/replica_nng.R", local = TRUE)
 source("utils_nng.R", local = TRUE)
 
