@@ -34,6 +34,12 @@
 // Internal function prototypes
 // ==============================================================================
 
+#ifdef SCC_STABLE_NNG
+
+static int iscc_compare_Dpid(const void* a, const void* b);
+
+#endif // ifdef SCC_STABLE_NNG
+
 scc_ErrorCode iscc_run_nng_batches(scc_Clustering* clustering,
                                    iscc_NNSearchObject* nn_search_object,
                                    uint32_t size_constraint,
@@ -133,6 +139,18 @@ scc_ErrorCode scc_nng_clustering_batches(scc_Clustering* const clustering,
 // Internal function implementations 
 // ==============================================================================
 
+#ifdef SCC_STABLE_NNG
+
+static int iscc_compare_Dpid(const void* const a, const void* const b)
+{
+    const iscc_Dpid arg1 = *(const iscc_Dpid* const)a;
+    const iscc_Dpid arg2 = *(const iscc_Dpid* const)b;
+    return (arg1 > arg2) - (arg1 < arg2);
+}
+
+#endif // ifdef SCC_STABLE_NNG
+
+
 scc_ErrorCode iscc_run_nng_batches(scc_Clustering* const clustering,
                                    iscc_NNSearchObject* const nn_search_object,
                                    const uint32_t size_constraint,
@@ -201,6 +219,14 @@ scc_ErrorCode iscc_run_nng_batches(scc_Clustering* const clustering,
 		                                        out_indices)) {
 			return iscc_make_error(SCC_ER_DIST_SEARCH_ERROR);
 		}
+
+		#ifdef SCC_STABLE_NNG
+		for (size_t i = 0; i < in_batch; ++i) {
+			if (out_indices[(i + 1) * size_constraint - 1] != ISCC_DPID_NA) {
+				qsort(out_indices + i * size_constraint, size_constraint, sizeof(iscc_Dpid), iscc_compare_Dpid);
+			}
+		}
+		#endif // ifdef SCC_STABLE_NNG
 
 		const iscc_Dpid* check_indices = out_indices;
 		for (size_t i = 0; i < in_batch; ++i) {
