@@ -259,3 +259,12 @@ test_that("nng clustering functions check input.", {
                                     "by_nng",
                                     sound_radius))
 })
+
+test_that("C error functions work.", {
+  expect_error(nng_clustering(make_distances(matrix(c(0.1, 0.2, 0.3), ncol = 1)), size_constraint = 2L, main_radius = 0.001),
+               "No clustering satisfying the specified radius constraints exists.")
+  expect_error(.Call("Rsccwrap_nng_clustering",
+                     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+                     PACKAGE = "Rscclust"),
+               "Invalid distance object.")
+})

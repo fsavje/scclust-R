@@ -310,13 +310,13 @@ test_that("non-type nng clustering function cluster correctly all combinations",
               use_secondary_radius <- secondary_radius
               if (use_secondary_radius == 0) use_secondary_radius <- NULL
 
-              cat(c(size_constraint,
-                    seed_method,
-                    main_unassigned_method,
-                    use_main_radius,
-                    is.null(use_main_data_points),
-                    use_secondary_unassigned_method,
-                    use_secondary_radius), "\n")
+              #cat(c(size_constraint,
+              #      seed_method,
+              #      main_unassigned_method,
+              #      use_main_radius,
+              #      is.null(use_main_data_points),
+              #      use_secondary_unassigned_method,
+              #      use_secondary_radius), "\n")
               test_nng_against_replica(test_distances1,
                                        size_constraint,
                                        seed_method,

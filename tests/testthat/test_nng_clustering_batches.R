@@ -117,10 +117,10 @@ test_that("non-type nng clustering function cluster correctly all combinations",
           use_main_radius <- main_radius
           if (use_main_radius == 0) use_main_radius <- NULL
 
-          cat(c(main_unassigned_method,
-                use_main_radius,
-                is.null(use_main_data_points),
-                batch_size), "\n")
+          #cat(c(main_unassigned_method,
+          #      use_main_radius,
+          #      is.null(use_main_data_points),
+          #      batch_size), "\n")
           test_nng_batch_against_replica(test_distances1,
                                          2L,
                                          main_unassigned_method,

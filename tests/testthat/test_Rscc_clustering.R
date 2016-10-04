@@ -57,3 +57,7 @@ test_that("`Rscc_clustering` converts to data.frame", {
   expect_equal(as.data.frame(cl_obj_wIDnNA),
                data.frame(id = letters[1:10], cluster_label = cl_labels_wNA))
 })
+
+test_that("`Rscc_clustering` prints correctly", {
+  expect_output(print(cl_obj_simple), "0  0  1  2  1  2  2  0  1  1", fixed = TRUE)
+})
