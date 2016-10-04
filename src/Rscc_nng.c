@@ -197,7 +197,7 @@ SEXP Rsccwrap_nng_clustering_batches(const SEXP R_distance_object,
 	if (isLogical(R_main_data_points)) {
 		len_main_data_points = (size_t) xlength(R_main_data_points);
 		if (len_main_data_points < num_data_points) iRsccwrap_error("Invalid `R_main_data_points`.");
-		bool* const main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
+		main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
 		if (main_data_points == NULL) iRsccwrap_error("Could not allocate memory.");
 		const int* const tmp_main_data_points = LOGICAL(R_main_data_points);
 		for (size_t i = 0; i < len_main_data_points; ++i) {
@@ -330,7 +330,7 @@ SEXP Rsccwrap_nng_clustering_types(const SEXP R_distance_object,
 	if (isLogical(R_main_data_points)) {
 		len_main_data_points = (size_t) xlength(R_main_data_points);
 		if (len_main_data_points < num_data_points) iRsccwrap_error("Invalid `R_main_data_points`.");
-		bool* const main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
+		main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
 		if (main_data_points == NULL) iRsccwrap_error("Could not allocate memory.");
 		const int* const tmp_main_data_points = LOGICAL(R_main_data_points);
 		for (size_t i = 0; i < len_main_data_points; ++i) {
