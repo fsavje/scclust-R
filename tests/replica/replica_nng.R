@@ -163,3 +163,73 @@ replica_nng_clustering <- function(distance_object,
                        length(unique(cl_label[!is.na(cl_label)])),
                        attr(distance_object, "ids", exact = TRUE))
 }
+
+
+
+replica_nng_clustering_types <- function(distance_object,
+                                         type_labels,
+                                         type_size_constraints,
+                                         total_size_constraint = NULL,
+                                         seed_method = "exclusion_updating",
+                                         main_unassigned_method = "closest_seed",
+                                         main_radius = NULL,
+                                         main_data_points = NULL,
+                                         secondary_unassigned_method = "ignore",
+                                         secondary_radius = NULL) {
+  check_Rscc_distances(distance_object)
+  num_data_points <- get_num_data_points(distance_object)
+  check_type_labels(type_labels)
+  type_size_constraints <- get_type_size_constraints(type_size_constraints,
+                                                     type_labels)
+  total_size_constraint <- get_total_size_constraint(total_size_constraint,
+                                                     type_size_constraints)
+  stopifnot(total_size_constraint <= num_data_points)
+  seed_method <- get_seed_method(seed_method)
+  main_unassigned_method <- match.arg(main_unassigned_method, c("ignore",
+                                                                "by_nng",
+                                                                "closest_assigned",
+                                                                "closest_seed",
+                                                                "estimated_radius_closest_seed"))
+  main_radius <- get_radius(main_radius)
+  check_main_data_points(main_data_points, num_data_points)
+  if (is.null(main_data_points)) secondary_unassigned_method <- "ignore"
+  secondary_unassigned_method <- match.arg(secondary_unassigned_method, c("ignore",
+                                                                          "closest_assigned",
+                                                                          "closest_seed",
+                                                                          "estimated_radius_closest_seed"))
+  secondary_radius <- get_radius(secondary_radius)
+
+
+  distances <- as.matrix(distance_object)
+  nng <- get_type_nng(distances,
+                      type_labels,
+                      type_size_constraints,
+                      total_size_constraint,
+                      main_radius,
+                      main_data_points)
+  seeds <- findseeds(nng, seed_method)
+  cl_label <- assign_by_seed(seeds, nng)
+
+  if (main_unassigned_method == "estimated_radius_closest_seed") {
+    main_unassigned_method <- "closest_seed"
+    main_radius <- est_average_seed_dist(distances, nng, seeds)
+  }
+  if (secondary_unassigned_method == "estimated_radius_closest_seed") {
+    secondary_unassigned_method <- "closest_seed"
+    secondary_radius <- est_average_seed_dist(distances, nng, seeds)
+  }
+
+  cl_label <- assign_unassigned(distances,
+                                cl_label,
+                                seeds,
+                                nng,
+                                main_unassigned_method,
+                                main_radius,
+                                main_data_points,
+                                secondary_unassigned_method,
+                                secondary_radius)
+
+  make_Rscc_clustering(as.integer(cl_label),
+                       length(unique(cl_label[!is.na(cl_label)])),
+                       attr(distance_object, "ids", exact = TRUE))
+}

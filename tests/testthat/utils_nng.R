@@ -24,6 +24,60 @@ test_nng_against_replica <- function(distance_object,
                                                       secondary_radius))))
 }
 
+
+test_nng_batch_against_replica <- function(distance_object,
+                                           size_constraint,
+                                           main_unassigned_method,
+                                           main_radius,
+                                           main_data_points,
+                                           batch_size) {
+  eval(bquote(expect_identical(nng_clustering_batches(distance_object,
+                                                      size_constraint,
+                                                      main_unassigned_method,
+                                                      main_radius,
+                                                      main_data_points,
+                                                      batch_size),
+                               replica_nng_clustering_batches(distance_object,
+                                                              size_constraint,
+                                                              main_unassigned_method,
+                                                              main_radius,
+                                                              main_data_points))))
+}
+
+
+test_nng_types_against_replica <- function(distance_object,
+                                           type_labels,
+                                           type_size_constraints,
+                                           total_size_constraint,
+                                           seed_method,
+                                           main_unassigned_method,
+                                           main_radius,
+                                           main_data_points,
+                                           secondary_unassigned_method,
+                                           secondary_radius) {
+  eval(bquote(expect_identical(nng_clustering_types(distance_object,
+                                                    type_labels,
+                                                    type_size_constraints,
+                                                    total_size_constraint,
+                                                    seed_method,
+                                                    main_unassigned_method,
+                                                    main_radius,
+                                                    main_data_points,
+                                                    secondary_unassigned_method,
+                                                    secondary_radius),
+                               replica_nng_clustering_types(distance_object,
+                                                            type_labels,
+                                                            type_size_constraints,
+                                                            total_size_constraint,
+                                                            seed_method,
+                                                            main_unassigned_method,
+                                                            main_radius,
+                                                            main_data_points,
+                                                            secondary_unassigned_method,
+                                                            secondary_radius))))
+}
+
+
 test_data <- matrix(c(9.8864788, 9.5334187, 1.4438035, 9.1983830, 0.2522823, 9.4571505, 6.5875638, 4.1881377, 8.8647318, 0.9832436,
                       2.5056677, 4.3667750, 7.7585977, 5.5608923, 1.4291665, 2.0975896, 4.7239460, 0.6701718, 0.5706785, 8.3357518,
                       8.8108044, 3.8732228, 1.2679993, 6.7329704, 2.7997385, 3.3545525, 7.5740223, 7.6224886, 5.5201533, 7.7733261,
@@ -164,3 +218,36 @@ main_data_points <- c(FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE,
                       FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, TRUE, TRUE)
 
 test_radius <- 0.2
+type_test_radius <- 0.6
+
+types1 <- as.integer(c(0, 1, 1, 0, 1, 2, 2, 0, 1, 2, 1, 0, 2, 0, 0, 2, 0, 1, 1, 0, 0, 1, 0, 2, 3, 2, 1, 0, 2, 1, 1, 0, 2, 0,
+                       1, 0, 1, 1, 1, 1, 2, 2, 1, 0, 1, 1, 1, 2, 1, 1, 1, 2, 0, 2, 1, 1, 2, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1,
+                       1, 1, 2, 0, 0, 1, 1, 1, 2, 1, 1, 1, 3, 2, 2, 2, 0, 3, 3, 2, 2, 2, 1, 3, 2, 1, 3, 1, 2, 1, 2, 2, 1, 0,
+                       0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 2, 1, 1, 2, 1, 2, 2, 1, 1, 1, 2, 1, 0, 2, 0, 1, 1, 3, 1, 1, 0, 0, 0,
+                       2, 2, 1, 1, 0, 0, 1, 2, 1, 3, 0, 1, 1, 2, 1, 2, 2, 2, 2, 1, 2, 2, 1, 0, 1, 1, 1, 1, 0, 2, 2, 2, 1, 0,
+                       3, 0, 1, 0, 0, 1, 2, 1, 1, 1, 1, 2, 2, 1, 2, 1, 0, 2, 0, 2, 3, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 2,
+                       1, 2, 1, 2, 2, 2, 1, 0, 2, 1, 2, 2, 2, 0, 2, 0, 0, 3, 2, 2, 2, 1, 1, 2, 1, 1, 2, 3, 0, 0, 2, 0, 2, 2,
+                       0, 1, 0, 0, 2, 0, 2, 1, 1, 1, 2, 0, 1, 1, 0, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 0, 2, 1, 2, 1, 2, 2,
+                       0, 1, 1, 2, 1, 2, 2, 1, 3, 0, 2, 2, 0, 2, 1, 2, 2, 2, 1, 0, 3, 1, 1, 0, 1, 2, 1, 1, 0, 0, 2, 2, 1, 2,
+                       1, 0, 2, 0, 1, 1, 0, 1, 1, 2, 0, 1, 1, 2, 0, 1, 0, 0, 0, 1, 2, 1, 1, 2, 0, 1, 2, 0, 0, 1, 2, 3, 0, 1,
+                       1, 1, 3, 0, 1, 0, 2, 1, 0, 1, 1, 2, 1, 2, 1, 0, 0, 2, 1, 2, 2, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 0, 2, 2,
+                       2, 2, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2, 2, 1, 2, 2, 2, 1, 0, 1, 2, 1, 1, 2, 1, 2, 2, 1,
+                       1, 3, 1, 0, 2, 2, 0, 2, 1, 1, 1, 0, 2, 2, 1, 2, 1, 2, 1, 0, 2, 1, 1, 2, 1, 0, 2, 1, 0, 0, 1, 3, 0, 2,
+                       0, 1, 3, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 2, 1, 0, 1, 3, 2, 1, 1, 1, 2, 0, 2, 1, 1, 1, 2, 2, 1, 2, 1,
+                       1, 1, 1, 2, 1, 1, 0, 0, 0, 2, 1, 1, 0, 1, 1, 3, 1, 1, 1, 1, 0, 1, 2, 1))
+
+types2 <- as.integer(c(0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0,
+                       0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0,
+                       1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0,
+                       0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1,
+                       1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0,
+                       1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0,
+                       1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1,
+                       0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0,
+                       1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1,
+                       1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0,
+                       0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0,
+                       0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0,
+                       1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1,
+                       1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1,
+                       1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0))
