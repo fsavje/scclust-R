@@ -16,6 +16,7 @@ test_data_df1_single <- data.frame(cov1 = cov1)
 test_data_df2_single <- data.frame(cov1 = cov1, extracol = 101:200)
 test_data_df3_single <- data.frame(idcol = idvar, cov1 = cov1, stringsAsFactors = FALSE)
 test_data_df4_single <- data.frame(idcol = idvar, cov1 = cov1, extracol = 101:200, stringsAsFactors = FALSE)
+test_data_factors <- data.frame(cov1 = cov1, cov2 = factor(rep(1:10, 10)))
 
 test_data_matrix_wNA <- test_data_matrix
 test_data_matrix_wNA[55, 2] <- NA
@@ -42,8 +43,17 @@ ref_out_ids_single <- structure(t(test_data_matrix_single),
                                 weights = diag(1),
                                 class = c("Rscc_distances"))
 
+test_data_factors_tmp <- test_data_factors
+test_data_factors_tmp$cov2 <- as.numeric(test_data_factors_tmp$cov2)
+test_data_factors_tmp <- unname(as.matrix(test_data_factors_tmp))
+ref_out_factor <- structure(t(test_data_factors_tmp),
+                            normalization = diag(2),
+                            weights = diag(2),
+                            class = c("Rscc_distances"))
+
 ref_dist_mat_simple <- as.matrix(dist(test_data_matrix))
 ref_dist_mat_simple_single <- as.matrix(dist(test_data_matrix_single))
+ref_dist_mat_factor <- as.matrix(dist(as.matrix(test_data_factors_tmp)))
 
 
 test_that("`make_distances` checks data input.", {
@@ -152,6 +162,12 @@ test_that("`make_distances` accepts 1D data.frame input.", {
   expect_equal(unname(as.matrix(make_distances(test_data_df4_single, id_variable = "cov1", dist_variables = c("cov1")))), unname(ref_dist_mat_simple_single))
 })
 
+
+test_that("`make_distances` accepts factor data.frame input.", {
+  expect_is(make_distances(test_data_factors), "Rscc_distances")
+  expect_equal(make_distances(test_data_factors), ref_out_factor)
+  expect_equal(as.matrix(make_distances(test_data_factors)), ref_dist_mat_factor)
+})
 
 ref_make_distance <- function(mat, covmat, inverted = FALSE) {
   tmp <- sqrt(apply(mat, 1, function(x) { mahalanobis(mat, x, covmat, inverted) }))

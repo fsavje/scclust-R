@@ -167,6 +167,13 @@ make_distances <- function(data,
                 (dist_variables %in% colnames(data)))
       data <- data[, dist_variables, drop = FALSE]
     }
+
+    for (col in names(data)) {
+      if (!is.numeric(data[, col])) {
+        data[, col] <- as.numeric(data[, col])
+      }
+    }
+
     data <- as.matrix(data)
   }
 
