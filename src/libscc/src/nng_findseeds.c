@@ -3,17 +3,17 @@
  * https://github.com/fsavje/scclust
  *
  * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
  * ============================================================================== */
@@ -177,7 +177,7 @@ scc_ErrorCode iscc_find_seeds(const iscc_Digraph* const nng,
 
 
 // ==============================================================================
-// Internal function implementations 
+// Internal function implementations
 // ==============================================================================
 
 static scc_ErrorCode iscc_findseeds_lexical(const iscc_Digraph* const nng,
@@ -437,7 +437,7 @@ static scc_ErrorCode iscc_findseeds_exclusion(const iscc_Digraph* const nng,
 				for (; ex_arc != ex_arc_stop; ++ex_arc) {
 					not_excluded[*ex_arc] = false;
 				}
-				
+
 			} else {
 				// Loop through all excluded vertices (the seed's neighbors) and decrease the exclude count of all their neighbors.
 				// Since most of the seed's neighbors' neighbors will be neighbors themselves (and thus excluded) we don't want to
@@ -492,7 +492,7 @@ Exclusion graph does not give one arc optimality
      *            *
 
 bool iscc_findseeds_onearc_updating(const scc_Digraph* const nng, ...) {
-	//Among those with 0 inwards arcs, sort on exclusion graph 
+	//Among those with 0 inwards arcs, sort on exclusion graph
 }
 */
 
@@ -569,7 +569,7 @@ static inline bool iscc_fs_check_neighbors_marks(const iscc_Dpid v,
 	const iscc_Dpid* const v_arc_stop = nng->head + nng->tail_ptr[v + 1];
 	if (v_arc == v_arc_stop) return false;
 
-	for (; v_arc != v_arc_stop; ++v_arc) { 
+	for (; v_arc != v_arc_stop; ++v_arc) {
 		if (marks[*v_arc]) return false;
 	}
 
@@ -704,7 +704,7 @@ static inline void iscc_fs_decrease_v_in_sort(const iscc_Dpid v_to_decrease,
 	if (move_to <= current_pos) {
 		move_to = current_pos + 1;
 		bucket_index[inwards_count[v_to_decrease] - 1] = move_to;
-	} 
+	}
 
 	// Assert that swap vertices have the same count
 	assert(inwards_count[*move_from] == inwards_count[*move_to]);

@@ -3,17 +3,17 @@
  * https://github.com/fsavje/scclust
  *
  * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
  * ============================================================================== */
@@ -57,7 +57,7 @@ bool iscc_is_balanced_digraph(const iscc_Digraph* dg,
  *
  *  Two digraphs are considered logically identical if they contain
  *  equally many vertices and they contain the same set of arcs as judged
- *  by vertex IDs. Duplicate arcs are ignored. 
+ *  by vertex IDs. Duplicate arcs are ignored.
  *
  *  \param[in] dg_a first digraph to compare.
  *  \param[in] dg_b second digraph to compare.
@@ -89,7 +89,7 @@ scc_ErrorCode iscc_digraph_from_pieces(size_t vertices,
  *  This function builds a digraph from a string describing an adjacency matrix, where rows
  *  indicate tails and columns heads. `#` denotes an arc, `.` denotes absence of an arc and
  *  `/` the end of a row. All other characters are ignored.
- *  
+ *
  *  Thus, the string ".##./..#./...#/#..#/" describes the following digraph:
  *  \dot
  *  digraph example {

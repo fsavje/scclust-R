@@ -3,17 +3,17 @@
  * https://github.com/fsavje/scclust
  *
  * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
  * ============================================================================== */
@@ -295,7 +295,7 @@ scc_ErrorCode iscc_get_nng_with_type_constraint(void* const data_set_object,
 	free(nng_by_type);
 
 	if (ec != SCC_ER_OK) {
-		// When `ec != SCC_ER_OK`, error is from `iscc_digraph_union_and_delete` so `out_nng` is already freed 
+		// When `ec != SCC_ER_OK`, error is from `iscc_digraph_union_and_delete` so `out_nng` is already freed
 		free(seedable);
 		return ec;
 	}
@@ -378,7 +378,7 @@ scc_ErrorCode iscc_estimate_avg_seed_dist(void* const data_set_object,
 		const iscc_Dpid* const neighbors = nng->head + nng->tail_ptr[seed];
 
 		// Either zero or one self-loops
-		assert((num_neighbors == size_constraint) || 
+		assert((num_neighbors == size_constraint) ||
 		       (num_neighbors == size_constraint - 1));
 
 		if (!iscc_get_dist_rows(data_set_object,
@@ -399,7 +399,7 @@ scc_ErrorCode iscc_estimate_avg_seed_dist(void* const data_set_object,
 				++num_non_self_loops;
 			}
 		}
-		assert((num_non_self_loops == size_constraint) || 
+		assert((num_non_self_loops == size_constraint) ||
 		       (num_non_self_loops == size_constraint - 1));
 		assert(num_non_self_loops > 0);
 		++sampled;
@@ -686,7 +686,7 @@ scc_ErrorCode iscc_make_nng_clusters_from_seeds(scc_Clustering* const clustering
 
 
 // ==============================================================================
-// Internal function implementations 
+// Internal function implementations
 // ==============================================================================
 
 static scc_ErrorCode iscc_make_nng(void* const data_set_object,

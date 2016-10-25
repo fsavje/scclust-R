@@ -3,17 +3,17 @@
  * https://github.com/fsavje/scclust
  *
  * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
  * ============================================================================== */
@@ -31,43 +31,43 @@
 #include "scclust_int.h"
 
 // Maximum number of data points to check when finding centers.
-static const uint_fast16_t ISCC_GR_NUM_TO_CHECK = 100;
+static const uint_fast16_t ISCC_HI_NUM_TO_CHECK = 100;
 
 
 // ==============================================================================
 // Internal structs
 // ==============================================================================
 
-typedef struct iscc_gr_DistanceEdge iscc_gr_DistanceEdge;
-struct iscc_gr_DistanceEdge {
+typedef struct iscc_hi_DistanceEdge iscc_hi_DistanceEdge;
+struct iscc_hi_DistanceEdge {
 	iscc_Dpid head;
 	double distance;
-	iscc_gr_DistanceEdge* next_dist;
+	iscc_hi_DistanceEdge* next_dist;
 };
 
-typedef struct iscc_gr_ClusterItem iscc_gr_ClusterItem;
-struct iscc_gr_ClusterItem {
+typedef struct iscc_hi_ClusterItem iscc_hi_ClusterItem;
+struct iscc_hi_ClusterItem {
 	size_t size;
 	uint_fast16_t marker;
 	iscc_Dpid* members;
 };
 
-typedef struct iscc_gr_ClusterStack iscc_gr_ClusterStack;
-struct iscc_gr_ClusterStack {
+typedef struct iscc_hi_ClusterStack iscc_hi_ClusterStack;
+struct iscc_hi_ClusterStack {
 	size_t capacity;
 	size_t items;
-	iscc_gr_ClusterItem* clusters;
+	iscc_hi_ClusterItem* clusters;
 	iscc_Dpid* dpid_store;
 };
 
-typedef struct iscc_gr_WorkArea iscc_gr_WorkArea;
-struct iscc_gr_WorkArea {
+typedef struct iscc_hi_WorkArea iscc_hi_WorkArea;
+struct iscc_hi_WorkArea {
 	iscc_Dpid* const dpid_array1;
 	iscc_Dpid* const dpid_array2;
 	double* const dist_array;
 	uint_fast16_t* const vertex_markers;
-	iscc_gr_DistanceEdge* const edge_store1;
-	iscc_gr_DistanceEdge* const edge_store2;
+	iscc_hi_DistanceEdge* const edge_store1;
+	iscc_hi_DistanceEdge* const edge_store2;
 };
 
 
@@ -75,83 +75,83 @@ struct iscc_gr_WorkArea {
 // Internal function prototypes
 // ==============================================================================
 
-static scc_ErrorCode iscc_gr_empty_cl_stack(size_t num_data_points,
-                                            iscc_gr_ClusterStack* out_cl_stack);
+static scc_ErrorCode iscc_hi_empty_cl_stack(size_t num_data_points,
+                                            iscc_hi_ClusterStack* out_cl_stack);
 
-static scc_ErrorCode iscc_gr_init_cl_stack(const scc_Clustering* in_cl,
-                                           iscc_gr_ClusterStack* out_cl_stack,
+static scc_ErrorCode iscc_hi_init_cl_stack(const scc_Clustering* in_cl,
+                                           iscc_hi_ClusterStack* out_cl_stack,
                                            size_t* out_size_largest_cluster);
 
-static scc_ErrorCode iscc_gr_run_greedy_clustering(iscc_gr_ClusterStack* cl_stack,
-                                                   scc_Clustering* cl,
-                                                   void* data_set_object,
-                                                   iscc_gr_WorkArea* work_area,
-                                                   uint32_t size_constraint,
-                                                   bool batch_assign);
+static scc_ErrorCode iscc_hi_run_hierarchical_clustering(iscc_hi_ClusterStack* cl_stack,
+                                                         scc_Clustering* cl,
+                                                         void* data_set_object,
+                                                         iscc_hi_WorkArea* work_area,
+                                                         uint32_t size_constraint,
+                                                         bool batch_assign);
 
-static scc_ErrorCode iscc_gr_push_to_stack(iscc_gr_ClusterStack* cl_stack,
-                                           iscc_gr_ClusterItem** cl);
+static scc_ErrorCode iscc_hi_push_to_stack(iscc_hi_ClusterStack* cl_stack,
+                                           iscc_hi_ClusterItem** cl);
 
-static scc_ErrorCode iscc_gr_break_cluster_into_two(iscc_gr_ClusterItem* cluster_to_break,
+static scc_ErrorCode iscc_hi_break_cluster_into_two(iscc_hi_ClusterItem* cluster_to_break,
                                                     void* data_set_object,
-                                                    iscc_gr_WorkArea* work_area,
+                                                    iscc_hi_WorkArea* work_area,
                                                     uint32_t size_constraint,
                                                     bool batch_assign,
-                                                    iscc_gr_ClusterItem* out_new_cluster);
+                                                    iscc_hi_ClusterItem* out_new_cluster);
 
-static inline uint_fast16_t iscc_gr_get_next_marker(iscc_gr_ClusterItem* cl,
+static inline uint_fast16_t iscc_hi_get_next_marker(iscc_hi_ClusterItem* cl,
                                                     uint_fast16_t vertex_markers[]);
 
-static inline iscc_gr_DistanceEdge* iscc_gr_get_next_k_nn(iscc_gr_DistanceEdge* prev_dist,
+static inline iscc_hi_DistanceEdge* iscc_hi_get_next_k_nn(iscc_hi_DistanceEdge* prev_dist,
                                                           uint32_t k,
                                                           const uint_fast16_t vertex_markers[],
                                                           uint_fast16_t curr_marker,
                                                           iscc_Dpid out_dist_array[static k]);
 
-static inline iscc_gr_DistanceEdge* iscc_gr_get_next_dist(iscc_gr_DistanceEdge* prev_dist,
+static inline iscc_hi_DistanceEdge* iscc_hi_get_next_dist(iscc_hi_DistanceEdge* prev_dist,
                                                           const uint_fast16_t vertex_markers[],
                                                           uint_fast16_t curr_marker);
 
-static inline void iscc_gr_move_point_to_cluster1(iscc_Dpid id,
-                                                  iscc_gr_ClusterItem* cl,
+static inline void iscc_hi_move_point_to_cluster1(iscc_Dpid id,
+                                                  iscc_hi_ClusterItem* cl,
                                                   uint_fast16_t vertex_markers[],
                                                   uint_fast16_t curr_marker);
 
-static inline void iscc_gr_move_point_to_cluster2(iscc_Dpid id,
-                                                  iscc_gr_ClusterItem* cl,
+static inline void iscc_hi_move_point_to_cluster2(iscc_Dpid id,
+                                                  iscc_hi_ClusterItem* cl,
                                                   uint_fast16_t vertex_markers[],
                                                   uint_fast16_t curr_marker);
 
-static inline void iscc_gr_move_array_to_cluster1(uint32_t len_ids,
+static inline void iscc_hi_move_array_to_cluster1(uint32_t len_ids,
                                                   const iscc_Dpid ids[static len_ids],
-                                                  iscc_gr_ClusterItem* cl,
+                                                  iscc_hi_ClusterItem* cl,
                                                   uint_fast16_t vertex_markers[],
                                                   uint_fast16_t curr_marker);
 
-static inline void iscc_gr_move_array_to_cluster2(uint32_t len_ids,
+static inline void iscc_hi_move_array_to_cluster2(uint32_t len_ids,
                                                   const iscc_Dpid ids[static len_ids],
-                                                  iscc_gr_ClusterItem* cl,
+                                                  iscc_hi_ClusterItem* cl,
                                                   uint_fast16_t vertex_markers[],
                                                   uint_fast16_t curr_marker);
 
-static scc_ErrorCode iscc_gr_find_centers(iscc_gr_ClusterItem* cl,
+static scc_ErrorCode iscc_hi_find_centers(iscc_hi_ClusterItem* cl,
                                           void* data_set_object,
-                                          iscc_gr_WorkArea* work_area,
+                                          iscc_hi_WorkArea* work_area,
                                           iscc_Dpid* out_center1,
                                           iscc_Dpid* out_center2);
 
-static scc_ErrorCode iscc_gr_populate_edge_lists(const iscc_gr_ClusterItem* cl,
+static scc_ErrorCode iscc_hi_populate_edge_lists(const iscc_hi_ClusterItem* cl,
                                                  void* data_set_object,
                                                  iscc_Dpid center1,
                                                  iscc_Dpid center2,
-                                                 iscc_gr_WorkArea* work_area);
+                                                 iscc_hi_WorkArea* work_area);
 
-static inline void iscc_gr_sort_edge_list(const iscc_gr_ClusterItem* cl,
+static inline void iscc_hi_sort_edge_list(const iscc_hi_ClusterItem* cl,
                                           iscc_Dpid center,
                                           const double row_dists[static cl->size],
-                                          iscc_gr_DistanceEdge edge_store[static cl->size]);
+                                          iscc_hi_DistanceEdge edge_store[static cl->size]);
 
-static int iscc_gr_compare_dist_edges(const void* a,
+static int iscc_hi_compare_dist_edges(const void* a,
                                       const void* b);
 
 
@@ -159,10 +159,10 @@ static int iscc_gr_compare_dist_edges(const void* a,
 // External function implementations
 // ==============================================================================
 
-scc_ErrorCode scc_top_down_greedy_clustering(scc_Clustering* const clustering,
-                                             void* const data_set_object,
-                                             const uint32_t size_constraint,
-                                             const bool batch_assign)
+scc_ErrorCode scc_hierarchical_clustering(scc_Clustering* const clustering,
+                                          void* const data_set_object,
+                                          const uint32_t size_constraint,
+                                          const bool batch_assign)
 {
 	if (!iscc_check_input_clustering(clustering)) return iscc_make_error(SCC_ER_INVALID_CLUSTERING);
 	if (!iscc_check_data_set_object(data_set_object, clustering->num_data_points)) return iscc_make_error(SCC_ER_INVALID_DATA_OBJ);
@@ -171,7 +171,7 @@ scc_ErrorCode scc_top_down_greedy_clustering(scc_Clustering* const clustering,
 
 	scc_ErrorCode ec;
 	size_t size_largest_cluster = 0; // Initialize to avoid gcc warning
-	iscc_gr_ClusterStack cl_stack;
+	iscc_hi_ClusterStack cl_stack;
 	if (clustering->num_clusters == 0) {
 		if (clustering->cluster_label == NULL) {
 			clustering->external_labels = false;
@@ -180,11 +180,11 @@ scc_ErrorCode scc_top_down_greedy_clustering(scc_Clustering* const clustering,
 		}
 
 		size_largest_cluster = clustering->num_data_points;
-		if ((ec = iscc_gr_empty_cl_stack(clustering->num_data_points, &cl_stack)) != SCC_ER_OK) {
+		if ((ec = iscc_hi_empty_cl_stack(clustering->num_data_points, &cl_stack)) != SCC_ER_OK) {
 			return ec;
 		}
 	} else {
-		if ((ec = iscc_gr_init_cl_stack(clustering, &cl_stack, &size_largest_cluster)) != SCC_ER_OK) {
+		if ((ec = iscc_hi_init_cl_stack(clustering, &cl_stack, &size_largest_cluster)) != SCC_ER_OK) {
 			return ec;
 		}
 	}
@@ -193,30 +193,30 @@ scc_ErrorCode scc_top_down_greedy_clustering(scc_Clustering* const clustering,
 	assert(cl_stack.clusters != NULL);
 	assert(cl_stack.dpid_store != NULL);
 
-	const size_t size_dpid_array = (size_constraint > ISCC_GR_NUM_TO_CHECK) ? size_constraint : ISCC_GR_NUM_TO_CHECK;
-	const size_t size_dist_array = ((2 * size_largest_cluster) > ISCC_GR_NUM_TO_CHECK) ? (2 * size_largest_cluster) : ISCC_GR_NUM_TO_CHECK;
-	iscc_gr_WorkArea work_area = {
+	const size_t size_dpid_array = (size_constraint > ISCC_HI_NUM_TO_CHECK) ? size_constraint : ISCC_HI_NUM_TO_CHECK;
+	const size_t size_dist_array = ((2 * size_largest_cluster) > ISCC_HI_NUM_TO_CHECK) ? (2 * size_largest_cluster) : ISCC_HI_NUM_TO_CHECK;
+	iscc_hi_WorkArea work_area = {
 		.dpid_array1 = malloc(sizeof(iscc_Dpid[size_dpid_array])),
 		.dpid_array2 = malloc(sizeof(iscc_Dpid[size_dpid_array])),
 		.dist_array = malloc(sizeof(double[size_dist_array])),
 		.vertex_markers = calloc(clustering->num_data_points, sizeof(uint_fast16_t)),
-		.edge_store1 = malloc(sizeof(iscc_gr_DistanceEdge[size_largest_cluster])),
-		.edge_store2 = malloc(sizeof(iscc_gr_DistanceEdge[size_largest_cluster])),
+		.edge_store1 = malloc(sizeof(iscc_hi_DistanceEdge[size_largest_cluster])),
+		.edge_store2 = malloc(sizeof(iscc_hi_DistanceEdge[size_largest_cluster])),
 	};
 
-	if ((work_area.dpid_array1 == NULL) || (work_area.dpid_array2 == NULL) || 
-	        (work_area.dist_array == NULL) || (work_area.vertex_markers == NULL) || 
+	if ((work_area.dpid_array1 == NULL) || (work_area.dpid_array2 == NULL) ||
+	        (work_area.dist_array == NULL) || (work_area.vertex_markers == NULL) ||
 	        (work_area.edge_store1 == NULL) || (work_area.edge_store2 == NULL)) {
 		ec = iscc_make_error(SCC_ER_NO_MEMORY);
 	}
 
 	if (ec == SCC_ER_OK) {
-		ec = iscc_gr_run_greedy_clustering(&cl_stack,
-		                                   clustering,
-		                                   data_set_object,
-		                                   &work_area,
-		                                   size_constraint,
-		                                   batch_assign);
+		ec = iscc_hi_run_hierarchical_clustering(&cl_stack,
+		                                         clustering,
+		                                         data_set_object,
+		                                         &work_area,
+		                                         size_constraint,
+		                                         batch_assign);
 	}
 
 	free(work_area.dpid_array1);
@@ -233,20 +233,20 @@ scc_ErrorCode scc_top_down_greedy_clustering(scc_Clustering* const clustering,
 
 
 // ==============================================================================
-// Internal function implementations 
+// Internal function implementations
 // ==============================================================================
 
-static scc_ErrorCode iscc_gr_empty_cl_stack(const size_t num_data_points,
-                                            iscc_gr_ClusterStack* const out_cl_stack)
+static scc_ErrorCode iscc_hi_empty_cl_stack(const size_t num_data_points,
+                                            iscc_hi_ClusterStack* const out_cl_stack)
 {
 	assert(num_data_points >= 2);
 	assert(out_cl_stack != NULL);
 
 	const size_t tmp_capacity = 1 + ((size_t) (20 * log2((double) num_data_points)));
-	*out_cl_stack = (iscc_gr_ClusterStack) {
+	*out_cl_stack = (iscc_hi_ClusterStack) {
 		.capacity = tmp_capacity,
 		.items = 1,
-		.clusters = malloc(sizeof(iscc_gr_ClusterItem[tmp_capacity])),
+		.clusters = malloc(sizeof(iscc_hi_ClusterItem[tmp_capacity])),
 		.dpid_store = malloc(sizeof(iscc_Dpid[num_data_points])),
 	};
 	if ((out_cl_stack->clusters == NULL) || (out_cl_stack->dpid_store == NULL)) {
@@ -261,7 +261,7 @@ static scc_ErrorCode iscc_gr_empty_cl_stack(const size_t num_data_points,
 		out_cl_stack->dpid_store[i] = i;
 	}
 
-	out_cl_stack->clusters[0] = (iscc_gr_ClusterItem) {
+	out_cl_stack->clusters[0] = (iscc_hi_ClusterItem) {
 		.size = num_data_points,
 		.marker = 0,
 		.members = out_cl_stack->dpid_store,
@@ -271,8 +271,8 @@ static scc_ErrorCode iscc_gr_empty_cl_stack(const size_t num_data_points,
 }
 
 
-static scc_ErrorCode iscc_gr_init_cl_stack(const scc_Clustering* const in_cl,
-                                           iscc_gr_ClusterStack* const out_cl_stack,
+static scc_ErrorCode iscc_hi_init_cl_stack(const scc_Clustering* const in_cl,
+                                           iscc_hi_ClusterStack* const out_cl_stack,
                                            size_t* const out_size_largest_cluster)
 {
 	assert(iscc_check_input_clustering(in_cl));
@@ -282,10 +282,10 @@ static scc_ErrorCode iscc_gr_init_cl_stack(const scc_Clustering* const in_cl,
 
 	const uint64_t tmp_capacity = in_cl->num_clusters + 1 + ((uint64_t) (10 * log2((double) in_cl->num_data_points)));
 	if (tmp_capacity > SIZE_MAX) return iscc_make_error(SCC_ER_TOO_LARGE_PROBLEM);
-	*out_cl_stack = (iscc_gr_ClusterStack) {
+	*out_cl_stack = (iscc_hi_ClusterStack) {
 		.capacity = (size_t) tmp_capacity,
 		.items = in_cl->num_clusters,
-		.clusters = calloc((size_t) tmp_capacity, sizeof(iscc_gr_ClusterItem)),
+		.clusters = calloc((size_t) tmp_capacity, sizeof(iscc_hi_ClusterItem)),
 		.dpid_store = malloc(sizeof(iscc_Dpid[in_cl->num_data_points])),
 	};
 	if ((out_cl_stack->clusters == NULL) || (out_cl_stack->dpid_store == NULL)) {
@@ -295,7 +295,7 @@ static scc_ErrorCode iscc_gr_init_cl_stack(const scc_Clustering* const in_cl,
 	}
 
 	const scc_Clabel* const cluster_label = in_cl->cluster_label;
-	iscc_gr_ClusterItem* const clusters = out_cl_stack->clusters;
+	iscc_hi_ClusterItem* const clusters = out_cl_stack->clusters;
 
 	for (size_t i = 0; i < in_cl->num_data_points; ++i) {
 		if (cluster_label[i] != SCC_CLABEL_NA) {
@@ -324,12 +324,12 @@ static scc_ErrorCode iscc_gr_init_cl_stack(const scc_Clustering* const in_cl,
 }
 
 
-static scc_ErrorCode iscc_gr_run_greedy_clustering(iscc_gr_ClusterStack* const cl_stack,
-                                                   scc_Clustering* const cl,
-                                                   void* const data_set_object,
-                                                   iscc_gr_WorkArea* const work_area,
-                                                   const uint32_t size_constraint,
-                                                   const bool batch_assign)
+static scc_ErrorCode iscc_hi_run_hierarchical_clustering(iscc_hi_ClusterStack* const cl_stack,
+                                                         scc_Clustering* const cl,
+                                                         void* const data_set_object,
+                                                         iscc_hi_WorkArea* const work_area,
+                                                         const uint32_t size_constraint,
+                                                         const bool batch_assign)
 {
 	assert(cl_stack != NULL);
 	assert(cl_stack->items > 0);
@@ -344,7 +344,7 @@ static scc_ErrorCode iscc_gr_run_greedy_clustering(iscc_gr_ClusterStack* const c
 	scc_ErrorCode ec;
 	scc_Clabel current_label = 0;
 	while (cl_stack->items > 0) {
-		iscc_gr_ClusterItem* current_cluster = &cl_stack->clusters[cl_stack->items - 1];
+		iscc_hi_ClusterItem* current_cluster = &cl_stack->clusters[cl_stack->items - 1];
 
 		if (current_cluster->size < (2 * size_constraint)) {
 			if (current_cluster->size > 0) {
@@ -358,11 +358,11 @@ static scc_ErrorCode iscc_gr_run_greedy_clustering(iscc_gr_ClusterStack* const c
 			}
 			--(cl_stack->items);
 		} else {
-			iscc_gr_ClusterItem* new_cluster = NULL; // Initialize to avoid gcc warning
-			if ((ec = iscc_gr_push_to_stack(cl_stack, &new_cluster)) != SCC_ER_OK) {
+			iscc_hi_ClusterItem* new_cluster = NULL; // Initialize to avoid gcc warning
+			if ((ec = iscc_hi_push_to_stack(cl_stack, &new_cluster)) != SCC_ER_OK) {
 				return ec;
 			}
-			if ((ec = iscc_gr_break_cluster_into_two(current_cluster,
+			if ((ec = iscc_hi_break_cluster_into_two(current_cluster,
 			                                         data_set_object,
 			                                         work_area,
 			                                         size_constraint,
@@ -381,8 +381,8 @@ static scc_ErrorCode iscc_gr_run_greedy_clustering(iscc_gr_ClusterStack* const c
 }
 
 
-static scc_ErrorCode iscc_gr_push_to_stack(iscc_gr_ClusterStack* const cl_stack,
-                                           iscc_gr_ClusterItem** const cl)
+static scc_ErrorCode iscc_hi_push_to_stack(iscc_hi_ClusterStack* const cl_stack,
+                                           iscc_hi_ClusterItem** const cl)
 {
 	assert(cl_stack != NULL);
 	assert(cl_stack->items <= cl_stack->capacity);
@@ -392,7 +392,7 @@ static scc_ErrorCode iscc_gr_push_to_stack(iscc_gr_ClusterStack* const cl_stack,
 	if (cl_stack->items == cl_stack->capacity) {
 		const uintmax_t capacity_tmp = cl_stack->capacity + 16 + (cl_stack->capacity >> 4);
 		if ((capacity_tmp > SIZE_MAX) || (capacity_tmp < cl_stack->capacity)) return iscc_make_error(SCC_ER_TOO_LARGE_PROBLEM);
-		iscc_gr_ClusterItem* const clusters_tmp = realloc(cl_stack->clusters, sizeof(iscc_gr_ClusterItem[(size_t) capacity_tmp]));
+		iscc_hi_ClusterItem* const clusters_tmp = realloc(cl_stack->clusters, sizeof(iscc_hi_ClusterItem[(size_t) capacity_tmp]));
 		if (clusters_tmp == NULL) return iscc_make_error(SCC_ER_NO_MEMORY);
 		cl_stack->clusters = clusters_tmp;
 		cl_stack->capacity = (size_t) capacity_tmp;
@@ -405,12 +405,12 @@ static scc_ErrorCode iscc_gr_push_to_stack(iscc_gr_ClusterStack* const cl_stack,
 }
 
 
-static scc_ErrorCode iscc_gr_break_cluster_into_two(iscc_gr_ClusterItem* const cluster_to_break,
+static scc_ErrorCode iscc_hi_break_cluster_into_two(iscc_hi_ClusterItem* const cluster_to_break,
                                                     void* const data_set_object,
-                                                    iscc_gr_WorkArea* const work_area,
+                                                    iscc_hi_WorkArea* const work_area,
                                                     const uint32_t size_constraint,
                                                     const bool batch_assign,
-                                                    iscc_gr_ClusterItem* const out_new_cluster)
+                                                    iscc_hi_ClusterItem* const out_new_cluster)
 {
 	assert(cluster_to_break != NULL);
 	assert(cluster_to_break->size >= 2 * size_constraint);
@@ -427,9 +427,9 @@ static scc_ErrorCode iscc_gr_break_cluster_into_two(iscc_gr_ClusterItem* const c
 
 	scc_ErrorCode ec;
 	iscc_Dpid center1 = ISCC_DPID_NA, center2 = ISCC_DPID_NA; // Initialize these to avoid gcc warning
-	// `iscc_gr_find_centers` must be before `iscc_gr_get_next_marker`
-	// since the marker becomes invalid after `iscc_gr_find_centers`
-	if ((ec = iscc_gr_find_centers(cluster_to_break,
+	// `iscc_hi_find_centers` must be before `iscc_hi_get_next_marker`
+	// since the marker becomes invalid after `iscc_hi_find_centers`
+	if ((ec = iscc_hi_find_centers(cluster_to_break,
 	                               data_set_object,
 	                               work_area,
 	                               &center1,
@@ -437,7 +437,7 @@ static scc_ErrorCode iscc_gr_break_cluster_into_two(iscc_gr_ClusterItem* const c
 		return ec;
 	}
 
-	if ((ec = iscc_gr_populate_edge_lists(cluster_to_break,
+	if ((ec = iscc_hi_populate_edge_lists(cluster_to_break,
 	                                      data_set_object,
 	                                      center1,
 	                                      center2,
@@ -449,44 +449,44 @@ static scc_ErrorCode iscc_gr_break_cluster_into_two(iscc_gr_ClusterItem* const c
 	iscc_Dpid* const k_nn_array2 = work_area->dpid_array2;
 	uint_fast16_t* const vertex_markers = work_area->vertex_markers;
 
-	// `edge_store1` and `edge_store2` have been populated by `iscc_gr_populate_edge_lists`
-	iscc_gr_DistanceEdge* last_assigned_edge1 = work_area->edge_store1;
-	iscc_gr_DistanceEdge* last_assigned_edge2 = work_area->edge_store2;
+	// `edge_store1` and `edge_store2` have been populated by `iscc_hi_populate_edge_lists`
+	iscc_hi_DistanceEdge* last_assigned_edge1 = work_area->edge_store1;
+	iscc_hi_DistanceEdge* last_assigned_edge2 = work_area->edge_store2;
 
-	iscc_gr_DistanceEdge* temp_edge1;
-	iscc_gr_DistanceEdge* temp_edge2;
+	iscc_hi_DistanceEdge* temp_edge1;
+	iscc_hi_DistanceEdge* temp_edge2;
 
 	size_t num_unassigned = cluster_to_break->size;
-	const uint_fast16_t curr_marker = iscc_gr_get_next_marker(cluster_to_break, vertex_markers);
-	
-	*out_new_cluster = (iscc_gr_ClusterItem) {
+	const uint_fast16_t curr_marker = iscc_hi_get_next_marker(cluster_to_break, vertex_markers);
+
+	*out_new_cluster = (iscc_hi_ClusterItem) {
 		.size = 0,
 		.marker = curr_marker,
 		.members = cluster_to_break->members + num_unassigned,
 	};
 
-	iscc_gr_ClusterItem* const cluster1 = cluster_to_break;
+	iscc_hi_ClusterItem* const cluster1 = cluster_to_break;
 	cluster1->size = 0;
-	iscc_gr_ClusterItem* const cluster2 = out_new_cluster;
+	iscc_hi_ClusterItem* const cluster2 = out_new_cluster;
 
-	iscc_gr_move_point_to_cluster1(center1, cluster1, vertex_markers, curr_marker);
-	iscc_gr_move_point_to_cluster2(center2, cluster2, vertex_markers, curr_marker);
+	iscc_hi_move_point_to_cluster1(center1, cluster1, vertex_markers, curr_marker);
+	iscc_hi_move_point_to_cluster2(center2, cluster2, vertex_markers, curr_marker);
 
-	temp_edge1 = iscc_gr_get_next_k_nn(last_assigned_edge1, size_constraint - 1, vertex_markers, curr_marker, k_nn_array1);
-	temp_edge2 = iscc_gr_get_next_k_nn(last_assigned_edge2, size_constraint - 1, vertex_markers, curr_marker, k_nn_array2);
+	temp_edge1 = iscc_hi_get_next_k_nn(last_assigned_edge1, size_constraint - 1, vertex_markers, curr_marker, k_nn_array1);
+	temp_edge2 = iscc_hi_get_next_k_nn(last_assigned_edge2, size_constraint - 1, vertex_markers, curr_marker, k_nn_array2);
 
 	if (temp_edge1->distance >= temp_edge2->distance) {
-		iscc_gr_move_array_to_cluster1(size_constraint - 1, k_nn_array1, cluster1, vertex_markers, curr_marker);
+		iscc_hi_move_array_to_cluster1(size_constraint - 1, k_nn_array1, cluster1, vertex_markers, curr_marker);
 		last_assigned_edge1 = temp_edge1;
 
-		last_assigned_edge2 = iscc_gr_get_next_k_nn(last_assigned_edge2, size_constraint - 1, vertex_markers, curr_marker, k_nn_array2);
-		iscc_gr_move_array_to_cluster2(size_constraint - 1, k_nn_array2, cluster2, vertex_markers, curr_marker);
+		last_assigned_edge2 = iscc_hi_get_next_k_nn(last_assigned_edge2, size_constraint - 1, vertex_markers, curr_marker, k_nn_array2);
+		iscc_hi_move_array_to_cluster2(size_constraint - 1, k_nn_array2, cluster2, vertex_markers, curr_marker);
 	} else {
-		iscc_gr_move_array_to_cluster2(size_constraint - 1, k_nn_array2, cluster2, vertex_markers, curr_marker);
+		iscc_hi_move_array_to_cluster2(size_constraint - 1, k_nn_array2, cluster2, vertex_markers, curr_marker);
 		last_assigned_edge2 = temp_edge2;
 
-		last_assigned_edge1 = iscc_gr_get_next_k_nn(last_assigned_edge1, size_constraint - 1, vertex_markers, curr_marker, k_nn_array1);
-		iscc_gr_move_array_to_cluster1(size_constraint - 1, k_nn_array1, cluster1, vertex_markers, curr_marker);
+		last_assigned_edge1 = iscc_hi_get_next_k_nn(last_assigned_edge1, size_constraint - 1, vertex_markers, curr_marker, k_nn_array1);
+		iscc_hi_move_array_to_cluster1(size_constraint - 1, k_nn_array1, cluster1, vertex_markers, curr_marker);
 	}
 
 	assert((cluster1->size == size_constraint) && (cluster2->size == size_constraint));
@@ -496,31 +496,31 @@ static scc_ErrorCode iscc_gr_break_cluster_into_two(iscc_gr_ClusterItem* const c
 	if (batch_assign) {
 		uint32_t num_assign_in_batch = size_constraint;
 		for (; num_unassigned > 0; num_unassigned -= num_assign_in_batch) {
-			
+
 			if (num_assign_in_batch > num_unassigned) num_assign_in_batch = (uint32_t) num_unassigned;
 
-			temp_edge1 = iscc_gr_get_next_k_nn(last_assigned_edge1, num_assign_in_batch, vertex_markers, curr_marker, k_nn_array1);
-			temp_edge2 = iscc_gr_get_next_k_nn(last_assigned_edge2, num_assign_in_batch, vertex_markers, curr_marker, k_nn_array2);
+			temp_edge1 = iscc_hi_get_next_k_nn(last_assigned_edge1, num_assign_in_batch, vertex_markers, curr_marker, k_nn_array1);
+			temp_edge2 = iscc_hi_get_next_k_nn(last_assigned_edge2, num_assign_in_batch, vertex_markers, curr_marker, k_nn_array2);
 
 			if (temp_edge1->distance <= temp_edge2->distance) {
-				iscc_gr_move_array_to_cluster1(num_assign_in_batch, k_nn_array1, cluster1, vertex_markers, curr_marker);
+				iscc_hi_move_array_to_cluster1(num_assign_in_batch, k_nn_array1, cluster1, vertex_markers, curr_marker);
 				last_assigned_edge1 = temp_edge1;
 			} else {
-				iscc_gr_move_array_to_cluster2(num_assign_in_batch, k_nn_array2, cluster2, vertex_markers, curr_marker);
+				iscc_hi_move_array_to_cluster2(num_assign_in_batch, k_nn_array2, cluster2, vertex_markers, curr_marker);
 				last_assigned_edge2 = temp_edge2;
 			}
 		}
 
 	} else {
 		for (; num_unassigned > 0; --num_unassigned) {
-			temp_edge1 = iscc_gr_get_next_dist(last_assigned_edge1, vertex_markers, curr_marker);
-			temp_edge2 = iscc_gr_get_next_dist(last_assigned_edge2, vertex_markers, curr_marker);
+			temp_edge1 = iscc_hi_get_next_dist(last_assigned_edge1, vertex_markers, curr_marker);
+			temp_edge2 = iscc_hi_get_next_dist(last_assigned_edge2, vertex_markers, curr_marker);
 
 			if (temp_edge1->distance <= temp_edge2->distance) {
-				iscc_gr_move_point_to_cluster1(temp_edge1->head, cluster1, vertex_markers, curr_marker);
+				iscc_hi_move_point_to_cluster1(temp_edge1->head, cluster1, vertex_markers, curr_marker);
 				last_assigned_edge1 = temp_edge1;
 			} else {
-				iscc_gr_move_point_to_cluster2(temp_edge2->head, cluster2, vertex_markers, curr_marker);
+				iscc_hi_move_point_to_cluster2(temp_edge2->head, cluster2, vertex_markers, curr_marker);
 				last_assigned_edge2 = temp_edge2;
 			}
 		}
@@ -535,7 +535,7 @@ static scc_ErrorCode iscc_gr_break_cluster_into_two(iscc_gr_ClusterItem* const c
 }
 
 
-static inline uint_fast16_t iscc_gr_get_next_marker(iscc_gr_ClusterItem* const cl,
+static inline uint_fast16_t iscc_hi_get_next_marker(iscc_hi_ClusterItem* const cl,
                                                     uint_fast16_t vertex_markers[const])
 {
 	assert(cl != NULL);
@@ -555,7 +555,7 @@ static inline uint_fast16_t iscc_gr_get_next_marker(iscc_gr_ClusterItem* const c
 }
 
 
-static inline iscc_gr_DistanceEdge* iscc_gr_get_next_k_nn(iscc_gr_DistanceEdge* prev_dist,
+static inline iscc_hi_DistanceEdge* iscc_hi_get_next_k_nn(iscc_hi_DistanceEdge* prev_dist,
                                                           const uint32_t k,
                                                           const uint_fast16_t vertex_markers[const],
                                                           const uint_fast16_t curr_marker,
@@ -568,7 +568,7 @@ static inline iscc_gr_DistanceEdge* iscc_gr_get_next_k_nn(iscc_gr_DistanceEdge* 
 	assert(out_dist_array != NULL);
 
 	for (uint32_t found = 0; found < k; ++found) {
-		prev_dist = iscc_gr_get_next_dist(prev_dist, vertex_markers, curr_marker);
+		prev_dist = iscc_hi_get_next_dist(prev_dist, vertex_markers, curr_marker);
 		out_dist_array[found] = prev_dist->head;
 	}
 
@@ -576,10 +576,10 @@ static inline iscc_gr_DistanceEdge* iscc_gr_get_next_k_nn(iscc_gr_DistanceEdge* 
 }
 
 
-static inline iscc_gr_DistanceEdge* iscc_gr_get_next_dist(iscc_gr_DistanceEdge* const prev_dist,
+static inline iscc_hi_DistanceEdge* iscc_hi_get_next_dist(iscc_hi_DistanceEdge* const prev_dist,
                                                           const uint_fast16_t vertex_markers[const],
                                                           const uint_fast16_t curr_marker)
-{	
+{
 	assert(prev_dist != NULL);
 	assert(prev_dist->next_dist != NULL); // We should never reach the end!
 	assert(vertex_markers != NULL);
@@ -594,8 +594,8 @@ static inline iscc_gr_DistanceEdge* iscc_gr_get_next_dist(iscc_gr_DistanceEdge* 
 }
 
 
-static inline void iscc_gr_move_point_to_cluster1(const iscc_Dpid id,
-                                                  iscc_gr_ClusterItem* const cl,
+static inline void iscc_hi_move_point_to_cluster1(const iscc_Dpid id,
+                                                  iscc_hi_ClusterItem* const cl,
                                                   uint_fast16_t vertex_markers[const],
                                                   const uint_fast16_t curr_marker)
 {
@@ -611,8 +611,8 @@ static inline void iscc_gr_move_point_to_cluster1(const iscc_Dpid id,
 }
 
 
-static inline void iscc_gr_move_point_to_cluster2(const iscc_Dpid id,
-                                                  iscc_gr_ClusterItem* const cl,
+static inline void iscc_hi_move_point_to_cluster2(const iscc_Dpid id,
+                                                  iscc_hi_ClusterItem* const cl,
                                                   uint_fast16_t vertex_markers[const],
                                                   const uint_fast16_t curr_marker)
 {
@@ -629,9 +629,9 @@ static inline void iscc_gr_move_point_to_cluster2(const iscc_Dpid id,
 }
 
 
-static inline void iscc_gr_move_array_to_cluster1(const uint32_t len_ids,
+static inline void iscc_hi_move_array_to_cluster1(const uint32_t len_ids,
                                                   const iscc_Dpid ids[static len_ids],
-                                                  iscc_gr_ClusterItem* const cl,
+                                                  iscc_hi_ClusterItem* const cl,
                                                   uint_fast16_t vertex_markers[const],
                                                   const uint_fast16_t curr_marker)
 {
@@ -654,9 +654,9 @@ static inline void iscc_gr_move_array_to_cluster1(const uint32_t len_ids,
 }
 
 
-static inline void iscc_gr_move_array_to_cluster2(const uint32_t len_ids,
+static inline void iscc_hi_move_array_to_cluster2(const uint32_t len_ids,
                                                   const iscc_Dpid ids[static len_ids],
-                                                  iscc_gr_ClusterItem* const cl,
+                                                  iscc_hi_ClusterItem* const cl,
                                                   uint_fast16_t vertex_markers[const],
                                                   const uint_fast16_t curr_marker)
 {
@@ -679,9 +679,9 @@ static inline void iscc_gr_move_array_to_cluster2(const uint32_t len_ids,
 }
 
 
-static scc_ErrorCode iscc_gr_find_centers(iscc_gr_ClusterItem* const cl,
+static scc_ErrorCode iscc_hi_find_centers(iscc_hi_ClusterItem* const cl,
                                           void* const data_set_object,
-                                          iscc_gr_WorkArea* const work_area,
+                                          iscc_hi_WorkArea* const work_area,
                                           iscc_Dpid* const out_center1,
                                           iscc_Dpid* const out_center2)
 {
@@ -702,14 +702,14 @@ static scc_ErrorCode iscc_gr_find_centers(iscc_gr_ClusterItem* const cl,
 	double* const max_dists = work_area->dist_array;
 	uint_fast16_t* const vertex_markers = work_area->vertex_markers;
 
-	const uint_fast16_t curr_marker = iscc_gr_get_next_marker(cl, vertex_markers);
+	const uint_fast16_t curr_marker = iscc_hi_get_next_marker(cl, vertex_markers);
 
-	size_t step = cl->size / ISCC_GR_NUM_TO_CHECK;
+	size_t step = cl->size / ISCC_HI_NUM_TO_CHECK;
 	if (step < 2) step = 2;
 	// num_to_check = ceil(size / step) = floor((size + step - 1) / step) = 1 + floor((size - 1) / step)
 	uint_fast16_t num_to_check = ((uint_fast16_t) (1 + (cl->size - 1) / step));
-	num_to_check = (ISCC_GR_NUM_TO_CHECK < num_to_check) ? ISCC_GR_NUM_TO_CHECK : num_to_check;
-	assert(num_to_check <= ISCC_GR_NUM_TO_CHECK);
+	num_to_check = (ISCC_HI_NUM_TO_CHECK < num_to_check) ? ISCC_HI_NUM_TO_CHECK : num_to_check;
+	assert(num_to_check <= ISCC_HI_NUM_TO_CHECK);
 
 	for (size_t i = 0; i < num_to_check; ++i) {
 		to_check[i] = cl->members[i * step];
@@ -754,11 +754,11 @@ static scc_ErrorCode iscc_gr_find_centers(iscc_gr_ClusterItem* const cl,
 }
 
 
-static scc_ErrorCode iscc_gr_populate_edge_lists(const iscc_gr_ClusterItem* const cl,
+static scc_ErrorCode iscc_hi_populate_edge_lists(const iscc_hi_ClusterItem* const cl,
                                                  void* const data_set_object,
                                                  const iscc_Dpid center1,
                                                  const iscc_Dpid center2,
-                                                 iscc_gr_WorkArea* const work_area)
+                                                 iscc_hi_WorkArea* const work_area)
 {
 	assert(cl != NULL);
 	assert(cl->size >= 4);
@@ -782,17 +782,17 @@ static scc_ErrorCode iscc_gr_populate_edge_lists(const iscc_gr_ClusterItem* cons
 		return iscc_make_error(SCC_ER_DIST_SEARCH_ERROR);
 	}
 
-	iscc_gr_sort_edge_list(cl, center1, row_dists, work_area->edge_store1);
-	iscc_gr_sort_edge_list(cl, center2, row_dists + cl->size, work_area->edge_store2);
+	iscc_hi_sort_edge_list(cl, center1, row_dists, work_area->edge_store1);
+	iscc_hi_sort_edge_list(cl, center2, row_dists + cl->size, work_area->edge_store2);
 
 	return iscc_no_error();
 }
 
 
-static inline void iscc_gr_sort_edge_list(const iscc_gr_ClusterItem* const cl,
+static inline void iscc_hi_sort_edge_list(const iscc_hi_ClusterItem* const cl,
                                           const iscc_Dpid center,
                                           const double row_dists[const static cl->size],
-                                          iscc_gr_DistanceEdge edge_store[const static cl->size])
+                                          iscc_hi_DistanceEdge edge_store[const static cl->size])
 {
 	assert(cl != NULL);
 	assert(cl->size >= 4);
@@ -800,7 +800,7 @@ static inline void iscc_gr_sort_edge_list(const iscc_gr_ClusterItem* const cl,
 	assert(row_dists != NULL);
 	assert(edge_store != NULL);
 
-	iscc_gr_DistanceEdge* write_edge = edge_store + 1;
+	iscc_hi_DistanceEdge* write_edge = edge_store + 1;
 	for (size_t i = 0; i < cl->size; ++i) {
 		if (cl->members[i] == center) continue;
 		write_edge->head = cl->members[i];
@@ -810,21 +810,21 @@ static inline void iscc_gr_sort_edge_list(const iscc_gr_ClusterItem* const cl,
 
 	assert(write_edge == (edge_store + cl->size));
 
-	qsort(edge_store + 1, cl->size - 1, sizeof(iscc_gr_DistanceEdge), iscc_gr_compare_dist_edges);
+	qsort(edge_store + 1, cl->size - 1, sizeof(iscc_hi_DistanceEdge), iscc_hi_compare_dist_edges);
 
-	iscc_gr_DistanceEdge* const edge_stop = edge_store + cl->size - 1;
-	for (iscc_gr_DistanceEdge* edge = edge_store; edge != edge_stop; ++edge) {
+	iscc_hi_DistanceEdge* const edge_stop = edge_store + cl->size - 1;
+	for (iscc_hi_DistanceEdge* edge = edge_store; edge != edge_stop; ++edge) {
 		edge->next_dist = edge + 1;
 	}
 	edge_stop->next_dist = NULL;
 }
 
 
-static int iscc_gr_compare_dist_edges(const void* const a,
+static int iscc_hi_compare_dist_edges(const void* const a,
                                       const void* const b)
 {
-	const double dist_a = ((const iscc_gr_DistanceEdge*)a)->distance;
-	const double dist_b = ((const iscc_gr_DistanceEdge*)b)->distance;
+	const double dist_a = ((const iscc_hi_DistanceEdge*)a)->distance;
+	const double dist_b = ((const iscc_hi_DistanceEdge*)b)->distance;
 
 	if (dist_a < dist_b) return -1;
 	if (dist_a > dist_b) return 1;

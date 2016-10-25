@@ -8,12 +8,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
  * ============================================================================== */
@@ -58,7 +58,7 @@
  *
  *  \note
  *  Number of data points in any clustering problem must be strictly less
- *  than the maximum number that can be stored in #iscc_Dpid. I.e., 
+ *  than the maximum number that can be stored in #iscc_Dpid. I.e.,
  *  possible data point IDs must be in the sequence `[0, 1, ..., ISCC_DPID_MAX - 1]`.
  *  Independent of `ISCC_DPID_MAX`, number of data points may not be greater than `SIZE_MAX - 1`.
  */
@@ -81,9 +81,9 @@
 
 
 /** Type used for arc indices. Must be unsigned.
- *  
+ *
  *  \note
- *  Number of arcs in any digraph must be less or equal to 
+ *  Number of arcs in any digraph must be less or equal to
  *  the maximum number that can be stored in #iscc_Arci.
  */
 #ifdef SCC_ARC64
@@ -115,12 +115,12 @@ struct scc_Clustering {
 	/// Number of clusters.
 	size_t num_clusters;
 
-	/** Array of length #num_data_points with cluster labels of the assigned data points. 
+	/** Array of length #num_data_points with cluster labels of the assigned data points.
 	 *  Unassigned vertices have the value #SCC_CLABEL_NA.
 	 */
 	scc_Clabel* cluster_label;
 
-	/** Indicator whether the #cluster_label array was assigned by the user (rather than the library). If #external_labels is \c true, 
+	/** Indicator whether the #cluster_label array was assigned by the user (rather than the library). If #external_labels is \c true,
 	 *  #cluster_label will not be freed when the instance of #scc_Clustering is destroyed.
 	 */
 	bool external_labels;

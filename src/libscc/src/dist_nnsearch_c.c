@@ -8,12 +8,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
  * ============================================================================== */
@@ -139,7 +139,7 @@ bool iscc_nearest_neighbor_search_digraph(iscc_NNSearchObject* const nn_search_o
 				if (radius_search && !accept_partial && (found < k)) {
 					found = 0;
 					if (out_query_indicators != NULL) out_query_indicators[q] = false;
-				} 
+				}
 				out_nn_ref[q + 1] = out_nn_ref[q] + found;
 				index_write += found;
 			} else {
@@ -181,7 +181,7 @@ bool iscc_nearest_neighbor_search_digraph(iscc_NNSearchObject* const nn_search_o
 				if (radius_search && !accept_partial && (found < k)) {
 					found = 0;
 					if (out_query_indicators != NULL) out_query_indicators[q] = false;
-				} 
+				}
 				out_nn_ref[q + 1] = out_nn_ref[q] + found;
 				index_write += found;
 			} else {

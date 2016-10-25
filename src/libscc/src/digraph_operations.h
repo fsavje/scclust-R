@@ -3,17 +3,17 @@
  * https://github.com/fsavje/scclust
  *
  * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
  * ============================================================================== */
@@ -146,24 +146,24 @@ scc_ErrorCode iscc_digraph_transpose(const iscc_Digraph* in_dg,
  *
  *  \code
  *	// Dummy digraph generator
- *  scc_Digraph my_dg = some_digraph(); 
+ *  scc_Digraph my_dg = some_digraph();
  *
  *  // All paths of length 2 in `my_dg`
  *  scc_Digraph my_dg_path2 = scc_adjacency_product(&my_dg, &my_dg, false);
- *  
+ *
  *  // All paths of length 3 in `my_dg`
  *  scc_Digraph my_dg_path3 = scc_adjacency_product(&my_dg, &my_dg_path2, false);
- *  
+ *
  *  // Second power of `my_dg`
  *  scc_Digraph my_dg_power2 = scc_adjacency_product(&my_dg, &my_dg, true);
- *  
+ *
  *  // Fourth power of `my_dg`
  *  scc_Digraph my_dg_power4 = scc_adjacency_product(&my_dg_power2, &my_dg_power2, true);
- *  
+ *
  *  // Free all digraphs
  *  scc_free_digraph(&my_dg); scc_free_digraph(&my_dg_path2); [...]
  *  \endcode
- *  
+ *
  *  \param[in] dg_a the first digraph of the product.
  *  \param[in] dg_b the second digraph of the product.
  *  \param     force_loops when \c true, forces self-loops in \p dg_a (i.e., all vertices have an arc to themselves).

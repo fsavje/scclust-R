@@ -3,17 +3,17 @@
  * https://github.com/fsavje/scclust
  *
  * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
  * ============================================================================== */
@@ -72,7 +72,7 @@ bool iscc_digraphs_equal(const iscc_Digraph* const dg_a,
 			if (single_row[*arc_b] == 0) {
 				free(single_row);
 				return false;
-			} 
+			}
 			single_row[*arc_b] = 2;
 		}
 
@@ -186,7 +186,7 @@ scc_ErrorCode iscc_copy_digraph(const iscc_Digraph* const in_dg,
 void iscc_print_digraph(const iscc_Digraph* const dg)
 {
 	assert(iscc_digraph_is_initialized(dg));
-	
+
 	if (dg->vertices == 0) {
 		printf("[]\n\n");
 		return;

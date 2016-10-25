@@ -3,17 +3,17 @@
  * https://github.com/fsavje/scclust
  *
  * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
  * ============================================================================== */
@@ -56,7 +56,7 @@ typedef struct iscc_Digraph iscc_Digraph;
 struct iscc_Digraph {
 
 	/** Number of vertices in the digraph. May not be greater than `ISCC_DPID_MAX`.
-	 *  
+	 *
 	 *  \note Valid vertices in this digraph is any `i` such that `0 <= i < #vertices`.
 	 */
 	size_t vertices;
@@ -65,7 +65,7 @@ struct iscc_Digraph {
 	size_t max_arcs;
 
 	/** Array of vertex IDs indicating arc heads.
-	 *  
+	 *
 	 *  If `#max_arcs == 0`, #head must be `NULL`. If `#max_arcs > 0`,
 	 *  #head should point a memory area of length #max_arcs.
 	 *
@@ -74,10 +74,10 @@ struct iscc_Digraph {
 	iscc_Dpid* head;
 
 	/** Array of arc indices indicating arcs for which a vertex is the tail.
-	 *  
+	 *
 	 *  #tail_ptr may never be `NULL` and must point a memory area of length `#vertices + 1`.
 	 *
-	 *  The first element of #tail_ptr must be zero (`#tail_ptr[0] == 0`). For all `i < #vertices`, 
+	 *  The first element of #tail_ptr must be zero (`#tail_ptr[0] == 0`). For all `i < #vertices`,
 	 *  we must have `#tail_ptr[i] <= #tail_ptr[i+1] <= #max_arcs`.
 	 */
 	iscc_Arci* tail_ptr;
@@ -120,7 +120,7 @@ bool iscc_digraph_is_initialized(const iscc_Digraph* dg);
 /** Checks whether provided digraph is valid.
  *
  *  This function returns \c true if \p dg is a valid scc_Digraph instance. That is,
- *  \p dg describes a valid digraph. 
+ *  \p dg describes a valid digraph.
  *
  *  \param[in] dg digraph to check.
  *
@@ -157,7 +157,7 @@ scc_ErrorCode iscc_init_digraph(size_t vertices,
 
 /** Construct an empty digraph.
  *
- *  This function returns a digraph where all elements of scc_Digraph::tail_ptr are set to `0`. 
+ *  This function returns a digraph where all elements of scc_Digraph::tail_ptr are set to `0`.
  *  The memory space pointed to by scc_Digraph::head is left uninitialized.
  *
  *  \param vertices number of vertices that can be represented in the digraph.
@@ -171,7 +171,7 @@ scc_ErrorCode iscc_empty_digraph(size_t vertices,
 /** Reallocate arc memory.
  *
  *  Increases or decreases the memory space for arcs in \p dg to fit exactly \p new_max_arcs arcs.
- *  Requires that the number of arcs in \p dg is less or equally to \p new_max_arcs. 
+ *  Requires that the number of arcs in \p dg is less or equally to \p new_max_arcs.
  *  If `new_max_arcs == 0`, the memory space is deallocated and scc_Digraph::head is set to `NULL`.
  *
  *  \param[in,out] dg digraph to reallocate arc memory for.

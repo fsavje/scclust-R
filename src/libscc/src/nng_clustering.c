@@ -3,17 +3,17 @@
  * https://github.com/fsavje/scclust
  *
  * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
  * ============================================================================== */
@@ -205,7 +205,7 @@ scc_ErrorCode scc_nng_clustering_types(scc_Clustering* const clustering,
 
 
 // ==============================================================================
-// Internal function implementations 
+// Internal function implementations
 // ==============================================================================
 
 static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const clustering,
@@ -253,7 +253,7 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
 	}
 
 	// Estimate assign radius if we need to, and modify options
-	if ((main_unassigned_method == SCC_UM_CLOSEST_SEED_EST_RADIUS) || 
+	if ((main_unassigned_method == SCC_UM_CLOSEST_SEED_EST_RADIUS) ||
 	        (secondary_unassigned_method == SCC_UM_CLOSEST_SEED_EST_RADIUS)) {
 		double avg_seed_dist;
 		if ((ec = iscc_estimate_avg_seed_dist(data_set_object,
@@ -275,7 +275,7 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
 				return iscc_make_error(SCC_ER_NOT_IMPLEMENTED);
 			}
 		}
-		
+
 		if (secondary_unassigned_method == SCC_UM_CLOSEST_SEED_EST_RADIUS) {
 			if (avg_seed_dist > 0.0) {
 				secondary_unassigned_method = SCC_UM_CLOSEST_SEED;
@@ -287,7 +287,7 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
 			}
 		}
 	}
-	
+
 	// Initialize cluster labels
 	if (clustering->cluster_label == NULL) {
 		clustering->external_labels = false;
@@ -310,7 +310,7 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
 	                                       secondary_unassigned_method,
 	                                       secondary_radius_constraint,
 	                                       secondary_radius);
-	
+
 	free(seed_result.seeds);
 	return ec;
 }

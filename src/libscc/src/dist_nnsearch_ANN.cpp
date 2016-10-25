@@ -8,12 +8,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
  * ============================================================================== */
@@ -195,7 +195,7 @@ bool iscc_nearest_neighbor_search_digraph(iscc_NNSearchObject* const nn_search_o
 						                                                k_int,                    // number of neighbors
 						                                                out_nn_indices + out_nn_ref[q], // pointer to start of index result
 						                                                dist_scratch,             // pointer to start of distance result
-						                                                SCC_ANN_EPS);             // error margin 
+						                                                SCC_ANN_EPS);             // error margin
 						assert(num_found >= 0);
 						if (num_found >= k_int) {
 							out_nn_ref[q + 1] += k;
@@ -263,8 +263,8 @@ bool iscc_nearest_neighbor_search_digraph(iscc_NNSearchObject* const nn_search_o
 				                                          k_int,           // number of neighbors
 				                                          idx_scratch,     // pointer to start of index result
 				                                          dist_scratch,    // pointer to start of distance result
-				                                          SCC_ANN_EPS);    // error margin 
-				
+				                                          SCC_ANN_EPS);    // error margin
+
 				assert(num_found >= 0);
 				if (accept_partial || (num_found >= k_int)) {
 					if (num_found >= k_int) num_found = k_int;
@@ -364,7 +364,7 @@ bool iscc_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search_obj
 					                                          k_int,           // number of neighbors
 					                                          write_nnidx,     // pointer to start of index result
 					                                          dist_scratch,    // pointer to start of distance result
-					                                          SCC_ANN_EPS);    // error margin 
+					                                          SCC_ANN_EPS);    // error margin
 					assert(num_found >= 0);
 					for (; num_found < k_int; ++num_found) {
 						write_nnidx[num_found] = ISCC_DPID_NA;
@@ -423,8 +423,8 @@ bool iscc_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search_obj
 			                                          k_int,           // number of neighbors
 			                                          idx_scratch,     // pointer to start of index result
 			                                          dist_scratch,    // pointer to start of distance result
-			                                          SCC_ANN_EPS);    // error margin 
-			
+			                                          SCC_ANN_EPS);    // error margin
+
 			assert(num_found >= 0);
 			const ANNidx* idx_tmp = idx_scratch;
 			if (num_found >= k_int) num_found = k_int;

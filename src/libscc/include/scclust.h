@@ -8,12 +8,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
  * ============================================================================== */
@@ -46,11 +46,11 @@ extern "C" {
 // ==============================================================================
 
 /** Type used for cluster labels. May be unsigned or signed.
- *  
+ *
  *  \note
  *  Number of clusters in any clustering problem must be strictly less
- *  than the maximum number that can be stored in #scc_Clabel. I.e., 
- *  cluster labels must be in the sequence `[0, 1, ..., SCC_CLABEL_MAX - 1]`, 
+ *  than the maximum number that can be stored in #scc_Clabel. I.e.,
+ *  cluster labels must be in the sequence `[0, 1, ..., SCC_CLABEL_MAX - 1]`,
  *  and `SCC_CLABEL_NA` may not be in this sequence (but it may be `SCC_CLABEL_MAX`).
  *
  *  \note
@@ -65,7 +65,7 @@ static const scc_Clabel SCC_CLABEL_MAX = INT_MAX;
 static const scc_Clabel SCC_CLABEL_NA = INT_MIN;
 
 /** Type used to indicate data point type (for the NNG method). May be unsigned or signed.
- *  
+ *
  *  \note
  *  Type labels must be in the sequence `[0, 1, ..., 65534]`.
  *
@@ -202,21 +202,21 @@ scc_ErrorCode scc_get_clustering_stats(const scc_Clustering* clustering,
  */
 enum scc_SeedMethod {
 
-	/** Find seeds lexically by vertex ID. 
+	/** Find seeds lexically by vertex ID.
 	 *
 	 *  This method finds seed sequentially by checking whether adding the next seed satisfy the four conditions described in #scc_get_seed_clustering.
 	 */
 	SCC_SM_LEXICAL,
 
-	/** Find seeds ordered by inwards pointing arcs. 
+	/** Find seeds ordered by inwards pointing arcs.
 	 *
 	 *  This method counts vertices' inwards pointing arcs and finds seeds in ascending order by the arc count. Vertices pointing to a seed cannot
 	 *  themselves be seeds, thus a vertex with many inwards pointing arcs will exclude many vertices from being seeds. Heuristically, picking such
-	 *  a vertex as seed will lead to fewer clusters. 
+	 *  a vertex as seed will lead to fewer clusters.
 	 */
 	SCC_SM_INWARDS_ORDER,
 
-	/** Find seeds ordered by inwards pointing arcs from unassigned vertices. 
+	/** Find seeds ordered by inwards pointing arcs from unassigned vertices.
 	 *
 	 *  This method counts vertices' inwards pointing arcs from *unassigned* vertices and finds seeds by in ascending order by the arc count. Unlike
 	 *  the #SCC_SM_INWARDS_ORDER, this method updates the arc count after finding a seed so that only arcs where the tails are unassigned are counted.
@@ -304,17 +304,13 @@ scc_ErrorCode scc_nng_clustering_types(scc_Clustering* clustering,
 
 
 // ==============================================================================
-// Greedy clustering function
+// Hierarchical clustering function
 // ==============================================================================
 
-scc_ErrorCode scc_top_down_greedy_clustering(scc_Clustering* clustering,
-                                             void* data_set_object,
-                                             uint32_t size_constraint,
-                                             bool batch_assign);
-
-scc_ErrorCode scc_bottom_up_greedy_clustering(scc_Clustering* clustering,
-                                              void* data_set_object,
-                                              uint32_t size_constraint);
+scc_ErrorCode scc_hierarchical_clustering(scc_Clustering* clustering,
+                                          void* data_set_object,
+                                          uint32_t size_constraint,
+                                          bool batch_assign);
 
 
 #ifdef __cplusplus

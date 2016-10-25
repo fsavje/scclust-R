@@ -8,12 +8,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
  * ============================================================================== */
@@ -293,7 +293,7 @@ scc_ErrorCode scc_get_clustering_info(const scc_Clustering* const clustering,
                                       uintmax_t* const out_num_clusters)
 {
 	if (!iscc_check_input_clustering(clustering)) return iscc_make_error(SCC_ER_INVALID_CLUSTERING);
-	
+
 	if (out_num_data_points != NULL) *out_num_data_points = clustering->num_data_points;
 	if (out_num_clusters != NULL) *out_num_clusters = clustering->num_clusters;
 
@@ -407,7 +407,7 @@ scc_ErrorCode scc_get_clustering_stats(const scc_Clustering* const clustering,
 			if (cluster_size[c] == 1) tmp_stats.min_dist = 0.0;
 			continue;
 		}
-		
+
 		const size_t size_dist_matrix = (cluster_size[c] * (cluster_size[c] - 1)) / 2;
 		if (!iscc_get_dist_matrix(data_set_object, cluster_size[c], cl_members[c], dist_scratch)) {
 			free(cluster_size);

@@ -3,17 +3,17 @@
  * https://github.com/fsavje/scclust
  *
  * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
  * ============================================================================== */
@@ -65,7 +65,7 @@ scc_ErrorCode iscc_delete_loops(iscc_Digraph* const dg)
 
 	iscc_Arci head_write = 0;
 	assert(dg->vertices <= ISCC_DPID_MAX);
-	const iscc_Dpid vertices = (iscc_Dpid) dg->vertices; // If `iscc_Dpid` is signed 
+	const iscc_Dpid vertices = (iscc_Dpid) dg->vertices; // If `iscc_Dpid` is signed
 	for (iscc_Dpid v = 0; v < vertices; ++v) {
 		const iscc_Dpid* v_arc = dg->head + dg->tail_ptr[v];
 		const iscc_Dpid* const v_arc_stop = dg->head + dg->tail_ptr[v + 1];
@@ -157,7 +157,7 @@ scc_ErrorCode iscc_digraph_difference(iscc_Digraph* const minuend_dg,
 
 	iscc_Dpid* const row_markers = malloc(sizeof(iscc_Dpid[minuend_dg->vertices]));
 	if (row_markers == NULL) return iscc_make_error(SCC_ER_NO_MEMORY);
-	
+
 	for (size_t v = 0; v < minuend_dg->vertices; ++v) {
 		row_markers[v] = ISCC_DPID_NA;
 	}
@@ -220,7 +220,7 @@ scc_ErrorCode iscc_digraph_transpose(const iscc_Digraph* const in_dg,
 	}
 
 	assert(in_dg->vertices <= ISCC_DPID_MAX);
-	const iscc_Dpid vertices = (iscc_Dpid) in_dg->vertices; // If `iscc_Dpid` is signed 
+	const iscc_Dpid vertices = (iscc_Dpid) in_dg->vertices; // If `iscc_Dpid` is signed
 	for (iscc_Dpid v = 0; v < vertices; ++v) {
 		const iscc_Dpid* const arc_stop = in_dg->head + in_dg->tail_ptr[v + 1];
 		for (const iscc_Dpid* arc = in_dg->head + in_dg->tail_ptr[v];
@@ -298,7 +298,7 @@ scc_ErrorCode iscc_adjacency_product(const iscc_Digraph* const in_dg_a,
 
 
 // ==============================================================================
-// Internal function implementations 
+// Internal function implementations
 // ==============================================================================
 
 static inline uintmax_t iscc_do_union_and_delete(const uint_fast16_t num_dgs,
@@ -428,7 +428,7 @@ static inline uintmax_t iscc_do_adjacency_product(const iscc_Digraph* const dg_a
 
 	uintmax_t counter = 0;
 	assert(dg_a->vertices <= ISCC_DPID_MAX);
-	const iscc_Dpid vertices = (iscc_Dpid) dg_a->vertices; // If `iscc_Dpid` is signed 
+	const iscc_Dpid vertices = (iscc_Dpid) dg_a->vertices; // If `iscc_Dpid` is signed
 
 	const iscc_Arci* const dg_a_tail_ptr = dg_a->tail_ptr;
 	const iscc_Dpid* const dg_a_head = dg_a->head;
