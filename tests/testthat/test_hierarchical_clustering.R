@@ -1,7 +1,7 @@
 library(Rscclust)
-context("greedy_clustering.R")
+context("hierarchical_clustering.R")
 
-source("../replica/replica_greedy.R", local = TRUE)
+source("../replica/replica_hierarchical.R", local = TRUE)
 
 sound_distance_obj <- make_distances(matrix(c(0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.1), ncol = 1))
 unsound_distance_obj <- structure(matrix(letters[1:9], ncol = 3),
@@ -18,58 +18,58 @@ unsound_clustering <- make_Rscc_clustering(c("a", "b", "c", "a", "b", "c", "a"),
 sound_deep_copy <- TRUE
 unsound_deep_copy <- "A"
 
-test_that("greedy clustering functions check input.", {
-  expect_match(class(top_down_greedy_clustering(sound_distance_obj,
+test_that("hierarchical clustering functions check input.", {
+  expect_match(class(hierarchical_clustering(sound_distance_obj,
+                                             sound_size_constraint,
+                                             sound_batch_assign,
+                                             sound_clustering)), "Rscc_clustering", fixed = TRUE)
+  expect_error(hierarchical_clustering(unsound_distance_obj,
+                                       sound_size_constraint,
+                                       sound_batch_assign,
+                                       sound_clustering))
+  expect_error(hierarchical_clustering(sound_distance_obj,
+                                       unsound_size_constraint,
+                                       sound_batch_assign,
+                                       sound_clustering))
+  expect_error(hierarchical_clustering(sound_distance_obj,
+                                       sound_size_constraint,
+                                       unsound_batch_assign,
+                                       sound_clustering))
+  expect_error(hierarchical_clustering(sound_distance_obj,
+                                       sound_size_constraint,
+                                       sound_batch_assign,
+                                       unsound_clustering))
+
+  expect_match(class(hierarchical_clustering_internal(sound_distance_obj,
+                                                      sound_size_constraint,
+                                                      sound_batch_assign,
+                                                      sound_clustering,
+                                                      sound_deep_copy)), "Rscc_clustering", fixed = TRUE)
+  expect_error(hierarchical_clustering_internal(unsound_distance_obj,
                                                 sound_size_constraint,
                                                 sound_batch_assign,
-                                                sound_clustering)), "Rscc_clustering", fixed = TRUE)
-  expect_error(top_down_greedy_clustering(unsound_distance_obj,
-                                          sound_size_constraint,
-                                          sound_batch_assign,
-                                          sound_clustering))
-  expect_error(top_down_greedy_clustering(sound_distance_obj,
-                                          unsound_size_constraint,
-                                          sound_batch_assign,
-                                          sound_clustering))
-  expect_error(top_down_greedy_clustering(sound_distance_obj,
-                                          sound_size_constraint,
-                                          unsound_batch_assign,
-                                          sound_clustering))
-  expect_error(top_down_greedy_clustering(sound_distance_obj,
-                                          sound_size_constraint,
-                                          sound_batch_assign,
-                                          unsound_clustering))
-
-  expect_match(class(top_down_greedy_clustering_internal(sound_distance_obj,
-                                                         sound_size_constraint,
-                                                         sound_batch_assign,
-                                                         sound_clustering,
-                                                         sound_deep_copy)), "Rscc_clustering", fixed = TRUE)
-  expect_error(top_down_greedy_clustering_internal(unsound_distance_obj,
-                                                   sound_size_constraint,
-                                                   sound_batch_assign,
-                                                   sound_clustering,
-                                                   sound_deep_copy))
-  expect_error(top_down_greedy_clustering_internal(sound_distance_obj,
-                                                   unsound_size_constraint,
-                                                   sound_batch_assign,
-                                                   sound_clustering,
-                                                   sound_deep_copy))
-  expect_error(top_down_greedy_clustering_internal(sound_distance_obj,
-                                                   sound_size_constraint,
-                                                   unsound_batch_assign,
-                                                   sound_clustering,
-                                                   sound_deep_copy))
-  expect_error(top_down_greedy_clustering_internal(sound_distance_obj,
-                                                   sound_size_constraint,
-                                                   sound_batch_assign,
-                                                   unsound_clustering,
-                                                   sound_deep_copy))
-  expect_error(top_down_greedy_clustering_internal(sound_distance_obj,
-                                                   sound_size_constraint,
-                                                   sound_batch_assign,
-                                                   sound_clustering,
-                                                   unsound_deep_copy))
+                                                sound_clustering,
+                                                sound_deep_copy))
+  expect_error(hierarchical_clustering_internal(sound_distance_obj,
+                                                unsound_size_constraint,
+                                                sound_batch_assign,
+                                                sound_clustering,
+                                                sound_deep_copy))
+  expect_error(hierarchical_clustering_internal(sound_distance_obj,
+                                                sound_size_constraint,
+                                                unsound_batch_assign,
+                                                sound_clustering,
+                                                sound_deep_copy))
+  expect_error(hierarchical_clustering_internal(sound_distance_obj,
+                                                sound_size_constraint,
+                                                sound_batch_assign,
+                                                unsound_clustering,
+                                                sound_deep_copy))
+  expect_error(hierarchical_clustering_internal(sound_distance_obj,
+                                                sound_size_constraint,
+                                                sound_batch_assign,
+                                                sound_clustering,
+                                                unsound_deep_copy))
 })
 
 test_data <- matrix(c(0.0436, 0.9723, 0.5366, 0.1065, 0.5340, 0.3437, 0.2933, 0.4599, 0.2895, 0.2217,
@@ -208,125 +208,125 @@ prev_clust2 <- Rscc_clustering(c(17, 6, 5, 6, 19, 2, 8, 12, 3, 3, 14, 16, 1, 1, 
                                  4, 18, 12, 9, 0, 19, 10, 9, 18, 3, 13, 8, 7, 3, 16, 7, 0, 11, 15, 16, 17, 16, 16, 17, 11, 13, 14, 13, 7, 10,
                                  4, 0, 2, 18, 17, 10, 4, 12, 14, 9, 18, 16, 8, 16, 11, 2, 19, 12, 8, 11, 18, 3, 7, 2))
 
-test_that("greedy clustering functions cluster correctly.", {
-  expect_identical(top_down_greedy_clustering(distance_object = test_distances1,
-                                              size_constraint = 2L,
-                                              batch_assign = TRUE),
-                   replica_top_down_greedy_clustering(distance_object = test_distances1,
-                                                      size_constraint = 2L,
-                                                      batch_assign = TRUE))
-  expect_identical(top_down_greedy_clustering(distance_object = test_distances1,
-                                              size_constraint = 3L,
-                                              batch_assign = TRUE),
-                   replica_top_down_greedy_clustering(distance_object = test_distances1,
-                                                      size_constraint = 3L,
-                                                      batch_assign = TRUE))
-  expect_identical(top_down_greedy_clustering(distance_object = test_distances1,
-                                              size_constraint = 10L,
-                                              batch_assign = TRUE),
-                   replica_top_down_greedy_clustering(distance_object = test_distances1,
-                                                      size_constraint = 10L,
-                                                      batch_assign = TRUE))
-  expect_identical(top_down_greedy_clustering(distance_object = test_distances1,
-                                              size_constraint = 11L,
-                                              batch_assign = TRUE),
-                   replica_top_down_greedy_clustering(distance_object = test_distances1,
-                                                      size_constraint = 11L,
-                                                      batch_assign = TRUE))
+test_that("hierarchical clustering functions cluster correctly.", {
+  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+                                           size_constraint = 2L,
+                                           batch_assign = TRUE),
+                   replica_hierarchical_clustering(distance_object = test_distances1,
+                                                   size_constraint = 2L,
+                                                   batch_assign = TRUE))
+  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+                                           size_constraint = 3L,
+                                           batch_assign = TRUE),
+                   replica_hierarchical_clustering(distance_object = test_distances1,
+                                                   size_constraint = 3L,
+                                                   batch_assign = TRUE))
+  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+                                           size_constraint = 10L,
+                                           batch_assign = TRUE),
+                   replica_hierarchical_clustering(distance_object = test_distances1,
+                                                   size_constraint = 10L,
+                                                   batch_assign = TRUE))
+  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+                                           size_constraint = 11L,
+                                           batch_assign = TRUE),
+                   replica_hierarchical_clustering(distance_object = test_distances1,
+                                                   size_constraint = 11L,
+                                                   batch_assign = TRUE))
 
 
-  expect_identical(top_down_greedy_clustering(distance_object = test_distances1,
-                                              size_constraint = 2L,
-                                              batch_assign = FALSE),
-                   replica_top_down_greedy_clustering(distance_object = test_distances1,
-                                                      size_constraint = 2L,
-                                                      batch_assign = FALSE))
-  expect_identical(top_down_greedy_clustering(distance_object = test_distances1,
-                                              size_constraint = 3L,
-                                              batch_assign = FALSE),
-                   replica_top_down_greedy_clustering(distance_object = test_distances1,
-                                                      size_constraint = 3L,
-                                                      batch_assign = FALSE))
-  expect_identical(top_down_greedy_clustering(distance_object = test_distances1,
-                                              size_constraint = 10L,
-                                              batch_assign = FALSE),
-                   replica_top_down_greedy_clustering(distance_object = test_distances1,
-                                                      size_constraint = 10L,
-                                                      batch_assign = FALSE))
-  expect_identical(top_down_greedy_clustering(distance_object = test_distances1,
-                                              size_constraint = 11L,
-                                              batch_assign = FALSE),
-                   replica_top_down_greedy_clustering(distance_object = test_distances1,
-                                                      size_constraint = 11L,
-                                                      batch_assign = FALSE))
+  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+                                           size_constraint = 2L,
+                                           batch_assign = FALSE),
+                   replica_hierarchical_clustering(distance_object = test_distances1,
+                                                   size_constraint = 2L,
+                                                   batch_assign = FALSE))
+  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+                                           size_constraint = 3L,
+                                           batch_assign = FALSE),
+                   replica_hierarchical_clustering(distance_object = test_distances1,
+                                                   size_constraint = 3L,
+                                                   batch_assign = FALSE))
+  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+                                           size_constraint = 10L,
+                                           batch_assign = FALSE),
+                   replica_hierarchical_clustering(distance_object = test_distances1,
+                                                   size_constraint = 10L,
+                                                   batch_assign = FALSE))
+  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+                                           size_constraint = 11L,
+                                           batch_assign = FALSE),
+                   replica_hierarchical_clustering(distance_object = test_distances1,
+                                                   size_constraint = 11L,
+                                                   batch_assign = FALSE))
 
 
-  expect_identical(top_down_greedy_clustering(distance_object = test_distances1,
-                                              size_constraint = 2L,
-                                              batch_assign = TRUE,
-                                              existing_clustering = prev_clust1),
-                   replica_top_down_greedy_clustering(distance_object = test_distances1,
-                                                      size_constraint = 2L,
-                                                      batch_assign = TRUE,
-                                                      existing_clustering = prev_clust1))
-  expect_identical(top_down_greedy_clustering(distance_object = test_distances1,
-                                              size_constraint = 3L,
-                                              batch_assign = TRUE,
-                                              existing_clustering = prev_clust1),
-                   replica_top_down_greedy_clustering(distance_object = test_distances1,
-                                                      size_constraint = 3L,
-                                                      batch_assign = TRUE,
-                                                      existing_clustering = prev_clust1))
-  expect_identical(top_down_greedy_clustering(distance_object = test_distances1,
-                                              size_constraint = 2L,
-                                              batch_assign = FALSE,
-                                              existing_clustering = prev_clust1),
-                   replica_top_down_greedy_clustering(distance_object = test_distances1,
-                                                      size_constraint = 2L,
-                                                      batch_assign = FALSE,
-                                                      existing_clustering = prev_clust1))
-  expect_identical(top_down_greedy_clustering(distance_object = test_distances1,
-                                              size_constraint = 3L,
-                                              batch_assign = FALSE,
-                                              existing_clustering = prev_clust1),
-                   replica_top_down_greedy_clustering(distance_object = test_distances1,
-                                                      size_constraint = 3L,
-                                                      batch_assign = FALSE,
-                                                      existing_clustering = prev_clust1))
+  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+                                           size_constraint = 2L,
+                                           batch_assign = TRUE,
+                                           existing_clustering = prev_clust1),
+                   replica_hierarchical_clustering(distance_object = test_distances1,
+                                                   size_constraint = 2L,
+                                                   batch_assign = TRUE,
+                                                   existing_clustering = prev_clust1))
+  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+                                           size_constraint = 3L,
+                                           batch_assign = TRUE,
+                                           existing_clustering = prev_clust1),
+                   replica_hierarchical_clustering(distance_object = test_distances1,
+                                                   size_constraint = 3L,
+                                                   batch_assign = TRUE,
+                                                   existing_clustering = prev_clust1))
+  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+                                           size_constraint = 2L,
+                                           batch_assign = FALSE,
+                                           existing_clustering = prev_clust1),
+                   replica_hierarchical_clustering(distance_object = test_distances1,
+                                                   size_constraint = 2L,
+                                                   batch_assign = FALSE,
+                                                   existing_clustering = prev_clust1))
+  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+                                           size_constraint = 3L,
+                                           batch_assign = FALSE,
+                                           existing_clustering = prev_clust1),
+                   replica_hierarchical_clustering(distance_object = test_distances1,
+                                                   size_constraint = 3L,
+                                                   batch_assign = FALSE,
+                                                   existing_clustering = prev_clust1))
 
 
-  expect_identical(top_down_greedy_clustering(distance_object = test_distances1,
-                                              size_constraint = 2L,
-                                              batch_assign = TRUE,
-                                              existing_clustering = prev_clust2),
-                   replica_top_down_greedy_clustering(distance_object = test_distances1,
-                                                      size_constraint = 2L,
-                                                      batch_assign = TRUE,
-                                                      existing_clustering = prev_clust2))
-  expect_identical(top_down_greedy_clustering(distance_object = test_distances1,
-                                              size_constraint = 3L,
-                                              batch_assign = TRUE,
-                                              existing_clustering = prev_clust2),
-                   replica_top_down_greedy_clustering(distance_object = test_distances1,
-                                                      size_constraint = 3L,
-                                                      batch_assign = TRUE,
-                                                      existing_clustering = prev_clust2))
-  expect_identical(top_down_greedy_clustering(distance_object = test_distances1,
-                                              size_constraint = 2L,
-                                              batch_assign = FALSE,
-                                              existing_clustering = prev_clust2),
-                   replica_top_down_greedy_clustering(distance_object = test_distances1,
-                                                      size_constraint = 2L,
-                                                      batch_assign = FALSE,
-                                                      existing_clustering = prev_clust2))
-  expect_identical(top_down_greedy_clustering(distance_object = test_distances1,
-                                              size_constraint = 3L,
-                                              batch_assign = FALSE,
-                                              existing_clustering = prev_clust2),
-                   replica_top_down_greedy_clustering(distance_object = test_distances1,
-                                                      size_constraint = 3L,
-                                                      batch_assign = FALSE,
-                                                      existing_clustering = prev_clust2))
+  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+                                           size_constraint = 2L,
+                                           batch_assign = TRUE,
+                                           existing_clustering = prev_clust2),
+                   replica_hierarchical_clustering(distance_object = test_distances1,
+                                                   size_constraint = 2L,
+                                                   batch_assign = TRUE,
+                                                   existing_clustering = prev_clust2))
+  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+                                           size_constraint = 3L,
+                                           batch_assign = TRUE,
+                                           existing_clustering = prev_clust2),
+                   replica_hierarchical_clustering(distance_object = test_distances1,
+                                                   size_constraint = 3L,
+                                                   batch_assign = TRUE,
+                                                   existing_clustering = prev_clust2))
+  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+                                           size_constraint = 2L,
+                                           batch_assign = FALSE,
+                                           existing_clustering = prev_clust2),
+                   replica_hierarchical_clustering(distance_object = test_distances1,
+                                                   size_constraint = 2L,
+                                                   batch_assign = FALSE,
+                                                   existing_clustering = prev_clust2))
+  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+                                           size_constraint = 3L,
+                                           batch_assign = FALSE,
+                                           existing_clustering = prev_clust2),
+                   replica_hierarchical_clustering(distance_object = test_distances1,
+                                                   size_constraint = 3L,
+                                                   batch_assign = FALSE,
+                                                   existing_clustering = prev_clust2))
 })
 
 
@@ -344,41 +344,41 @@ prev_clust3b <- Rscc_clustering(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3
 prev_clust3c <- Rscc_clustering(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
 prev_clust3d <- Rscc_clustering(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
 
-test_that("greedy clustering functions cluster correctly without deep copy.", {
-  expect_identical(top_down_greedy_clustering_internal(distance_object = test_distances2,
-                                                       size_constraint = 2L,
-                                                       batch_assign = TRUE,
-                                                       existing_clustering = prev_clust3a,
-                                                       deep_copy = FALSE),
-                   replica_top_down_greedy_clustering(distance_object = test_distances2,
-                                                      size_constraint = 2L,
-                                                      batch_assign = TRUE,
-                                                      existing_clustering = prev_clust3ref))
-  expect_identical(top_down_greedy_clustering_internal(distance_object = test_distances2,
-                                                       size_constraint = 3L,
-                                                       batch_assign = TRUE,
-                                                       existing_clustering = prev_clust3b,
-                                                       deep_copy = FALSE),
-                   replica_top_down_greedy_clustering(distance_object = test_distances2,
-                                                      size_constraint = 3L,
-                                                      batch_assign = TRUE,
-                                                      existing_clustering = prev_clust3ref))
-  expect_identical(top_down_greedy_clustering_internal(distance_object = test_distances2,
-                                                       size_constraint = 2L,
-                                                       batch_assign = FALSE,
-                                                       existing_clustering = prev_clust3c,
-                                                       deep_copy = FALSE),
-                   replica_top_down_greedy_clustering(distance_object = test_distances2,
-                                                      size_constraint = 2L,
-                                                      batch_assign = FALSE,
-                                                      existing_clustering = prev_clust3ref))
-  expect_identical(top_down_greedy_clustering_internal(distance_object = test_distances2,
-                                                       size_constraint = 3L,
-                                                       batch_assign = FALSE,
-                                                       existing_clustering = prev_clust3d,
-                                                       deep_copy = FALSE),
-                   replica_top_down_greedy_clustering(distance_object = test_distances2,
-                                                      size_constraint = 3L,
-                                                      batch_assign = FALSE,
-                                                      existing_clustering = prev_clust3ref))
+test_that("hierarchical clustering functions cluster correctly without deep copy.", {
+  expect_identical(hierarchical_clustering_internal(distance_object = test_distances2,
+                                                    size_constraint = 2L,
+                                                    batch_assign = TRUE,
+                                                    existing_clustering = prev_clust3a,
+                                                    deep_copy = FALSE),
+                   replica_hierarchical_clustering(distance_object = test_distances2,
+                                                   size_constraint = 2L,
+                                                   batch_assign = TRUE,
+                                                   existing_clustering = prev_clust3ref))
+  expect_identical(hierarchical_clustering_internal(distance_object = test_distances2,
+                                                    size_constraint = 3L,
+                                                    batch_assign = TRUE,
+                                                    existing_clustering = prev_clust3b,
+                                                    deep_copy = FALSE),
+                   replica_hierarchical_clustering(distance_object = test_distances2,
+                                                   size_constraint = 3L,
+                                                   batch_assign = TRUE,
+                                                   existing_clustering = prev_clust3ref))
+  expect_identical(hierarchical_clustering_internal(distance_object = test_distances2,
+                                                    size_constraint = 2L,
+                                                    batch_assign = FALSE,
+                                                    existing_clustering = prev_clust3c,
+                                                    deep_copy = FALSE),
+                   replica_hierarchical_clustering(distance_object = test_distances2,
+                                                   size_constraint = 2L,
+                                                   batch_assign = FALSE,
+                                                   existing_clustering = prev_clust3ref))
+  expect_identical(hierarchical_clustering_internal(distance_object = test_distances2,
+                                                    size_constraint = 3L,
+                                                    batch_assign = FALSE,
+                                                    existing_clustering = prev_clust3d,
+                                                    deep_copy = FALSE),
+                   replica_hierarchical_clustering(distance_object = test_distances2,
+                                                   size_constraint = 3L,
+                                                   batch_assign = FALSE,
+                                                   existing_clustering = prev_clust3ref))
 })

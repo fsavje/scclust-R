@@ -20,9 +20,9 @@ cl_obj_wID <- structure(cl_labels,
                         class = c("Rscc_clustering"))
 
 cl_obj_wIDnNA <- structure(cl_labels_wNA,
-                        cluster_count = 3L,
-                        ids = letters[1:10],
-                        class = c("Rscc_clustering"))
+                           cluster_count = 3L,
+                           ids = letters[1:10],
+                           class = c("Rscc_clustering"))
 
 test_that("`Rscc_clustering` makes correct output.", {
   expect_equal(Rscc_clustering(c("A", "A", "B", "C", "B", "C", "C", "A", "B", "B")),

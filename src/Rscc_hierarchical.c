@@ -8,17 +8,17 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ============================================================================== */
 
-#include "Rscc_greedy.h"
+#include "Rscc_hierarchical.h"
 
 #include <limits.h>
 #include <stdbool.h>
@@ -33,14 +33,14 @@
 
 // ==============================================================================
 // External function implementations
-// ============================================================================== 
+// ==============================================================================
 
-SEXP Rsccwrap_top_down_greedy_clustering(const SEXP R_distance_object,
-                                         const SEXP R_size_constraint,
-                                         const SEXP R_batch_assign,
-                                         const SEXP R_existing_cluster_labels,
-                                         const SEXP R_existing_num_clusters,
-                                         const SEXP R_deep_copy)
+SEXP Rsccwrap_hierarchical_clustering(const SEXP R_distance_object,
+                                      const SEXP R_size_constraint,
+                                      const SEXP R_batch_assign,
+                                      const SEXP R_existing_cluster_labels,
+                                      const SEXP R_existing_num_clusters,
+                                      const SEXP R_deep_copy)
 {
 	if (!isMatrix(R_distance_object) || !isReal(R_distance_object)) iRsccwrap_error("Invalid distance object.");
 	if (!isInteger(R_size_constraint)) iRsccwrap_error("`R_size_constraint` must be integer.");
@@ -105,10 +105,10 @@ SEXP Rsccwrap_top_down_greedy_clustering(const SEXP R_distance_object,
 		}
 	}
 
-	if ((ec = scc_top_down_greedy_clustering(clustering,
-	                                         data_set_object,
-	                                         size_constraint,
-	                                         batch_assign)) != SCC_ER_OK) {
+	if ((ec = scc_hierarchical_clustering(clustering,
+	                                      data_set_object,
+	                                      size_constraint,
+	                                      batch_assign)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
 		scc_free_data_set_object(&data_set_object);
 		UNPROTECT(1);

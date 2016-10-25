@@ -19,10 +19,10 @@
 # ==============================================================================
 
 
-#' Top down greedy clustering function
+#' Hierarchical clustering function
 #'
-#' \code{top_down_greedy_clustering} derives a clustering statisfying a specified
-#' size-constraint using a greedy clustering algorithm. The primary purpose of
+#' \code{hierarchical_clustering} derives a clustering statisfying a specified
+#' size-constraint using a hierarchical clustering algorithm. The primary purpose of
 #' this function is to refine clusterings produced by the nearest neighbor graph
 #' algorithms in the packages.
 #'
@@ -47,54 +47,54 @@
 #'          clusterings.
 #'
 #' @export
-top_down_greedy_clustering <- function(distance_object,
-                                       size_constraint,
-                                       batch_assign = TRUE,
-                                       existing_clustering = NULL) {
-  top_down_greedy_clustering_internal(distance_object,
-                                      size_constraint,
-                                      batch_assign,
-                                      existing_clustering,
-                                      deep_copy = TRUE)
+hierarchical_clustering <- function(distance_object,
+                                    size_constraint,
+                                    batch_assign = TRUE,
+                                    existing_clustering = NULL) {
+  hierarchical_clustering_internal(distance_object,
+                                   size_constraint,
+                                   batch_assign,
+                                   existing_clustering,
+                                   deep_copy = TRUE)
 }
 
 
-#' Internal top down greedy clustering function
+#' Internal hierarchical clustering function
 #'
 #' ATTENTION! Using this function has side-effects on your R environment,
 #' ensure you properly understand what this does before using it.
-#' In most cases, \code{\link{top_down_greedy_clustering}} is the preferred
+#' In most cases, \code{\link{hierarchical_clustering}} is the preferred
 #' choice.
 #'
-#' \code{top_down_greedy_clustering_internal} is identical to
-#' \code{\link{top_down_greedy_clustering}} except for the
+#' \code{hierarchical_clustering_internal} is identical to
+#' \code{\link{hierarchical_clustering}} except for the
 #' \code{deep_copy} parameter. When \code{deep_copy == TRUE}, the
 #' two functions are identical. However, when
-#' \code{deep_copy == FALSE}, \code{top_down_greedy_clustering_internal}
+#' \code{deep_copy == FALSE}, \code{hierarchical_clustering_internal}
 #' will \strong{not} make a deep copy of \code{existing_clustering} before
 #' refining the clustering. That is, any changes will be made in place, and
 #' \code{existing_clustering} will be invalidated by calling
 #' this function. This is useful when refining an
 #' existing clustering and the inputted clustering is not of interest.
 #'
-#' See \code{\link{top_down_greedy_clustering}} for detailed documentation.
+#' See \code{\link{hierarchical_clustering}} for detailed documentation.
 #'
 #' @param deep_copy a bool indicating whether a deep copy of
 #'                  \code{existing_clustering} should be made before
 #'                  refining the clustering.
-#' @inheritParams top_down_greedy_clustering
+#' @inheritParams hierarchical_clustering
 #'
 #' @return Returns a Rscclust cluster object containing the derived clustering.
 #'
 #' @keywords internal
 #'
-#' @useDynLib Rscclust Rsccwrap_top_down_greedy_clustering
+#' @useDynLib Rscclust Rsccwrap_hierarchical_clustering
 #' @export
-top_down_greedy_clustering_internal <- function(distance_object,
-                                                size_constraint,
-                                                batch_assign = TRUE,
-                                                existing_clustering = NULL,
-                                                deep_copy = TRUE) {
+hierarchical_clustering_internal <- function(distance_object,
+                                             size_constraint,
+                                             batch_assign = TRUE,
+                                             existing_clustering = NULL,
+                                             deep_copy = TRUE) {
   check_Rscc_distances(distance_object)
   num_data_points <- get_num_data_points(distance_object)
   existing_num_clusters <- 0L
@@ -108,7 +108,7 @@ top_down_greedy_clustering_internal <- function(distance_object,
   batch_assign <- get_bool_scalar(batch_assign)
   deep_copy <- get_bool_scalar(deep_copy)
 
-  clustering <- .Call("Rsccwrap_top_down_greedy_clustering",
+  clustering <- .Call("Rsccwrap_hierarchical_clustering",
                       distance_object,
                       size_constraint,
                       batch_assign,

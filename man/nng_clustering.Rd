@@ -31,7 +31,7 @@ nng_clustering(distance_object, size_constraint,
 Dummy documentation
 }
 \seealso{
-Other clustering.functions: \code{\link{top_down_greedy_clustering}}
+Other clustering.functions: \code{\link{hierarchical_clustering}}
 }
 \keyword{cluster}
 

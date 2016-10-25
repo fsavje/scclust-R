@@ -74,11 +74,11 @@ break_cluster <- function(indices,
 }
 
 
-run_greedy <- function (num_data_points,
-                        cluster_queue,
-                        distances,
-                        size_constraint,
-                        batch_assign) {
+run_hierarchical <- function (num_data_points,
+                              cluster_queue,
+                              distances,
+                              size_constraint,
+                              batch_assign) {
   cl_labels <- rep(NA, num_data_points)
   current_label <- 0L
   cluster_queue <- rev(cluster_queue)
@@ -99,10 +99,10 @@ run_greedy <- function (num_data_points,
 }
 
 
-replica_top_down_greedy_clustering <- function(distance_object,
-                                               size_constraint,
-                                               batch_assign = TRUE,
-                                               existing_clustering = NULL) {
+replica_hierarchical_clustering <- function(distance_object,
+                                            size_constraint,
+                                            batch_assign = TRUE,
+                                            existing_clustering = NULL) {
   check_Rscc_distances(distance_object)
   num_data_points <- get_num_data_points(distance_object)
   existing_num_clusters <- 0L
@@ -121,11 +121,11 @@ replica_top_down_greedy_clustering <- function(distance_object,
     cluster_queue <- list(1:num_data_points)
   }
 
-  new_labels <- run_greedy(num_data_points,
-                           cluster_queue,
-                           as.matrix(distance_object),
-                           size_constraint,
-                           batch_assign)
+  new_labels <- run_hierarchical(num_data_points,
+                                 cluster_queue,
+                                 as.matrix(distance_object),
+                                 size_constraint,
+                                 batch_assign)
 
   make_Rscc_clustering(new_labels,
                        length(unique(new_labels)),
