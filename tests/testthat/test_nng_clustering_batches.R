@@ -1,6 +1,7 @@
 library(Rscclust)
 context("nng_clustering.R (batches)")
 
+source("config.R", local = TRUE)
 source("../replica/replica_make_nng.R", local = TRUE)
 source("../replica/replica_nng_batches.R", local = TRUE)
 source("utils_nng.R", local = TRUE)
@@ -108,6 +109,8 @@ test_that("batch nng clustering function cluster correctly.", {
 
 test_that("non-type nng clustering function cluster correctly all combinations", {
   skip_on_cran()
+  skip_if_not(run_slow_tests)
+
   for (main_unassigned_method in c("ignore", "by_nng")) {
     for (main_radius in c(0, 0.1, 0.2)) {
       for (do_main_data_points in c("N", "Y")) {

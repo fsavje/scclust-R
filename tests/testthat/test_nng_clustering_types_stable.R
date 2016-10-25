@@ -1,6 +1,7 @@
 library(Rscclust)
 context("nng_clustering.R (types)")
 
+source("config.R", local = TRUE)
 source("../replica/replica_findseed.R", local = TRUE)
 source("../replica/replica_make_nng.R", local = TRUE)
 source("../replica/replica_nng.R", local = TRUE)
@@ -31,7 +32,9 @@ by_nng_or_closest_assigned <- function(main_unassigned_method,
 
 
 test_that("type nng clustering function cluster correctly all combinations", {
-  skip("Only run this when scclust is compiled with the -DSCC_STABLE_NNG flag.")
+  skip_on_cran()
+  skip_if_not(run_slow_tests)
+  skip_if_not(compiled_with_stable_nng, "Only run this when scclust is compiled with the -DSCC_STABLE_NNG flag.")
 
   for (tc in list(list(tc = "tc1",
                        type_labels = types1,

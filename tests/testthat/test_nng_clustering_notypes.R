@@ -1,6 +1,7 @@
 library(Rscclust)
 context("nng_clustering.R (no types)")
 
+source("config.R", local = TRUE)
 source("../replica/replica_findseed.R", local = TRUE)
 source("../replica/replica_make_nng.R", local = TRUE)
 source("../replica/replica_nng.R", local = TRUE)
@@ -259,6 +260,8 @@ test_that("non-type nng clustering function cluster correctly.", {
 
 test_that("non-type nng clustering function cluster correctly all combinations", {
   skip_on_cran()
+  skip_if_not(run_slow_tests)
+
   for (seed_method in c("lexical",
                         "inwards_order",
                         "inwards_updating",

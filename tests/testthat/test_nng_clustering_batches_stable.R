@@ -1,13 +1,17 @@
 library(Rscclust)
 context("nng_clustering.R (batches, stable)")
 
+source("config.R", local = TRUE)
 source("../replica/replica_make_nng.R", local = TRUE)
 source("../replica/replica_nng_batches.R", local = TRUE)
 source("utils_nng.R", local = TRUE)
 
 
 test_that("batch nng clustering function cluster correctly all combinations", {
-  skip("Only run this when scclust is compiled with the -DSCC_STABLE_NNG flag.")
+  skip_on_cran()
+  skip_if_not(run_slow_tests)
+  skip_if_not(compiled_with_stable_nng, "Only run this when scclust is compiled with the -DSCC_STABLE_NNG flag.")
+
   for (size_constraint in c(2L, 3L, 6L)) {
     for (main_unassigned_method in c("ignore", "by_nng")) {
       radius_to_use <- c(0, 0.1, 0.2, 0.3)

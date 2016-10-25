@@ -1,6 +1,7 @@
 library(Rscclust)
 context("nng_clustering.R (no types, find seed stable)")
 
+source("config.R", local = TRUE)
 source("../replica/replica_findseed.R", local = TRUE)
 source("../replica/replica_findseed_stable.R", local = TRUE)
 source("../replica/replica_make_nng.R", local = TRUE)
@@ -9,7 +10,11 @@ source("../replica/replica_nng_stable.R", local = TRUE)
 source("utils_nng.R", local = TRUE)
 
 test_that("non-type nng clustering function cluster correctly all combinations", {
-  skip("Only run this when scclust is compiled with the -DSCC_STABLE_NNG and -DSCC_STABLE_FINDSEED flags.")
+  skip_on_cran()
+  skip_if_not(run_slow_tests)
+  skip_if_not(compiled_with_stable_findseed, "Only run this when scclust is compiled with the -DSCC_STABLE_FINDSEED flag.")
+  skip_if_not(compiled_with_stable_nng, "Only run this when scclust is compiled with the -DSCC_STABLE_NNG flag.")
+
   for (seed_method in c("lexical",
                         "inwards_order",
                         "inwards_updating",
