@@ -27,7 +27,7 @@ cl_fake2 <- make_Rscc_clustering(integer(), 3, NULL)
 cl_fake3 <- structure(c(0L, 1L, 2L, 0L, 1L, 2L, 0L),
                       ids = NULL,
                       class = c("Rscc_clustering"))
-cl_fake4 <- make_Rscc_clustering(c(0L, 1L, 2L, 0L, 1L, 2L, 0L), 0, NULL)
+cl_fake4 <- make_Rscc_clustering(c(0L, 1L, 2L, 0L, 1L, 2L, 0L), -1, NULL)
 
 test_that("`check_Rscc_clustering` checks input.", {
   expect_silent(check_Rscc_clustering(cl1))

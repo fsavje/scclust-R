@@ -29,11 +29,8 @@ check_Rscc_distances <- function(distance_object) {
 
 
 check_Rscc_clustering <- function(clustering) {
-  stopifnot(inherits(clustering, "Rscc_clustering"),
-            is.integer(clustering),
-            length(clustering) > 0L,
-            "cluster_count" %in% names(attributes(clustering)),
-            as.integer(attr(clustering, "cluster_count", exact = TRUE))[1] > 0L)
+  stopifnot(is.Rscc_clustering(clustering),
+            length(clustering) > 0L)
 }
 
 

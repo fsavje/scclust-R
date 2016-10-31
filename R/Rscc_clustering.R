@@ -88,6 +88,26 @@ Rscc_clustering <- function(cluster_labels,
 }
 
 
+#' Check \code{Rscc_clustering} object
+#'
+#' \code{is.Rscc_clustering} checks whether the provided object
+#' is a valid instance of the \code{Rscc_clustering} class. It does
+#' not whether the clustering itself is sensible.
+#'
+#' @param obj  object to check.
+#'
+#' @return Returns \code{TRUE} if \code{obj} is a valid
+#'         \code{Rscc_clustering} object, otherwise \code{FALSE}.
+#'
+#' @export
+is.Rscc_clustering <- function(obj) {
+  is.integer(obj) &&
+    inherits(obj, "Rscc_clustering") &&
+    !is.null(attr(obj, "cluster_count", exact = TRUE)) &&
+    as.integer(attr(obj, "cluster_count", exact = TRUE))[1] >= 0L
+}
+
+
 #' @export
 as.data.frame.Rscc_clustering <- function(x,
                                           row.names = NULL,
