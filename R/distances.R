@@ -249,6 +249,33 @@ make_distances <- function(data,
 }
 
 
+#' Check \code{Rscc_distances} object
+#'
+#' \code{is.Rscc_distances} checks whether the provided object
+#' is a valid instance of the \code{Rscc_distances} class.
+#'
+#' @param obj  object to check.
+#'
+#' @return Returns \code{TRUE} if \code{obj} is a valid
+#'         \code{Rscc_distances} object, otherwise \code{FALSE}.
+#'
+#' @export
+is.Rscc_distances <- function(obj) {
+  inherits(obj, "Rscc_distances") &&
+    is.matrix(obj) &&
+    is.numeric(obj) &&
+    (is.null(attr(obj, "id_variable", exact = TRUE)) ||
+       (is.character(attr(obj, "id_variable", exact = TRUE)) &&
+          (length(attr(obj, "id_variable", exact = TRUE)) == num_data_points))) &&
+    !is.null(attr(obj, "normalization", exact = TRUE)) &&
+    is.matrix(attr(obj, "normalization", exact = TRUE)) &&
+    is.numeric(attr(obj, "normalization", exact = TRUE)) &&
+    !is.null(attr(obj, "weights", exact = TRUE)) &&
+    is.matrix(attr(obj, "weights", exact = TRUE)) &&
+    is.numeric(attr(obj, "weights", exact = TRUE))
+}
+
+
 #' @export
 print.Rscc_distances <- function(x, ...) {
   message("This is a Rscc_distances object. It's only purpose is to be used in the Rscclust package. Use `as.matrix` to generate an R matrix with the distances (a very slow operation for large distance matrices).")

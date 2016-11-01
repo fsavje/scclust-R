@@ -22,9 +22,7 @@
 # Check Rscclust objects =======================================================
 
 check_Rscc_distances <- function(distance_object) {
-  stopifnot(inherits(distance_object, "Rscc_distances"),
-            is.matrix(distance_object),
-            is.numeric(distance_object))
+  stopifnot(is.Rscc_distances(distance_object))
 }
 
 
