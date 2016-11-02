@@ -16,7 +16,9 @@ hierarchical_clustering_internal(distance_object, size_constraint,
 spliting clusters.}
 
 \item{existing_clustering}{\code{NULL} or a \code{Rscc_clustering} object containing an existing
-non-empty clustering.}
+non-empty clustering. If \code{NULL}, the function will start with a
+single cluster containing all data points (i.e., it derives a clustering
+from scratch).}
 
 \item{deep_copy}{a bool indicating whether a deep copy of
 \code{existing_clustering} should be made before

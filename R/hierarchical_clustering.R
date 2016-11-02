@@ -24,16 +24,51 @@
 #' \code{hierarchical_clustering} derives a clustering statisfying a specified
 #' size-constraint using a hierarchical clustering algorithm. The primary purpose of
 #' this function is to refine clusterings produced by the nearest neighbor graph
-#' algorithms in the packages.
+#' functions in the package.
 #'
-#' To be written...
+#' While \code{hierarchical_clustering} can be used alone to derive size constrained
+#' clusterings, its main purpose is to be used with the nearest neighbor graph (NNG)
+#' functions in the package (e.g., \code{\link{nng_clustering}}). The clusterings
+#' produced by the NNG functions tend produce large clusters in regions with many
+#' data points. In some cases, it is beneficial to divide these clusters into smaller
+#' groups. \code{hierarchical_clustering} can be use to achieve that.
+#'
+#' \code{hierarchical_clustering} implements a divisive hierarchical clustering
+#' algorithm that respect size constraints. Starting from any clustering satisfying
+#' the size constraints (which may be a clustering with a single cluster containing
+#' all data points), \code{hierarchical_clustering} seraches for clusters that can
+#' be broken into two or more new clusters without violating the constraints. It
+#' continues in this fashion until all remaining clusters are unbreakable.
+#'
+#' \code{hierarchical_clustering} breaks a cluster in three stages. First,
+#' it tries to find two data points as far as possible from each other in
+#' the cluster it is about to break. The two points are called \emph{centers},
+#' and they are the starting points for the two new clusters. The remaining
+#' data points in the old cluster will be assigned to one of the centers.
+#' In the second stage, each center picks the clostest data points so that
+#' the new cluster satisfies the size constraint and assigns them to its
+#' cluster. In the last stage, data points still not assigned are assigned to
+#' their clostest centers either one-by-one or in batches (see below for
+#' discussion). When all data points are assigned to a cluster, the old
+#' cluster is removed and the two new are added to the clustering. If a new
+#' cluster is breakable, it will go through the same procedure again.
+#'
+#' In some applications, it is desireable to avoid clusters that contain a number
+#' of data points that are not multiples of \code{size_constraint}. After the
+#' second stage described in the previous paragraph, both partial clusters are
+#' exact multiples of the size constraint. By assigning remaining data points
+#' in the third stage in batches of \code{size_constraint}, this property is
+#' retained to the greatest extent possible.
+#'
 #'
 #' @param distance_object a distance object as produced by \code{\link{make_distances}}.
 #' @param size_constraint an integer with the required minimum cluster size.
 #' @param batch_assign a bool indicating whether data points should be assigned in batches when
 #'                            spliting clusters.
 #' @param existing_clustering \code{NULL} or a \code{Rscc_clustering} object containing an existing
-#'                            non-empty clustering.
+#'                            non-empty clustering. If \code{NULL}, the function will start with a
+#'                            single cluster containing all data points (i.e., it derives a clustering
+#'                            from scratch).
 #'
 #' @return Returns a Rscclust cluster object containing the derived clustering.
 #'

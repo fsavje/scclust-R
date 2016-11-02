@@ -2,7 +2,7 @@
 % Please edit documentation in R/nng_clustering.R
 \name{nng_clustering_types}
 \alias{nng_clustering_types}
-\title{Dummy documentation}
+\title{Nearest neighbor graph based clustering function with type constraints}
 \usage{
 nng_clustering_types(distance_object, type_labels, type_size_constraints,
   total_size_constraint = NULL, seed_method = "exclusion_updating",

@@ -19,21 +19,51 @@
 # ==============================================================================
 
 
-#' Dummy documentation
+#' Nearest neighbor graph based clustering function
 #'
-#' Dummy documentation
+#' \code{nng_clustering} derives a clustering statisfying the specified
+#' size constraints. It implements an algorithm that first summaries the
+#' distance information between data points in a sparse graph and then
+#' constructs the clusterings based on the graph. The function is intended
+#' to run fast while ensuring near-optimal performance.
 #'
-#' @param distance_object abc ...
-#' @param size_constraint abc ...
-#' @param seed_method abc ...
-#' @param main_unassigned_method abc ...
-#' @param main_radius abc ...
-#' @param main_data_points abc ...
-#' @param secondary_unassigned_method abc ...
-#' @param secondary_radius abc ...
+#' Must be one of
+#'                    "lexical", "inwards_order", "inwards_updating",
+#'                    "inwards_alt_updating", "exclusion_order", "exclusion_updating".
+#'
+#'  Must be one of
+#'                               "ignore", "by_nng", "closest_assigned",
+#'                               "closest_seed", "estimated_radius_closest_seed".
+#'
+#' @param distance_object a distance object as produced by \code{\link{make_distances}}.
+#' @param size_constraint an integer with the required minimum cluster size.
+#' @param seed_method how seeds are found. See below for additional details.
+#' @param main_unassigned_method how remaining (primary) data points are assigned
+#'                               to clusters. See below for additional details.
+#' @param main_radius restricts the maximum length of an edge in the graph that
+#'                    summaries the distance information. \code{NULL} indicates
+#'                    no restriction. See below for details on how this translates
+#'                    to maximum distance within a cluster.
+#' @param main_data_points a logical vector of length equal to number of data points
+#'                         indicating primary and secondary data points. \code{NULL}
+#'                         indicates that all data points are "primary". See below for
+#'                         details.
+#' @param secondary_unassigned_method how remaining secondary data points are assigned
+#'                               to clusters. See below for additional details.
+#' @param secondary_radius restricts the maximum distance when assigning secondary data
+#'                         points to clusters.
+#'
+#' @return Returns a Rscclust cluster object containing the derived clustering.
 #'
 #' @keywords cluster
 #' @family clustering functions
+#'
+#' @seealso \code{\link{nng_clustering_batches}} and \code{\link{nng_clustering_types}} are
+#'          other NNG-based clustering functions in the package.
+#'
+#'          \code{\link{hierarchical_clustering}} can be used to refine the clustering
+#'          constructed by this function.
+#'
 #' @useDynLib Rscclust Rsccwrap_nng_clustering
 #' @export
 nng_clustering <- function(distance_object,
@@ -83,7 +113,8 @@ nng_clustering <- function(distance_object,
 }
 
 
-#' Dummy documentation
+
+#' Nearest neighbor graph based clustering function in batch mode
 #'
 #' Dummy documentation
 #'
@@ -127,7 +158,7 @@ nng_clustering_batches <- function(distance_object,
 }
 
 
-#' Dummy documentation
+#' Nearest neighbor graph based clustering function with type constraints
 #'
 #' Dummy documentation
 #'

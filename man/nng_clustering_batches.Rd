@@ -2,7 +2,7 @@
 % Please edit documentation in R/nng_clustering.R
 \name{nng_clustering_batches}
 \alias{nng_clustering_batches}
-\title{Dummy documentation}
+\title{Nearest neighbor graph based clustering function in batch mode}
 \usage{
 nng_clustering_batches(distance_object, size_constraint,
   main_unassigned_method = "by_nng", main_radius = NULL,
