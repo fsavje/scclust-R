@@ -107,9 +107,7 @@ SEXP Rscc_nng_clustering(const SEXP R_distance_object,
 			iRscc_error("Invalid `R_main_data_points`.");
 		}
 		main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
-		if (main_data_points == NULL) {
-			iRscc_error("Could not allocate memory.");
-		}
+		if (main_data_points == NULL) iRscc_error("Could not allocate memory.");
 		const int* const tmp_main_data_points = LOGICAL(R_main_data_points);
 		for (size_t i = 0; i < len_main_data_points; ++i) {
 			main_data_points[i] = (tmp_main_data_points[i] == 1);
@@ -232,9 +230,7 @@ SEXP Rscc_nng_clustering_batches(const SEXP R_distance_object,
 			iRscc_error("Invalid `R_main_data_points`.");
 		}
 		main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
-		if (main_data_points == NULL) {
-			iRscc_error("Could not allocate memory.");
-		}
+		if (main_data_points == NULL) iRscc_error("Could not allocate memory.");
 		const int* const tmp_main_data_points = LOGICAL(R_main_data_points);
 		for (size_t i = 0; i < len_main_data_points; ++i) {
 			main_data_points[i] = (tmp_main_data_points[i] == 1);
@@ -307,7 +303,6 @@ SEXP Rscc_nng_clustering_batches(const SEXP R_distance_object,
 }
 
 
-
 SEXP Rscc_nng_clustering_types(const SEXP R_distance_object,
                                const SEXP R_type_labels,
                                const SEXP R_type_size_constraints,
@@ -359,12 +354,18 @@ SEXP Rscc_nng_clustering_types(const SEXP R_distance_object,
 	const scc_UnassignedMethod main_unassigned_method = iRscc_parse_unassigned_method(R_main_unassigned_method);
 	const scc_UnassignedMethod secondary_unassigned_method = iRscc_parse_unassigned_method(R_secondary_unassigned_method);
 
+	if (len_type_labels != num_data_points) {
+		iRscc_error("`R_type_labels` does not match `R_distance_object`.");
+	}
+
 	const uintmax_t num_types = (uintmax_t) xlength(R_type_size_constraints);
 	uint32_t* const type_size_constraints = (uint32_t*) R_alloc(num_types, sizeof(uint32_t)); // Automatically freed by R on return
 	if (type_size_constraints == NULL) iRscc_error("Could not allocate memory.");
 	const int* const tmp_type_size_constraints = INTEGER(R_type_size_constraints);
 	for (size_t i = 0; i < num_types; ++i) {
-		if (tmp_type_size_constraints[i] < 0) iRscc_error("Negative type size constraint.");
+		if (tmp_type_size_constraints[i] < 0) {
+		  iRscc_error("Negative type size constraint.");
+		}
 		type_size_constraints[i] = (uint32_t) tmp_type_size_constraints[i];
 	}
 
@@ -390,9 +391,7 @@ SEXP Rscc_nng_clustering_types(const SEXP R_distance_object,
 			iRscc_error("Invalid `R_main_data_points`.");
 		}
 		main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
-		if (main_data_points == NULL) {
-			iRscc_error("Could not allocate memory.");
-		}
+		if (main_data_points == NULL) iRscc_error("Could not allocate memory.");
 		const int* const tmp_main_data_points = LOGICAL(R_main_data_points);
 		for (size_t i = 0; i < len_main_data_points; ++i) {
 			main_data_points[i] = (tmp_main_data_points[i] == 1);

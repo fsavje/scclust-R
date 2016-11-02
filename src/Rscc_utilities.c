@@ -34,7 +34,6 @@
 // External function implementations
 // =============================================================================
 
-
 SEXP Rscc_check_clustering(const SEXP R_clustering,
                            const SEXP R_size_constraint)
 {
@@ -80,8 +79,6 @@ SEXP Rscc_check_clustering(const SEXP R_clustering,
 }
 
 
-
-
 SEXP Rscc_check_clustering_types(const SEXP R_clustering,
                                  const SEXP R_type_labels,
                                  const SEXP R_type_size_constraints,
@@ -112,13 +109,18 @@ SEXP Rscc_check_clustering_types(const SEXP R_clustering,
 	if (num_clusters == 0) {
 		iRscc_error("`R_clustering` is empty.");
 	}
+	if (len_type_labels != num_data_points) {
+		iRscc_error("`R_type_labels` does not match `R_clustering`.");
+	}
 
 	const uintmax_t num_types = (uintmax_t) xlength(R_type_size_constraints);
 	uint32_t* const type_size_constraints = (uint32_t*) R_alloc(num_types, sizeof(uint32_t)); // Automatically freed by R on return
 	if (type_size_constraints == NULL) iRscc_error("Could not allocate memory.");
 	const int* const tmp_type_size_constraints = INTEGER(R_type_size_constraints);
 	for (size_t i = 0; i < num_types; ++i) {
-		if (tmp_type_size_constraints[i] < 0) iRscc_error("Negative type size constraint.");
+		if (tmp_type_size_constraints[i] < 0) {
+			iRscc_error("Negative type size constraint.");
+		}
 		type_size_constraints[i] = (uint32_t) tmp_type_size_constraints[i];
 	}
 
@@ -168,7 +170,7 @@ SEXP Rscc_get_clustering_stats(const SEXP R_clustering,
 	const uintmax_t num_clusters = (uintmax_t) asInteger(getAttrib(R_clustering, install("cluster_count")));
 
 	if (xlength(R_clustering) != num_data_points) {
-		iRscc_error("`R_clustering` does not match `R_distance_object`.");
+		iRscc_error("`R_distance_object` does not match `R_clustering`.");
 	}
 	if (num_clusters == 0) {
 		iRscc_error("`R_clustering` is empty.");

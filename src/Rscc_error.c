@@ -29,9 +29,7 @@ void iRscc_error__(const char* const msg,
                    const char* const file,
                    const int line) {
 	char error_buffer[255];
-	if (snprintf(error_buffer, 255, "(%s:%d) %s", file, line, msg) < 0) {
-		error("Rscc_misc.c: Error printing error message.");
-	}
+	snprintf(error_buffer, 255, "(%s:%d) %s", file, line, msg);
 	error(error_buffer);
 }
 
