@@ -125,7 +125,7 @@ bool scc_get_latest_error(const size_t len_error_message_buffer,
 			break;
 	}
 
-	if (snprintf(error_message_buffer, len_error_message_buffer, "(%s:%d) %s", iscc_error_file, iscc_error_line, error_message) < 0) {
+	if (snprintf(error_message_buffer, len_error_message_buffer, "(scclust:%s:%d) %s", iscc_error_file, iscc_error_line, error_message) < 0) {
 		return false;
 	}
 
