@@ -25,13 +25,16 @@ replica_nng_clustering_batches <- function(distance_object,
                                            main_unassigned_method = "by_nng",
                                            main_radius = NULL,
                                            main_data_points = NULL) {
-  check_Rscc_distances(distance_object)
-  num_data_points <- get_num_data_points(distance_object)
-  size_constraint <- get_size_constraint(size_constraint)
-  stopifnot(size_constraint <= num_data_points)
-  main_unassigned_method <- match.arg(main_unassigned_method, c("ignore", "by_nng"))
-  main_radius <- get_radius(main_radius)
-  check_main_data_points(main_data_points, num_data_points)
+  ensure_distances(distance_object)
+  num_data_points <- data_point_count_distances(distance_object)
+  size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
+  main_unassigned_method <- coerce_args(main_unassigned_method,
+                                        c("ignore", "by_nng"))
+  main_radius <- coerce_radius(main_radius)
+  if (!is.null(main_data_points)) {
+    ensure_indicators(main_data_points, num_data_points, TRUE)
+  }
+  batch_size <- coerce_counts(batch_size, 1L)
 
   distances <- as.matrix(distance_object)
   nng <- get_simple_nng(distances,

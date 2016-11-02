@@ -103,17 +103,13 @@ replica_hierarchical_clustering <- function(distance_object,
                                             size_constraint,
                                             batch_assign = TRUE,
                                             existing_clustering = NULL) {
-  check_Rscc_distances(distance_object)
-  num_data_points <- get_num_data_points(distance_object)
-  existing_num_clusters <- 0L
+  ensure_distances(distance_object)
+  num_data_points <- data_point_count_distances(distance_object)
+  size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
+  ensure_indicators(batch_assign, 1L)
   if (!is.null(existing_clustering)) {
-    check_Rscc_clustering(existing_clustering)
-    stopifnot(length(existing_clustering) == num_data_points)
-    existing_num_clusters <- get_num_clusters(existing_clustering)
+    ensure_Rscc_clustering(existing_clustering, num_data_points)
   }
-  size_constraint <- get_size_constraint(size_constraint)
-  stopifnot(size_constraint <= num_data_points)
-  batch_assign <- get_bool_scalar(batch_assign)
 
   if (!is.null(existing_clustering)) {
     cluster_queue <- lapply(sort(unique(existing_clustering)), function(x) { rev(which(existing_clustering == x)) })

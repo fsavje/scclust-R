@@ -113,24 +113,28 @@ replica_nng_clustering <- function(distance_object,
                                    main_data_points = NULL,
                                    secondary_unassigned_method = "ignore",
                                    secondary_radius = NULL) {
-  check_Rscc_distances(distance_object)
-  num_data_points <- get_num_data_points(distance_object)
-  size_constraint <- get_size_constraint(size_constraint)
-  stopifnot(size_constraint <= num_data_points)
-  seed_method <- get_seed_method(seed_method)
-  main_unassigned_method <- match.arg(main_unassigned_method, c("ignore",
-                                                                "by_nng",
-                                                                "closest_assigned",
-                                                                "closest_seed",
-                                                                "estimated_radius_closest_seed"))
-  main_radius <- get_radius(main_radius)
-  check_main_data_points(main_data_points, num_data_points)
-  if (is.null(main_data_points)) secondary_unassigned_method <- "ignore"
-  secondary_unassigned_method <- match.arg(secondary_unassigned_method, c("ignore",
-                                                                          "closest_assigned",
-                                                                          "closest_seed",
-                                                                          "estimated_radius_closest_seed"))
-  secondary_radius <- get_radius(secondary_radius)
+  ensure_distances(distance_object)
+  num_data_points <- data_point_count_distances(distance_object)
+  size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
+  seed_method <- coerce_args(seed_method, all_seed_methods)
+  main_unassigned_method <- coerce_args(main_unassigned_method,
+                                        c("ignore",
+                                          "by_nng",
+                                          "closest_assigned",
+                                          "closest_seed",
+                                          "estimated_radius_closest_seed"))
+  main_radius <- coerce_radius(main_radius)
+  if (is.null(main_data_points)) {
+    secondary_unassigned_method <- "ignore"
+  } else {
+    ensure_indicators(main_data_points, num_data_points, TRUE)
+  }
+  secondary_unassigned_method <- coerce_args(secondary_unassigned_method,
+                                             c("ignore",
+                                               "closest_assigned",
+                                               "closest_seed",
+                                               "estimated_radius_closest_seed"))
+  secondary_radius <- coerce_radius(secondary_radius)
 
   distances <- as.matrix(distance_object)
   nng <- get_simple_nng(distances,
@@ -176,29 +180,35 @@ replica_nng_clustering_types <- function(distance_object,
                                          main_data_points = NULL,
                                          secondary_unassigned_method = "ignore",
                                          secondary_radius = NULL) {
-  check_Rscc_distances(distance_object)
-  num_data_points <- get_num_data_points(distance_object)
-  check_type_labels(type_labels)
-  type_size_constraints <- get_type_size_constraints(type_size_constraints,
-                                                     type_labels)
-  total_size_constraint <- get_total_size_constraint(total_size_constraint,
-                                                     type_size_constraints)
-  stopifnot(total_size_constraint <= num_data_points)
-  seed_method <- get_seed_method(seed_method)
-  main_unassigned_method <- match.arg(main_unassigned_method, c("ignore",
-                                                                "by_nng",
-                                                                "closest_assigned",
-                                                                "closest_seed",
-                                                                "estimated_radius_closest_seed"))
-  main_radius <- get_radius(main_radius)
-  check_main_data_points(main_data_points, num_data_points)
-  if (is.null(main_data_points)) secondary_unassigned_method <- "ignore"
-  secondary_unassigned_method <- match.arg(secondary_unassigned_method, c("ignore",
-                                                                          "closest_assigned",
-                                                                          "closest_seed",
-                                                                          "estimated_radius_closest_seed"))
-  secondary_radius <- get_radius(secondary_radius)
-
+  ensure_distances(distance_object)
+  num_data_points <- data_point_count_distances(distance_object)
+  type_labels <- coerce_type_labels(type_labels, num_data_points)
+  type_size_constraints <- coerce_type_constraints(type_size_constraints)
+  #ensure_type_labels_exist(names(type_size_constraints), get_all_types(type_labels))
+  type_size_constraints <- make_type_size_constraints(type_size_constraints,
+                                                      type_labels)
+  total_size_constraint <- coerce_total_size_constraint(total_size_constraint,
+                                                        type_size_constraints,
+                                                        num_data_points)
+  seed_method <- coerce_args(seed_method, all_seed_methods)
+  main_unassigned_method <- coerce_args(main_unassigned_method,
+                                        c("ignore",
+                                          "by_nng",
+                                          "closest_assigned",
+                                          "closest_seed",
+                                          "estimated_radius_closest_seed"))
+  main_radius <- coerce_radius(main_radius)
+  if (is.null(main_data_points)) {
+    secondary_unassigned_method <- "ignore"
+  } else {
+    ensure_indicators(main_data_points, num_data_points, TRUE)
+  }
+  secondary_unassigned_method <- coerce_args(secondary_unassigned_method,
+                                             c("ignore",
+                                               "closest_assigned",
+                                               "closest_seed",
+                                               "estimated_radius_closest_seed"))
+  secondary_radius <- coerce_radius(secondary_radius)
 
   distances <- as.matrix(distance_object)
   nng <- get_type_nng(distances,
