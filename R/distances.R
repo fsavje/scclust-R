@@ -146,55 +146,24 @@ make_distances <- function(data,
                            dist_variables = NULL,
                            normalize = NULL,
                            weights = NULL) {
-
-  stopifnot((is.data.frame(data) || is.matrix(data)),
-            (is.data.frame(data) || is.null(dist_variables)),
-            (nrow(data) >= 2))
-
+  tmp_coersed_data <- coerse_distance_data(data, id_variable, dist_variables)
+  data <- tmp_coersed_data$data
+  id_variable <- tmp_coersed_data$id_variable
+  rm(tmp_coersed_data)
+  stopifnot(is.matrix(data),
+            is.double(data))
   num_data_points <- nrow(data)
 
-  if (is.data.frame(data)) {
-    if (!is.null(id_variable) && (length(id_variable) == 1)) {
-      stopifnot(is.character(id_variable),
-                (id_variable %in% colnames(data)))
-      if (is.null(dist_variables)) {
-        dist_variables <- setdiff(colnames(data), id_variable)
-      }
-      id_variable <- data[, id_variable, drop = TRUE]
-    }
-    if (!is.null(dist_variables)) {
-      stopifnot(is.character(dist_variables),
-                (dist_variables %in% colnames(data)))
-      data <- data[, dist_variables, drop = FALSE]
-    }
-
-    for (col in names(data)) {
-      if (!is.numeric(data[, col])) {
-        data[, col] <- as.numeric(data[, col])
-      }
-    }
-
-    data <- as.matrix(data)
-  }
-
-  data <- unname(data)
-
   if (!is.null(id_variable)) {
-    id_variable <- as.character(id_variable)
+    id_variable <- coerce_character(id_variable, num_data_points)
   }
-
-  stopifnot(is.matrix(data),
-            is.numeric(data),
-            all(!is.na(data)),
-            (is.null(id_variable) || is.character(id_variable)),
-            (is.null(id_variable) || (length(id_variable) == num_data_points)))
 
   if (is.character(normalize)) {
-    normalize <- normalize[1]
     if (normalize == "mahalanobis") normalize <- "mahalanobize"
-    normalize <- match.arg(normalize, c("none",
-                                        "mahalanobize",
-                                        "studentize"))
+    normalize <- coerce_args(normalize,
+                             c("none",
+                               "mahalanobize",
+                               "studentize"))
     normalize <- switch(normalize,
                         none = NULL,
                         mahalanobize = stats::var(data),
@@ -202,40 +171,14 @@ make_distances <- function(data,
   }
 
   if (!is.null(normalize)) {
-    if (is.data.frame(normalize)) normalize <- as.matrix(normalize)
-    if (is.vector(normalize)) normalize <- diag(normalize)
-
-    normalize <- unname(normalize)
-
-    stopifnot(is.matrix(normalize),
-              is.numeric(normalize),
-              all(!is.na(normalize)),
-              isSymmetric(normalize),
-              ncol(normalize) == ncol(data))
-    if (any(eigen(normalize, symmetric = TRUE, only.values = TRUE)$values <= 2 * .Machine$double.eps)) {
-      stop("`normalize` must be positive-semidefinite.")
-    }
-
+    normalize <- coerse_norm_matrix(normalize, ncol(data))
     data <- tcrossprod(data, chol(solve(normalize)))
   } else {
     normalize <- diag(ncol(data))
   }
 
   if (!is.null(weights)) {
-    if (is.data.frame(weights)) weights <- as.matrix(weights)
-    if (is.vector(weights)) weights <- diag(weights)
-
-    weights <- unname(weights)
-
-    stopifnot(is.matrix(weights),
-              is.numeric(weights),
-              all(!is.na(weights)),
-              isSymmetric(weights),
-              ncol(weights) == ncol(data))
-    if (any(eigen(weights, symmetric = TRUE, only.values = TRUE)$values <= 2 * .Machine$double.eps)) {
-      stop("`weights` must be positive-semidefinite.")
-    }
-
+    weights <- coerse_norm_matrix(weights, ncol(data))
     data <- tcrossprod(data, chol(weights))
   } else {
     weights <- diag(ncol(data))
@@ -266,7 +209,7 @@ is.Rscc_distances <- function(obj) {
     is.numeric(obj) &&
     (is.null(attr(obj, "id_variable", exact = TRUE)) ||
        (is.character(attr(obj, "id_variable", exact = TRUE)) &&
-          (length(attr(obj, "id_variable", exact = TRUE)) == num_data_points))) &&
+          (length(attr(obj, "id_variable", exact = TRUE)) == data_point_count_distances(obj)))) &&
     !is.null(attr(obj, "normalization", exact = TRUE)) &&
     is.matrix(attr(obj, "normalization", exact = TRUE)) &&
     is.numeric(attr(obj, "normalization", exact = TRUE)) &&

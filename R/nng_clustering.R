@@ -44,24 +44,28 @@ nng_clustering <- function(distance_object,
                            main_data_points = NULL,
                            secondary_unassigned_method = "ignore",
                            secondary_radius = NULL) {
-  check_Rscc_distances(distance_object)
-  num_data_points <- get_num_data_points(distance_object)
-  size_constraint <- get_size_constraint(size_constraint)
-  stopifnot(size_constraint <= num_data_points)
-  seed_method <- get_seed_method(seed_method)
-  main_unassigned_method <- match.arg(main_unassigned_method, c("ignore",
-                                                                "by_nng",
-                                                                "closest_assigned",
-                                                                "closest_seed",
-                                                                "estimated_radius_closest_seed"))
-  main_radius <- get_radius(main_radius)
-  check_main_data_points(main_data_points, num_data_points)
-  if (is.null(main_data_points)) secondary_unassigned_method <- "ignore"
-  secondary_unassigned_method <- match.arg(secondary_unassigned_method, c("ignore",
-                                                                          "closest_assigned",
-                                                                          "closest_seed",
-                                                                          "estimated_radius_closest_seed"))
-  secondary_radius <- get_radius(secondary_radius)
+  ensure_distances(distance_object)
+  num_data_points <- data_point_count_distances(distance_object)
+  size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
+  seed_method <- coerce_args(seed_method, all_seed_methods)
+  main_unassigned_method <- coerce_args(main_unassigned_method,
+                                        c("ignore",
+                                          "by_nng",
+                                          "closest_assigned",
+                                          "closest_seed",
+                                          "estimated_radius_closest_seed"))
+  main_radius <- coerce_radius(main_radius)
+  if (is.null(main_data_points)) {
+    secondary_unassigned_method <- "ignore"
+  } else {
+    ensure_indicators(main_data_points, num_data_points, TRUE)
+  }
+  secondary_unassigned_method <- coerce_args(secondary_unassigned_method,
+                                             c("ignore",
+                                               "closest_assigned",
+                                               "closest_seed",
+                                               "estimated_radius_closest_seed"))
+  secondary_radius <- coerce_radius(secondary_radius)
 
   clustering <- .Call("Rsccwrap_nng_clustering",
                       distance_object,
@@ -98,16 +102,16 @@ nng_clustering_batches <- function(distance_object,
                                    main_radius = NULL,
                                    main_data_points = NULL,
                                    batch_size = 100L) {
-  check_Rscc_distances(distance_object)
-  num_data_points <- get_num_data_points(distance_object)
-  size_constraint <- get_size_constraint(size_constraint)
-  stopifnot(size_constraint <= num_data_points)
-  main_unassigned_method <- match.arg(main_unassigned_method, c("ignore", "by_nng"))
-  main_radius <- get_radius(main_radius)
-  check_main_data_points(main_data_points, num_data_points)
-  batch_size <- suppressWarnings(as.integer(batch_size)[1])
-  stopifnot(!is.na(batch_size),
-            batch_size >= 0L)
+  ensure_distances(distance_object)
+  num_data_points <- data_point_count_distances(distance_object)
+  size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
+  main_unassigned_method <- coerce_args(main_unassigned_method,
+                                        c("ignore", "by_nng"))
+  main_radius <- coerce_radius(main_radius)
+  if (!is.null(main_data_points)) {
+    ensure_indicators(main_data_points, num_data_points, TRUE)
+  }
+  batch_size <- coerce_counts(batch_size, 1L)
 
   clustering <- .Call("Rsccwrap_nng_clustering_batches",
                       distance_object,
@@ -150,28 +154,35 @@ nng_clustering_types <- function(distance_object,
                                  main_data_points = NULL,
                                  secondary_unassigned_method = "ignore",
                                  secondary_radius = NULL) {
-  check_Rscc_distances(distance_object)
-  num_data_points <- get_num_data_points(distance_object)
-  check_type_labels(type_labels)
-  type_size_constraints <- get_type_size_constraints(type_size_constraints,
-                                                     type_labels)
-  total_size_constraint <- get_total_size_constraint(total_size_constraint,
-                                                     type_size_constraints)
-  stopifnot(total_size_constraint <= num_data_points)
-  seed_method <- get_seed_method(seed_method)
-  main_unassigned_method <- match.arg(main_unassigned_method, c("ignore",
-                                                                "by_nng",
-                                                                "closest_assigned",
-                                                                "closest_seed",
-                                                                "estimated_radius_closest_seed"))
-  main_radius <- get_radius(main_radius)
-  check_main_data_points(main_data_points, num_data_points)
-  if (is.null(main_data_points)) secondary_unassigned_method <- "ignore"
-  secondary_unassigned_method <- match.arg(secondary_unassigned_method, c("ignore",
-                                                                          "closest_assigned",
-                                                                          "closest_seed",
-                                                                          "estimated_radius_closest_seed"))
-  secondary_radius <- get_radius(secondary_radius)
+  ensure_distances(distance_object)
+  num_data_points <- data_point_count_distances(distance_object)
+  type_labels <- coerce_type_labels(type_labels, num_data_points)
+  type_size_constraints <- coerce_type_constraints(type_size_constraints)
+  #ensure_type_labels_exist(names(type_size_constraints), get_all_types(type_labels))
+  type_size_constraints <- make_type_size_constraints(type_size_constraints,
+                                                      type_labels)
+  total_size_constraint <- coerce_total_size_constraint(total_size_constraint,
+                                                        type_size_constraints,
+                                                        num_data_points)
+  seed_method <- coerce_args(seed_method, all_seed_methods)
+  main_unassigned_method <- coerce_args(main_unassigned_method,
+                                        c("ignore",
+                                          "by_nng",
+                                          "closest_assigned",
+                                          "closest_seed",
+                                          "estimated_radius_closest_seed"))
+  main_radius <- coerce_radius(main_radius)
+  if (is.null(main_data_points)) {
+    secondary_unassigned_method <- "ignore"
+  } else {
+    ensure_indicators(main_data_points, num_data_points, TRUE)
+  }
+  secondary_unassigned_method <- coerce_args(secondary_unassigned_method,
+                                             c("ignore",
+                                               "closest_assigned",
+                                               "closest_seed",
+                                               "estimated_radius_closest_seed"))
+  secondary_radius <- coerce_radius(secondary_radius)
 
   clustering <- .Call("Rsccwrap_nng_clustering_types",
                       distance_object,

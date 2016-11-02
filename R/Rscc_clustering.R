@@ -69,17 +69,12 @@
 Rscc_clustering <- function(cluster_labels,
                             unassigned_labels = NA,
                             ids = NULL) {
-
   cluster_labels <- as.vector(cluster_labels)
   cluster_labels[cluster_labels %in% as.vector(unassigned_labels)] <- NA
   cluster_labels <- factor(cluster_labels)
 
-  stopifnot(length(cluster_labels) > 0L,
-            is.null(ids) || is.vector(ids),
-            is.null(ids) || (length(cluster_labels) == length(ids)))
-
   if (!is.null(ids)) {
-    ids <- as.character(ids)
+    ids <- coerce_character(ids, length(cluster_labels))
   }
 
   make_Rscc_clustering(as.integer(cluster_labels) - 1L,
@@ -103,8 +98,9 @@ Rscc_clustering <- function(cluster_labels,
 is.Rscc_clustering <- function(obj) {
   is.integer(obj) &&
     inherits(obj, "Rscc_clustering") &&
-    !is.null(attr(obj, "cluster_count", exact = TRUE)) &&
-    as.integer(attr(obj, "cluster_count", exact = TRUE))[1] >= 0L
+    is.integer(attr(obj, "cluster_count", exact = TRUE)) &&
+    length(attr(obj, "cluster_count", exact = TRUE)) == 1 &&
+    attr(obj, "cluster_count", exact = TRUE) >= 0L
 }
 
 

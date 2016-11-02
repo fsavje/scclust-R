@@ -51,6 +51,14 @@ hierarchical_clustering <- function(distance_object,
                                     size_constraint,
                                     batch_assign = TRUE,
                                     existing_clustering = NULL) {
+  ensure_distances(distance_object)
+  num_data_points <- data_point_count_distances(distance_object)
+  size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
+  ensure_indicators(batch_assign, 1L)
+  if (!is.null(existing_clustering)) {
+    ensure_Rscc_clustering(existing_clustering, num_data_points)
+  }
+
   hierarchical_clustering_internal(distance_object,
                                    size_constraint,
                                    batch_assign,
@@ -89,24 +97,22 @@ hierarchical_clustering <- function(distance_object,
 #' @keywords internal
 #'
 #' @useDynLib Rscclust Rsccwrap_hierarchical_clustering
-#' @export
 hierarchical_clustering_internal <- function(distance_object,
                                              size_constraint,
                                              batch_assign = TRUE,
                                              existing_clustering = NULL,
                                              deep_copy = TRUE) {
-  check_Rscc_distances(distance_object)
-  num_data_points <- get_num_data_points(distance_object)
-  existing_num_clusters <- 0L
-  if (!is.null(existing_clustering)) {
-    check_Rscc_clustering(existing_clustering)
-    stopifnot(length(existing_clustering) == num_data_points)
-    existing_num_clusters <- get_num_clusters(existing_clustering)
+  ensure_distances(distance_object)
+  num_data_points <- data_point_count_distances(distance_object)
+  size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
+  ensure_indicators(batch_assign, 1L)
+  if (is.null(existing_clustering)) {
+    existing_num_clusters <- 0L
+  } else {
+    ensure_Rscc_clustering(existing_clustering, num_data_points)
+    existing_num_clusters <- cluster_count(existing_clustering)
   }
-  size_constraint <- get_size_constraint(size_constraint)
-  stopifnot(size_constraint <= num_data_points)
-  batch_assign <- get_bool_scalar(batch_assign)
-  deep_copy <- get_bool_scalar(deep_copy)
+  ensure_indicators(deep_copy, 1L)
 
   clustering <- .Call("Rsccwrap_hierarchical_clustering",
                       distance_object,
