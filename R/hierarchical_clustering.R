@@ -131,7 +131,7 @@ hierarchical_clustering <- function(distance_object,
 #'
 #' @keywords internal
 #'
-#' @useDynLib Rscclust Rsccwrap_hierarchical_clustering
+#' @useDynLib Rscclust Rscc_hierarchical_clustering
 hierarchical_clustering_internal <- function(distance_object,
                                              size_constraint,
                                              batch_assign = TRUE,
@@ -141,20 +141,16 @@ hierarchical_clustering_internal <- function(distance_object,
   num_data_points <- data_point_count_distances(distance_object)
   size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
   ensure_indicators(batch_assign, 1L)
-  if (is.null(existing_clustering)) {
-    existing_num_clusters <- 0L
-  } else {
+  if (!is.null(existing_clustering)) {
     ensure_Rscc_clustering(existing_clustering, num_data_points)
-    existing_num_clusters <- cluster_count(existing_clustering)
   }
   ensure_indicators(deep_copy, 1L)
 
-  clustering <- .Call("Rsccwrap_hierarchical_clustering",
+  clustering <- .Call("Rscc_hierarchical_clustering",
                       distance_object,
                       size_constraint,
                       batch_assign,
                       existing_clustering,
-                      existing_num_clusters,
                       deep_copy,
                       PACKAGE = "Rscclust")
   make_Rscc_clustering(clustering$cluster_labels,

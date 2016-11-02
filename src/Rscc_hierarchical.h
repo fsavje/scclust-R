@@ -1,4 +1,4 @@
-/* ==============================================================================
+/* =============================================================================
  * Rscclust -- R wrapper for the scclust library
  * https://github.com/fsavje/Rscclust
  *
@@ -16,19 +16,18 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/
- * ============================================================================== */
+ * ========================================================================== */
 
-#ifndef RSCCWRAP_HIERARCHICAL_HG
-#define RSCCWRAP_HIERARCHICAL_HG
+#ifndef RSCC_HIERARCHICAL_HG
+#define RSCC_HIERARCHICAL_HG
 
 #include <R.h>
 #include <Rinternals.h>
 
-SEXP Rsccwrap_hierarchical_clustering(SEXP R_distance_object,
-                                      SEXP R_size_constraint,
-                                      SEXP R_batch_assign,
-                                      SEXP R_existing_cluster_labels,
-                                      SEXP R_existing_num_clusters,
-                                      SEXP R_deep_copy);
+SEXP Rscc_hierarchical_clustering(SEXP R_distance_object,
+                                  SEXP R_size_constraint,
+                                  SEXP R_batch_assign,
+                                  SEXP R_existing_clustering,
+                                  SEXP R_deep_copy);
 
-#endif // ifndef RSCCWRAP_HIERARCHICAL_HG
+#endif // ifndef RSCC_HIERARCHICAL_HG

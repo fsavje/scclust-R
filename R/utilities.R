@@ -57,18 +57,16 @@
 #' check_clustering(my_clust_obj1, 5)
 #' # > FALSE
 #'
-#' @useDynLib Rscclust Rsccwrap_check_clustering
+#' @useDynLib Rscclust Rscc_check_clustering
 #' @export
 check_clustering <- function(clustering,
                              size_constraint) {
   ensure_Rscc_clustering(clustering)
   num_data_points <- data_point_count_clustering(clustering)
-  num_clusters <- cluster_count(clustering)
   size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
 
-  .Call("Rsccwrap_check_clustering",
+  .Call("Rscc_check_clustering",
         clustering,
-        num_clusters,
         size_constraint,
         PACKAGE = "Rscclust")
 }
@@ -140,7 +138,7 @@ check_clustering <- function(clustering,
 #'                        c("1" = 1, "2" = 1, "3" = 1))
 #' # > TRUE
 #'
-#' @useDynLib Rscclust Rsccwrap_check_clustering_types
+#' @useDynLib Rscclust Rscc_check_clustering_types
 #' @export
 check_clustering_types <- function(clustering,
                                    type_labels,
@@ -148,7 +146,6 @@ check_clustering_types <- function(clustering,
                                    total_size_constraint = NULL) {
   ensure_Rscc_clustering(clustering)
   num_data_points <- data_point_count_clustering(clustering)
-  num_clusters <- cluster_count(clustering)
   type_labels <- coerce_type_labels(type_labels, num_data_points)
   type_size_constraints <- coerce_type_constraints(type_size_constraints)
   #ensure_type_labels_exist(names(type_size_constraints), get_all_types(type_labels))
@@ -158,12 +155,11 @@ check_clustering_types <- function(clustering,
                                                         type_size_constraints,
                                                         num_data_points)
 
-  .Call("Rsccwrap_check_clustering_types",
+  .Call("Rscc_check_clustering_types",
         clustering,
-        num_clusters,
-        total_size_constraint,
-        type_size_constraints,
         unclass(type_labels),
+        type_size_constraints,
+        total_size_constraint,
         PACKAGE = "Rscclust")
 }
 
@@ -257,18 +253,16 @@ check_clustering_types <- function(clustering,
 #' # > cl_avg_dist_weighted    1.5575594
 #' # > cl_avg_dist_unweighted  1.5847484
 #'
-#' @useDynLib Rscclust Rsccwrap_get_clustering_stats
+#' @useDynLib Rscclust Rscc_get_clustering_stats
 #' @export
 get_clustering_stats <- function(clustering,
                                  distance_object) {
   ensure_Rscc_clustering(clustering)
   num_data_points <- data_point_count_clustering(clustering)
-  num_clusters <- cluster_count(clustering)
   ensure_distances(distance_object, num_data_points)
 
-  clust_stats <- .Call("Rsccwrap_get_clustering_stats",
+  clust_stats <- .Call("Rscc_get_clustering_stats",
                        clustering,
-                       num_clusters,
                        distance_object,
                        PACKAGE = "Rscclust")
   structure(clust_stats,

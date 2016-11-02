@@ -1,4 +1,4 @@
-/* ==============================================================================
+/* =============================================================================
  * Rscclust -- R wrapper for the scclust library
  * https://github.com/fsavje/Rscclust
  *
@@ -8,36 +8,25 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/
- * ============================================================================== */
+ * ========================================================================== */
 
-#include "Rscc_misc.h"
+#ifndef RSCC_ERROR_HG
+#define RSCC_ERROR_HG
 
-#include <R.h>
-#include <Rinternals.h>
-#include <scclust.h>
+#define iRscc_error(msg) (iRscc_error__(msg, __FILE__, __LINE__))
 
+void iRscc_error__(const char* msg,
+                   const char* file,
+                   int line);
 
-void iRsccwrap_error__(const char* const msg,
-                       const char* const file,
-                       const int line) {
-	char error_buffer[255];
-	if (snprintf(error_buffer, 255, "(%s:%d) %s", file, line, msg) < 0) {
-		error("Rscc_misc.c: Error printing error message.");
-	}
-	error(error_buffer);
-}
+void iRscc_scc_error();
 
-
-void iRsccwrap_scc_error(void) {
-	char error_buffer[255];
-	scc_get_latest_error(255, error_buffer);
-	error(error_buffer);
-}
+#endif // ifndef RSCC_ERROR_HG

@@ -64,7 +64,7 @@
 #'          \code{\link{hierarchical_clustering}} can be used to refine the clustering
 #'          constructed by this function.
 #'
-#' @useDynLib Rscclust Rsccwrap_nng_clustering
+#' @useDynLib Rscclust Rscc_nng_clustering
 #' @export
 nng_clustering <- function(distance_object,
                            size_constraint,
@@ -97,7 +97,7 @@ nng_clustering <- function(distance_object,
                                                "estimated_radius_closest_seed"))
   secondary_radius <- coerce_radius(secondary_radius)
 
-  clustering <- .Call("Rsccwrap_nng_clustering",
+  clustering <- .Call("Rscc_nng_clustering",
                       distance_object,
                       size_constraint,
                       seed_method,
@@ -125,7 +125,7 @@ nng_clustering <- function(distance_object,
 #' @param main_data_points abc ...
 #' @param batch_size abc ...
 #'
-#' @useDynLib Rscclust Rsccwrap_nng_clustering_batches
+#' @useDynLib Rscclust Rscc_nng_clustering_batches
 #' @export
 nng_clustering_batches <- function(distance_object,
                                    size_constraint,
@@ -144,7 +144,7 @@ nng_clustering_batches <- function(distance_object,
   }
   batch_size <- coerce_counts(batch_size, 1L)
 
-  clustering <- .Call("Rsccwrap_nng_clustering_batches",
+  clustering <- .Call("Rscc_nng_clustering_batches",
                       distance_object,
                       size_constraint,
                       main_unassigned_method,
@@ -173,7 +173,7 @@ nng_clustering_batches <- function(distance_object,
 #' @param secondary_unassigned_method abc ...
 #' @param secondary_radius abc ...
 #'
-#' @useDynLib Rscclust Rsccwrap_nng_clustering_types
+#' @useDynLib Rscclust Rscc_nng_clustering_types
 #' @export
 nng_clustering_types <- function(distance_object,
                                  type_labels,
@@ -215,11 +215,11 @@ nng_clustering_types <- function(distance_object,
                                                "estimated_radius_closest_seed"))
   secondary_radius <- coerce_radius(secondary_radius)
 
-  clustering <- .Call("Rsccwrap_nng_clustering_types",
+  clustering <- .Call("Rscc_nng_clustering_types",
                       distance_object,
-                      total_size_constraint,
-                      type_size_constraints,
                       unclass(type_labels),
+                      type_size_constraints,
+                      total_size_constraint,
                       seed_method,
                       main_unassigned_method,
                       main_radius,

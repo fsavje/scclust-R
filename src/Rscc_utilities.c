@@ -1,4 +1,4 @@
-/* ==============================================================================
+/* =============================================================================
  * Rscclust -- R wrapper for the scclust library
  * https://github.com/fsavje/Rscclust
  *
@@ -8,15 +8,15 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/
- * ============================================================================== */
+ * ========================================================================== */
 
 #include "Rscc_utilities.h"
 
@@ -27,35 +27,43 @@
 #include <Rinternals.h>
 #include <scclust.h>
 #include <scc_data_obj.h>
-#include "Rscc_misc.h"
+#include "Rscc_error.h"
 
 
-// ==============================================================================
+// =============================================================================
 // External function implementations
-// ============================================================================== 
+// =============================================================================
 
-SEXP Rsccwrap_check_clustering(const SEXP R_cluster_labels,
-                               const SEXP R_num_clusters,
-                               const SEXP R_size_constraint)
+
+SEXP Rscc_check_clustering(const SEXP R_clustering,
+                           const SEXP R_size_constraint)
 {
-	if (!isInteger(R_cluster_labels)) iRsccwrap_error("`R_cluster_labels` must be integer.");
-	if (!isInteger(R_num_clusters)) iRsccwrap_error("`R_num_clusters` must be integer.");
-	if (!isInteger(R_size_constraint)) iRsccwrap_error("`R_size_constraint` must be integer.");
+	if (!isInteger(R_clustering)) {
+		iRscc_error("`R_clustering` is not a valid clustering object.");
+	}
+	if (!isInteger(getAttrib(R_clustering, install("cluster_count")))) {
+		iRscc_error("`R_clustering` is not a valid clustering object.");
+	}
+	if (!isInteger(R_size_constraint)) {
+		iRscc_error("`R_size_constraint` must be integer.");
+	}
 
-	const uintmax_t num_data_points = (uintmax_t) xlength(R_cluster_labels);
-	const uintmax_t num_clusters = (uintmax_t) asInteger(R_num_clusters);
+	const uintmax_t num_data_points = (uintmax_t) xlength(R_clustering);
+	const uintmax_t num_clusters = (uintmax_t) asInteger(getAttrib(R_clustering, install("cluster_count")));
 	const uint32_t size_constraint = (uint32_t) asInteger(R_size_constraint);
 
-	if (num_clusters == 0) iRsccwrap_error("Clustering cannot be empty.");
+	if (num_clusters == 0) {
+		iRscc_error("`R_clustering` is empty.");
+	}
 
 	scc_ErrorCode ec;
 	scc_Clustering* clustering;
 	if ((ec = scc_init_existing_clustering(num_data_points,
 	                                       num_clusters,
-	                                       INTEGER(R_cluster_labels),
+	                                       INTEGER(R_clustering),
 	                                       false,
 	                                       &clustering)) != SCC_ER_OK) {
-		iRsccwrap_scc_error();
+		iRscc_scc_error();
 	}
 
 	bool is_OK = false;
@@ -63,7 +71,7 @@ SEXP Rsccwrap_check_clustering(const SEXP R_cluster_labels,
 	                               size_constraint,
 	                               &is_OK)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
-		iRsccwrap_scc_error();
+		iRscc_scc_error();
 	}
 
 	scc_free_clustering(&clustering);
@@ -72,32 +80,45 @@ SEXP Rsccwrap_check_clustering(const SEXP R_cluster_labels,
 }
 
 
-SEXP Rsccwrap_check_clustering_types(const SEXP R_cluster_labels,
-                                     const SEXP R_num_clusters,
-                                     const SEXP R_size_constraint,
-                                     const SEXP R_type_size_constraints,
-                                     const SEXP R_type_labels)
-{
-	if (!isInteger(R_cluster_labels)) iRsccwrap_error("`R_cluster_labels` must be integer.");
-	if (!isInteger(R_num_clusters)) iRsccwrap_error("`R_num_clusters` must be integer.");
-	if (!isInteger(R_size_constraint)) iRsccwrap_error("`R_size_constraint` must be integer.");
-	if (!isInteger(R_type_size_constraints)) iRsccwrap_error("`R_type_size_constraints` must be integer.");
-	if (!isInteger(R_type_labels)) iRsccwrap_error("`R_type_labels` must be factor or integer.");
 
-	const uintmax_t num_data_points = (uintmax_t) xlength(R_cluster_labels);
-	const uintmax_t num_clusters = (uintmax_t) asInteger(R_num_clusters);
-	const uint32_t size_constraint = (uint32_t) asInteger(R_size_constraint);
+
+SEXP Rscc_check_clustering_types(const SEXP R_clustering,
+                                 const SEXP R_type_labels,
+                                 const SEXP R_type_size_constraints,
+                                 const SEXP R_total_size_constraint)
+{
+	if (!isInteger(R_clustering)) {
+		iRscc_error("`R_clustering` is not a valid clustering object.");
+	}
+	if (!isInteger(getAttrib(R_clustering, install("cluster_count")))) {
+		iRscc_error("`R_clustering` is not a valid clustering object.");
+	}
+	if (!isInteger(R_type_labels)) {
+		iRscc_error("`R_type_labels` must be factor or integer.");
+	}
+	if (!isInteger(R_type_size_constraints)) {
+		iRscc_error("`R_type_size_constraints` must be integer.");
+	}
+	if (!isInteger(R_total_size_constraint)) {
+		iRscc_error("`R_total_size_constraint` must be integer.");
+	}
+
+	const uintmax_t num_data_points = (uintmax_t) xlength(R_clustering);
+	const uintmax_t num_clusters = (uintmax_t) asInteger(getAttrib(R_clustering, install("cluster_count")));
 	const size_t len_type_labels = (size_t) xlength(R_type_labels);
 	const int* const type_labels = INTEGER(R_type_labels);
+	const uint32_t total_size_constraint = (uint32_t) asInteger(R_total_size_constraint);
 
-	if (num_clusters == 0) iRsccwrap_error("Clustering cannot be empty.");
+	if (num_clusters == 0) {
+		iRscc_error("`R_clustering` is empty.");
+	}
 
 	const uintmax_t num_types = (uintmax_t) xlength(R_type_size_constraints);
 	uint32_t* const type_size_constraints = (uint32_t*) R_alloc(num_types, sizeof(uint32_t)); // Automatically freed by R on return
-	if (type_size_constraints == NULL) iRsccwrap_error("Could not allocate memory.");
+	if (type_size_constraints == NULL) iRscc_error("Could not allocate memory.");
 	const int* const tmp_type_size_constraints = INTEGER(R_type_size_constraints);
 	for (size_t i = 0; i < num_types; ++i) {
-		if (tmp_type_size_constraints[i] < 0) iRsccwrap_error("Negative type size constraint.");
+		if (tmp_type_size_constraints[i] < 0) iRscc_error("Negative type size constraint.");
 		type_size_constraints[i] = (uint32_t) tmp_type_size_constraints[i];
 	}
 
@@ -105,22 +126,22 @@ SEXP Rsccwrap_check_clustering_types(const SEXP R_cluster_labels,
 	scc_Clustering* clustering;
 	if ((ec = scc_init_existing_clustering(num_data_points,
 	                                       num_clusters,
-	                                       INTEGER(R_cluster_labels),
+	                                       INTEGER(R_clustering),
 	                                       false,
 	                                       &clustering)) != SCC_ER_OK) {
-		iRsccwrap_scc_error();
+		iRscc_scc_error();
 	}
 
 	bool is_OK = false;
 	if ((ec = scc_check_clustering_types(clustering,
-	                                     size_constraint,
+	                                     total_size_constraint,
 	                                     num_types,
 	                                     type_size_constraints,
 	                                     len_type_labels,
 	                                     type_labels,
 	                                     &is_OK)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
-		iRsccwrap_scc_error();
+		iRscc_scc_error();
 	}
 
 	scc_free_clustering(&clustering);
@@ -129,20 +150,29 @@ SEXP Rsccwrap_check_clustering_types(const SEXP R_cluster_labels,
 }
 
 
-SEXP Rsccwrap_get_clustering_stats(const SEXP R_cluster_labels,
-                                   const SEXP R_num_clusters,
-                                   const SEXP R_distance_object)
+SEXP Rscc_get_clustering_stats(const SEXP R_clustering,
+                               const SEXP R_distance_object)
 {
-	if (!isInteger(R_cluster_labels)) iRsccwrap_error("`R_cluster_labels` must be integer.");
-	if (!isInteger(R_num_clusters)) iRsccwrap_error("`R_num_clusters` must be integer.");
-	if (!isMatrix(R_distance_object) || !isReal(R_distance_object)) iRsccwrap_error("Invalid distance object.");
+	if (!isInteger(R_clustering)) {
+		iRscc_error("`R_clustering` is not a valid clustering object.");
+	}
+	if (!isInteger(getAttrib(R_clustering, install("cluster_count")))) {
+		iRscc_error("`R_clustering` is not a valid clustering object.");
+	}
+	if (!isMatrix(R_distance_object) || !isReal(R_distance_object)) {
+		iRscc_error("`R_distance_object` is not a valid distance object.");
+	}
 
 	const uintmax_t num_data_points = (uintmax_t) INTEGER(getAttrib(R_distance_object, R_DimSymbol))[1];
 	const uintmax_t num_dimensions = (uintmax_t) INTEGER(getAttrib(R_distance_object, R_DimSymbol))[0];
-	const uintmax_t num_clusters = (uintmax_t) asInteger(R_num_clusters);
+	const uintmax_t num_clusters = (uintmax_t) asInteger(getAttrib(R_clustering, install("cluster_count")));
 
-	if (xlength(R_cluster_labels) != num_data_points) iRsccwrap_error("Clustering does not match distance object.");
-	if (num_clusters == 0) iRsccwrap_error("Clustering cannot be empty.");
+	if (xlength(R_clustering) != num_data_points) {
+		iRscc_error("`R_clustering` does not match `R_distance_object`.");
+	}
+	if (num_clusters == 0) {
+		iRscc_error("`R_clustering` is empty.");
+	}
 
 	scc_ErrorCode ec;
 	scc_DataSetObject* data_set_object;
@@ -152,17 +182,17 @@ SEXP Rsccwrap_get_clustering_stats(const SEXP R_cluster_labels,
 	                                  REAL(R_distance_object),
 	                                  false,
 	                                  &data_set_object)) != SCC_ER_OK) {
-		iRsccwrap_scc_error();
+		iRscc_scc_error();
 	}
 
 	scc_Clustering* clustering;
 	if ((ec = scc_init_existing_clustering(num_data_points,
 	                                       num_clusters,
-	                                       INTEGER(R_cluster_labels),
+	                                       INTEGER(R_clustering),
 	                                       false,
 	                                       &clustering)) != SCC_ER_OK) {
 		scc_free_data_set_object(&data_set_object);
-		iRsccwrap_scc_error();
+		iRscc_scc_error();
 	}
 
 	scc_ClusteringStats clust_stats;
@@ -171,18 +201,18 @@ SEXP Rsccwrap_get_clustering_stats(const SEXP R_cluster_labels,
 	                                   &clust_stats)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
 		scc_free_data_set_object(&data_set_object);
-		iRsccwrap_scc_error();
+		iRscc_scc_error();
 	}
 
 	scc_free_clustering(&clustering);
 	scc_free_data_set_object(&data_set_object);
 
-	if (clust_stats.num_data_points > INT_MAX) iRsccwrap_error("Too many data points.");
-	if (clust_stats.num_assigned > INT_MAX) iRsccwrap_error("Too many assigned data points.");
-	if (clust_stats.num_clusters > INT_MAX) iRsccwrap_error("Too many clusters.");
-	if (clust_stats.num_populated_clusters > INT_MAX) iRsccwrap_error("Too many populated clusters.");
-	if (clust_stats.min_cluster_size > INT_MAX) iRsccwrap_error("Too large clusters.");
-	if (clust_stats.max_cluster_size > INT_MAX) iRsccwrap_error("Too large clusters.");
+	if (clust_stats.num_data_points > INT_MAX) iRscc_error("Too many data points.");
+	if (clust_stats.num_assigned > INT_MAX) iRscc_error("Too many assigned data points.");
+	if (clust_stats.num_clusters > INT_MAX) iRscc_error("Too many clusters.");
+	if (clust_stats.num_populated_clusters > INT_MAX) iRscc_error("Too many populated clusters.");
+	if (clust_stats.min_cluster_size > INT_MAX) iRscc_error("Too large clusters.");
+	if (clust_stats.max_cluster_size > INT_MAX) iRscc_error("Too large clusters.");
 
 	const SEXP R_clust_stats = PROTECT(allocVector(VECSXP, 14));
 	SET_VECTOR_ELT(R_clust_stats, 0, ScalarInteger((int) clust_stats.num_data_points));
