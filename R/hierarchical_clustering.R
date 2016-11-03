@@ -87,7 +87,7 @@ hierarchical_clustering <- function(distance_object,
                                     batch_assign = TRUE,
                                     existing_clustering = NULL) {
   ensure_distances(distance_object)
-  num_data_points <- data_point_count_distances(distance_object)
+  num_data_points <- data_point_count.Rscc_distances(distance_object)
   size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
   ensure_indicators(batch_assign, 1L)
   if (!is.null(existing_clustering)) {
@@ -138,7 +138,7 @@ hierarchical_clustering_internal <- function(distance_object,
                                              existing_clustering = NULL,
                                              deep_copy = TRUE) {
   ensure_distances(distance_object)
-  num_data_points <- data_point_count_distances(distance_object)
+  num_data_points <- data_point_count.Rscc_distances(distance_object)
   size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
   ensure_indicators(batch_assign, 1L)
   if (!is.null(existing_clustering)) {

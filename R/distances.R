@@ -209,13 +209,20 @@ is.Rscc_distances <- function(obj) {
     is.numeric(obj) &&
     (is.null(attr(obj, "id_variable", exact = TRUE)) ||
        (is.character(attr(obj, "id_variable", exact = TRUE)) &&
-          (length(attr(obj, "id_variable", exact = TRUE)) == data_point_count_distances(obj)))) &&
+          (length(attr(obj, "id_variable", exact = TRUE)) == ncol(obj)))) &&
     !is.null(attr(obj, "normalization", exact = TRUE)) &&
     is.matrix(attr(obj, "normalization", exact = TRUE)) &&
     is.numeric(attr(obj, "normalization", exact = TRUE)) &&
     !is.null(attr(obj, "weights", exact = TRUE)) &&
     is.matrix(attr(obj, "weights", exact = TRUE)) &&
     is.numeric(attr(obj, "weights", exact = TRUE))
+}
+
+
+#' @export
+data_point_count.Rscc_distances <- function(x) {
+  stopifnot(is.matrix(x))
+  ncol(x)
 }
 
 

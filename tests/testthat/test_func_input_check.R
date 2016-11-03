@@ -101,6 +101,26 @@ test_that("`make_distances` checks input.", {
 
 
 # ==============================================================================
+# Rscc_distances methods
+# ==============================================================================
+
+test_that("`data_point_count.Rscc_distances` checks input.", {
+  expect_silent(data_point_count.Rscc_distances(sound_distance_object))
+  expect_error(data_point_count.Rscc_distances(unsound_distance_object))
+})
+
+test_that("`print.Rscc_distances` checks input.", {
+  expect_output(print.Rscc_distances(sound_distance_object))
+  expect_error(print.Rscc_distances(unsound_distance_object))
+})
+
+test_that("`as.matrix.Rscc_distances` checks input.", {
+  expect_silent(as.matrix.Rscc_distances(sound_distance_object))
+  expect_error(as.matrix.Rscc_distances(unsound_distance_object))
+})
+
+
+# ==============================================================================
 # hierarchical_clustering
 # ==============================================================================
 
@@ -414,6 +434,31 @@ test_that("`nng_clustering_types` checks input.", {
                                     main_data_points = sound_main_data_points,
                                     secondary_unassigned_method = sound_unassigned_method,
                                     secondary_radius = unsound_radius))
+})
+
+
+# ==============================================================================
+# Rscc_clustering methods
+# ==============================================================================
+
+test_that("`cluster_count` checks input.", {
+  expect_silent(cluster_count(sound_clustering))
+  expect_error(cluster_count(unsound_clustering))
+})
+
+test_that("`data_point_count.Rscc_clustering` checks input.", {
+  expect_silent(data_point_count.Rscc_clustering(sound_clustering))
+  expect_error(data_point_count.Rscc_clustering(unsound_clustering))
+})
+
+test_that("`as.data.frame.Rscc_clustering` checks input.", {
+  expect_silent(as.data.frame.Rscc_clustering(sound_clustering))
+  expect_error(as.data.frame.Rscc_clustering(unsound_clustering))
+})
+
+test_that("`print.Rscc_clustering` checks input.", {
+  expect_output(print.Rscc_clustering(sound_clustering))
+  expect_error(print.Rscc_clustering(unsound_clustering))
 })
 
 

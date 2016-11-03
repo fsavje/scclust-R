@@ -46,37 +46,6 @@ make_Rscc_clustering <- function(cluster_labels,
 
 
 # ==============================================================================
-# Property functions
-# ==============================================================================
-
-data_point_count_distances <- function(distance_obj) {
-  stopifnot(is.matrix(distance_obj))
-  ncol(distance_obj)
-}
-
-
-data_point_count_clustering <- function(clustering_obj) {
-  length(clustering_obj)
-}
-
-
-cluster_count <- function(clustering) {
-  stopifnot(is.integer(attr(clustering, "cluster_count", exact = TRUE)))
-  attr(clustering, "cluster_count", exact = TRUE)
-}
-
-
-get_all_types <- function(type_labels) {
-  stopifnot(is.factor(type_labels) || is.integer(type_labels))
-  if (is.factor(type_labels)) {
-    levels(type_labels)
-  } else if (is.integer(type_labels)) {
-    sort(unique(type_labels))
-  }
-}
-
-
-# ==============================================================================
 # Translation functions (from R to C)
 # ==============================================================================
 

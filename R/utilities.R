@@ -62,7 +62,7 @@
 check_clustering <- function(clustering,
                              size_constraint) {
   ensure_Rscc_clustering(clustering)
-  num_data_points <- data_point_count_clustering(clustering)
+  num_data_points <- data_point_count.Rscc_clustering(clustering)
   size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
 
   .Call("Rscc_check_clustering",
@@ -145,7 +145,7 @@ check_clustering_types <- function(clustering,
                                    type_size_constraints,
                                    total_size_constraint = NULL) {
   ensure_Rscc_clustering(clustering)
-  num_data_points <- data_point_count_clustering(clustering)
+  num_data_points <- data_point_count.Rscc_clustering(clustering)
   type_labels <- coerce_type_labels(type_labels, num_data_points)
   type_size_constraints <- coerce_type_constraints(type_size_constraints)
   type_size_constraints <- make_type_size_constraints(type_size_constraints,
@@ -257,7 +257,7 @@ check_clustering_types <- function(clustering,
 get_clustering_stats <- function(clustering,
                                  distance_object) {
   ensure_Rscc_clustering(clustering)
-  num_data_points <- data_point_count_clustering(clustering)
+  num_data_points <- data_point_count.Rscc_clustering(clustering)
   ensure_distances(distance_object, num_data_points)
 
   clust_stats <- .Call("Rscc_get_clustering_stats",

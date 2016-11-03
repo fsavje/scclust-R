@@ -64,7 +64,7 @@ ensure_distances <- function(distances,
   if (!is.Rscc_distances(distances)) {
     new_error("`", match.call()$distances, "` is not a `Rscc_distances` object.")
   }
-  if (!is.null(req_length) && (data_point_count_distances(distances) != req_length)) {
+  if (!is.null(req_length) && (data_point_count.Rscc_distances(distances) != req_length)) {
     new_error("`", match.call()$distances, "` does not contain `", match.call()$req_length, "` data points.")
   }
 }
@@ -97,7 +97,7 @@ ensure_Rscc_clustering <- function(clustering,
   if (!is.Rscc_clustering(clustering)) {
     new_error("`", match.call()$clustering, "` is not a `Rscc_clustering` object.")
   }
-  if (!is.null(req_length) && (data_point_count_clustering(clustering) != req_length)) {
+  if (!is.null(req_length) && (data_point_count.Rscc_clustering(clustering) != req_length)) {
     new_error("`", match.call()$clustering, "` does not contain `", match.call()$req_length, "` data points.")
   }
 }

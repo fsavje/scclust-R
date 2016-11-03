@@ -105,6 +105,20 @@ is.Rscc_clustering <- function(obj) {
 
 
 #' @export
+cluster_count <- function(clustering) {
+  ensure_Rscc_clustering(clustering)
+  attr(clustering, "cluster_count", exact = TRUE)
+}
+
+
+#' @export
+data_point_count.Rscc_clustering <- function(x) {
+  stopifnot(is.integer(x))
+  length(x)
+}
+
+
+#' @export
 as.data.frame.Rscc_clustering <- function(x,
                                           row.names = NULL,
                                           ...) {
