@@ -189,7 +189,6 @@ nng_clustering_types <- function(distance_object,
   num_data_points <- data_point_count_distances(distance_object)
   type_labels <- coerce_type_labels(type_labels, num_data_points)
   type_size_constraints <- coerce_type_constraints(type_size_constraints)
-  #ensure_type_labels_exist(names(type_size_constraints), get_all_types(type_labels))
   type_size_constraints <- make_type_size_constraints(type_size_constraints,
                                                       type_labels)
   total_size_constraint <- coerce_total_size_constraint(total_size_constraint,

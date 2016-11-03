@@ -49,8 +49,8 @@ new_warning <- function(...) {
 is.numeric_integer <- function(x) {
   is.numeric(x) &&
     !any(is.nan(x)) &&
-    !any(is.infinite(x)) &
-    all(x == as.integer(x))
+    !any(is.infinite(x)) &&
+    all(is.na(x) | as.integer(x) == x)
 }
 
 
@@ -103,26 +103,13 @@ ensure_Rscc_clustering <- function(clustering,
 }
 
 
-# Ensure that all `labels` are represented in `type_labels`
-ensure_type_labels_exist <- function(labels,
-                                     type_labels) {
-  non_exist <- !(as.character(labels) %in% as.character(type_labels))
-  if (any(non_exist)) {
-    new_error("`",
-              match.call()$labels,
-              "` contains labels without corresponding data points: ",
-              paste0(paste0("\"", as.character(labels)[non_exist], "\""), collapse = ", "),
-              ".")
-  }
-}
-
-
 # ==============================================================================
 # Coerce functions
 # ==============================================================================
 
 # Similar to `match.arg` but with custom error message
-coerce_args <- function(arg, choices) {
+coerce_args <- function(arg,
+                        choices) {
   stopifnot(is.character(choices),
             length(choices) > 0)
   if (!is.character(arg) || (length(arg) != 1L)) {
@@ -130,7 +117,7 @@ coerce_args <- function(arg, choices) {
   }
   i <- pmatch(arg, choices, nomatch = 0L)
   if (i == 0) {
-    new_error("`", match.call()$arg, "` must be one of ", paste0(paste0("\"", choices, "\""), collapse = ", "))
+    new_error("`", match.call()$arg, "` must be one of ", paste0(paste0("\"", choices, "\""), collapse = ", "), ".")
   }
   choices[i]
 }
@@ -171,7 +158,7 @@ coerce_counts <- function(counts,
 
 
 # Coerce `data` to non-NA, numeric matrix and extract `id_variable`
-coerse_distance_data <- function(data,
+coerce_distance_data <- function(data,
                                  id_variable,
                                  dist_variables) {
   if (!is.data.frame(data) && !is.matrix(data)) {
@@ -197,27 +184,44 @@ coerse_distance_data <- function(data,
     }
     if (!is.null(dist_variables)) {
       if (!all(as.character(dist_variables) %in% colnames(data))) {
-        new_error("Some entries in `", match.call()$dist_variables, "` do not exists as columns in `", match.call()$data, "`.")
+        new_error("Some entries in `", match.call()$dist_variables, "` do not exist as columns in `", match.call()$data, "`.")
       }
       data <- data[, as.character(dist_variables), drop = FALSE]
     }
     for (col in names(data)) {
       if (!is.double(data[, col])) {
-        data[, col] <- as.double(data[, col])
+        if (is.numeric(data[, col])) {
+          data[, col] <- as.double(data[, col])
+        } else if (is.factor(data[, col])) {
+          new_warning("Factor columns in `", match.call()$data, "` are coerced to numeric.")
+          data[, col] <- as.double(data[, col])
+        } else {
+          new_error("Cannot coerce all data columns in `", match.call()$data, "` to numeric.")
+        }
       }
     }
     data <- as.matrix(data)
   }
+  if (!is.double(data)) {
+    if (is.numeric(data)) {
+      storage.mode(data) <- "double"
+    } else {
+      new_error("`", match.call()$data, "` must be numeric.")
+    }
+  }
   if (any(is.na(data))) {
     new_error("`", match.call()$data, "` may not contain NAs.")
+  }
+  if (!is.null(id_variable) && (length(id_variable) != nrow(data))) {
+    new_error("`", match.call()$id_variable, "` does not match `", match.call()$data, "`.")
   }
   list(data = unname(data),
        id_variable = id_variable)
 }
 
 
-# Coerse `mat` to symmetric, positive-semidefinite, numeric matrix
-coerse_norm_matrix <- function(mat,
+# Coerce `mat` to symmetric, positive-semidefinite, numeric matrix
+coerce_norm_matrix <- function(mat,
                                num_cov) {
   if (is.data.frame(mat)) {
     mat <- as.matrix(mat)
@@ -226,7 +230,7 @@ coerse_norm_matrix <- function(mat,
   }
   mat <- unname(mat)
   if (!is.matrix(mat)) {
-    new_error("`", match.call()$mat, "` must be matrix, data.frame, vector or character.")
+    new_error("`", match.call()$mat, "` must be matrix, data.frame or vector.")
   }
   if (!is.numeric(mat)) {
     new_error("`", match.call()$mat, "` must be numeric.")
@@ -286,10 +290,10 @@ coerce_size_constraint <- function(size_constraint,
     new_error("`", match.call()$size_constraint, "` may not be NA.")
   }
   if (size_constraint < 2L) {
-    new_error("`", match.call()$size_constraint, "` must be greater or equal to two")
+    new_error("`", match.call()$size_constraint, "` must be greater or equal to two.")
   }
   if (size_constraint > num_data_points) {
-    new_error("`", match.call()$size_constraint, "` may not be great than the total number of data points.")
+    new_error("`", match.call()$size_constraint, "` may not be great than the number of data points.")
   }
   size_constraint
 }
@@ -320,13 +324,13 @@ coerce_total_size_constraint <- function(total_size_constraint,
     new_error("`", match.call()$total_size_constraint, "` may not be NA.")
   }
   if (total_size_constraint < 2L) {
-    new_error("`", match.call()$total_size_constraint, "` must be greater or equal to two")
+    new_error("`", match.call()$total_size_constraint, "` must be greater or equal to two.")
   }
   if (total_size_constraint < sum_type_constraints) {
     new_error("`", match.call()$total_size_constraint, "` must be greater or equal to the sum of the type constraints.")
   }
   if (total_size_constraint > num_data_points) {
-    new_error("`", match.call()$total_size_constraint, "` may not be great than the total number of data points.")
+    new_error("`", match.call()$total_size_constraint, "` may not be great than the number of data points.")
   }
   total_size_constraint
 }
@@ -338,7 +342,7 @@ coerce_type_constraints <- function(type_constraints) {
     new_error("`", match.call()$type_constraints, "` must be named.")
   }
   if (anyDuplicated(names(type_constraints))) {
-    new_error("`", match.call()$type_constraints, "` may not contain duplicates.")
+    new_error("`", match.call()$type_constraints, "` may not contain duplicate names.")
   }
   if (!is.integer(type_constraints)) {
     if (is.numeric_integer(type_constraints)) {

@@ -146,10 +146,10 @@ make_distances <- function(data,
                            dist_variables = NULL,
                            normalize = NULL,
                            weights = NULL) {
-  tmp_coersed_data <- coerse_distance_data(data, id_variable, dist_variables)
-  data <- tmp_coersed_data$data
-  id_variable <- tmp_coersed_data$id_variable
-  rm(tmp_coersed_data)
+  tmp_coerced_data <- coerce_distance_data(data, id_variable, dist_variables)
+  data <- tmp_coerced_data$data
+  id_variable <- tmp_coerced_data$id_variable
+  rm(tmp_coerced_data)
   stopifnot(is.matrix(data),
             is.double(data))
   num_data_points <- nrow(data)
@@ -171,14 +171,14 @@ make_distances <- function(data,
   }
 
   if (!is.null(normalize)) {
-    normalize <- coerse_norm_matrix(normalize, ncol(data))
+    normalize <- coerce_norm_matrix(normalize, ncol(data))
     data <- tcrossprod(data, chol(solve(normalize)))
   } else {
     normalize <- diag(ncol(data))
   }
 
   if (!is.null(weights)) {
-    weights <- coerse_norm_matrix(weights, ncol(data))
+    weights <- coerce_norm_matrix(weights, ncol(data))
     data <- tcrossprod(data, chol(weights))
   } else {
     weights <- diag(ncol(data))
@@ -221,7 +221,13 @@ is.Rscc_distances <- function(obj) {
 
 #' @export
 print.Rscc_distances <- function(x, ...) {
-  message("This is a Rscc_distances object. It's only purpose is to be used in the Rscclust package. Use `as.matrix` to generate an R matrix with the distances (a very slow operation for large distance matrices).")
+  if (ncol(x) > 20L) {
+    x <- x[, 1:20]
+    warning(paste0(match.call()$x, " contains too many data points, showing the first 20 out of the total ", ncol(x), "."),
+            call. = FALSE,
+            noBreaks. = TRUE)
+  }
+  print(as.matrix.Rscc_distances(x))
 }
 
 
