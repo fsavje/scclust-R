@@ -17,7 +17,6 @@ environment:
     WARNINGS_ARE_ERRORS: 1
     USE_RTOOLS: true
     RTOOLS_VERSION: 33
-    R_CHECK_ARGS: --no-manual
 
   matrix:
   - R_VERSION: oldrel
