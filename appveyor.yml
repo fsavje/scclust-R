@@ -17,6 +17,7 @@ environment:
     WARNINGS_ARE_ERRORS: 1
     USE_RTOOLS: true
     RTOOLS_VERSION: 33
+    R_CHECK_ARGS: --no-manual
 
   matrix:
   - R_VERSION: oldrel
@@ -51,10 +52,10 @@ environment:
 
   - R_VERSION: 3.2.4
     R_ARCH: x64
-  
+
   - R_VERSION: 3.2.4
     R_ARCH: i386
-  
+
   - R_VERSION: 3.2.3
     R_ARCH: x64
 
