@@ -114,7 +114,7 @@ replica_nng_clustering <- function(distance_object,
                                    secondary_unassigned_method = "ignore",
                                    secondary_radius = NULL) {
   ensure_distances(distance_object)
-  num_data_points <- data_point_count_distances(distance_object)
+  num_data_points <- data_point_count.Rscc_distances(distance_object)
   size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
   seed_method <- coerce_args(seed_method, all_seed_methods)
   main_unassigned_method <- coerce_args(main_unassigned_method,
@@ -181,10 +181,9 @@ replica_nng_clustering_types <- function(distance_object,
                                          secondary_unassigned_method = "ignore",
                                          secondary_radius = NULL) {
   ensure_distances(distance_object)
-  num_data_points <- data_point_count_distances(distance_object)
+  num_data_points <- data_point_count.Rscc_distances(distance_object)
   type_labels <- coerce_type_labels(type_labels, num_data_points)
   type_size_constraints <- coerce_type_constraints(type_size_constraints)
-  #ensure_type_labels_exist(names(type_size_constraints), get_all_types(type_labels))
   type_size_constraints <- make_type_size_constraints(type_size_constraints,
                                                       type_labels)
   total_size_constraint <- coerce_total_size_constraint(total_size_constraint,

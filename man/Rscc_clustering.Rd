@@ -4,7 +4,7 @@
 \alias{Rscc_clustering}
 \title{Constructor for Rscclust clustering objects.}
 \usage{
-Rscc_clustering(cluster_labels, unassigned_labels = NA, ids = NULL)
+Rscc_clustering(cluster_labels, unassigned_labels = NULL, ids = NULL)
 }
 \arguments{
 \item{cluster_labels}{a vector containing each data point's cluster label.}
