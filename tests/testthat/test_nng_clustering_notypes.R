@@ -1,5 +1,25 @@
+# ==============================================================================
+# Rscclust -- R wrapper for the scclust library
+# https://github.com/fsavje/Rscclust
+#
+# Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see http://www.gnu.org/licenses/
+# ==============================================================================
+
 library(Rscclust)
-context("nng_clustering.R (no types)")
+context("nng_clustering")
 
 source("config.R", local = TRUE)
 source("../replica/replica_findseed.R", local = TRUE)
@@ -7,7 +27,10 @@ source("../replica/replica_make_nng.R", local = TRUE)
 source("../replica/replica_nng.R", local = TRUE)
 source("utils_nng.R", local = TRUE)
 
-test_that("non-type nng clustering function cluster correctly.", {
+
+test_that("`nng_clustering` returns correct output", {
+  skip_if_not(!compiled_with_stable_nng, "Only run this when scclust is *not* compiled with the -DSCC_STABLE_NNG flag.")
+  skip_if_not(!compiled_with_stable_findseed, "Only run this when scclust is *not* compiled with the -DSCC_STABLE_FINDSEED flag.")
 
   test_nng_against_replica(test_distances1,
                            2L,
@@ -258,9 +281,11 @@ test_that("non-type nng clustering function cluster correctly.", {
 })
 
 
-test_that("non-type nng clustering function cluster correctly all combinations", {
+test_that("`nng_clustering` returns correct output (combinations)", {
   skip_on_cran()
   skip_if_not(run_slow_tests)
+  skip_if_not(!compiled_with_stable_nng, "Only run this when scclust is *not* compiled with the -DSCC_STABLE_NNG flag.")
+  skip_if_not(!compiled_with_stable_findseed, "Only run this when scclust is *not* compiled with the -DSCC_STABLE_FINDSEED flag.")
 
   for (seed_method in c("lexical",
                         "inwards_order",

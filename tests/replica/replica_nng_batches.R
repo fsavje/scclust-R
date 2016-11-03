@@ -34,7 +34,6 @@ replica_nng_clustering_batches <- function(distance_object,
   if (!is.null(main_data_points)) {
     ensure_indicators(main_data_points, num_data_points, TRUE)
   }
-  batch_size <- coerce_counts(batch_size, 1L)
 
   distances <- as.matrix(distance_object)
   nng <- get_simple_nng(distances,

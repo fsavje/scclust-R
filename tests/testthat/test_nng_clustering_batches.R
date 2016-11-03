@@ -1,12 +1,33 @@
+# ==============================================================================
+# Rscclust -- R wrapper for the scclust library
+# https://github.com/fsavje/Rscclust
+#
+# Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see http://www.gnu.org/licenses/
+# ==============================================================================
+
 library(Rscclust)
-context("nng_clustering.R (batches)")
+context("nng_clustering_batches")
 
 source("config.R", local = TRUE)
 source("../replica/replica_make_nng.R", local = TRUE)
 source("../replica/replica_nng_batches.R", local = TRUE)
 source("utils_nng.R", local = TRUE)
 
-test_that("batch nng clustering function cluster correctly.", {
+
+test_that("`nng_clustering_batches` returns correct output", {
 
   test_nng_batch_against_replica(test_distances1,
                                  2L,
@@ -107,7 +128,7 @@ test_that("batch nng clustering function cluster correctly.", {
 })
 
 
-test_that("non-type nng clustering function cluster correctly all combinations", {
+test_that("`nng_clustering_batches` returns correct output (combinations)", {
   skip_on_cran()
   skip_if_not(run_slow_tests)
 

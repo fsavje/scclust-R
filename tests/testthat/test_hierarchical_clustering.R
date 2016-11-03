@@ -1,76 +1,7 @@
 library(Rscclust)
-context("hierarchical_clustering.R")
+context("hierarchical_clustering")
 
 source("../replica/replica_hierarchical.R", local = TRUE)
-
-sound_distance_obj <- make_distances(matrix(c(0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.1), ncol = 1))
-unsound_distance_obj <- structure(matrix(letters[1:9], ncol = 3),
-                                  ids = NULL,
-                                  normalization = diag(3),
-                                  weights = diag(3),
-                                  class = c("Rscc_distances"))
-sound_size_constraint <- 3
-unsound_size_constraint <- 0
-sound_batch_assign <- TRUE
-unsound_batch_assign <- "A"
-sound_clustering <- Rscc_clustering(c("a", "b", "c", "a", "b", "c", "a"))
-unsound_clustering <- make_Rscc_clustering(c("a", "b", "c", "a", "b", "c", "a"), 3, NULL)
-sound_deep_copy <- TRUE
-unsound_deep_copy <- "A"
-
-test_that("hierarchical clustering functions check input.", {
-  expect_match(class(hierarchical_clustering(sound_distance_obj,
-                                             sound_size_constraint,
-                                             sound_batch_assign,
-                                             sound_clustering)), "Rscc_clustering", fixed = TRUE)
-  expect_error(hierarchical_clustering(unsound_distance_obj,
-                                       sound_size_constraint,
-                                       sound_batch_assign,
-                                       sound_clustering))
-  expect_error(hierarchical_clustering(sound_distance_obj,
-                                       unsound_size_constraint,
-                                       sound_batch_assign,
-                                       sound_clustering))
-  expect_error(hierarchical_clustering(sound_distance_obj,
-                                       sound_size_constraint,
-                                       unsound_batch_assign,
-                                       sound_clustering))
-  expect_error(hierarchical_clustering(sound_distance_obj,
-                                       sound_size_constraint,
-                                       sound_batch_assign,
-                                       unsound_clustering))
-
-  expect_match(class(hierarchical_clustering_internal(sound_distance_obj,
-                                                      sound_size_constraint,
-                                                      sound_batch_assign,
-                                                      sound_clustering,
-                                                      sound_deep_copy)), "Rscc_clustering", fixed = TRUE)
-  expect_error(hierarchical_clustering_internal(unsound_distance_obj,
-                                                sound_size_constraint,
-                                                sound_batch_assign,
-                                                sound_clustering,
-                                                sound_deep_copy))
-  expect_error(hierarchical_clustering_internal(sound_distance_obj,
-                                                unsound_size_constraint,
-                                                sound_batch_assign,
-                                                sound_clustering,
-                                                sound_deep_copy))
-  expect_error(hierarchical_clustering_internal(sound_distance_obj,
-                                                sound_size_constraint,
-                                                unsound_batch_assign,
-                                                sound_clustering,
-                                                sound_deep_copy))
-  expect_error(hierarchical_clustering_internal(sound_distance_obj,
-                                                sound_size_constraint,
-                                                sound_batch_assign,
-                                                unsound_clustering,
-                                                sound_deep_copy))
-  expect_error(hierarchical_clustering_internal(sound_distance_obj,
-                                                sound_size_constraint,
-                                                sound_batch_assign,
-                                                sound_clustering,
-                                                unsound_deep_copy))
-})
 
 test_data <- matrix(c(0.0436, 0.9723, 0.5366, 0.1065, 0.5340, 0.3437, 0.2933, 0.4599, 0.2895, 0.2217,
                       0.9043, 0.9513, 0.6091, 0.5963, 0.0520, 0.1248, 0.7416, 0.4801, 0.4345, 0.5842,
@@ -208,7 +139,8 @@ prev_clust2 <- Rscc_clustering(c(17, 6, 5, 6, 19, 2, 8, 12, 3, 3, 14, 16, 1, 1, 
                                  4, 18, 12, 9, 0, 19, 10, 9, 18, 3, 13, 8, 7, 3, 16, 7, 0, 11, 15, 16, 17, 16, 16, 17, 11, 13, 14, 13, 7, 10,
                                  4, 0, 2, 18, 17, 10, 4, 12, 14, 9, 18, 16, 8, 16, 11, 2, 19, 12, 8, 11, 18, 3, 7, 2))
 
-test_that("hierarchical clustering functions cluster correctly.", {
+
+test_that("`hierarchical_clustering` returns correct output", {
   expect_identical(hierarchical_clustering(distance_object = test_distances1,
                                            size_constraint = 2L,
                                            batch_assign = TRUE),
@@ -344,7 +276,8 @@ prev_clust3b <- Rscc_clustering(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3
 prev_clust3c <- Rscc_clustering(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
 prev_clust3d <- Rscc_clustering(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
 
-test_that("hierarchical clustering functions cluster correctly without deep copy.", {
+
+test_that("`hierarchical_clustering` (without deep copy) returns correct output", {
   expect_identical(hierarchical_clustering_internal(distance_object = test_distances2,
                                                     size_constraint = 2L,
                                                     batch_assign = TRUE,

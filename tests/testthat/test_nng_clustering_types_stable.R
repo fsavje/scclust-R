@@ -1,5 +1,25 @@
+# ==============================================================================
+# Rscclust -- R wrapper for the scclust library
+# https://github.com/fsavje/Rscclust
+#
+# Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see http://www.gnu.org/licenses/
+# ==============================================================================
+
 library(Rscclust)
-context("nng_clustering.R (types)")
+context("nng_clustering_types (stable)")
 
 source("config.R", local = TRUE)
 source("../replica/replica_findseed.R", local = TRUE)
@@ -31,10 +51,11 @@ by_nng_or_closest_assigned <- function(main_unassigned_method,
 }
 
 
-test_that("type nng clustering function cluster correctly all combinations", {
+test_that("`nng_clustering_types` (stable) returns correct output", {
   skip_on_cran()
   skip_if_not(run_slow_tests)
   skip_if_not(compiled_with_stable_nng, "Only run this when scclust is compiled with the -DSCC_STABLE_NNG flag.")
+  skip_if_not(!compiled_with_stable_findseed, "Only run this when scclust is *not* compiled with the -DSCC_STABLE_FINDSEED flag.")
 
   for (tc in list(list(tc = "tc1",
                        type_labels = types1,
@@ -105,13 +126,13 @@ test_that("type nng clustering function cluster correctly all combinations", {
               use_secondary_radius <- secondary_radius
               if (use_secondary_radius == 0) use_secondary_radius <- NULL
 
-              cat(c(tc$tc,
-                    seed_method,
-                    main_unassigned_method,
-                    use_main_radius,
-                    is.null(use_main_data_points),
-                    use_secondary_unassigned_method,
-                    use_secondary_radius), "\n")
+              #cat(c(tc$tc,
+              #      seed_method,
+              #      main_unassigned_method,
+              #      use_main_radius,
+              #      is.null(use_main_data_points),
+              #      use_secondary_unassigned_method,
+              #      use_secondary_radius), "\n")
               test_nng_types_against_replica(test_distances1,
                                              tc$type_labels,
                                              tc$type_size_constraints,
