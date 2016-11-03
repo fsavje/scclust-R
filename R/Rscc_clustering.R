@@ -67,12 +67,9 @@
 #'
 #' @export
 Rscc_clustering <- function(cluster_labels,
-                            unassigned_labels = NA,
+                            unassigned_labels = NULL,
                             ids = NULL) {
-  cluster_labels <- as.vector(cluster_labels)
-  cluster_labels[cluster_labels %in% as.vector(unassigned_labels)] <- NA
-  cluster_labels <- factor(cluster_labels)
-
+  cluster_labels <- coerce_cluster_labels(cluster_labels, unassigned_labels)
   if (!is.null(ids)) {
     ids <- coerce_character(ids, length(cluster_labels))
   }

@@ -441,6 +441,28 @@ test_that("`nng_clustering_types` checks input.", {
 # Rscc_clustering methods
 # ==============================================================================
 
+sound_cluster_labels <- 1:10
+unsound_cluster_labels <- dist(1:10)
+sound_unassigned_labels <- c(1L, 3L)
+unsound_unassigned_labels <- c(1L, "a")
+sound_ids <- letters[1:10]
+unsound_ids <- letters[1:5]
+
+test_that("`Rscc_clustering` checks input.", {
+  expect_silent(Rscc_clustering(cluster_labels = sound_cluster_labels,
+                                unassigned_labels = sound_unassigned_labels,
+                                ids = sound_ids))
+  expect_error(Rscc_clustering(cluster_labels = unsound_cluster_labels,
+                               unassigned_labels = sound_unassigned_labels,
+                               ids = sound_ids))
+  expect_error(Rscc_clustering(cluster_labels = sound_cluster_labels,
+                               unassigned_labels = unsound_unassigned_labels,
+                               ids = sound_ids))
+  expect_error(Rscc_clustering(cluster_labels = sound_cluster_labels,
+                               unassigned_labels = sound_unassigned_labels,
+                               ids = unsound_ids))
+})
+
 test_that("`cluster_count` checks input.", {
   expect_silent(cluster_count(sound_clustering))
   expect_error(cluster_count(unsound_clustering))

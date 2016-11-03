@@ -185,6 +185,40 @@ test_that("`coerce_character` coerces correctly.", {
 
 
 # ==============================================================================
+# coerce_cluster_labels
+# ==============================================================================
+
+t_coerce_cluster_labels <- function(t_cluster_labels = 1:10,
+                                    t_unassigned_labels = NULL) {
+  coerce_cluster_labels(t_cluster_labels, t_unassigned_labels)
+}
+
+test_that("`coerce_cluster_labels` checks input.", {
+  expect_silent(t_coerce_cluster_labels())
+  expect_silent(t_coerce_cluster_labels(t_cluster_labels = factor(1:10)))
+  expect_silent(t_coerce_cluster_labels(t_unassigned_labels = 1L))
+  expect_silent(t_coerce_cluster_labels(t_cluster_labels = factor(1:10),
+                                        t_unassigned_labels = "3"))
+  expect_error(t_coerce_cluster_labels(t_cluster_labels = dist(1:10)),
+               regexp = "`t_cluster_labels` must be factor or vector.")
+  expect_error(t_coerce_cluster_labels(t_unassigned_labels = 20L),
+               regexp = "`t_unassigned_labels` contains entries not in `t_cluster_labels`.")
+})
+
+test_that("`coerce_cluster_labels` coerces correctly.", {
+  expect_identical(t_coerce_cluster_labels(),
+                   factor(1:10))
+  expect_identical(t_coerce_cluster_labels(t_cluster_labels = factor(1:10)),
+                   factor(1:10))
+  expect_identical(t_coerce_cluster_labels(t_unassigned_labels = 1L),
+                   factor(c(NA, 2:10)))
+  expect_identical(t_coerce_cluster_labels(t_cluster_labels = factor(1:10),
+                                        t_unassigned_labels = "3"),
+                   factor(c(1:2, NA, 4:10)))
+})
+
+
+# ==============================================================================
 # coerce_counts
 # ==============================================================================
 

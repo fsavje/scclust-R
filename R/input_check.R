@@ -134,6 +134,25 @@ coerce_character <- function(x,
 }
 
 
+# Coerce `cluster_labels` to factor with appropriate NAs
+coerce_cluster_labels <- function(cluster_labels,
+                                  unassigned_labels = NULL) {
+  if (!is.factor(cluster_labels) && !is.vector(cluster_labels)) {
+    new_error("`", match.call()$cluster_labels, "` must be factor or vector.")
+  }
+  if (!is.null(unassigned_labels)) {
+    if (!all(unassigned_labels %in% cluster_labels)) {
+      new_error("`", match.call()$unassigned_labels, "` contains entries not in `", match.call()$cluster_labels, "`.")
+    }
+    cluster_labels[cluster_labels %in% unassigned_labels] <- NA
+  }
+  if (is.vector(cluster_labels) || !is.null(unassigned_labels)) {
+    cluster_labels <- factor(cluster_labels)
+  }
+  cluster_labels
+}
+
+
 # Coerce `counts` to non-NA, non-negative integers
 coerce_counts <- function(counts,
                           req_length = NULL) {
