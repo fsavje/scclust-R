@@ -18,6 +18,15 @@
 # along with this program. If not, see http://www.gnu.org/licenses/
 # ==============================================================================
 
+#' Number of data points
+#'
+#' \code{data_point_count} returns the number of data points in a clustering
+#' or distance object.
+#'
+#' @param x  an Rscc_clustering or Rscc_distances object
+#'
+#' @return Returns an integer with the number of data points in \code{x}.
+#'
 #' @export
 data_point_count <- function(x) {
   UseMethod("data_point_count")

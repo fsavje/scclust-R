@@ -36,7 +36,7 @@
 #'
 #' When \code{normalize} is \code{var(data)} (i.e., using the \code{"mahalanobize"} option), this
 #' derives the (weighted) Mahalanobis distances. When \code{normalize} is \code{diag(var(data))} (i.e., using
-#' the \code{"studentize"} option), this will effective divide each column by its variance leading to (weighted) normalized
+#' the \code{"studentize"} option), this will divide each column by its variance leading to (weighted) normalized
 #' Euclidean distances. If \code{normalize} is the identity matrix (i.e., using the \code{"none"} or \code{NULL} option), this
 #' derives the (weighted) Euclidean distances.
 #'

@@ -101,6 +101,14 @@ is.Rscc_clustering <- function(obj) {
 }
 
 
+#' Number of clusters in clustering
+#'
+#' \code{cluster_count} returns the number of clusters in a clustering object.
+#'
+#' @param clustering  an Rscc_clustering object
+#'
+#' @return Returns an integer with the number of clusters in \code{clustering}.
+#'
 #' @export
 cluster_count <- function(clustering) {
   ensure_Rscc_clustering(clustering)
