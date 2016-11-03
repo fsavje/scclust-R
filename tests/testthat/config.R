@@ -18,13 +18,7 @@
 # along with this program. If not, see http://www.gnu.org/licenses/
 # ==============================================================================
 
-if (identical(Sys.getenv("TRAVIS"), "true")) {
-  run_slow_tests <- TRUE
-} else if (identical(Sys.getenv("APPVEYOR"), "True")) {
-  run_slow_tests <- TRUE
-} else {
-  run_slow_tests <- FALSE
-}
+run_slow_tests <- TRUE
 
 compiled_with_stable_findseed <- FALSE
 
