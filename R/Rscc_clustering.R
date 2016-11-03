@@ -108,6 +108,7 @@ is.Rscc_clustering <- function(obj) {
 as.data.frame.Rscc_clustering <- function(x,
                                           row.names = NULL,
                                           ...) {
+  stopifnot(is.Rscc_clustering(x))
   ids <- attr(x, "ids", exact = TRUE)
   if (is.null(ids)) ids <- 1:length(x)
   data.frame(id = ids,
@@ -120,6 +121,7 @@ as.data.frame.Rscc_clustering <- function(x,
 #' @export
 print.Rscc_clustering <- function(x,
                                   ...) {
+  stopifnot(is.Rscc_clustering(x))
   ids <- attr(x, "ids", exact = TRUE)
   if (is.null(ids)) ids <- as.character(1:length(x))
   stopifnot(is.character(ids))

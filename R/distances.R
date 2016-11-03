@@ -221,6 +221,7 @@ is.Rscc_distances <- function(obj) {
 
 #' @export
 print.Rscc_distances <- function(x, ...) {
+  stopifnot(is.Rscc_distances(x))
   if (ncol(x) > 20L) {
     x <- x[, 1:20]
     warning(paste0(match.call()$x, " contains too many data points, showing the first 20 out of the total ", ncol(x), "."),
@@ -233,6 +234,7 @@ print.Rscc_distances <- function(x, ...) {
 
 #' @export
 as.matrix.Rscc_distances <- function(x, ...) {
+  stopifnot(is.Rscc_distances(x))
   tmp <- as.matrix(stats::dist(t(unclass(x))))
   if (!is.null(attr(x, "ids", exact = TRUE))) {
     colnames(tmp) <- rownames(tmp) <- attr(x, "ids", exact = TRUE)
