@@ -1,58 +1,37 @@
+# ==============================================================================
+# Rscclust -- R wrapper for the scclust library
+# https://github.com/fsavje/Rscclust
+#
+# Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see http://www.gnu.org/licenses/
+# ==============================================================================
+
 library(Rscclust)
 context("utilities.R")
 
-sound_clustering <- Rscc_clustering(c("a", "b", "c", "a", "b", "c", "a"))
-unsound_clustering <- make_Rscc_clustering(c("a", "b", "c", "a", "b", "c", "a"), 3, NULL)
-sound_size_constraint <- 3
-unsound_size_constraint <- 0
-sound_type_labels <- factor(c("a", "b", "c", "a", "b", "c", "a"))
-unsound_type_labels <- c("a", "b", "c", "a", "b", "c", "a")
-sound_type_size_constraints <- c("a" = 1, "b" = 2)
-unsound_type_size_constraints <- c("a" = 1, "bbb" = 2)
-sound_distance_obj <- make_distances(matrix(c(0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.1), ncol = 1))
-unsound_distance_obj <- structure(matrix(letters[1:9], ncol = 3),
-                                  ids = NULL,
-                                  normalization = diag(3),
-                                  weights = diag(3),
-                                  class = c("Rscc_distances"))
 
-test_that("utility functions check input.", {
-  expect_equal(check_clustering(sound_clustering, sound_size_constraint), FALSE)
-  expect_error(check_clustering(unsound_clustering, sound_size_constraint))
-  expect_error(check_clustering(sound_clustering, unsound_size_constraint))
-  expect_equal(check_clustering_types(sound_clustering,
-                                      sound_type_labels,
-                                      sound_type_size_constraints,
-                                      sound_size_constraint), FALSE)
-  expect_error(check_clustering_types(unsound_clustering,
-                                      sound_type_labels,
-                                      sound_type_size_constraints,
-                                      sound_size_constraint))
-  expect_error(check_clustering_types(sound_clustering,
-                                      unsound_type_labels,
-                                      sound_type_size_constraints,
-                                      sound_size_constraint))
-  expect_error(check_clustering_types(sound_clustering,
-                                      sound_type_labels,
-                                      unsound_type_size_constraints,
-                                      sound_size_constraint))
-  expect_error(check_clustering_types(sound_clustering,
-                                      sound_type_labels,
-                                      sound_type_size_constraints,
-                                      unsound_size_constraint))
-  expect_is(get_clustering_stats(sound_clustering, sound_distance_obj), "Rscc_clustering_stats")
-  expect_error(get_clustering_stats(unsound_clustering, sound_distance_obj))
-  expect_error(get_clustering_stats(sound_clustering, unsound_distance_obj))
-})
-
-
+# ==============================================================================
+# check_clustering
+# ==============================================================================
 
 cl1 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
 cl2 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1)
 cl3 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), ids = letters[1:10])
 cl4 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1, ids = letters[1:10])
 
-test_that("`check_clustering` returns correctly.", {
+test_that("`check_clustering` returns correct output", {
   expect_equal(check_clustering(cl1, 2), TRUE)
   expect_equal(check_clustering(cl1, 3), TRUE)
   expect_equal(check_clustering(cl1, 4), FALSE)
@@ -68,13 +47,17 @@ test_that("`check_clustering` returns correctly.", {
 })
 
 
+# ==============================================================================
+# check_clustering_types
+# ==============================================================================
+
 cl1 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
 cl2 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1)
 cl3 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), ids = letters[1:10])
 cl4 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1, ids = letters[1:10])
 dp_types <- factor(c("x", "y", "y", "z", "z", "x", "y", "z", "x", "x"))
 
-test_that("`check_clustering_types` returns correctly.", {
+test_that("`check_clustering_types` returns correct output", {
   expect_equal(check_clustering_types(cl1, dp_types, c("x" = 1, "y" = 1, "z" = 1)), TRUE)
   expect_equal(check_clustering_types(cl1, dp_types, c("x" = 1, "y" = 1, "z" = 1), 3), TRUE)
   expect_equal(check_clustering_types(cl1, dp_types, c("x" = 1, "z" = 1)), TRUE)
@@ -104,6 +87,10 @@ test_that("`check_clustering_types` returns correctly.", {
   expect_equal(check_clustering_types(cl4, dp_types, c("x" = 3, "y" = 1, "z" = 1)), FALSE)
 })
 
+
+# ==============================================================================
+# get_clustering_stats
+# ==============================================================================
 
 cl1 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
 cl2 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1)
@@ -188,7 +175,7 @@ some_assigned_emptycl_stats <- structure(list(
   cl_avg_dist_unweighted = 1.63266302700004
 ), class = c("Rscc_clustering_stats"))
 
-test_that("`check_clustering_types` returns correctly.", {
+test_that("`get_clustering_stats` returns correct output", {
   expect_equal(get_clustering_stats(cl1, make_distances(dp_data)), all_assigned_stats)
   expect_equal(get_clustering_stats(cl2, make_distances(dp_data)), some_assigned_stats)
   expect_equal(get_clustering_stats(cl3, make_distances(dp_data)), all_assigned_stats)
@@ -199,7 +186,7 @@ test_that("`check_clustering_types` returns correctly.", {
   expect_equal(get_clustering_stats(cl8, make_distances(dp_data)), some_assigned_emptycl_stats)
 })
 
-test_that("`Rscc_clustering_stats` prints correctly", {
+test_that("`print.Rscc_clustering_stats` prints correctly", {
   expect_output(print(all_assigned_stats), "num_data_points        10.0000000", fixed = TRUE)
   expect_output(print(all_assigned_stats), "num_assigned           10.0000000", fixed = TRUE)
   expect_output(print(all_assigned_stats), "num_clusters            3.0000000", fixed = TRUE)

@@ -1,5 +1,30 @@
+# ==============================================================================
+# Rscclust -- R wrapper for the scclust library
+# https://github.com/fsavje/Rscclust
+#
+# Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see http://www.gnu.org/licenses/
+# ==============================================================================
+
 library(Rscclust)
 context("distance.R")
+
+
+# ==============================================================================
+# make_distances
+# ==============================================================================
 
 cov1 <- c(-0.152, -0.619, 0.231, -0.524, 0.538, 0.414, 0.842, 0.173, -0.897, -0.963, 2.3, 0.206, -0.417, 0.462, 0.139, 1.262, -1.564, -0.385, 0.525, 0.158, 1.103, 0.793, -0.901, 0.744, -1.254, 0.045, -0.891, -0.154, 0.872, -0.118, 1.307, 0.242, -1.242, -0.47, 1.106, 1.126, 0.258, 0.943, 0.89, -0.869, 1.929, 0.115, -0.046, -0.162, 0.776, 0.903, -0.273, -0.982, 1.175, -0.519, -0.296, 0.709, -0.51, 0.969, -1.902, -0.936, -0.738, 0.582, 0.023, 0.578, 0.295, -0.005, -1.268, -0.038, 1.023, -0.733, -1.469, 0.545, 1.1, 0.962, 0.292, 0.317, -0.066, -0.394, -1.008, 1.621, 0.725, 0.963, -2.635, 0.092, -1.744, 1.083, 0.299, 0.605, 1.324, 0.083, 0.467, 0.288, 0.52, 0.258, -0.208, 0.207, -1.501, 0.54, -2.589, -0.276, -0.825, 0.67, 0.173, 2.45)
 cov2 <- c(1.354, 1.321, 0.775, 0.779, 0.192, -0.027, -0.347, 0.472, 0.551, 0.797, -0.892, -0.684, 0.99, 0.525, -1.696, -0.063, 0.512, 0.023, 1.059, -0.786, -0.638, 0.35, 0.418, 0.767, -1.044, 1.962, -1.504, 1.19, 0.485, 0.464, -0.139, -1.571, 0.25, -0.228, 1.435, -2.201, 1.218, 2.444, 0.746, 0.523, 0.039, 1.422, -0.63, 0.46, 0.086, 1.242, 1.576, 0.313, -1.243, 0.706, 0.712, -0.066, 0.249, 0.359, 0.12, -0.872, -0.609, 1.115, 0.558, -1.743, 0.096, -0.336, 1.372, 0.298, 0.026, 1.012, 0.211, 1.058, 0.566, -1.473, -0.257, 0.835, 1.039, -0.884, -0.923, -0.066, 0.074, -1.923, 0.653, -0.636, 1.089, 1.433, -1.732, -0.544, -1.44, 2.669, 0.755, 0.206, -0.927, 0.046, -1.917, 0.256, -0.469, 0.312, 0.058, -0.202, -0.541, -0.942, 1.569, -1.76)
@@ -22,7 +47,6 @@ test_data_matrix_wNA <- test_data_matrix
 test_data_matrix_wNA[55, 2] <- NA
 test_data_df1_wNA <- test_data_df1
 test_data_df1_wNA$cov2[34] <- NA
-
 
 ref_out_vanilla <- structure(t(test_data_matrix),
                              normalization = diag(rep(1, 3)),
@@ -55,20 +79,6 @@ ref_dist_mat_simple <- as.matrix(dist(test_data_matrix))
 ref_dist_mat_simple_single <- as.matrix(dist(test_data_matrix_single))
 ref_dist_mat_factor <- as.matrix(dist(as.matrix(test_data_factors_tmp)))
 
-
-test_that("`make_distances` checks data input.", {
-  expect_is(make_distances(test_data_matrix), "Rscc_distances")
-  expect_error(make_distances(NULL))
-  expect_error(make_distances(1:100))
-  expect_error(make_distances(matrix(1:100, nrow = 1)))
-})
-
-
-test_that("`make_distances` prints warning text.", {
-  expect_message(print(make_distances(test_data_matrix)), "This is a Rscc_distances object. It's only purpose is to be used in the Rscclust package. Use `as.matrix` to generate an R matrix with the distances (a very slow operation for large distance matrices).\n", fixed = TRUE)
-})
-
-
 test_that("`make_distances` accepts matrix input.", {
   expect_is(make_distances(test_data_matrix), "Rscc_distances")
   expect_equal(make_distances(test_data_matrix), ref_out_vanilla)
@@ -82,7 +92,6 @@ test_that("`make_distances` accepts matrix input.", {
   expect_error(make_distances(test_data_matrix, dist_variables = c("cov1", "cov2", "cov3")))
 })
 
-
 test_that("`make_distances` accepts 1D matrix input.", {
   expect_is(make_distances(test_data_matrix_single), "Rscc_distances")
   expect_equal(make_distances(test_data_matrix_single), ref_out_vanilla_single)
@@ -94,7 +103,6 @@ test_that("`make_distances` accepts 1D matrix input.", {
   expect_error(make_distances(test_data_matrix_single, id_variable = "idcol"))
   expect_error(make_distances(test_data_matrix_single, dist_variables = c("cov1", "cov2", "cov3")))
 })
-
 
 test_that("`make_distances` accepts data.frame input.", {
   expect_is(make_distances(test_data_df1), "Rscc_distances")
@@ -129,7 +137,6 @@ test_that("`make_distances` accepts data.frame input.", {
   expect_equal(unname(as.matrix(make_distances(test_data_df4, id_variable = "cov1", dist_variables = c("cov1", "cov2", "cov3")))), unname(ref_dist_mat_simple))
 })
 
-
 test_that("`make_distances` accepts 1D data.frame input.", {
   expect_is(make_distances(test_data_df1_single), "Rscc_distances")
   expect_equal(make_distances(test_data_df1_single), ref_out_vanilla_single)
@@ -162,11 +169,10 @@ test_that("`make_distances` accepts 1D data.frame input.", {
   expect_equal(unname(as.matrix(make_distances(test_data_df4_single, id_variable = "cov1", dist_variables = c("cov1")))), unname(ref_dist_mat_simple_single))
 })
 
-
 test_that("`make_distances` accepts factor data.frame input.", {
-  expect_is(make_distances(test_data_factors), "Rscc_distances")
-  expect_equal(make_distances(test_data_factors), ref_out_factor)
-  expect_equal(as.matrix(make_distances(test_data_factors)), ref_dist_mat_factor)
+  expect_warning(expect_is(make_distances(test_data_factors), "Rscc_distances"))
+  expect_warning(expect_equal(make_distances(test_data_factors), ref_out_factor))
+  expect_warning(expect_equal(as.matrix(make_distances(test_data_factors)), ref_dist_mat_factor))
 })
 
 ref_make_distance <- function(mat, covmat, inverted = FALSE) {
@@ -231,16 +237,7 @@ test_that("`normalize` works.", {
   expect_equal(attr(make_distances(test_data_matrix, normalize = c(1, 2, 3)), "normalization"),
                matrix(c(1, 0, 0, 0, 2, 0, 0, 0, 3), nrow = 3))
   expect_equal(as.matrix(make_distances(test_data_matrix, normalize = c(1, 2, 3))), ref_dist_mat_custom)
-
-  expect_error(make_distances(test_data_matrix, normalize = "abc"))
-  expect_error(make_distances(test_data_matrix, normalize = dist(1:4)))
-  expect_error(make_distances(test_data_matrix, normalize = matrix(letters[1:9], nrow = 3)))
-  expect_error(make_distances(test_data_matrix, normalize = matrix(c(1, 0, NA, 0, 2, 0, 0, 0, 3), nrow = 3)))
-  expect_error(make_distances(test_data_matrix, normalize = matrix(c(1, 0, 1, 0, 2, 0, 0, 0, 3), nrow = 3)))
-  expect_error(make_distances(test_data_matrix, normalize = matrix(c(1, 2, 0, 2, 1, 2, 0, 2, 1), nrow = 3)))
-  expect_error(make_distances(test_data_matrix, normalize = matrix(c(1, 0, 0, 2), nrow = 2)))
 })
-
 
 ref_dist_mat_weights <- ref_make_distance(test_data_matrix, diag(c(1, 2, 3)), inverted = TRUE)
 
@@ -267,15 +264,7 @@ test_that("`weights` works.", {
   expect_equal(attr(make_distances(test_data_matrix, weights = c(1, 2, 3)), "weights"),
                matrix(c(1, 0, 0, 0, 2, 0, 0, 0, 3), nrow = 3))
   expect_equal(as.matrix(make_distances(test_data_matrix, weights = c(1, 2, 3))), ref_dist_mat_weights)
-
-  expect_error(make_distances(test_data_matrix, weights = dist(1:4)))
-  expect_error(make_distances(test_data_matrix, weights = matrix(letters[1:9], nrow = 3)))
-  expect_error(make_distances(test_data_matrix, weights = matrix(c(1, 0, NA, 0, 2, 0, 0, 0, 3), nrow = 3)))
-  expect_error(make_distances(test_data_matrix, weights = matrix(c(1, 0, 1, 0, 2, 0, 0, 0, 3), nrow = 3)))
-  expect_error(make_distances(test_data_matrix, weights = matrix(c(1, 2, 0, 2, 1, 2, 0, 2, 1), nrow = 3)))
-  expect_error(make_distances(test_data_matrix, weights = matrix(c(1, 0, 0, 2), nrow = 2)))
 })
-
 
 replica_make_distances <- function(mat, normalize, weights) {
   covmat <- t(chol(solve(normalize))) %*% weights %*% chol(solve(normalize))
@@ -317,4 +306,118 @@ test_that("`normalize` and `weights` works.", {
   expect_equal(as.matrix(make_distances(test_data_matrix,
                                         normalize = matrix(c(1, 0, 0, 0, 2, 0, 0, 0, 3), nrow = 3),
                                         weights = c(4, 5, 6))), ref_dist_mat_custom_wweights)
+})
+
+
+# ==============================================================================
+# is.Rscc_distances
+# ==============================================================================
+
+test_that("`is.Rscc_distances` returns correct output", {
+  expect_true(is.Rscc_distances(structure(t(matrix(as.numeric(1:10), nrow = 5)),
+                                          ids = NULL,
+                                          normalization = diag(rep(1, 2)),
+                                          weights = diag(rep(1, 2)),
+                                          class = c("Rscc_distances"))))
+  expect_true(is.Rscc_distances(structure(t(matrix(as.numeric(1:10), nrow = 5)),
+                                          ids = letters[1:5],
+                                          normalization = diag(rep(1, 2)),
+                                          weights = diag(rep(1, 2)),
+                                          class = c("Rscc_distances"))))
+
+  expect_false(is.Rscc_distances(structure(t(matrix(as.numeric(1:10), nrow = 5)),
+                                           ids = NULL,
+                                           normalization = diag(rep(1, 2)),
+                                           weights = diag(rep(1, 2)),
+                                           class = c("abc"))))
+  expect_false(is.Rscc_distances(structure(as.numeric(1:10),
+                                           ids = NULL,
+                                           normalization = diag(rep(1, 2)),
+                                           weights = diag(rep(1, 2)),
+                                           class = c("Rscc_distances"))))
+  expect_false(is.Rscc_distances(structure(t(matrix(letters[1:10], nrow = 5)),
+                                           ids = NULL,
+                                           normalization = diag(rep(1, 2)),
+                                           weights = diag(rep(1, 2)),
+                                           class = c("Rscc_distances"))))
+  expect_false(is.Rscc_distances(structure(t(matrix(as.numeric(1:10), nrow = 5)),
+                                           ids = 1:5,
+                                           normalization = diag(rep(1, 2)),
+                                           weights = diag(rep(1, 2)),
+                                           class = c("Rscc_distances"))))
+  expect_false(is.Rscc_distances(structure(t(matrix(as.numeric(1:10), nrow = 5)),
+                                           ids = letters[1:4],
+                                           normalization = diag(rep(1, 2)),
+                                           weights = diag(rep(1, 2)),
+                                           class = c("Rscc_distances"))))
+  expect_false(is.Rscc_distances(structure(t(matrix(as.numeric(1:10), nrow = 5)),
+                                           ids = NULL,
+                                           normalization = NULL,
+                                           weights = diag(rep(1, 2)),
+                                           class = c("Rscc_distances"))))
+  expect_false(is.Rscc_distances(structure(t(matrix(as.numeric(1:10), nrow = 5)),
+                                           ids = NULL,
+                                           normalization = rep(1, 2),
+                                           weights = diag(rep(1, 2)),
+                                           class = c("Rscc_distances"))))
+  expect_false(is.Rscc_distances(structure(t(matrix(as.numeric(1:10), nrow = 5)),
+                                           ids = NULL,
+                                           normalization = matrix(letters[1:4], ncol = 2),
+                                           weights = diag(rep(1, 2)),
+                                           class = c("Rscc_distances"))))
+  expect_false(is.Rscc_distances(structure(t(matrix(as.numeric(1:10), nrow = 5)),
+                                           ids = NULL,
+                                           normalization = diag(rep(1, 2)),
+                                           weights = NULL,
+                                           class = c("Rscc_distances"))))
+  expect_false(is.Rscc_distances(structure(t(matrix(as.numeric(1:10), nrow = 5)),
+                                           ids = NULL,
+                                           normalization = diag(rep(1, 2)),
+                                           weights = rep(1, 2),
+                                           class = c("Rscc_distances"))))
+  expect_false(is.Rscc_distances(structure(t(matrix(as.numeric(1:10), nrow = 5)),
+                                           ids = NULL,
+                                           normalization = diag(rep(1, 2)),
+                                           weights = matrix(letters[1:4], ncol = 2),
+                                           class = c("Rscc_distances"))))
+})
+
+
+# ==============================================================================
+# data_point_count.Rscc_distances
+# ==============================================================================
+
+test_that("`data_point_count.Rscc_distances` returns correct output", {
+  expect_identical(data_point_count.Rscc_distances(make_distances(matrix(c(0.1, 0.2, 0.3, 0.1, 0.2, 0.3), ncol = 2))),
+                   3L)
+  expect_identical(data_point_count.Rscc_distances(make_distances(matrix(c(0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.3), ncol = 2))),
+                   5L)
+})
+
+
+# ==============================================================================
+# print.Rscc_distances
+# ==============================================================================
+
+test_that("`print.Rscc_distances` prints correctly", {
+  expect_output(print(make_distances(matrix(c(0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.3), ncol = 2))),
+                "0.0000000 0.2236068 0.2236068 0.0000000 0.1000000", fixed = TRUE)
+  expect_output(print(make_distances(matrix(c(0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.3), ncol = 2))),
+                "0.2236068 0.0000000 0.1414214 0.2236068 0.2000000", fixed = TRUE)
+  expect_output(print(make_distances(matrix(c(0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.3), ncol = 2))),
+                "0.2236068 0.1414214 0.0000000 0.2236068 0.1414214", fixed = TRUE)
+  expect_output(print(make_distances(matrix(c(0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.3), ncol = 2))),
+                "0.0000000 0.2236068 0.2236068 0.0000000 0.1000000", fixed = TRUE)
+  expect_output(print(make_distances(matrix(c(0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.3), ncol = 2))),
+                "0.1000000 0.2000000 0.1414214 0.1000000 0.0000000", fixed = TRUE)
+})
+
+
+# ==============================================================================
+# as.matrix.Rscc_distances
+# ==============================================================================
+
+test_that("`as.matrix.Rscc_distances` returns correct output", {
+  expect_equal(as.matrix(make_distances(matrix(c(0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.3), ncol = 2))),
+               as.matrix(dist(matrix(c(0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.3), ncol = 2))))
 })

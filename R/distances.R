@@ -207,9 +207,9 @@ is.Rscc_distances <- function(obj) {
   inherits(obj, "Rscc_distances") &&
     is.matrix(obj) &&
     is.numeric(obj) &&
-    (is.null(attr(obj, "id_variable", exact = TRUE)) ||
-       (is.character(attr(obj, "id_variable", exact = TRUE)) &&
-          (length(attr(obj, "id_variable", exact = TRUE)) == ncol(obj)))) &&
+    (is.null(attr(obj, "ids", exact = TRUE)) ||
+       (is.character(attr(obj, "ids", exact = TRUE)) &&
+          (length(attr(obj, "ids", exact = TRUE)) == ncol(obj)))) &&
     !is.null(attr(obj, "normalization", exact = TRUE)) &&
     is.matrix(attr(obj, "normalization", exact = TRUE)) &&
     is.numeric(attr(obj, "normalization", exact = TRUE)) &&

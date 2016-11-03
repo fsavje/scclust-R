@@ -213,7 +213,7 @@ test_that("`coerce_cluster_labels` coerces correctly.", {
   expect_identical(t_coerce_cluster_labels(t_unassigned_labels = 1L),
                    factor(c(NA, 2:10)))
   expect_identical(t_coerce_cluster_labels(t_cluster_labels = factor(1:10),
-                                        t_unassigned_labels = "3"),
+                                           t_unassigned_labels = "3"),
                    factor(c(1:2, NA, 4:10)))
 })
 
@@ -318,9 +318,9 @@ t_dist_test5 <- matrix(1:10, nrow = 5)
 dimnames(t_dist_test5) <- list(1:5, c("a", "b"))
 
 t_dist_ref1 <- list(data = matrix(as.numeric(1:10), nrow = 5),
-                  id_variable = NULL)
+                    id_variable = NULL)
 t_dist_ref2 <- list(data = matrix(as.numeric(1:10), nrow = 5),
-                  id_variable = letters[1:5])
+                    id_variable = letters[1:5])
 
 test_that("`coerce_distance_data` coerces correctly.", {
   expect_equal(t_coerce_distance_data(), t_dist_ref1)
@@ -377,7 +377,7 @@ test_that("`coerce_norm_matrix` coerces correctly.", {
   expect_equal(t_coerce_norm_matrix(t_mat = data.frame(diag(rep(1, 4)))),
                diag(rep(1, 4)))
   expect_equal(t_coerce_norm_matrix(t_mat = matrix(diag(rep(1, 4)), ncol = 4,
-                                                    dimnames = list(c(1:4), letters[1:4]))),
+                                                   dimnames = list(c(1:4), letters[1:4]))),
                diag(rep(1, 4)))
 })
 
@@ -528,7 +528,7 @@ test_that("`coerce_type_labels` checks input.", {
   expect_silent(t_coerce_type_labels(t_type_labels = as.numeric(1:10)))
   expect_silent(t_coerce_type_labels(t_type_labels = letters[1:10]))
   expect_error(t_coerce_type_labels(t_type_labels = c(1, 5, 3.5, 3, 5)),
-                regexp = "`t_type_labels` must be integer or factor.")
+               regexp = "`t_type_labels` must be integer or factor.")
   expect_warning(t_coerce_type_labels(t_type_labels = c(TRUE, FALSE, TRUE, FALSE)),
                  regexp = "Coercing `t_type_labels` to factor.")
   expect_error(t_coerce_type_labels(t_type_labels = c(1L, NA, 4L, 3L)),
@@ -549,5 +549,5 @@ test_that("`coerce_type_labels` coerces correctly.", {
   expect_identical(t_coerce_type_labels(t_type_labels = letters[1:10]),
                    factor(letters[1:10]))
   expect_warning(expect_identical(t_coerce_type_labels(t_type_labels = c(TRUE, FALSE, TRUE, FALSE)),
-                   factor(c(TRUE, FALSE, TRUE, FALSE))))
+                                  factor(c(TRUE, FALSE, TRUE, FALSE))))
 })
