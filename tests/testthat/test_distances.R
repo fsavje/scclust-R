@@ -410,6 +410,21 @@ test_that("`print.Rscc_distances` prints correctly", {
                 "0.0000000 0.2236068 0.2236068 0.0000000 0.1000000", fixed = TRUE)
   expect_output(print(make_distances(matrix(c(0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.3), ncol = 2))),
                 "0.1000000 0.2000000 0.1414214 0.1000000 0.0000000", fixed = TRUE)
+
+  expect_warning(
+    expect_output(
+      print(make_distances(matrix(as.numeric(1:100), ncol = 2))),
+      "0.000000  1.414214  2.828427", fixed = TRUE
+    ),
+    regexp = "contains too many data points, showing the first 20 out of the total 50."
+  )
+  expect_warning(
+    expect_output(
+      print(make_distances(matrix(as.numeric(1:100), ncol = 2))),
+      "8.485281  7.071068  5.656854", fixed = TRUE
+    ),
+    regexp = "contains too many data points, showing the first 20 out of the total 50."
+  )
 })
 
 

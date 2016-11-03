@@ -86,9 +86,6 @@ SEXP Rscc_hierarchical_clustering(const SEXP R_distance_object,
 			iRscc_scc_error();
 		}
 	} else {
-		if (!isInteger(R_existing_clustering)) {
-			iRscc_error("`R_existing_clustering` is not a valid clustering object.");
-		}
 		if (!isInteger(getAttrib(R_existing_clustering, install("cluster_count")))) {
 			iRscc_error("`R_existing_clustering` is not a valid clustering object.");
 		}

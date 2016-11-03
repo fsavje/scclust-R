@@ -230,10 +230,10 @@ data_point_count.Rscc_distances <- function(x) {
 print.Rscc_distances <- function(x, ...) {
   stopifnot(is.Rscc_distances(x))
   if (ncol(x) > 20L) {
-    x <- x[, 1:20]
-    warning(paste0(match.call()$x, " contains too many data points, showing the first 20 out of the total ", ncol(x), "."),
+    warning(paste0("`", match.call()$x, "` contains too many data points, showing the first 20 out of the total ", ncol(x), "."),
             call. = FALSE,
             noBreaks. = TRUE)
+    x <- make_distances(t(x[, 1:20]), id_variable = attr(x, "ids", exact = TRUE)[1:20])
   }
   print(as.matrix.Rscc_distances(x))
 }
