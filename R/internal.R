@@ -51,15 +51,14 @@ make_Rscc_clustering <- function(cluster_labels,
 
 make_type_indicators <- function(targets,
                                  type_labels) {
-  stopifnot(is.character(names(targets)),
-            !anyDuplicated(names(targets)),
+  stopifnot(!anyDuplicated(as.character(targets)),
             is.factor(type_labels) || is.integer(type_labels))
   if (is.factor(type_labels)) {
     out_indicators <- rep(FALSE, nlevels(type_labels))
     names(out_indicators) <- levels(type_labels)
     stopifnot(all(as.character(targets) %in% names(out_indicators)))
     out_indicators[as.character(targets)] <- TRUE
-    out_indicators <- c(FALSE, out_indicators)
+    out_indicators <- c("0" = FALSE, out_indicators)
   } else if (is.integer(type_labels)) {
     max_label <- max(type_labels)
     out_indicators <- rep(FALSE, max_label + 1L)
@@ -84,7 +83,7 @@ make_type_size_constraints <- function(type_constraints,
     names(out_type_size_constraints) <- levels(type_labels)
     stopifnot(all(names(type_constraints) %in% names(out_type_size_constraints)))
     out_type_size_constraints[names(type_constraints)] <- as.integer(type_constraints)
-    out_type_size_constraints <- c(0L, out_type_size_constraints)
+    out_type_size_constraints <- c("0" = 0L, out_type_size_constraints)
   } else if (is.integer(type_labels)) {
     max_label <- max(type_labels)
     out_type_size_constraints <- rep(0L, max_label + 1L)
@@ -92,5 +91,5 @@ make_type_size_constraints <- function(type_constraints,
     stopifnot(all(names(type_constraints) %in% names(out_type_size_constraints)))
     out_type_size_constraints[names(type_constraints)] <- as.integer(type_constraints)
   }
-  unname(out_type_size_constraints)
+  out_type_size_constraints
 }
