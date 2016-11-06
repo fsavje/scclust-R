@@ -140,7 +140,7 @@ coerce_cluster_labels <- function(cluster_labels,
   if (!is.factor(cluster_labels) && !is.vector(cluster_labels)) {
     new_error("`", match.call()$cluster_labels, "` must be factor or vector.")
   }
-  if (!is.null(unassigned_labels)) {
+  if (!is.null(unassigned_labels) && !all(is.na(unassigned_labels))) {
     if (!all(unassigned_labels %in% cluster_labels)) {
       new_error("`", match.call()$unassigned_labels, "` contains entries not in `", match.call()$cluster_labels, "`.")
     }
