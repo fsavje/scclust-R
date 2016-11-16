@@ -1,4 +1,4 @@
-/* ==============================================================================
+/* =============================================================================
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
- * ============================================================================== */
+ * ========================================================================== */
 
 // So g++ defines integer limits
 #define __STDC_LIMIT_MACROS
@@ -27,9 +27,9 @@
 #include <climits>
 #include <cstddef>
 #include "../exlib/libANN/include/ANN/ANN.h"
-#include "../include/scc_data_obj.h"
-#include "scc_data_obj_int.h"
-#include "scclust_int.h"
+#include "../include/scclust.h"
+#include "scc_data_set_struct.h"
+#include "scclust_internal.h"
 
 #ifdef SCC_ANN_BDTREE
 	#define ANNpointSetConstructor ANNbd_tree
@@ -41,9 +41,9 @@
 	#define SCC_ANN_EPS 0.0
 #endif
 
-// ==============================================================================
+// =============================================================================
 // Internal structs and variables
-// ==============================================================================
+// =============================================================================
 
 static int iscc_open_search_objects = 0;
 
@@ -56,9 +56,9 @@ struct iscc_NNSearchObject {
 };
 
 
-// ==============================================================================
+// =============================================================================
 // External function implementations
-// ==============================================================================
+// =============================================================================
 
 bool iscc_init_nn_search_object(void* const data_set_object,
                                 const size_t len_search_indices,

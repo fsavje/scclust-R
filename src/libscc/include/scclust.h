@@ -1,4 +1,4 @@
-/* ==============================================================================
+/* =============================================================================
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
- * ============================================================================== */
+ * ========================================================================== */
 
 /** @file
  *
@@ -41,9 +41,9 @@ extern "C" {
 #endif
 
 
-// ==============================================================================
+// =============================================================================
 // Library specific types, user-serviceable
-// ==============================================================================
+// =============================================================================
 
 /** Type used for cluster labels. May be unsigned or signed.
  *
@@ -75,23 +75,22 @@ static const scc_Clabel SCC_CLABEL_NA = INT_MIN;
 typedef int scc_TypeLabel;
 
 
-// ==============================================================================
+// =============================================================================
 // Version information
-// ==============================================================================
+// =============================================================================
 
 #define SCC_SCCLUST_MAJOR_VERSION 0
 #define SCC_SCCLUST_MINOR_VERSION 1
 #define SCC_SCCLUST_PATCH_VERSION 1
-#define SCC_CHECK_VERSION(major, minor) ((major == SCC_SCCLUST_MAJOR_VERSION) && (minor <= SCC_SCCLUST_MINOR_VERSION))
 
 void scc_get_compiled_version(uint32_t* out_major,
                               uint32_t* out_minor,
                               uint32_t* out_patch);
 
 
-// ==============================================================================
+// =============================================================================
 // Error handling
-// ==============================================================================
+// =============================================================================
 
 enum scc_ErrorCode {
 	SCC_ER_OK,
@@ -116,34 +115,28 @@ bool scc_get_latest_error(size_t len_error_message_buffer,
                           char error_message_buffer[]);
 
 
-// ==============================================================================
-// Utility functions
-// ==============================================================================
+// =============================================================================
+// Data set object
+// =============================================================================
+
+typedef struct scc_DataSetObject scc_DataSetObject;
+
+void scc_free_data_set_object(scc_DataSetObject** out_data_set_object);
+
+scc_ErrorCode scc_get_data_set_object(uintmax_t num_data_points,
+                                      uintmax_t num_dimensions,
+                                      size_t len_data_matrix,
+                                      double data_matrix[],
+                                      bool deep_matrix_copy,
+                                      scc_DataSetObject** out_data_set_object);
+
+
+// =============================================================================
+// Clustering object
+// =============================================================================
 
 /// Type used for clusterings
 typedef struct scc_Clustering scc_Clustering;
-
-/// Type used for clustering statistics
-typedef struct scc_ClusteringStats scc_ClusteringStats;
-
-/// Struct to store clustering statistics
-struct scc_ClusteringStats {
-	uintmax_t num_data_points;
-	uintmax_t num_assigned;
-	uintmax_t num_clusters;
-	uintmax_t num_populated_clusters;
-	uintmax_t min_cluster_size;
-	uintmax_t max_cluster_size;
-	double avg_cluster_size;
-	double sum_dists;
-	double min_dist;
-	double max_dist;
-	double cl_avg_min_dist;
-	double cl_avg_max_dist;
-	double cl_avg_dist_weighted;
-	double cl_avg_dist_unweighted;
-};
-
 
 void scc_free_clustering(scc_Clustering** clustering);
 
@@ -182,14 +175,10 @@ scc_ErrorCode scc_get_cluster_labels(const scc_Clustering* clustering,
                                      size_t len_out_label_buffer,
                                      scc_Clabel out_label_buffer[]);
 
-scc_ErrorCode scc_get_clustering_stats(const scc_Clustering* clustering,
-                                       void* data_set_object,
-                                       scc_ClusteringStats* out_stats);
 
-
-// ==============================================================================
-// NNG-based clustering
-// ==============================================================================
+// =============================================================================
+// Clustering functions
+// =============================================================================
 
 /** Enum to specify seed finding methods.
  *
@@ -302,15 +291,40 @@ scc_ErrorCode scc_nng_clustering_types(scc_Clustering* clustering,
                                        bool secondary_radius_constraint,
                                        double secondary_radius);
 
-
-// ==============================================================================
-// Hierarchical clustering function
-// ==============================================================================
-
 scc_ErrorCode scc_hierarchical_clustering(scc_Clustering* clustering,
                                           void* data_set_object,
                                           uint32_t size_constraint,
                                           bool batch_assign);
+
+
+// =============================================================================
+// Clustering stats function
+// =============================================================================
+
+/// Type used for clustering statistics
+typedef struct scc_ClusteringStats scc_ClusteringStats;
+
+/// Struct to store clustering statistics
+struct scc_ClusteringStats {
+	uintmax_t num_data_points;
+	uintmax_t num_assigned;
+	uintmax_t num_clusters;
+	uintmax_t num_populated_clusters;
+	uintmax_t min_cluster_size;
+	uintmax_t max_cluster_size;
+	double avg_cluster_size;
+	double sum_dists;
+	double min_dist;
+	double max_dist;
+	double cl_avg_min_dist;
+	double cl_avg_max_dist;
+	double cl_avg_dist_weighted;
+	double cl_avg_dist_unweighted;
+};
+
+scc_ErrorCode scc_get_clustering_stats(const scc_Clustering* clustering,
+                                       void* data_set_object,
+                                       scc_ClusteringStats* out_stats);
 
 
 #ifdef __cplusplus

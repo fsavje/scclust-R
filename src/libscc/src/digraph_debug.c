@@ -1,4 +1,4 @@
-/* ==============================================================================
+/* =============================================================================
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
- * ============================================================================== */
+ * ========================================================================== */
 
 #include "digraph_debug.h"
 
@@ -29,12 +29,12 @@
 #include <string.h>
 #include "digraph_core.h"
 #include "error.h"
-#include "scclust_int.h"
+#include "scclust_internal.h"
 
 
-// ==============================================================================
+// =============================================================================
 // External function implementations
-// ==============================================================================
+// =============================================================================
 
 bool iscc_is_balanced_digraph(const iscc_Digraph* const dg,
                               const iscc_Arci arcs_per_vertex)

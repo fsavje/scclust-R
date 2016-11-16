@@ -1,4 +1,4 @@
-/* ==============================================================================
+/* =============================================================================
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
- * ============================================================================== */
+ * ========================================================================== */
 
 #include "../include/scclust.h"
 
@@ -28,15 +28,15 @@
 #include <stdlib.h>
 #include "dist_search.h"
 #include "error.h"
-#include "scclust_int.h"
+#include "scclust_internal.h"
 
 // Maximum number of data points to check when finding centers.
 static const uint_fast16_t ISCC_HI_NUM_TO_CHECK = 100;
 
 
-// ==============================================================================
+// =============================================================================
 // Internal structs
-// ==============================================================================
+// =============================================================================
 
 typedef struct iscc_hi_DistanceEdge iscc_hi_DistanceEdge;
 struct iscc_hi_DistanceEdge {
@@ -71,9 +71,9 @@ struct iscc_hi_WorkArea {
 };
 
 
-// ==============================================================================
+// =============================================================================
 // Internal function prototypes
-// ==============================================================================
+// =============================================================================
 
 static scc_ErrorCode iscc_hi_empty_cl_stack(size_t num_data_points,
                                             iscc_hi_ClusterStack* out_cl_stack);
@@ -155,9 +155,9 @@ static int iscc_hi_compare_dist_edges(const void* a,
                                       const void* b);
 
 
-// ==============================================================================
+// =============================================================================
 // External function implementations
-// ==============================================================================
+// =============================================================================
 
 scc_ErrorCode scc_hierarchical_clustering(scc_Clustering* const clustering,
                                           void* const data_set_object,
@@ -232,9 +232,9 @@ scc_ErrorCode scc_hierarchical_clustering(scc_Clustering* const clustering,
 }
 
 
-// ==============================================================================
+// =============================================================================
 // Internal function implementations
-// ==============================================================================
+// =============================================================================
 
 static scc_ErrorCode iscc_hi_empty_cl_stack(const size_t num_data_points,
                                             iscc_hi_ClusterStack* const out_cl_stack)

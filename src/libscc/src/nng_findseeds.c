@@ -1,4 +1,4 @@
-/* ==============================================================================
+/* =============================================================================
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
- * ============================================================================== */
+ * ========================================================================== */
 
 #include "nng_findseeds.h"
 
@@ -28,12 +28,12 @@
 #include "digraph_core.h"
 #include "digraph_operations.h"
 #include "error.h"
-#include "scclust_int.h"
+#include "scclust_internal.h"
 
 
-// ==============================================================================
+// =============================================================================
 // Internal structs
-// ==============================================================================
+// =============================================================================
 
 typedef struct iscc_fs_SortResult iscc_fs_SortResult;
 struct iscc_fs_SortResult {
@@ -44,9 +44,9 @@ struct iscc_fs_SortResult {
 };
 
 
-// ==============================================================================
+// =============================================================================
 // Internal function prototypes
-// ==============================================================================
+// =============================================================================
 
 static scc_ErrorCode iscc_findseeds_lexical(const iscc_Digraph* nng,
                                             iscc_SeedResult* out_seeds);
@@ -113,9 +113,9 @@ static inline void iscc_fs_debug_check_sort(const iscc_Dpid* current_pos,
 #endif // if defined(SCC_STABLE_FINDSEED) && !defined(NDEBUG)
 
 
-// ==============================================================================
+// =============================================================================
 // External function implementations
-// ==============================================================================
+// =============================================================================
 
 scc_ErrorCode iscc_find_seeds(const iscc_Digraph* const nng,
                               const scc_SeedMethod seed_method,
@@ -176,9 +176,9 @@ scc_ErrorCode iscc_find_seeds(const iscc_Digraph* const nng,
 }
 
 
-// ==============================================================================
+// =============================================================================
 // Internal function implementations
-// ==============================================================================
+// =============================================================================
 
 static scc_ErrorCode iscc_findseeds_lexical(const iscc_Digraph* const nng,
                                             iscc_SeedResult* const out_seeds)

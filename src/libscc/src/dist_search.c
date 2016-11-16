@@ -1,4 +1,4 @@
-/* ==============================================================================
+/* =============================================================================
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
- * ============================================================================== */
+ * ========================================================================== */
 
 #include "dist_search.h"
 
@@ -25,15 +25,15 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include "../include/scc_data_obj.h"
+#include "../include/scclust.h"
 #include "dist_inline_sqdist.h"
-#include "scc_data_obj_int.h"
-#include "scclust_int.h"
+#include "scc_data_set_struct.h"
+#include "scclust_internal.h"
 
 
-// ==============================================================================
+// =============================================================================
 // Miscellaneous function implementations
-// ==============================================================================
+// =============================================================================
 
 bool iscc_check_data_set_object(void* const data_set_object,
                                 const size_t required_data_points)
@@ -126,9 +126,9 @@ bool iscc_get_dist_rows(void* const data_set_object,
 }
 
 
-// ==============================================================================
+// =============================================================================
 // Max dist search function implementations
-// ==============================================================================
+// =============================================================================
 
 struct iscc_MaxDistObject {
 	scc_DataSetObject* data_set_object;

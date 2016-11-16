@@ -1,4 +1,4 @@
-/* ==============================================================================
+/* =============================================================================
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
@@ -16,15 +16,15 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
- * ============================================================================== */
+ * ========================================================================== */
 
 /** @file
  *
  *  Header with internal type definitions.
  */
 
-#ifndef SCC_SCCLUST_INT_HG
-#define SCC_SCCLUST_INT_HG
+#ifndef SCC_SCCLUST_INTERNAL_HG
+#define SCC_SCCLUST_INTERNAL_HG
 
 #ifdef __cplusplus
 // So g++ defines integer limits
@@ -42,17 +42,17 @@
 #endif
 
 
-// ==============================================================================
+// =============================================================================
 // Macros
-// ==============================================================================
+// =============================================================================
 
 /// Macro for internal clustering checks.
 #define iscc_check_input_clustering(cl) scc_is_initialized_clustering(cl)
 
 
-// ==============================================================================
+// =============================================================================
 // Structs, types and variables
-// ==============================================================================
+// =============================================================================
 
 /** Type used for data point IDs. May be unsigned or signed.
  *
@@ -141,4 +141,4 @@ static const scc_Clustering ISCC_NULL_CLUSTERING = { 0, 0, 0, NULL, false };
 	}
 #endif
 
-#endif // ifndef SCC_SCCLUST_INT_HG
+#endif // ifndef SCC_SCCLUST_INTERNAL_HG

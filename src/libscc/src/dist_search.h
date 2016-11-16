@@ -1,4 +1,4 @@
-/* ==============================================================================
+/* =============================================================================
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
- * ============================================================================== */
+ * ========================================================================== */
 
 #ifndef SCC_DIST_SEARCH_HG
 #define SCC_DIST_SEARCH_HG
@@ -24,16 +24,16 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include "scclust_int.h"
+#include "scclust_internal.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-// ==============================================================================
+// =============================================================================
 // Miscellaneous functions
-// ==============================================================================
+// =============================================================================
 
 bool iscc_check_data_set_object(void* data_set_object,
                                 size_t required_data_points);
@@ -54,9 +54,9 @@ bool iscc_get_dist_rows(void* data_set_object,
                         double output_dists[]);
 
 
-// ==============================================================================
+// =============================================================================
 // Max dist functions
-// ==============================================================================
+// =============================================================================
 
 typedef struct iscc_MaxDistObject iscc_MaxDistObject;
 
@@ -75,9 +75,9 @@ bool iscc_get_max_dist(iscc_MaxDistObject* max_dist_object,
 bool iscc_close_max_dist_object(iscc_MaxDistObject** max_dist_object);
 
 
-// ==============================================================================
+// =============================================================================
 // Nearest neighbor search functions
-// ==============================================================================
+// =============================================================================
 
 typedef struct iscc_NNSearchObject iscc_NNSearchObject;
 

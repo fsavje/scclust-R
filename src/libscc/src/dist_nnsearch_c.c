@@ -1,4 +1,4 @@
-/* ==============================================================================
+/* =============================================================================
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
- * ============================================================================== */
+ * ========================================================================== */
 
 #include "dist_search.h"
 
@@ -24,14 +24,14 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include "../include/scc_data_obj.h"
+#include "../include/scclust.h"
 #include "dist_inline_sqdist.h"
-#include "scclust_int.h"
+#include "scclust_internal.h"
 
 
-// ==============================================================================
+// =============================================================================
 // Internal function prototypes
-// ==============================================================================
+// =============================================================================
 
 static inline void iscc_add_dist_to_list(double add_dist,
                                          iscc_Dpid add_index,
@@ -40,9 +40,9 @@ static inline void iscc_add_dist_to_list(double add_dist,
                                          const double* dist_list_start);
 
 
-// ==============================================================================
+// =============================================================================
 // External function implementations
-// ==============================================================================
+// =============================================================================
 
 struct iscc_NNSearchObject {
 	scc_DataSetObject* data_set_object;
@@ -303,9 +303,9 @@ bool iscc_close_nn_search_object(iscc_NNSearchObject** const nn_search_object)
 	return true;
 }
 
-// ==============================================================================
+// =============================================================================
 // Internal function implementations
-// ==============================================================================
+// =============================================================================
 
 static inline void iscc_add_dist_to_list(const double add_dist,
                                          const iscc_Dpid add_index,

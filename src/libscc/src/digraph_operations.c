@@ -1,4 +1,4 @@
-/* ==============================================================================
+/* =============================================================================
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
- * ============================================================================== */
+ * ========================================================================== */
 
 #include "digraph_operations.h"
 
@@ -27,12 +27,12 @@
 #include <stdlib.h>
 #include "digraph_core.h"
 #include "error.h"
-#include "scclust_int.h"
+#include "scclust_internal.h"
 
 
-// ==============================================================================
+// =============================================================================
 // Internal function prototypes
-// ==============================================================================
+// =============================================================================
 
 static inline uintmax_t iscc_do_union_and_delete(uint_fast16_t num_dgs,
                                                  const iscc_Digraph dgs[restrict static num_dgs],
@@ -52,9 +52,9 @@ static inline uintmax_t iscc_do_adjacency_product(const iscc_Digraph* dg_a,
                                                   iscc_Dpid out_head[restrict]);
 
 
-// ==============================================================================
+// =============================================================================
 // External function implementations
-// ==============================================================================
+// =============================================================================
 
 scc_ErrorCode iscc_delete_loops(iscc_Digraph* const dg)
 {
@@ -297,9 +297,9 @@ scc_ErrorCode iscc_adjacency_product(const iscc_Digraph* const in_dg_a,
 }
 
 
-// ==============================================================================
+// =============================================================================
 // Internal function implementations
-// ==============================================================================
+// =============================================================================
 
 static inline uintmax_t iscc_do_union_and_delete(const uint_fast16_t num_dgs,
                                                  const iscc_Digraph dgs[restrict const static num_dgs],

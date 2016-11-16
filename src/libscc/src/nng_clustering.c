@@ -1,4 +1,4 @@
-/* ==============================================================================
+/* =============================================================================
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
- * ============================================================================== */
+ * ========================================================================== */
 
 #include "../include/scclust.h"
 
@@ -30,20 +30,20 @@
 #include "error.h"
 #include "nng_core.h"
 #include "nng_findseeds.h"
-#include "scclust_int.h"
+#include "scclust_internal.h"
 
 
-// ==============================================================================
+// =============================================================================
 // Internal variables
-// ==============================================================================
+// =============================================================================
 
 static const scc_SeedMethod SCC_MAX_SEED_METHOD = SCC_SM_EXCLUSION_UPDATING;
 static const scc_UnassignedMethod SCC_MAX_UNASSIGNED_METHOD = SCC_UM_CLOSEST_SEED_EST_RADIUS;
 
 
-// ==============================================================================
+// =============================================================================
 // Internal function prototypes
-// ==============================================================================
+// =============================================================================
 
 static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* clustering,
                                                    void* data_set_object,
@@ -60,9 +60,9 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* clustering,
                                                    double secondary_radius);
 
 
-// ==============================================================================
+// =============================================================================
 // External function implementations
-// ==============================================================================
+// =============================================================================
 
 scc_ErrorCode scc_nng_clustering(scc_Clustering* const clustering,
                                  void* const data_set_object,
@@ -204,9 +204,9 @@ scc_ErrorCode scc_nng_clustering_types(scc_Clustering* const clustering,
 }
 
 
-// ==============================================================================
+// =============================================================================
 // Internal function implementations
-// ==============================================================================
+// =============================================================================
 
 static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const clustering,
                                                    void* const data_set_object,

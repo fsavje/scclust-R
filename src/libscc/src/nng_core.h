@@ -1,4 +1,4 @@
-/* ==============================================================================
+/* =============================================================================
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see http://www.gnu.org/licenses/
- * ============================================================================== */
+ * ========================================================================== */
 
 #ifndef SCC_NNG_CORE_HG
 #define SCC_NNG_CORE_HG
@@ -27,12 +27,12 @@
 #include "../include/scclust.h"
 #include "digraph_core.h"
 #include "nng_findseeds.h"
-#include "scclust_int.h"
+#include "scclust_internal.h"
 
 
-// ==============================================================================
+// =============================================================================
 // Function prototypes
-// ==============================================================================
+// =============================================================================
 
 scc_ErrorCode iscc_get_nng_with_size_constraint(void* data_set_object,
                                                 size_t num_data_points,

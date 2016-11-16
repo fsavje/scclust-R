@@ -27,7 +27,6 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <scclust.h>
-#include <scc_data_obj.h>
 #include "Rscc_error.h"
 
 
