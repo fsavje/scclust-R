@@ -19,7 +19,7 @@
 # ==============================================================================
 
 library(Rscclust)
-context("Input checking in external functions")
+context("Input checking in exported functions")
 
 
 # ==============================================================================
