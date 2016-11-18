@@ -119,7 +119,7 @@ test_that("`nng_clustering_types` returns correct output", {
                                  "lexical",
                                  "ignore",
                                  NULL,
-                                 main_data_points,
+                                 primary_data_points,
                                  "ignore",
                                  NULL)
   test_nng_types_against_replica(test_distances1,
@@ -129,7 +129,7 @@ test_that("`nng_clustering_types` returns correct output", {
                                  "lexical",
                                  "ignore",
                                  NULL,
-                                 main_data_points,
+                                 primary_data_points,
                                  "ignore",
                                  NULL)
   test_nng_types_against_replica(test_distances1,
@@ -139,7 +139,7 @@ test_that("`nng_clustering_types` returns correct output", {
                                  "inwards_order",
                                  "ignore",
                                  NULL,
-                                 main_data_points,
+                                 primary_data_points,
                                  "ignore",
                                  NULL)
   test_nng_types_against_replica(test_distances1,
@@ -149,7 +149,7 @@ test_that("`nng_clustering_types` returns correct output", {
                                  "inwards_order",
                                  "ignore",
                                  NULL,
-                                 main_data_points,
+                                 primary_data_points,
                                  "ignore",
                                  NULL)
   test_nng_types_against_replica(test_distances1,
@@ -159,7 +159,7 @@ test_that("`nng_clustering_types` returns correct output", {
                                  "exclusion_order",
                                  "ignore",
                                  NULL,
-                                 main_data_points,
+                                 primary_data_points,
                                  "ignore",
                                  NULL)
   test_nng_types_against_replica(test_distances1,
@@ -169,7 +169,7 @@ test_that("`nng_clustering_types` returns correct output", {
                                  "exclusion_order",
                                  "ignore",
                                  NULL,
-                                 main_data_points,
+                                 primary_data_points,
                                  "ignore",
                                  NULL)
   test_nng_types_against_replica(test_distances1,
@@ -249,7 +249,7 @@ test_that("`nng_clustering_types` returns correct output", {
                                  "lexical",
                                  "ignore",
                                  type_test_radius,
-                                 main_data_points,
+                                 primary_data_points,
                                  "ignore",
                                  NULL)
   test_nng_types_against_replica(test_distances1,
@@ -259,7 +259,7 @@ test_that("`nng_clustering_types` returns correct output", {
                                  "lexical",
                                  "ignore",
                                  type_test_radius,
-                                 main_data_points,
+                                 primary_data_points,
                                  "ignore",
                                  NULL)
   test_nng_types_against_replica(test_distances1,
@@ -269,7 +269,7 @@ test_that("`nng_clustering_types` returns correct output", {
                                  "inwards_order",
                                  "ignore",
                                  type_test_radius,
-                                 main_data_points,
+                                 primary_data_points,
                                  "ignore",
                                  NULL)
   test_nng_types_against_replica(test_distances1,
@@ -279,7 +279,7 @@ test_that("`nng_clustering_types` returns correct output", {
                                  "inwards_order",
                                  "ignore",
                                  type_test_radius,
-                                 main_data_points,
+                                 primary_data_points,
                                  "ignore",
                                  NULL)
   test_nng_types_against_replica(test_distances1,
@@ -289,7 +289,7 @@ test_that("`nng_clustering_types` returns correct output", {
                                  "exclusion_order",
                                  "ignore",
                                  type_test_radius,
-                                 main_data_points,
+                                 primary_data_points,
                                  "ignore",
                                  NULL)
   test_nng_types_against_replica(test_distances1,
@@ -299,7 +299,7 @@ test_that("`nng_clustering_types` returns correct output", {
                                  "exclusion_order",
                                  "ignore",
                                  type_test_radius,
-                                 main_data_points,
+                                 primary_data_points,
                                  "ignore",
                                  NULL)
   test_nng_types_against_replica(test_distances1,
@@ -339,7 +339,7 @@ test_that("`nng_clustering_types` returns correct output", {
                                  "lexical",
                                  "ignore",
                                  NULL,
-                                 main_data_points,
+                                 primary_data_points,
                                  "closest_assigned",
                                  NULL)
   test_nng_types_against_replica(test_distances1,
@@ -349,7 +349,7 @@ test_that("`nng_clustering_types` returns correct output", {
                                  "lexical",
                                  "ignore",
                                  NULL,
-                                 main_data_points,
+                                 primary_data_points,
                                  "closest_seed",
                                  NULL)
   test_nng_types_against_replica(test_distances1,
@@ -359,7 +359,7 @@ test_that("`nng_clustering_types` returns correct output", {
                                  "lexical",
                                  "ignore",
                                  NULL,
-                                 main_data_points,
+                                 primary_data_points,
                                  "estimated_radius_closest_seed",
                                  NULL)
   test_nng_types_against_replica(test_distances1,
@@ -369,7 +369,7 @@ test_that("`nng_clustering_types` returns correct output", {
                                  "lexical",
                                  "ignore",
                                  NULL,
-                                 main_data_points,
+                                 primary_data_points,
                                  "closest_assigned",
                                  test_radius)
   test_nng_types_against_replica(test_distances1,
@@ -379,7 +379,7 @@ test_that("`nng_clustering_types` returns correct output", {
                                  "lexical",
                                  "ignore",
                                  NULL,
-                                 main_data_points,
+                                 primary_data_points,
                                  "closest_seed",
                                  test_radius)
 })

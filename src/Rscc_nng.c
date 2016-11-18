@@ -46,9 +46,9 @@ static scc_UnassignedMethod iRscc_parse_unassigned_method(SEXP R_unassigned_meth
 SEXP Rscc_nng_clustering(const SEXP R_distance_object,
                          const SEXP R_size_constraint,
                          const SEXP R_seed_method,
-                         const SEXP R_main_unassigned_method,
-                         const SEXP R_main_radius,
-                         const SEXP R_main_data_points,
+                         const SEXP R_unassigned_method,
+                         const SEXP R_radius,
+                         const SEXP R_primary_data_points,
                          const SEXP R_secondary_unassigned_method,
                          const SEXP R_secondary_radius)
 {
@@ -61,14 +61,14 @@ SEXP Rscc_nng_clustering(const SEXP R_distance_object,
 	if (!isString(R_seed_method)) {
 		iRscc_error("`R_seed_method` must be string.");
 	}
-	if (!isString(R_main_unassigned_method)) {
-		iRscc_error("`R_main_unassigned_method` must be string.");
+	if (!isString(R_unassigned_method)) {
+		iRscc_error("`R_unassigned_method` must be string.");
 	}
-	if (!isNull(R_main_radius) && !isReal(R_main_radius)) {
-		iRscc_error("`R_main_radius` must be NULL or double.");
+	if (!isNull(R_radius) && !isReal(R_radius)) {
+		iRscc_error("`R_radius` must be NULL or double.");
 	}
-	if (!isNull(R_main_data_points) && !isLogical(R_main_data_points)) {
-		iRscc_error("`R_main_data_points` must be NULL or logical.");
+	if (!isNull(R_primary_data_points) && !isLogical(R_primary_data_points)) {
+		iRscc_error("`R_primary_data_points` must be NULL or logical.");
 	}
 	if (!isString(R_secondary_unassigned_method)) {
 		iRscc_error("`R_secondary_unassigned_method` must be string.");
@@ -81,14 +81,14 @@ SEXP Rscc_nng_clustering(const SEXP R_distance_object,
 	const uintmax_t num_dimensions = (uintmax_t) INTEGER(getAttrib(R_distance_object, R_DimSymbol))[0];
 	const uint32_t size_constraint = (uint32_t) asInteger(R_size_constraint);
 	const scc_SeedMethod seed_method = iRscc_parse_seed_method(R_seed_method);
-	const scc_UnassignedMethod main_unassigned_method = iRscc_parse_unassigned_method(R_main_unassigned_method);
+	const scc_UnassignedMethod unassigned_method = iRscc_parse_unassigned_method(R_unassigned_method);
 	const scc_UnassignedMethod secondary_unassigned_method = iRscc_parse_unassigned_method(R_secondary_unassigned_method);
 
-	bool main_radius_constraint = false;
-	double main_radius = 0.0;
-	if (isReal(R_main_radius)) {
-		main_radius_constraint = true;
-		main_radius = asReal(R_main_radius);
+	bool radius_constraint = false;
+	double radius = 0.0;
+	if (isReal(R_radius)) {
+		radius_constraint = true;
+		radius = asReal(R_radius);
 	}
 
 	bool secondary_radius_constraint = false;
@@ -98,18 +98,18 @@ SEXP Rscc_nng_clustering(const SEXP R_distance_object,
 		secondary_radius = asReal(R_secondary_radius);
 	}
 
-	size_t len_main_data_points = 0;
-	bool* main_data_points = NULL;
-	if (isLogical(R_main_data_points)) {
-		len_main_data_points = (size_t) xlength(R_main_data_points);
-		if (len_main_data_points < num_data_points) {
-			iRscc_error("Invalid `R_main_data_points`.");
+	size_t len_primary_data_points = 0;
+	bool* primary_data_points = NULL;
+	if (isLogical(R_primary_data_points)) {
+		len_primary_data_points = (size_t) xlength(R_primary_data_points);
+		if (len_primary_data_points < num_data_points) {
+			iRscc_error("Invalid `R_primary_data_points`.");
 		}
-		main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
-		if (main_data_points == NULL) iRscc_error("Could not allocate memory.");
-		const int* const tmp_main_data_points = LOGICAL(R_main_data_points);
-		for (size_t i = 0; i < len_main_data_points; ++i) {
-			main_data_points[i] = (tmp_main_data_points[i] == 1);
+		primary_data_points = (bool*) R_alloc(len_primary_data_points, sizeof(bool)); // Automatically freed by R on return
+		if (primary_data_points == NULL) iRscc_error("Could not allocate memory.");
+		const int* const tmp_primary_data_points = LOGICAL(R_primary_data_points);
+		for (size_t i = 0; i < len_primary_data_points; ++i) {
+			primary_data_points[i] = (tmp_primary_data_points[i] == 1);
 		}
 	}
 
@@ -138,11 +138,11 @@ SEXP Rscc_nng_clustering(const SEXP R_distance_object,
 	                             data_set_object,
 	                             size_constraint,
 	                             seed_method,
-	                             main_unassigned_method,
-	                             main_radius_constraint,
-	                             main_radius,
-	                             len_main_data_points,
-	                             main_data_points,
+	                             unassigned_method,
+	                             radius_constraint,
+	                             radius,
+	                             len_primary_data_points,
+	                             primary_data_points,
 	                             secondary_unassigned_method,
 	                             secondary_radius_constraint,
 	                             secondary_radius)) != SCC_ER_OK) {
@@ -184,9 +184,9 @@ SEXP Rscc_nng_clustering(const SEXP R_distance_object,
 
 SEXP Rscc_nng_clustering_batches(const SEXP R_distance_object,
                                  const SEXP R_size_constraint,
-                                 const SEXP R_main_unassigned_method,
-                                 const SEXP R_main_radius,
-                                 const SEXP R_main_data_points,
+                                 const SEXP R_unassigned_method,
+                                 const SEXP R_radius,
+                                 const SEXP R_primary_data_points,
                                  const SEXP R_batch_size)
 {
 	if (!isMatrix(R_distance_object) || !isReal(R_distance_object)) {
@@ -195,14 +195,14 @@ SEXP Rscc_nng_clustering_batches(const SEXP R_distance_object,
 	if (!isInteger(R_size_constraint)) {
 		iRscc_error("`R_size_constraint` must be integer.");
 	}
-	if (!isString(R_main_unassigned_method)) {
-		iRscc_error("`R_main_unassigned_method` must be string.");
+	if (!isString(R_unassigned_method)) {
+		iRscc_error("`R_unassigned_method` must be string.");
 	}
-	if (!isNull(R_main_radius) && !isReal(R_main_radius)) {
-		iRscc_error("`R_main_radius` must be NULL or double.");
+	if (!isNull(R_radius) && !isReal(R_radius)) {
+		iRscc_error("`R_radius` must be NULL or double.");
 	}
-	if (!isNull(R_main_data_points) && !isLogical(R_main_data_points)) {
-		iRscc_error("`R_main_data_points` must be NULL or logical.");
+	if (!isNull(R_primary_data_points) && !isLogical(R_primary_data_points)) {
+		iRscc_error("`R_primary_data_points` must be NULL or logical.");
 	}
 	if (!isInteger(R_batch_size)) {
 		iRscc_error("`R_batch_size` must be integer.");
@@ -211,28 +211,28 @@ SEXP Rscc_nng_clustering_batches(const SEXP R_distance_object,
 	const uintmax_t num_data_points = (uintmax_t) INTEGER(getAttrib(R_distance_object, R_DimSymbol))[1];
 	const uintmax_t num_dimensions = (uintmax_t) INTEGER(getAttrib(R_distance_object, R_DimSymbol))[0];
 	const uint32_t size_constraint = (uint32_t) asInteger(R_size_constraint);
-	const scc_UnassignedMethod main_unassigned_method = iRscc_parse_unassigned_method(R_main_unassigned_method);
+	const scc_UnassignedMethod unassigned_method = iRscc_parse_unassigned_method(R_unassigned_method);
 	const uint32_t batch_size = (uint32_t) asInteger(R_batch_size);
 
-	bool main_radius_constraint = false;
-	double main_radius = 0.0;
-	if (isReal(R_main_radius)) {
-		main_radius_constraint = true;
-		main_radius = asReal(R_main_radius);
+	bool radius_constraint = false;
+	double radius = 0.0;
+	if (isReal(R_radius)) {
+		radius_constraint = true;
+		radius = asReal(R_radius);
 	}
 
-	size_t len_main_data_points = 0;
-	bool* main_data_points = NULL;
-	if (isLogical(R_main_data_points)) {
-		len_main_data_points = (size_t) xlength(R_main_data_points);
-		if (len_main_data_points < num_data_points) {
-			iRscc_error("Invalid `R_main_data_points`.");
+	size_t len_primary_data_points = 0;
+	bool* primary_data_points = NULL;
+	if (isLogical(R_primary_data_points)) {
+		len_primary_data_points = (size_t) xlength(R_primary_data_points);
+		if (len_primary_data_points < num_data_points) {
+			iRscc_error("Invalid `R_primary_data_points`.");
 		}
-		main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
-		if (main_data_points == NULL) iRscc_error("Could not allocate memory.");
-		const int* const tmp_main_data_points = LOGICAL(R_main_data_points);
-		for (size_t i = 0; i < len_main_data_points; ++i) {
-			main_data_points[i] = (tmp_main_data_points[i] == 1);
+		primary_data_points = (bool*) R_alloc(len_primary_data_points, sizeof(bool)); // Automatically freed by R on return
+		if (primary_data_points == NULL) iRscc_error("Could not allocate memory.");
+		const int* const tmp_primary_data_points = LOGICAL(R_primary_data_points);
+		for (size_t i = 0; i < len_primary_data_points; ++i) {
+			primary_data_points[i] = (tmp_primary_data_points[i] == 1);
 		}
 	}
 
@@ -260,11 +260,11 @@ SEXP Rscc_nng_clustering_batches(const SEXP R_distance_object,
 	if ((ec = scc_nng_clustering_batches(clustering,
 	                                     data_set_object,
 	                                     size_constraint,
-	                                     main_unassigned_method,
-	                                     main_radius_constraint,
-	                                     main_radius,
-	                                     len_main_data_points,
-	                                     main_data_points,
+	                                     unassigned_method,
+	                                     radius_constraint,
+	                                     radius,
+	                                     len_primary_data_points,
+	                                     primary_data_points,
 	                                     batch_size)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
 		scc_free_data_set_object(&data_set_object);
@@ -307,9 +307,9 @@ SEXP Rscc_nng_clustering_types(const SEXP R_distance_object,
                                const SEXP R_type_size_constraints,
                                const SEXP R_total_size_constraint,
                                const SEXP R_seed_method,
-                               const SEXP R_main_unassigned_method,
-                               const SEXP R_main_radius,
-                               const SEXP R_main_data_points,
+                               const SEXP R_unassigned_method,
+                               const SEXP R_radius,
+                               const SEXP R_primary_data_points,
                                const SEXP R_secondary_unassigned_method,
                                const SEXP R_secondary_radius)
 {
@@ -328,14 +328,14 @@ SEXP Rscc_nng_clustering_types(const SEXP R_distance_object,
 	if (!isString(R_seed_method)) {
 		iRscc_error("`R_seed_method` must be string.");
 	}
-	if (!isString(R_main_unassigned_method)) {
-		iRscc_error("`R_main_unassigned_method` must be string.");
+	if (!isString(R_unassigned_method)) {
+		iRscc_error("`R_unassigned_method` must be string.");
 	}
-	if (!isNull(R_main_radius) && !isReal(R_main_radius)) {
-		iRscc_error("`R_main_radius` must be NULL or double.");
+	if (!isNull(R_radius) && !isReal(R_radius)) {
+		iRscc_error("`R_radius` must be NULL or double.");
 	}
-	if (!isNull(R_main_data_points) && !isLogical(R_main_data_points)) {
-		iRscc_error("`R_main_data_points` must be NULL or logical.");
+	if (!isNull(R_primary_data_points) && !isLogical(R_primary_data_points)) {
+		iRscc_error("`R_primary_data_points` must be NULL or logical.");
 	}
 	if (!isString(R_secondary_unassigned_method)) {
 		iRscc_error("`R_secondary_unassigned_method` must be string.");
@@ -350,7 +350,7 @@ SEXP Rscc_nng_clustering_types(const SEXP R_distance_object,
 	const int* const type_labels = INTEGER(R_type_labels);
 	const uint32_t total_size_constraint = (uint32_t) asInteger(R_total_size_constraint);
 	const scc_SeedMethod seed_method = iRscc_parse_seed_method(R_seed_method);
-	const scc_UnassignedMethod main_unassigned_method = iRscc_parse_unassigned_method(R_main_unassigned_method);
+	const scc_UnassignedMethod unassigned_method = iRscc_parse_unassigned_method(R_unassigned_method);
 	const scc_UnassignedMethod secondary_unassigned_method = iRscc_parse_unassigned_method(R_secondary_unassigned_method);
 
 	if (len_type_labels != num_data_points) {
@@ -368,11 +368,11 @@ SEXP Rscc_nng_clustering_types(const SEXP R_distance_object,
 		type_size_constraints[i] = (uint32_t) tmp_type_size_constraints[i];
 	}
 
-	bool main_radius_constraint = false;
-	double main_radius = 0.0;
-	if (isReal(R_main_radius)) {
-		main_radius_constraint = true;
-		main_radius = asReal(R_main_radius);
+	bool radius_constraint = false;
+	double radius = 0.0;
+	if (isReal(R_radius)) {
+		radius_constraint = true;
+		radius = asReal(R_radius);
 	}
 
 	bool secondary_radius_constraint = false;
@@ -382,18 +382,18 @@ SEXP Rscc_nng_clustering_types(const SEXP R_distance_object,
 		secondary_radius = asReal(R_secondary_radius);
 	}
 
-	size_t len_main_data_points = 0;
-	bool* main_data_points = NULL;
-	if (isLogical(R_main_data_points)) {
-		len_main_data_points = (size_t) xlength(R_main_data_points);
-		if (len_main_data_points < num_data_points) {
-			iRscc_error("Invalid `R_main_data_points`.");
+	size_t len_primary_data_points = 0;
+	bool* primary_data_points = NULL;
+	if (isLogical(R_primary_data_points)) {
+		len_primary_data_points = (size_t) xlength(R_primary_data_points);
+		if (len_primary_data_points < num_data_points) {
+			iRscc_error("Invalid `R_primary_data_points`.");
 		}
-		main_data_points = (bool*) R_alloc(len_main_data_points, sizeof(bool)); // Automatically freed by R on return
-		if (main_data_points == NULL) iRscc_error("Could not allocate memory.");
-		const int* const tmp_main_data_points = LOGICAL(R_main_data_points);
-		for (size_t i = 0; i < len_main_data_points; ++i) {
-			main_data_points[i] = (tmp_main_data_points[i] == 1);
+		primary_data_points = (bool*) R_alloc(len_primary_data_points, sizeof(bool)); // Automatically freed by R on return
+		if (primary_data_points == NULL) iRscc_error("Could not allocate memory.");
+		const int* const tmp_primary_data_points = LOGICAL(R_primary_data_points);
+		for (size_t i = 0; i < len_primary_data_points; ++i) {
+			primary_data_points[i] = (tmp_primary_data_points[i] == 1);
 		}
 	}
 
@@ -426,11 +426,11 @@ SEXP Rscc_nng_clustering_types(const SEXP R_distance_object,
 	                                   len_type_labels,
 	                                   type_labels,
 	                                   seed_method,
-	                                   main_unassigned_method,
-	                                   main_radius_constraint,
-	                                   main_radius,
-	                                   len_main_data_points,
-	                                   main_data_points,
+	                                   unassigned_method,
+	                                   radius_constraint,
+	                                   radius,
+	                                   len_primary_data_points,
+	                                   primary_data_points,
 	                                   secondary_unassigned_method,
 	                                   secondary_radius_constraint,
 	                                   secondary_radius)) != SCC_ER_OK) {
@@ -515,7 +515,7 @@ static scc_UnassignedMethod iRscc_parse_unassigned_method(const SEXP R_unassigne
 	} else if (strcmp(unassigned_method_string, "estimated_radius_closest_seed") == 0) {
 		return SCC_UM_CLOSEST_SEED_EST_RADIUS;
 	} else {
-		iRscc_error("Not a valid main unassigned method.");
+		iRscc_error("Not a valid unassigned method.");
 	}
 
 	return 999; // Unreachable, but needed to silence compiler warning

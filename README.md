@@ -89,7 +89,7 @@ clustering4 <- nng_clustering_types(distance_object = my_dist,
                                                               "B" = 1,
                                                               "C" = 1,
                                                               "D" = 1),
-                                    main_radius = 0.1)
+                                    radius = 0.1)
 
 ### Use a different seed finding function
 clustering5 <- nng_clustering_types(distance_object = my_dist,
@@ -114,8 +114,8 @@ clustering6 <- nng_clustering_types(distance_object = my_dist,
                                                               "B" = 1,
                                                               "C" = 1,
                                                               "D" = 1),
-                                    main_unassigned_method = "closest_assigned")
-# All options for `main_unassigned_method`:
+                                    unassigned_method = "closest_assigned")
+# All options for `unassigned_method`:
 # "ignore"
 # "by_nng"
 # "closest_assigned"

@@ -103,7 +103,7 @@ test_that("`nng_clustering` returns correct output", {
                            "inwards_order",
                            "ignore",
                            NULL,
-                           main_data_points,
+                           primary_data_points,
                            "ignore",
                            NULL)
   test_nng_against_replica(test_distances1,
@@ -111,7 +111,7 @@ test_that("`nng_clustering` returns correct output", {
                            "inwards_updating",
                            "ignore",
                            NULL,
-                           main_data_points,
+                           primary_data_points,
                            "ignore",
                            NULL)
   test_nng_against_replica(test_distances1,
@@ -119,7 +119,7 @@ test_that("`nng_clustering` returns correct output", {
                            "inwards_alt_updating",
                            "ignore",
                            NULL,
-                           main_data_points,
+                           primary_data_points,
                            "ignore",
                            NULL)
   test_nng_against_replica(test_distances1,
@@ -127,7 +127,7 @@ test_that("`nng_clustering` returns correct output", {
                            "exclusion_order",
                            "ignore",
                            NULL,
-                           main_data_points,
+                           primary_data_points,
                            "ignore",
                            NULL)
   test_nng_against_replica(test_distances1,
@@ -135,7 +135,7 @@ test_that("`nng_clustering` returns correct output", {
                            "exclusion_updating",
                            "ignore",
                            NULL,
-                           main_data_points,
+                           primary_data_points,
                            "ignore",
                            NULL)
 
@@ -218,7 +218,7 @@ test_that("`nng_clustering` returns correct output", {
                            "lexical",
                            "ignore",
                            NULL,
-                           main_data_points,
+                           primary_data_points,
                            "ignore",
                            NULL)
   test_nng_against_replica(test_distances1,
@@ -226,7 +226,7 @@ test_that("`nng_clustering` returns correct output", {
                            "lexical",
                            "ignore",
                            NULL,
-                           main_data_points,
+                           primary_data_points,
                            "closest_assigned",
                            NULL)
   test_nng_against_replica(test_distances1,
@@ -234,7 +234,7 @@ test_that("`nng_clustering` returns correct output", {
                            "lexical",
                            "ignore",
                            NULL,
-                           main_data_points,
+                           primary_data_points,
                            "closest_seed",
                            NULL)
   test_nng_against_replica(test_distances1,
@@ -242,7 +242,7 @@ test_that("`nng_clustering` returns correct output", {
                            "lexical",
                            "ignore",
                            NULL,
-                           main_data_points,
+                           primary_data_points,
                            "estimated_radius_closest_seed",
                            NULL)
 
@@ -251,7 +251,7 @@ test_that("`nng_clustering` returns correct output", {
                            "lexical",
                            "ignore",
                            NULL,
-                           main_data_points,
+                           primary_data_points,
                            "ignore",
                            test_radius)
   test_nng_against_replica(test_distances1,
@@ -259,7 +259,7 @@ test_that("`nng_clustering` returns correct output", {
                            "lexical",
                            "ignore",
                            NULL,
-                           main_data_points,
+                           primary_data_points,
                            "closest_assigned",
                            test_radius)
   test_nng_against_replica(test_distances1,
@@ -267,7 +267,7 @@ test_that("`nng_clustering` returns correct output", {
                            "lexical",
                            "ignore",
                            NULL,
-                           main_data_points,
+                           primary_data_points,
                            "closest_seed",
                            test_radius)
   test_nng_against_replica(test_distances1,
@@ -275,7 +275,7 @@ test_that("`nng_clustering` returns correct output", {
                            "lexical",
                            "ignore",
                            NULL,
-                           main_data_points,
+                           primary_data_points,
                            "estimated_radius_closest_seed",
                            test_radius)
 })
@@ -293,11 +293,11 @@ test_that("`nng_clustering` returns correct output (combinations)", {
                         "inwards_alt_updating",
                         "exclusion_order",
                         "exclusion_updating")) {
-    for (main_unassigned_method in c("ignore",
-                                     "by_nng",
-                                     "closest_assigned",
-                                     "closest_seed",
-                                     "estimated_radius_closest_seed")) {
+    for (unassigned_method in c("ignore",
+                                "by_nng",
+                                "closest_assigned",
+                                "closest_seed",
+                                "estimated_radius_closest_seed")) {
 
       sc_to_test <- c(2L, 3L, 6L)
       # scclust and the replica sorts the arcs for a vertex differently,
@@ -319,7 +319,7 @@ test_that("`nng_clustering` returns correct output (combinations)", {
           radius_to_use <- c(0, 0.3)
         }
 
-        for (main_radius in radius_to_use) {
+        for (radius in radius_to_use) {
           for (secondary_unassigned_method in c("ignore",
                                                 "ignore_withmain",
                                                 "closest_assigned",
@@ -327,30 +327,30 @@ test_that("`nng_clustering` returns correct output (combinations)", {
                                                 "estimated_radius_closest_seed")) {
             for (secondary_radius in radius_to_use) {
 
-              use_main_data_points <- NULL
-              if (secondary_unassigned_method != "ignore") use_main_data_points <- main_data_points
+              use_primary_data_points <- NULL
+              if (secondary_unassigned_method != "ignore") use_primary_data_points <- primary_data_points
 
               use_secondary_unassigned_method <- secondary_unassigned_method
               if (use_secondary_unassigned_method == "ignore_withmain") use_secondary_unassigned_method <- "ignore"
 
-              use_main_radius <- main_radius
-              if (use_main_radius == 0) use_main_radius <- NULL
+              use_radius <- radius
+              if (use_radius == 0) use_radius <- NULL
               use_secondary_radius <- secondary_radius
               if (use_secondary_radius == 0) use_secondary_radius <- NULL
 
               #cat(c(size_constraint,
               #      seed_method,
-              #      main_unassigned_method,
-              #      use_main_radius,
-              #      is.null(use_main_data_points),
+              #      unassigned_method,
+              #      use_radius,
+              #      is.null(use_primary_data_points),
               #      use_secondary_unassigned_method,
               #      use_secondary_radius), "\n")
               test_nng_against_replica(test_distances1,
                                        size_constraint,
                                        seed_method,
-                                       main_unassigned_method,
-                                       use_main_radius,
-                                       use_main_data_points,
+                                       unassigned_method,
+                                       use_radius,
+                                       use_primary_data_points,
                                        use_secondary_unassigned_method,
                                        use_secondary_radius)
             }

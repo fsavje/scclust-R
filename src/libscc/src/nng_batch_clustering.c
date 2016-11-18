@@ -44,9 +44,9 @@ scc_ErrorCode iscc_run_nng_batches(scc_Clustering* clustering,
                                    iscc_NNSearchObject* nn_search_object,
                                    uint32_t size_constraint,
                                    bool ignore_unassigned,
-                                   bool main_radius_constraint,
-                                   double main_radius,
-                                   const bool main_data_points[],
+                                   bool radius_constraint,
+                                   double radius,
+                                   const bool primary_data_points[],
                                    uint32_t batch_size,
                                    iscc_Dpid* batch_indices,
                                    iscc_Dpid* out_indices,
@@ -60,20 +60,20 @@ scc_ErrorCode iscc_run_nng_batches(scc_Clustering* clustering,
 scc_ErrorCode scc_nng_clustering_batches(scc_Clustering* const clustering,
                                          void* const data_set_object,
                                          const uint32_t size_constraint,
-                                         const scc_UnassignedMethod main_unassigned_method,
-                                         const bool main_radius_constraint,
-                                         const double main_radius,
-                                         const size_t len_main_data_points,
-                                         const bool main_data_points[const],
+                                         const scc_UnassignedMethod unassigned_method,
+                                         const bool radius_constraint,
+                                         const double radius,
+                                         const size_t len_primary_data_points,
+                                         const bool primary_data_points[const],
                                          uint32_t batch_size)
 {
 	if (!iscc_check_input_clustering(clustering)) return iscc_make_error(SCC_ER_INVALID_CLUSTERING);
 	if (!iscc_check_data_set_object(data_set_object, clustering->num_data_points)) return iscc_make_error(SCC_ER_INVALID_DATA_OBJ);
 	if (size_constraint < 2) return iscc_make_error(SCC_ER_INVALID_INPUT);
 	if (clustering->num_data_points < size_constraint) return iscc_make_error(SCC_ER_NO_CLUST_EXIST_CONSTRAINT);
-	if ((main_unassigned_method != SCC_UM_IGNORE) && (main_unassigned_method != SCC_UM_ASSIGN_BY_NNG)) return iscc_make_error(SCC_ER_INVALID_INPUT);
-	if (main_radius_constraint && (main_radius <= 0.0)) return iscc_make_error(SCC_ER_INVALID_INPUT);
-	if ((main_data_points != NULL) && (len_main_data_points < clustering->num_data_points)) return iscc_make_error(SCC_ER_INVALID_INPUT);
+	if ((unassigned_method != SCC_UM_IGNORE) && (unassigned_method != SCC_UM_ASSIGN_BY_NNG)) return iscc_make_error(SCC_ER_INVALID_INPUT);
+	if (radius_constraint && (radius <= 0.0)) return iscc_make_error(SCC_ER_INVALID_INPUT);
+	if ((primary_data_points != NULL) && (len_primary_data_points < clustering->num_data_points)) return iscc_make_error(SCC_ER_INVALID_INPUT);
 
 	if (clustering->num_clusters != 0) return iscc_make_error(SCC_ER_NOT_IMPLEMENTED);
 
@@ -117,10 +117,10 @@ scc_ErrorCode scc_nng_clustering_batches(scc_Clustering* const clustering,
 	scc_ErrorCode ec = iscc_run_nng_batches(clustering,
 	                                        nn_search_object,
 	                                        size_constraint,
-	                                        (main_unassigned_method == SCC_UM_IGNORE),
-	                                        main_radius_constraint,
-	                                        main_radius,
-	                                        main_data_points,
+	                                        (unassigned_method == SCC_UM_IGNORE),
+	                                        radius_constraint,
+	                                        radius,
+	                                        primary_data_points,
 	                                        batch_size,
 	                                        batch_indices,
 	                                        out_indices,
@@ -155,9 +155,9 @@ scc_ErrorCode iscc_run_nng_batches(scc_Clustering* const clustering,
                                    iscc_NNSearchObject* const nn_search_object,
                                    const uint32_t size_constraint,
                                    const bool ignore_unassigned,
-                                   const bool main_radius_constraint,
-                                   const double main_radius,
-                                   const bool main_data_points[const],
+                                   const bool radius_constraint,
+                                   const double radius,
+                                   const bool primary_data_points[const],
                                    const uint32_t batch_size,
                                    iscc_Dpid* const batch_indices,
                                    iscc_Dpid* const out_indices,
@@ -169,7 +169,7 @@ scc_ErrorCode iscc_run_nng_batches(scc_Clustering* const clustering,
 	assert(nn_search_object != NULL);
 	assert(size_constraint >= 2);
 	assert(clustering->num_data_points >= size_constraint);
-	assert(!main_radius_constraint || (main_radius > 0.0));
+	assert(!radius_constraint || (radius > 0.0));
 	assert(batch_size > 0);
 	assert(batch_indices != NULL);
 	assert(out_indices != NULL);
@@ -183,7 +183,7 @@ scc_ErrorCode iscc_run_nng_batches(scc_Clustering* const clustering,
 	for (iscc_Dpid curr_point = 0; curr_point < num_data_points; ) {
 
 		size_t in_batch = 0;
-		if (main_data_points == NULL) {
+		if (primary_data_points == NULL) {
 			for (; (in_batch < batch_size) && (curr_point < num_data_points); ++curr_point) {
 				if (!assigned[curr_point]) {
 					batch_indices[in_batch] = curr_point;
@@ -193,7 +193,7 @@ scc_ErrorCode iscc_run_nng_batches(scc_Clustering* const clustering,
 		} else {
 			for (; (in_batch < batch_size) && (curr_point < num_data_points); ++curr_point) {
 				if (!assigned[curr_point]) {
-					if (main_data_points[curr_point]) {
+					if (primary_data_points[curr_point]) {
 						batch_indices[in_batch] = curr_point;
 						++in_batch;
 					} else {
@@ -214,8 +214,8 @@ scc_ErrorCode iscc_run_nng_batches(scc_Clustering* const clustering,
 		                                        in_batch,
 		                                        batch_indices,
 		                                        size_constraint,
-		                                        main_radius_constraint,
-		                                        main_radius,
+		                                        radius_constraint,
+		                                        radius,
 		                                        out_indices)) {
 			return iscc_make_error(SCC_ER_DIST_SEARCH_ERROR);
 		}
@@ -287,12 +287,12 @@ scc_ErrorCode iscc_run_nng_batches(scc_Clustering* const clustering,
 
 	if (next_cluster_label == 0) {
 		if (!search_done) {
-			// Never did search, i.e., main_data_points are all false
-			assert(main_data_points != NULL);
+			// Never did search, i.e., primary_data_points are all false
+			assert(primary_data_points != NULL);
 			return iscc_make_error(SCC_ER_NO_CLUST_EXIST_CONSTRAINT);
 		} else {
 			// Did search but still no clusters, i.e., too tight radius constraint
-			assert(main_radius_constraint);
+			assert(radius_constraint);
 			return iscc_make_error(SCC_ER_NO_CLUST_EXIST_RADIUS);
 		}
 	}

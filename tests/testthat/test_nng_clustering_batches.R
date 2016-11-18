@@ -63,31 +63,31 @@ test_that("`nng_clustering_batches` returns correct output", {
                                  2L,
                                  "ignore",
                                  NULL,
-                                 main_data_points,
+                                 primary_data_points,
                                  10L)
   test_nng_batch_against_replica(test_distances1,
                                  3L,
                                  "ignore",
                                  NULL,
-                                 main_data_points,
+                                 primary_data_points,
                                  100L)
   test_nng_batch_against_replica(test_distances1,
                                  6L,
                                  "ignore",
                                  NULL,
-                                 main_data_points,
+                                 primary_data_points,
                                  10L)
   test_nng_batch_against_replica(test_distances1,
                                  10L,
                                  "ignore",
                                  NULL,
-                                 main_data_points,
+                                 primary_data_points,
                                  100L)
   test_nng_batch_against_replica(test_distances1,
                                  2L,
                                  "by_nng",
                                  NULL,
-                                 main_data_points,
+                                 primary_data_points,
                                  10L)
   test_nng_batch_against_replica(test_distances1,
                                  2L,
@@ -111,19 +111,19 @@ test_that("`nng_clustering_batches` returns correct output", {
                                  2L,
                                  "ignore",
                                  test_radius,
-                                 main_data_points,
+                                 primary_data_points,
                                  10L)
   test_nng_batch_against_replica(test_distances1,
                                  3L,
                                  "ignore",
                                  test_radius,
-                                 main_data_points,
+                                 primary_data_points,
                                  100L)
   test_nng_batch_against_replica(test_distances1,
                                  2L,
                                  "by_nng",
                                  test_radius,
-                                 main_data_points,
+                                 primary_data_points,
                                  10L)
 })
 
@@ -132,24 +132,24 @@ test_that("`nng_clustering_batches` returns correct output (combinations)", {
   skip_on_cran()
   skip_if_not(run_slow_tests)
 
-  for (main_unassigned_method in c("ignore", "by_nng")) {
-    for (main_radius in c(0, 0.1, 0.2)) {
-      for (do_main_data_points in c("N", "Y")) {
+  for (unassigned_method in c("ignore", "by_nng")) {
+    for (radius in c(0, 0.1, 0.2)) {
+      for (do_primary_data_points in c("N", "Y")) {
         for (batch_size in c(1L, 10L, 100L, 1000L)) {
-          use_main_data_points <- NULL
-          if (do_main_data_points == "Y") use_main_data_points <- main_data_points
-          use_main_radius <- main_radius
-          if (use_main_radius == 0) use_main_radius <- NULL
+          use_primary_data_points <- NULL
+          if (do_primary_data_points == "Y") use_primary_data_points <- primary_data_points
+          use_radius <- radius
+          if (use_radius == 0) use_radius <- NULL
 
-          #cat(c(main_unassigned_method,
-          #      use_main_radius,
-          #      is.null(use_main_data_points),
+          #cat(c(unassigned_method,
+          #      use_radius,
+          #      is.null(use_primary_data_points),
           #      batch_size), "\n")
           test_nng_batch_against_replica(test_distances1,
                                          2L,
-                                         main_unassigned_method,
-                                         use_main_radius,
-                                         use_main_data_points,
+                                         unassigned_method,
+                                         use_radius,
+                                         use_primary_data_points,
                                          batch_size)
         }
       }

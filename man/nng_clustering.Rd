@@ -5,10 +5,9 @@
 \title{Nearest neighbor graph based clustering function}
 \usage{
 nng_clustering(distance_object, size_constraint,
-  seed_method = "exclusion_updating",
-  main_unassigned_method = "closest_seed", main_radius = NULL,
-  main_data_points = NULL, secondary_unassigned_method = "ignore",
-  secondary_radius = NULL)
+  seed_method = "exclusion_updating", unassigned_method = "closest_seed",
+  radius = NULL, primary_data_points = NULL,
+  secondary_unassigned_method = "ignore", secondary_radius = NULL)
 }
 \arguments{
 \item{distance_object}{a distance object as produced by \code{\link{make_distances}}.}
@@ -17,15 +16,15 @@ nng_clustering(distance_object, size_constraint,
 
 \item{seed_method}{how seeds are found. See below for additional details.}
 
-\item{main_unassigned_method}{how remaining (primary) data points are assigned
+\item{unassigned_method}{how remaining (primary) data points are assigned
 to clusters. See below for additional details.}
 
-\item{main_radius}{restricts the maximum length of an edge in the graph that
+\item{radius}{restricts the maximum length of an edge in the graph that
 summaries the distance information. \code{NULL} indicates
 no restriction. See below for details on how this translates
 to maximum distance within a cluster.}
 
-\item{main_data_points}{a logical vector of length equal to number of data points
+\item{primary_data_points}{a logical vector of length equal to number of data points
 indicating primary and secondary data points. \code{NULL}
 indicates that all data points are "primary". See below for
 details.}

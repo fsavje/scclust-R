@@ -75,18 +75,18 @@ test_that("`Rscc_hierarchical_clustering` checks input.", {
 c_nng_clustering <- function(distance_object = matrix(as.numeric(1:16), ncol = 8),
                              size_constraint = 2L,
                              seed_method = "exclusion_updating",
-                             main_unassigned_method = "closest_seed",
-                             main_radius = NULL,
-                             main_data_points = NULL,
+                             unassigned_method = "closest_seed",
+                             radius = NULL,
+                             primary_data_points = NULL,
                              secondary_unassigned_method = "ignore",
                              secondary_radius = NULL) {
   .Call("Rscc_nng_clustering",
         distance_object,
         size_constraint,
         seed_method,
-        main_unassigned_method,
-        main_radius,
-        main_data_points,
+        unassigned_method,
+        radius,
+        primary_data_points,
         secondary_unassigned_method,
         secondary_radius,
         PACKAGE = "Rscclust")
@@ -104,20 +104,20 @@ test_that("`Rscc_nng_clustering` checks input.", {
                regexp = "`R_seed_method` must be string.")
   expect_error(c_nng_clustering(seed_method = "invalid"),
                regexp = "Not a valid seed method.")
-  expect_error(c_nng_clustering(main_unassigned_method = 1L),
-               regexp = "`R_main_unassigned_method` must be string.")
-  expect_error(c_nng_clustering(main_unassigned_method = "invalid"),
-               regexp = "Not a valid main unassigned method.")
-  expect_error(c_nng_clustering(main_radius = "a"),
-               regexp = "`R_main_radius` must be NULL or double.")
-  expect_error(c_nng_clustering(main_data_points = letters[1:8]),
-               regexp = "`R_main_data_points` must be NULL or logical.")
-  expect_error(c_nng_clustering(main_data_points = rep(TRUE, 6L)),
-               regexp = "Invalid `R_main_data_points`.")
+  expect_error(c_nng_clustering(unassigned_method = 1L),
+               regexp = "`R_unassigned_method` must be string.")
+  expect_error(c_nng_clustering(unassigned_method = "invalid"),
+               regexp = "Not a valid unassigned method.")
+  expect_error(c_nng_clustering(radius = "a"),
+               regexp = "`R_radius` must be NULL or double.")
+  expect_error(c_nng_clustering(primary_data_points = letters[1:8]),
+               regexp = "`R_primary_data_points` must be NULL or logical.")
+  expect_error(c_nng_clustering(primary_data_points = rep(TRUE, 6L)),
+               regexp = "Invalid `R_primary_data_points`.")
   expect_error(c_nng_clustering(secondary_unassigned_method = 1L),
                regexp = "`R_secondary_unassigned_method` must be string.")
   expect_error(c_nng_clustering(secondary_unassigned_method = "invalid"),
-               regexp = "Not a valid main unassigned method.")
+               regexp = "Not a valid unassigned method.")
   expect_error(c_nng_clustering(secondary_radius = "a"),
                regexp = "`R_secondary_radius` must be NULL or double.")
 })
@@ -125,16 +125,16 @@ test_that("`Rscc_nng_clustering` checks input.", {
 
 c_nng_clustering_batches <- function(distance_object = matrix(as.numeric(1:16), ncol = 8),
                                      size_constraint = 2L,
-                                     main_unassigned_method = "by_nng",
-                                     main_radius = NULL,
-                                     main_data_points = NULL,
+                                     unassigned_method = "by_nng",
+                                     radius = NULL,
+                                     primary_data_points = NULL,
                                      batch_size = 100L) {
   .Call("Rscc_nng_clustering_batches",
         distance_object,
         size_constraint,
-        main_unassigned_method,
-        main_radius,
-        main_data_points,
+        unassigned_method,
+        radius,
+        primary_data_points,
         batch_size,
         PACKAGE = "Rscclust")
 }
@@ -147,16 +147,16 @@ test_that("`Rscc_nng_clustering_batches` checks input.", {
                regexp = "`R_distance_object` is not a valid distance object.")
   expect_error(c_nng_clustering_batches(size_constraint = 2.5),
                regexp = "`R_size_constraint` must be integer.")
-  expect_error(c_nng_clustering_batches(main_unassigned_method = 1L),
-               regexp = "`R_main_unassigned_method` must be string.")
-  expect_error(c_nng_clustering_batches(main_unassigned_method = "invalid"),
-               regexp = "Not a valid main unassigned method.")
-  expect_error(c_nng_clustering_batches(main_radius = "a"),
-               regexp = "`R_main_radius` must be NULL or double.")
-  expect_error(c_nng_clustering_batches(main_data_points = letters[1:8]),
-               regexp = "`R_main_data_points` must be NULL or logical.")
-  expect_error(c_nng_clustering_batches(main_data_points = rep(TRUE, 6L)),
-               regexp = "Invalid `R_main_data_points`.")
+  expect_error(c_nng_clustering_batches(unassigned_method = 1L),
+               regexp = "`R_unassigned_method` must be string.")
+  expect_error(c_nng_clustering_batches(unassigned_method = "invalid"),
+               regexp = "Not a valid unassigned method.")
+  expect_error(c_nng_clustering_batches(radius = "a"),
+               regexp = "`R_radius` must be NULL or double.")
+  expect_error(c_nng_clustering_batches(primary_data_points = letters[1:8]),
+               regexp = "`R_primary_data_points` must be NULL or logical.")
+  expect_error(c_nng_clustering_batches(primary_data_points = rep(TRUE, 6L)),
+               regexp = "Invalid `R_primary_data_points`.")
   expect_error(c_nng_clustering_batches(batch_size = "a"),
                regexp = "`R_batch_size` must be integer.")
 })
@@ -167,9 +167,9 @@ c_nng_clustering_types <- function(distance_object = matrix(as.numeric(1:16), nc
                                    type_size_constraints = c("0" = 0L, "1" = 1L, "2" = 1L),
                                    total_size_constraint = 2L,
                                    seed_method = "exclusion_updating",
-                                   main_unassigned_method = "closest_seed",
-                                   main_radius = NULL,
-                                   main_data_points = NULL,
+                                   unassigned_method = "closest_seed",
+                                   radius = NULL,
+                                   primary_data_points = NULL,
                                    secondary_unassigned_method = "ignore",
                                    secondary_radius = NULL) {
   .Call("Rscc_nng_clustering_types",
@@ -178,9 +178,9 @@ c_nng_clustering_types <- function(distance_object = matrix(as.numeric(1:16), nc
         type_size_constraints,
         total_size_constraint,
         seed_method,
-        main_unassigned_method,
-        main_radius,
-        main_data_points,
+        unassigned_method,
+        radius,
+        primary_data_points,
         secondary_unassigned_method,
         secondary_radius,
         PACKAGE = "Rscclust")
@@ -206,20 +206,20 @@ test_that("`Rscc_nng_clustering_types` checks input.", {
                regexp = "`R_seed_method` must be string.")
   expect_error(c_nng_clustering_types(seed_method = "invalid"),
                regexp = "Not a valid seed method.")
-  expect_error(c_nng_clustering_types(main_unassigned_method = 1L),
-               regexp = "`R_main_unassigned_method` must be string.")
-  expect_error(c_nng_clustering_types(main_unassigned_method = "invalid"),
-               regexp = "Not a valid main unassigned method.")
-  expect_error(c_nng_clustering_types(main_radius = "a"),
-               regexp = "`R_main_radius` must be NULL or double.")
-  expect_error(c_nng_clustering_types(main_data_points = letters[1:8]),
-               regexp = "`R_main_data_points` must be NULL or logical.")
-  expect_error(c_nng_clustering_types(main_data_points = rep(TRUE, 6L)),
-               regexp = "Invalid `R_main_data_points`.")
+  expect_error(c_nng_clustering_types(unassigned_method = 1L),
+               regexp = "`R_unassigned_method` must be string.")
+  expect_error(c_nng_clustering_types(unassigned_method = "invalid"),
+               regexp = "Not a valid unassigned method.")
+  expect_error(c_nng_clustering_types(radius = "a"),
+               regexp = "`R_radius` must be NULL or double.")
+  expect_error(c_nng_clustering_types(primary_data_points = letters[1:8]),
+               regexp = "`R_primary_data_points` must be NULL or logical.")
+  expect_error(c_nng_clustering_types(primary_data_points = rep(TRUE, 6L)),
+               regexp = "Invalid `R_primary_data_points`.")
   expect_error(c_nng_clustering_types(secondary_unassigned_method = 1L),
                regexp = "`R_secondary_unassigned_method` must be string.")
   expect_error(c_nng_clustering_types(secondary_unassigned_method = "invalid"),
-               regexp = "Not a valid main unassigned method.")
+               regexp = "Not a valid unassigned method.")
   expect_error(c_nng_clustering_types(secondary_radius = "a"),
                regexp = "`R_secondary_radius` must be NULL or double.")
 })
@@ -321,6 +321,6 @@ test_that("scclust returns errors correctly.", {
   expect_silent(c_hierarchical_clustering())
   expect_error(c_hierarchical_clustering(size_constraint = 1L),
                regexp = "[(]scclust:src/hierarchical_clustering.c")
-  expect_error(nng_clustering(make_distances(matrix(c(0.1, 0.2, 0.3), ncol = 1)), size_constraint = 2L, main_radius = 0.001),
+  expect_error(nng_clustering(make_distances(matrix(c(0.1, 0.2, 0.3), ncol = 1)), size_constraint = 2L, radius = 0.001),
                "No clustering satisfying the specified radius constraints exists.")
 })

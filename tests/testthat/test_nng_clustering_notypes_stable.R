@@ -41,11 +41,11 @@ test_that("`nng_clustering` (stable) returns correct output", {
                         "inwards_alt_updating",
                         "exclusion_order",
                         "exclusion_updating")) {
-    for (main_unassigned_method in c("ignore",
-                                     "by_nng",
-                                     "closest_assigned",
-                                     "closest_seed",
-                                     "estimated_radius_closest_seed")) {
+    for (unassigned_method in c("ignore",
+                                "by_nng",
+                                "closest_assigned",
+                                "closest_seed",
+                                "estimated_radius_closest_seed")) {
       for (size_constraint in c(2L, 3L, 6L)) {
 
         radius_to_use <- c(0, 0.1, 0.2, 0.3)
@@ -53,7 +53,7 @@ test_that("`nng_clustering` (stable) returns correct output", {
           radius_to_use <- c(0, 0.3, 0.4)
         }
 
-        for (main_radius in radius_to_use) {
+        for (radius in radius_to_use) {
           for (secondary_unassigned_method in c("ignore",
                                                 "ignore_withmain",
                                                 "closest_assigned",
@@ -61,30 +61,30 @@ test_that("`nng_clustering` (stable) returns correct output", {
                                                 "estimated_radius_closest_seed")) {
             for (secondary_radius in radius_to_use) {
 
-              use_main_data_points <- NULL
-              if (secondary_unassigned_method != "ignore") use_main_data_points <- main_data_points
+              use_primary_data_points <- NULL
+              if (secondary_unassigned_method != "ignore") use_primary_data_points <- primary_data_points
 
               use_secondary_unassigned_method <- secondary_unassigned_method
               if (use_secondary_unassigned_method == "ignore_withmain") use_secondary_unassigned_method <- "ignore"
 
-              use_main_radius <- main_radius
-              if (use_main_radius == 0) use_main_radius <- NULL
+              use_radius <- radius
+              if (use_radius == 0) use_radius <- NULL
               use_secondary_radius <- secondary_radius
               if (use_secondary_radius == 0) use_secondary_radius <- NULL
 
               #cat(c(size_constraint,
               #      seed_method,
-              #      main_unassigned_method,
-              #      use_main_radius,
-              #      is.null(use_main_data_points),
+              #      unassigned_method,
+              #      use_radius,
+              #      is.null(use_primary_data_points),
               #      use_secondary_unassigned_method,
               #      use_secondary_radius), "\n")
               test_nng_against_replica(test_distances1,
                                        size_constraint,
                                        seed_method,
-                                       main_unassigned_method,
-                                       use_main_radius,
-                                       use_main_data_points,
+                                       unassigned_method,
+                                       use_radius,
+                                       use_primary_data_points,
                                        use_secondary_unassigned_method,
                                        use_secondary_radius)
             }

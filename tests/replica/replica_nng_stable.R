@@ -1,19 +1,19 @@
-by_nng_or_closest_assigned <- function(main_unassigned_method,
-                                       main_unassigned,
+by_nng_or_closest_assigned <- function(unassigned_method,
+                                       unassigned,
                                        nng,
                                        assigned,
-                                       main_radius,
+                                       radius,
                                        cl_label,
                                        distances) {
-  for(i in which(main_unassigned)) {
+  for(i in which(unassigned)) {
     pick <- intersect(which(nng[, i]), which(assigned))
     if (length(pick) > 0) {
       cl_label[i] <- cl_label[pick[1]]
-      main_unassigned[i] <- FALSE
+      unassigned[i] <- FALSE
     }
   }
-  if (any(main_unassigned) && main_unassigned_method == "closest_assigned") {
-    cl_label <- match_n_assign(cl_label, which(assigned), main_unassigned, main_radius, distances)
+  if (any(unassigned) && unassigned_method == "closest_assigned") {
+    cl_label <- match_n_assign(cl_label, which(assigned), unassigned, radius, distances)
   }
   cl_label
 }

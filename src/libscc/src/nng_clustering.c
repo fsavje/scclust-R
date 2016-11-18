@@ -51,10 +51,10 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* clustering,
                                                    bool nng_is_ordered,
                                                    uint32_t size_constraint,
                                                    scc_SeedMethod seed_method,
-                                                   scc_UnassignedMethod main_unassigned_method,
-                                                   bool main_radius_constraint,
-                                                   double main_radius,
-                                                   const bool main_data_points[],
+                                                   scc_UnassignedMethod unassigned_method,
+                                                   bool radius_constraint,
+                                                   double radius,
+                                                   const bool primary_data_points[],
                                                    scc_UnassignedMethod secondary_unassigned_method,
                                                    bool secondary_radius_constraint,
                                                    double secondary_radius);
@@ -68,11 +68,11 @@ scc_ErrorCode scc_nng_clustering(scc_Clustering* const clustering,
                                  void* const data_set_object,
                                  const uint32_t size_constraint,
                                  const scc_SeedMethod seed_method,
-                                 const scc_UnassignedMethod main_unassigned_method,
-                                 const bool main_radius_constraint,
-                                 const double main_radius,
-                                 const size_t len_main_data_points,
-                                 const bool main_data_points[const],
+                                 const scc_UnassignedMethod unassigned_method,
+                                 const bool radius_constraint,
+                                 const double radius,
+                                 const size_t len_primary_data_points,
+                                 const bool primary_data_points[const],
                                  const scc_UnassignedMethod secondary_unassigned_method,
                                  const bool secondary_radius_constraint,
                                  const double secondary_radius)
@@ -82,10 +82,10 @@ scc_ErrorCode scc_nng_clustering(scc_Clustering* const clustering,
 	if (size_constraint < 2) return iscc_make_error(SCC_ER_INVALID_INPUT);
 	if (clustering->num_data_points < size_constraint) return iscc_make_error(SCC_ER_NO_CLUST_EXIST_CONSTRAINT);
 	if (seed_method > SCC_MAX_SEED_METHOD) return iscc_make_error(SCC_ER_INVALID_INPUT);
-	if (main_unassigned_method > SCC_MAX_UNASSIGNED_METHOD) return iscc_make_error(SCC_ER_INVALID_INPUT);
-	if (main_radius_constraint && (main_radius <= 0.0)) return iscc_make_error(SCC_ER_INVALID_INPUT);
-	if ((main_data_points != NULL) && (len_main_data_points < clustering->num_data_points)) return iscc_make_error(SCC_ER_INVALID_INPUT);
-	if ((main_data_points == NULL) && (secondary_unassigned_method != SCC_UM_IGNORE)) return iscc_make_error(SCC_ER_INVALID_INPUT);
+	if (unassigned_method > SCC_MAX_UNASSIGNED_METHOD) return iscc_make_error(SCC_ER_INVALID_INPUT);
+	if (radius_constraint && (radius <= 0.0)) return iscc_make_error(SCC_ER_INVALID_INPUT);
+	if ((primary_data_points != NULL) && (len_primary_data_points < clustering->num_data_points)) return iscc_make_error(SCC_ER_INVALID_INPUT);
+	if ((primary_data_points == NULL) && (secondary_unassigned_method != SCC_UM_IGNORE)) return iscc_make_error(SCC_ER_INVALID_INPUT);
 	if (secondary_unassigned_method > SCC_MAX_UNASSIGNED_METHOD) return iscc_make_error(SCC_ER_INVALID_INPUT);
 	if (secondary_unassigned_method == SCC_UM_ASSIGN_BY_NNG) return iscc_make_error(SCC_ER_INVALID_INPUT);
 	if (secondary_radius_constraint && (secondary_radius <= 0.0)) return iscc_make_error(SCC_ER_INVALID_INPUT);
@@ -97,9 +97,9 @@ scc_ErrorCode scc_nng_clustering(scc_Clustering* const clustering,
 	if ((ec = iscc_get_nng_with_size_constraint(data_set_object,
 	                                            clustering->num_data_points,
 	                                            size_constraint,
-	                                            main_data_points,
-	                                            main_radius_constraint,
-	                                            main_radius,
+	                                            primary_data_points,
+	                                            radius_constraint,
+	                                            radius,
 	                                            &nng)) != SCC_ER_OK) {
 		return ec;
 	}
@@ -112,10 +112,10 @@ scc_ErrorCode scc_nng_clustering(scc_Clustering* const clustering,
 	                                   true,
 	                                   size_constraint,
 	                                   seed_method,
-	                                   main_unassigned_method,
-	                                   main_radius_constraint,
-	                                   main_radius,
-	                                   main_data_points,
+	                                   unassigned_method,
+	                                   radius_constraint,
+	                                   radius,
+	                                   primary_data_points,
 	                                   secondary_unassigned_method,
 	                                   secondary_radius_constraint,
 	                                   secondary_radius);
@@ -134,11 +134,11 @@ scc_ErrorCode scc_nng_clustering_types(scc_Clustering* const clustering,
                                        const size_t len_type_labels,
                                        const scc_TypeLabel type_labels[const],
                                        const scc_SeedMethod seed_method,
-                                       const scc_UnassignedMethod main_unassigned_method,
-                                       const bool main_radius_constraint,
-                                       const double main_radius,
-                                       const size_t len_main_data_points,
-                                       const bool main_data_points[const],
+                                       const scc_UnassignedMethod unassigned_method,
+                                       const bool radius_constraint,
+                                       const double radius,
+                                       const size_t len_primary_data_points,
+                                       const bool primary_data_points[const],
                                        const scc_UnassignedMethod secondary_unassigned_method,
                                        const bool secondary_radius_constraint,
                                        const double secondary_radius)
@@ -154,10 +154,10 @@ scc_ErrorCode scc_nng_clustering_types(scc_Clustering* const clustering,
 	if (len_type_labels < clustering->num_data_points) return iscc_make_error(SCC_ER_INVALID_INPUT);
 	if (type_labels == NULL) return iscc_make_error(SCC_ER_NULL_INPUT);
 	if (seed_method > SCC_MAX_SEED_METHOD) return iscc_make_error(SCC_ER_INVALID_INPUT);
-	if (main_unassigned_method > SCC_MAX_UNASSIGNED_METHOD) return iscc_make_error(SCC_ER_INVALID_INPUT);
-	if (main_radius_constraint && (main_radius <= 0.0)) return iscc_make_error(SCC_ER_INVALID_INPUT);
-	if ((main_data_points != NULL) && (len_main_data_points < clustering->num_data_points)) return iscc_make_error(SCC_ER_INVALID_INPUT);
-	if ((main_data_points == NULL) && (secondary_unassigned_method != SCC_UM_IGNORE)) return iscc_make_error(SCC_ER_INVALID_INPUT);
+	if (unassigned_method > SCC_MAX_UNASSIGNED_METHOD) return iscc_make_error(SCC_ER_INVALID_INPUT);
+	if (radius_constraint && (radius <= 0.0)) return iscc_make_error(SCC_ER_INVALID_INPUT);
+	if ((primary_data_points != NULL) && (len_primary_data_points < clustering->num_data_points)) return iscc_make_error(SCC_ER_INVALID_INPUT);
+	if ((primary_data_points == NULL) && (secondary_unassigned_method != SCC_UM_IGNORE)) return iscc_make_error(SCC_ER_INVALID_INPUT);
 	if (secondary_unassigned_method > SCC_MAX_UNASSIGNED_METHOD) return iscc_make_error(SCC_ER_INVALID_INPUT);
 	if (secondary_unassigned_method == SCC_UM_ASSIGN_BY_NNG) return iscc_make_error(SCC_ER_INVALID_INPUT);
 	if (secondary_radius_constraint && (secondary_radius <= 0.0)) return iscc_make_error(SCC_ER_INVALID_INPUT);
@@ -175,9 +175,9 @@ scc_ErrorCode scc_nng_clustering_types(scc_Clustering* const clustering,
 	                                            num_types_f16,
 	                                            type_size_constraints,
 	                                            type_labels,
-	                                            main_data_points,
-	                                            main_radius_constraint,
-	                                            main_radius,
+	                                            primary_data_points,
+	                                            radius_constraint,
+	                                            radius,
 	                                            &nng)) != SCC_ER_OK) {
 		return ec;
 	}
@@ -190,10 +190,10 @@ scc_ErrorCode scc_nng_clustering_types(scc_Clustering* const clustering,
 	                                   false,
 	                                   size_constraint,
 	                                   seed_method,
-	                                   main_unassigned_method,
-	                                   main_radius_constraint,
-	                                   main_radius,
-	                                   main_data_points,
+	                                   unassigned_method,
+	                                   radius_constraint,
+	                                   radius,
+	                                   primary_data_points,
 	                                   secondary_unassigned_method,
 	                                   secondary_radius_constraint,
 	                                   secondary_radius);
@@ -214,10 +214,10 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
                                                    const bool nng_is_ordered,
                                                    const uint32_t size_constraint,
                                                    const scc_SeedMethod seed_method,
-                                                   scc_UnassignedMethod main_unassigned_method,
-                                                   bool main_radius_constraint,
-                                                   double main_radius,
-                                                   const bool main_data_points[const],
+                                                   scc_UnassignedMethod unassigned_method,
+                                                   bool radius_constraint,
+                                                   double radius,
+                                                   const bool primary_data_points[const],
                                                    scc_UnassignedMethod secondary_unassigned_method,
                                                    bool secondary_radius_constraint,
                                                    double secondary_radius)
@@ -228,13 +228,13 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
 	assert(!iscc_digraph_is_empty(nng));
 	assert(size_constraint >= 2);
 	assert(seed_method <= SCC_MAX_SEED_METHOD);
-	assert((main_unassigned_method == SCC_UM_IGNORE) ||
-	       (main_unassigned_method == SCC_UM_ASSIGN_BY_NNG) ||
-	       (main_unassigned_method == SCC_UM_CLOSEST_ASSIGNED) ||
-	       (main_unassigned_method == SCC_UM_CLOSEST_SEED) ||
-	       (main_unassigned_method == SCC_UM_CLOSEST_SEED_EST_RADIUS));
-	assert(!main_radius_constraint || (main_radius > 0.0));
-	assert((main_data_points != NULL) || (secondary_unassigned_method == SCC_UM_IGNORE));
+	assert((unassigned_method == SCC_UM_IGNORE) ||
+	       (unassigned_method == SCC_UM_ASSIGN_BY_NNG) ||
+	       (unassigned_method == SCC_UM_CLOSEST_ASSIGNED) ||
+	       (unassigned_method == SCC_UM_CLOSEST_SEED) ||
+	       (unassigned_method == SCC_UM_CLOSEST_SEED_EST_RADIUS));
+	assert(!radius_constraint || (radius > 0.0));
+	assert((primary_data_points != NULL) || (secondary_unassigned_method == SCC_UM_IGNORE));
 	assert((secondary_unassigned_method == SCC_UM_IGNORE) ||
 	       (secondary_unassigned_method == SCC_UM_CLOSEST_ASSIGNED) ||
 	       (secondary_unassigned_method == SCC_UM_CLOSEST_SEED) ||
@@ -253,7 +253,7 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
 	}
 
 	// Estimate assign radius if we need to, and modify options
-	if ((main_unassigned_method == SCC_UM_CLOSEST_SEED_EST_RADIUS) ||
+	if ((unassigned_method == SCC_UM_CLOSEST_SEED_EST_RADIUS) ||
 	        (secondary_unassigned_method == SCC_UM_CLOSEST_SEED_EST_RADIUS)) {
 		double avg_seed_dist;
 		if ((ec = iscc_estimate_avg_seed_dist(data_set_object,
@@ -265,11 +265,11 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
 			return ec;
 		}
 
-		if (main_unassigned_method == SCC_UM_CLOSEST_SEED_EST_RADIUS) {
+		if (unassigned_method == SCC_UM_CLOSEST_SEED_EST_RADIUS) {
 			if (avg_seed_dist > 0.0) {
-				main_unassigned_method = SCC_UM_CLOSEST_SEED;
-				main_radius_constraint = true;
-				main_radius = avg_seed_dist;
+				unassigned_method = SCC_UM_CLOSEST_SEED;
+				radius_constraint = true;
+				radius = avg_seed_dist;
 			} else {
 				free(seed_result.seeds);
 				return iscc_make_error(SCC_ER_NOT_IMPLEMENTED);
@@ -303,10 +303,10 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
 	                                       &seed_result,
 	                                       nng,
 	                                       nng_is_ordered,
-	                                       main_unassigned_method,
-	                                       main_radius_constraint,
-	                                       main_radius,
-	                                       main_data_points,
+	                                       unassigned_method,
+	                                       radius_constraint,
+	                                       radius,
+	                                       primary_data_points,
 	                                       secondary_unassigned_method,
 	                                       secondary_radius_constraint,
 	                                       secondary_radius);

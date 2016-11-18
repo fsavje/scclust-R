@@ -28,23 +28,23 @@ source("../replica/replica_nng.R", local = TRUE)
 source("utils_nng.R", local = TRUE)
 
 
-by_nng_or_closest_assigned <- function(main_unassigned_method,
-                                       main_unassigned,
+by_nng_or_closest_assigned <- function(unassigned_method,
+                                       unassigned,
                                        nng,
                                        assigned,
-                                       main_radius,
+                                       radius,
                                        cl_label,
                                        distances) {
-  if (main_unassigned_method == "by_nng") {
-    for(i in which(main_unassigned)) {
+  if (unassigned_method == "by_nng") {
+    for(i in which(unassigned)) {
       pick <- intersect(which(nng[, i]), which(assigned))
       if (length(pick) > 0) {
         cl_label[i] <- cl_label[pick[1]]
-        main_unassigned[i] <- FALSE
+        unassigned[i] <- FALSE
       }
     }
-  } else if (any(main_unassigned)) {
-    cl_label <- match_n_assign(cl_label, which(assigned), main_unassigned, main_radius, distances)
+  } else if (any(unassigned)) {
+    cl_label <- match_n_assign(cl_label, which(assigned), unassigned, radius, distances)
   }
 
   cl_label
@@ -93,11 +93,11 @@ test_that("`nng_clustering_types` (stable) returns correct output", {
                           "exclusion_order",
                           "exclusion_updating")) {
 
-      for (main_unassigned_method in c("ignore",
-                                       "by_nng",
-                                       "closest_assigned",
-                                       "closest_seed",
-                                       "estimated_radius_closest_seed")) {
+      for (unassigned_method in c("ignore",
+                                  "by_nng",
+                                  "closest_assigned",
+                                  "closest_seed",
+                                  "estimated_radius_closest_seed")) {
 
         radius_to_use <- c(0, 0.3, 0.4)
         if (isTRUE(tc$total_size_constraint > 6)) {
@@ -107,7 +107,7 @@ test_that("`nng_clustering_types` (stable) returns correct output", {
           radius_to_use <- c(0, 1.2)
         }
 
-        for (main_radius in radius_to_use) {
+        for (radius in radius_to_use) {
           for (secondary_unassigned_method in c("ignore",
                                                 "ignore_withmain",
                                                 "closest_assigned",
@@ -115,22 +115,22 @@ test_that("`nng_clustering_types` (stable) returns correct output", {
                                                 "estimated_radius_closest_seed")) {
             for (secondary_radius in radius_to_use) {
 
-              use_main_data_points <- NULL
-              if (secondary_unassigned_method != "ignore") use_main_data_points <- main_data_points
+              use_primary_data_points <- NULL
+              if (secondary_unassigned_method != "ignore") use_primary_data_points <- primary_data_points
 
               use_secondary_unassigned_method <- secondary_unassigned_method
               if (use_secondary_unassigned_method == "ignore_withmain") use_secondary_unassigned_method <- "ignore"
 
-              use_main_radius <- main_radius
-              if (use_main_radius == 0) use_main_radius <- NULL
+              use_radius <- radius
+              if (use_radius == 0) use_radius <- NULL
               use_secondary_radius <- secondary_radius
               if (use_secondary_radius == 0) use_secondary_radius <- NULL
 
               #cat(c(tc$tc,
               #      seed_method,
-              #      main_unassigned_method,
-              #      use_main_radius,
-              #      is.null(use_main_data_points),
+              #      unassigned_method,
+              #      use_radius,
+              #      is.null(use_primary_data_points),
               #      use_secondary_unassigned_method,
               #      use_secondary_radius), "\n")
               test_nng_types_against_replica(test_distances1,
@@ -138,9 +138,9 @@ test_that("`nng_clustering_types` (stable) returns correct output", {
                                              tc$type_size_constraints,
                                              tc$total_size_constraint,
                                              seed_method,
-                                             main_unassigned_method,
-                                             use_main_radius,
-                                             use_main_data_points,
+                                             unassigned_method,
+                                             use_radius,
+                                             use_primary_data_points,
                                              use_secondary_unassigned_method,
                                              use_secondary_radius)
             }

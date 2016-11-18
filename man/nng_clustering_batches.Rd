@@ -5,19 +5,19 @@
 \title{Nearest neighbor graph based clustering function in batch mode}
 \usage{
 nng_clustering_batches(distance_object, size_constraint,
-  main_unassigned_method = "by_nng", main_radius = NULL,
-  main_data_points = NULL, batch_size = 100L)
+  unassigned_method = "by_nng", radius = NULL, primary_data_points = NULL,
+  batch_size = 100L)
 }
 \arguments{
 \item{distance_object}{abc ...}
 
 \item{size_constraint}{abc ...}
 
-\item{main_unassigned_method}{abc ...}
+\item{unassigned_method}{abc ...}
 
-\item{main_radius}{abc ...}
+\item{radius}{abc ...}
 
-\item{main_data_points}{abc ...}
+\item{primary_data_points}{abc ...}
 
 \item{batch_size}{abc ...}
 }

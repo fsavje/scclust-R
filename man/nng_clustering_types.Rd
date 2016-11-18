@@ -6,8 +6,8 @@
 \usage{
 nng_clustering_types(distance_object, type_labels, type_size_constraints,
   total_size_constraint = NULL, seed_method = "exclusion_updating",
-  main_unassigned_method = "closest_seed", main_radius = NULL,
-  main_data_points = NULL, secondary_unassigned_method = "ignore",
+  unassigned_method = "closest_seed", radius = NULL,
+  primary_data_points = NULL, secondary_unassigned_method = "ignore",
   secondary_radius = NULL)
 }
 \arguments{
@@ -21,11 +21,11 @@ nng_clustering_types(distance_object, type_labels, type_size_constraints,
 
 \item{seed_method}{abc ...}
 
-\item{main_unassigned_method}{abc ...}
+\item{unassigned_method}{abc ...}
 
-\item{main_radius}{abc ...}
+\item{radius}{abc ...}
 
-\item{main_data_points}{abc ...}
+\item{primary_data_points}{abc ...}
 
 \item{secondary_unassigned_method}{abc ...}
 
