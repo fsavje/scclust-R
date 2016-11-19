@@ -76,7 +76,7 @@ bool scc_get_latest_error(const size_t len_error_message_buffer,
 	if ((len_error_message_buffer == 0) || (error_message_buffer == NULL)) return false;
 
 	if (iscc_error_code == SCC_ER_OK) {
-		if (snprintf(error_message_buffer, len_error_message_buffer, "%s", "No error.") < 0) {
+		if (snprintf(error_message_buffer, len_error_message_buffer, "%s", "(scclust) No error.") < 0) {
 			return false;
 		}
 		return true;

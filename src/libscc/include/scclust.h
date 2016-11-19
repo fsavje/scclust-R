@@ -119,17 +119,19 @@ bool scc_get_latest_error(size_t len_error_message_buffer,
 // Data set object
 // =============================================================================
 
-typedef struct scc_DataSetObject scc_DataSetObject;
+typedef struct scc_DataSet scc_DataSet;
 
-void scc_free_data_set_object(scc_DataSetObject** out_data_set_object);
+scc_ErrorCode scc_init_data_set(uintmax_t num_data_points,
+                                uintmax_t num_dimensions,
+                                size_t len_data_matrix,
+                                double data_matrix[],
+                                bool deep_matrix_copy,
+                                scc_DataSet** out_data_set);
 
-scc_ErrorCode scc_get_data_set_object(uintmax_t num_data_points,
-                                      uintmax_t num_dimensions,
-                                      size_t len_data_matrix,
-                                      double data_matrix[],
-                                      bool deep_matrix_copy,
-                                      scc_DataSetObject** out_data_set_object);
+void scc_free_data_set(scc_DataSet** data_set);
 
+bool scc_is_initialized_data_set(const scc_DataSet* data_set,
+                                 uintmax_t num_data_points);
 
 // =============================================================================
 // Clustering object
@@ -137,8 +139,6 @@ scc_ErrorCode scc_get_data_set_object(uintmax_t num_data_points,
 
 /// Type used for clusterings
 typedef struct scc_Clustering scc_Clustering;
-
-void scc_free_clustering(scc_Clustering** clustering);
 
 scc_ErrorCode scc_init_empty_clustering(uintmax_t num_data_points,
                                         scc_Clabel external_cluster_labels[],
@@ -150,10 +150,12 @@ scc_ErrorCode scc_init_existing_clustering(uintmax_t num_data_points,
                                            bool deep_label_copy,
                                            scc_Clustering** out_clustering);
 
-scc_ErrorCode scc_copy_clustering(const scc_Clustering* in_clustering,
-                                  scc_Clustering** out_clustering);
+void scc_free_clustering(scc_Clustering** clustering);
 
 bool scc_is_initialized_clustering(const scc_Clustering* clustering);
+
+scc_ErrorCode scc_copy_clustering(const scc_Clustering* in_clustering,
+                                  scc_Clustering** out_clustering);
 
 scc_ErrorCode scc_check_clustering(const scc_Clustering* clustering,
                                    uint32_t size_constraint,
@@ -252,7 +254,7 @@ enum scc_UnassignedMethod {
 typedef enum scc_UnassignedMethod scc_UnassignedMethod;
 
 scc_ErrorCode scc_nng_clustering(scc_Clustering* clustering,
-                                 void* data_set_object,
+                                 void* data_set,
                                  uint32_t size_constraint,
                                  scc_SeedMethod seed_method,
                                  scc_UnassignedMethod unassigned_method,
@@ -265,7 +267,7 @@ scc_ErrorCode scc_nng_clustering(scc_Clustering* clustering,
                                  double secondary_radius);
 
 scc_ErrorCode scc_nng_clustering_batches(scc_Clustering* clustering,
-                                         void* data_set_object,
+                                         void* data_set,
                                          uint32_t size_constraint,
                                          scc_UnassignedMethod unassigned_method,
                                          bool radius_constraint,
@@ -275,7 +277,7 @@ scc_ErrorCode scc_nng_clustering_batches(scc_Clustering* clustering,
                                          uint32_t batch_size);
 
 scc_ErrorCode scc_nng_clustering_types(scc_Clustering* clustering,
-                                       void* data_set_object,
+                                       void* data_set,
                                        uint32_t size_constraint,
                                        uintmax_t num_types,
                                        const uint32_t type_size_constraints[],
@@ -292,7 +294,7 @@ scc_ErrorCode scc_nng_clustering_types(scc_Clustering* clustering,
                                        double secondary_radius);
 
 scc_ErrorCode scc_hierarchical_clustering(scc_Clustering* clustering,
-                                          void* data_set_object,
+                                          void* data_set,
                                           uint32_t size_constraint,
                                           bool batch_assign);
 
@@ -323,7 +325,7 @@ struct scc_ClusteringStats {
 };
 
 scc_ErrorCode scc_get_clustering_stats(const scc_Clustering* clustering,
-                                       void* data_set_object,
+                                       void* data_set,
                                        scc_ClusteringStats* out_stats);
 
 

@@ -176,13 +176,13 @@ SEXP Rscc_get_clustering_stats(const SEXP R_clustering,
 	}
 
 	scc_ErrorCode ec;
-	scc_DataSetObject* data_set_object;
-	if ((ec = scc_get_data_set_object(num_data_points,
-	                                  num_dimensions,
-	                                  (size_t) xlength(R_distance_object),
-	                                  REAL(R_distance_object),
-	                                  false,
-	                                  &data_set_object)) != SCC_ER_OK) {
+	scc_DataSet* data_set;
+	if ((ec = scc_init_data_set(num_data_points,
+	                            num_dimensions,
+	                            (size_t) xlength(R_distance_object),
+	                            REAL(R_distance_object),
+	                            false,
+	                            &data_set)) != SCC_ER_OK) {
 		iRscc_scc_error();
 	}
 
@@ -192,21 +192,21 @@ SEXP Rscc_get_clustering_stats(const SEXP R_clustering,
 	                                       INTEGER(R_clustering),
 	                                       false,
 	                                       &clustering)) != SCC_ER_OK) {
-		scc_free_data_set_object(&data_set_object);
+		scc_free_data_set(&data_set);
 		iRscc_scc_error();
 	}
 
 	scc_ClusteringStats clust_stats;
 	if ((ec = scc_get_clustering_stats(clustering,
-	                                   data_set_object,
+	                                   data_set,
 	                                   &clust_stats)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
-		scc_free_data_set_object(&data_set_object);
+		scc_free_data_set(&data_set);
 		iRscc_scc_error();
 	}
 
 	scc_free_clustering(&clustering);
-	scc_free_data_set_object(&data_set_object);
+	scc_free_data_set(&data_set);
 
 	if (clust_stats.num_data_points > INT_MAX) iRscc_error("Too many data points.");
 	if (clust_stats.num_assigned > INT_MAX) iRscc_error("Too many assigned data points.");

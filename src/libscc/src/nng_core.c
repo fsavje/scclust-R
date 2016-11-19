@@ -55,7 +55,7 @@ static const size_t ISCC_ESTIMATE_AVG_MAX_SAMPLE = 1000;
 // Internal function prototypes
 // =============================================================================
 
-static scc_ErrorCode iscc_make_nng(void* data_set_object,
+static scc_ErrorCode iscc_make_nng(void* data_set,
                                    size_t len_search_indices,
                                    const iscc_Dpid search_indices[],
                                    size_t len_query_indicators,
@@ -116,7 +116,7 @@ static void iscc_sort_nng(iscc_Digraph* nng);
 // External function implementations
 // =============================================================================
 
-scc_ErrorCode iscc_get_nng_with_size_constraint(void* const data_set_object,
+scc_ErrorCode iscc_get_nng_with_size_constraint(void* const data_set,
                                                 const size_t num_data_points,
                                                 const uint32_t size_constraint,
                                                 const bool primary_data_points[const],
@@ -124,7 +124,7 @@ scc_ErrorCode iscc_get_nng_with_size_constraint(void* const data_set_object,
                                                 const double radius,
                                                 iscc_Digraph* const out_nng)
 {
-	assert(iscc_check_data_set_object(data_set_object, num_data_points));
+	assert(data_set != NULL);
 	assert(num_data_points >= 2);
 	assert(size_constraint <= num_data_points);
 	assert(size_constraint >= 2);
@@ -143,7 +143,7 @@ scc_ErrorCode iscc_get_nng_with_size_constraint(void* const data_set_object,
 	}
 
 	scc_ErrorCode ec;
-	if ((ec = iscc_make_nng(data_set_object,
+	if ((ec = iscc_make_nng(data_set,
 	                        num_data_points,
 	                        NULL,
 	                        num_data_points,
@@ -178,7 +178,7 @@ scc_ErrorCode iscc_get_nng_with_size_constraint(void* const data_set_object,
 }
 
 
-scc_ErrorCode iscc_get_nng_with_type_constraint(void* const data_set_object,
+scc_ErrorCode iscc_get_nng_with_type_constraint(void* const data_set,
                                                 const size_t num_data_points,
                                                 const uint32_t size_constraint,
                                                 const uint_fast16_t num_types,
@@ -189,7 +189,7 @@ scc_ErrorCode iscc_get_nng_with_type_constraint(void* const data_set_object,
                                                 const double radius,
                                                 iscc_Digraph* const out_nng)
 {
-	assert(iscc_check_data_set_object(data_set_object, num_data_points));
+	assert(data_set != NULL);
 	assert(num_data_points >= 2);
 	assert(size_constraint <= num_data_points);
 	assert(size_constraint >= 2);
@@ -251,7 +251,7 @@ scc_ErrorCode iscc_get_nng_with_type_constraint(void* const data_set_object,
 	uint_fast16_t num_non_zero_type_constraints = 0;
 	for (uint_fast16_t i = 0; i < num_types; ++i) {
 		if (type_size_constraints[i] > 0) {
-			if ((ec = iscc_make_nng(data_set_object,
+			if ((ec = iscc_make_nng(data_set,
 			                        tc.type_group_size[i],
 			                        tc.type_groups[i],
 			                        num_data_points,
@@ -305,7 +305,7 @@ scc_ErrorCode iscc_get_nng_with_type_constraint(void* const data_set_object,
 		iscc_Digraph nng_sum[2];
 		nng_sum[0] = *out_nng;
 
-		if ((ec = iscc_make_nng(data_set_object,
+		if ((ec = iscc_make_nng(data_set,
 		                        num_data_points,
 		                        NULL,
 		                        num_data_points,
@@ -351,12 +351,13 @@ scc_ErrorCode iscc_get_nng_with_type_constraint(void* const data_set_object,
 }
 
 
-scc_ErrorCode iscc_estimate_avg_seed_dist(void* const data_set_object,
+scc_ErrorCode iscc_estimate_avg_seed_dist(void* const data_set,
                                           const iscc_SeedResult* const seed_result,
                                           const iscc_Digraph* const nng,
                                           const uint32_t size_constraint,
-                                          double* const out_avg_seed_dist) {
-	assert(iscc_check_data_set_object(data_set_object, nng->vertices));
+                                          double* const out_avg_seed_dist)
+{
+	assert(data_set != NULL);
 	assert(seed_result->count > 0);
 	assert(seed_result->seeds != NULL);
 	assert(iscc_digraph_is_valid(nng));
@@ -381,7 +382,7 @@ scc_ErrorCode iscc_estimate_avg_seed_dist(void* const data_set_object,
 		assert((num_neighbors == size_constraint) ||
 		       (num_neighbors == size_constraint - 1));
 
-		if (!iscc_get_dist_rows(data_set_object,
+		if (!iscc_get_dist_rows(data_set,
 		                        1,
 		                        &seed,
 		                        num_neighbors,
@@ -415,7 +416,7 @@ scc_ErrorCode iscc_estimate_avg_seed_dist(void* const data_set_object,
 
 
 scc_ErrorCode iscc_make_nng_clusters_from_seeds(scc_Clustering* const clustering,
-                                                void* const data_set_object,
+                                                void* const data_set,
                                                 const iscc_SeedResult* const seed_result,
                                                 iscc_Digraph* const nng,
                                                 const bool nng_is_ordered,
@@ -428,7 +429,7 @@ scc_ErrorCode iscc_make_nng_clusters_from_seeds(scc_Clustering* const clustering
                                                 const double secondary_radius)
 {
 	assert(iscc_check_input_clustering(clustering));
-	assert(iscc_check_data_set_object(data_set_object, clustering->num_data_points));
+	assert(data_set != NULL);
 	assert(seed_result->count > 0);
 	assert(seed_result->seeds != NULL);
 	assert(iscc_digraph_is_valid(nng));
@@ -582,7 +583,7 @@ scc_ErrorCode iscc_make_nng_clusters_from_seeds(scc_Clustering* const clustering
 	        (secondary_unassigned_method == SCC_UM_CLOSEST_ASSIGNED)) {
 		assert(seed_or_neighbor != NULL);
 		iscc_NNSearchObject* nn_search_object;
-		if (!iscc_init_nn_search_object(data_set_object,
+		if (!iscc_init_nn_search_object(data_set,
 		                                num_assigned_as_seed_or_neighbor,
 		                                seed_or_neighbor,
 		                                &nn_search_object)) {
@@ -634,7 +635,7 @@ scc_ErrorCode iscc_make_nng_clusters_from_seeds(scc_Clustering* const clustering
 	if ((unassigned_method == SCC_UM_CLOSEST_SEED) ||
 	        (secondary_unassigned_method == SCC_UM_CLOSEST_SEED)) {
 		iscc_NNSearchObject* nn_search_object;
-		if (!iscc_init_nn_search_object(data_set_object,
+		if (!iscc_init_nn_search_object(data_set,
 		                                seed_result->count,
 		                                seed_result->seeds,
 		                                &nn_search_object)) {
@@ -689,7 +690,7 @@ scc_ErrorCode iscc_make_nng_clusters_from_seeds(scc_Clustering* const clustering
 // Internal function implementations
 // =============================================================================
 
-static scc_ErrorCode iscc_make_nng(void* const data_set_object,
+static scc_ErrorCode iscc_make_nng(void* const data_set,
                                    const size_t len_search_indices,
                                    const iscc_Dpid search_indices[const],
                                    const size_t len_query_indicators,
@@ -702,7 +703,7 @@ static scc_ErrorCode iscc_make_nng(void* const data_set_object,
                                    const uintmax_t max_arcs,
                                    iscc_Digraph* const out_nng)
 {
-	assert(iscc_check_data_set_object(data_set_object, len_query_indicators));
+	assert(data_set != NULL);
 	assert(len_search_indices > 0);
 	assert(len_query_indicators > 0);
 	assert(k > 0);
@@ -711,7 +712,7 @@ static scc_ErrorCode iscc_make_nng(void* const data_set_object,
 	assert(out_nng != NULL);
 
 	iscc_NNSearchObject* nn_search_object;
-	if (!iscc_init_nn_search_object(data_set_object,
+	if (!iscc_init_nn_search_object(data_set,
 	                                len_search_indices,
 	                                search_indices,
 	                                &nn_search_object)) {

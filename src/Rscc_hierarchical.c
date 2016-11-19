@@ -63,13 +63,13 @@ SEXP Rscc_hierarchical_clustering(const SEXP R_distance_object,
 	const bool deep_copy = (bool) asLogical(R_deep_copy);
 
 	scc_ErrorCode ec;
-	scc_DataSetObject* data_set_object;
-	if ((ec = scc_get_data_set_object(num_data_points,
-	                                  num_dimensions,
-	                                  (size_t) xlength(R_distance_object),
-	                                  REAL(R_distance_object),
-	                                  false,
-	                                  &data_set_object)) != SCC_ER_OK) {
+	scc_DataSet* data_set;
+	if ((ec = scc_init_data_set(num_data_points,
+	                            num_dimensions,
+	                            (size_t) xlength(R_distance_object),
+	                            REAL(R_distance_object),
+	                            false,
+	                            &data_set)) != SCC_ER_OK) {
 		iRscc_scc_error();
 	}
 
@@ -80,7 +80,7 @@ SEXP Rscc_hierarchical_clustering(const SEXP R_distance_object,
 		if ((ec = scc_init_empty_clustering(num_data_points,
 		                                    INTEGER(R_cluster_labels),
 		                                    &clustering)) != SCC_ER_OK) {
-			scc_free_data_set_object(&data_set_object);
+			scc_free_data_set(&data_set);
 			UNPROTECT(1);
 			iRscc_scc_error();
 		}
@@ -111,23 +111,23 @@ SEXP Rscc_hierarchical_clustering(const SEXP R_distance_object,
 		                                       INTEGER(R_cluster_labels),
 		                                       false,
 		                                       &clustering)) != SCC_ER_OK) {
-			scc_free_data_set_object(&data_set_object);
+			scc_free_data_set(&data_set);
 			UNPROTECT(1);
 			iRscc_scc_error();
 		}
 	}
 
 	if ((ec = scc_hierarchical_clustering(clustering,
-	                                      data_set_object,
+	                                      data_set,
 	                                      size_constraint,
 	                                      batch_assign)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
-		scc_free_data_set_object(&data_set_object);
+		scc_free_data_set(&data_set);
 		UNPROTECT(1);
 		iRscc_scc_error();
 	}
 
-	scc_free_data_set_object(&data_set_object);
+	scc_free_data_set(&data_set);
 
 	uintmax_t num_clusters = 0;
 	if ((ec = scc_get_clustering_info(clustering,

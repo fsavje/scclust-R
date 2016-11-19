@@ -35,39 +35,26 @@
 // Miscellaneous function implementations
 // =============================================================================
 
-bool iscc_check_data_set_object(void* const data_set_object,
-                                const size_t required_data_points)
-{
-	if (data_set_object == NULL) return false;
-	const scc_DataSetObject* const data_set_object_cast = (const scc_DataSetObject*) data_set_object;
-	if (data_set_object_cast->data_set_object_version != ISCC_CURRENT_DATASETOBJ_VERSION) return false;
-	if (data_set_object_cast->num_data_points < required_data_points) return false;
-	if (data_set_object_cast->num_dimensions == 0) return false;
-	if (data_set_object_cast->data_matrix == NULL) return false;
-	return true;
-}
-
-
-bool iscc_get_dist_matrix(void* const data_set_object,
+bool iscc_get_dist_matrix(void* const data_set,
                           const size_t len_point_indices,
                           const iscc_Dpid point_indices[const],
                           double output_dists[])
 {
-	assert(iscc_check_data_set_object(data_set_object, 1));
+	if (!scc_is_initialized_data_set(data_set, 1)) return false;
 	assert(len_point_indices > 1);
 	assert(output_dists != NULL);
 
 	if (point_indices == NULL) {
 		for (size_t p1 = 0; p1 < len_point_indices; ++p1) {
 			for (size_t p2 = p1 + 1; p2 < len_point_indices; ++p2) {
-				*output_dists = sqrt(iscc_get_sq_dist(data_set_object, p1, p2));
+				*output_dists = sqrt(iscc_get_sq_dist(data_set, p1, p2));
 				++output_dists;
 			}
 		}
 	} else {
 		for (size_t p1 = 0; p1 < len_point_indices; ++p1) {
 			for (size_t p2 = p1 + 1; p2 < len_point_indices; ++p2) {
-				*output_dists = sqrt(iscc_get_sq_dist(data_set_object, (size_t) point_indices[p1], (size_t) point_indices[p2]));
+				*output_dists = sqrt(iscc_get_sq_dist(data_set, (size_t) point_indices[p1], (size_t) point_indices[p2]));
 				++output_dists;
 			}
 		}
@@ -77,14 +64,14 @@ bool iscc_get_dist_matrix(void* const data_set_object,
 }
 
 
-bool iscc_get_dist_rows(void* const data_set_object,
+bool iscc_get_dist_rows(void* const data_set,
                         const size_t len_query_indices,
                         const iscc_Dpid query_indices[const],
                         const size_t len_column_indices,
                         const iscc_Dpid column_indices[const],
                         double output_dists[])
 {
-	assert(iscc_check_data_set_object(data_set_object, 1));
+	if (!scc_is_initialized_data_set(data_set, 1)) return false;
 	assert(len_query_indices > 0);
 	assert(len_column_indices > 0);
 	assert(output_dists != NULL);
@@ -92,7 +79,7 @@ bool iscc_get_dist_rows(void* const data_set_object,
 	if ((query_indices != NULL) && (column_indices != NULL)) {
 		for (size_t q = 0; q < len_query_indices; ++q) {
 			for (size_t c = 0; c < len_column_indices; ++c) {
-				*output_dists = sqrt(iscc_get_sq_dist(data_set_object, (size_t) query_indices[q], (size_t) column_indices[c]));
+				*output_dists = sqrt(iscc_get_sq_dist(data_set, (size_t) query_indices[q], (size_t) column_indices[c]));
 				++output_dists;
 			}
 		}
@@ -100,7 +87,7 @@ bool iscc_get_dist_rows(void* const data_set_object,
 	} else if ((query_indices == NULL) && (column_indices != NULL)) {
 		for (size_t q = 0; q < len_query_indices; ++q) {
 			for (size_t c = 0; c < len_column_indices; ++c) {
-				*output_dists = sqrt(iscc_get_sq_dist(data_set_object, q, (size_t) column_indices[c]));
+				*output_dists = sqrt(iscc_get_sq_dist(data_set, q, (size_t) column_indices[c]));
 				++output_dists;
 			}
 		}
@@ -108,7 +95,7 @@ bool iscc_get_dist_rows(void* const data_set_object,
 	} else if ((query_indices != NULL) && (column_indices == NULL)) {
 		for (size_t q = 0; q < len_query_indices; ++q) {
 			for (size_t c = 0; c < len_column_indices; ++c) {
-				*output_dists = sqrt(iscc_get_sq_dist(data_set_object, (size_t) query_indices[q], c));
+				*output_dists = sqrt(iscc_get_sq_dist(data_set, (size_t) query_indices[q], c));
 				++output_dists;
 			}
 		}
@@ -116,7 +103,7 @@ bool iscc_get_dist_rows(void* const data_set_object,
 	} else if ((query_indices == NULL) && (column_indices == NULL)) {
 		for (size_t q = 0; q < len_query_indices; ++q) {
 			for (size_t c = 0; c < len_column_indices; ++c) {
-				*output_dists = sqrt(iscc_get_sq_dist(data_set_object, q, c));
+				*output_dists = sqrt(iscc_get_sq_dist(data_set, q, c));
 				++output_dists;
 			}
 		}
@@ -131,18 +118,18 @@ bool iscc_get_dist_rows(void* const data_set_object,
 // =============================================================================
 
 struct iscc_MaxDistObject {
-	scc_DataSetObject* data_set_object;
+	scc_DataSet* data_set;
 	size_t len_search_indices;
 	const iscc_Dpid* search_indices;
 };
 
 
-bool iscc_init_max_dist_object(void* const data_set_object,
+bool iscc_init_max_dist_object(void* const data_set,
                                const size_t len_search_indices,
                                const iscc_Dpid search_indices[const],
                                iscc_MaxDistObject** const out_max_dist_object)
 {
-	assert(iscc_check_data_set_object(data_set_object, 1));
+	if (!scc_is_initialized_data_set(data_set, 1)) return false;
 	assert(len_search_indices > 0);
 	assert(out_max_dist_object != NULL);
 
@@ -150,7 +137,7 @@ bool iscc_init_max_dist_object(void* const data_set_object,
 	if (*out_max_dist_object == NULL) return false;
 
 	**out_max_dist_object = (iscc_MaxDistObject) {
-		.data_set_object = data_set_object,
+		.data_set = data_set,
 		.len_search_indices = len_search_indices,
 		.search_indices = search_indices,
 	};
@@ -166,11 +153,11 @@ bool iscc_get_max_dist(iscc_MaxDistObject* const max_dist_object,
                        double out_max_dists[const])
 {
 	assert(max_dist_object != NULL);
-	scc_DataSetObject* const data_set_object = max_dist_object->data_set_object;
+	scc_DataSet* const data_set = max_dist_object->data_set;
 	const size_t len_search_indices = max_dist_object->len_search_indices;
 	const iscc_Dpid* const search_indices = max_dist_object->search_indices;
 
-	assert(iscc_check_data_set_object(data_set_object, 1));
+	if (!scc_is_initialized_data_set(data_set, 1)) return false;
 	assert(len_search_indices > 0);
 	assert(len_query_indices > 0);
 	assert(out_max_indices != NULL);
@@ -183,7 +170,7 @@ bool iscc_get_max_dist(iscc_MaxDistObject* const max_dist_object,
 		for (size_t q = 0; q < len_query_indices; ++q) {
 			max_dist = -1.0;
 			for (size_t s = 0; s < len_search_indices; ++s) {
-				tmp_dist = iscc_get_sq_dist(data_set_object, (size_t) query_indices[q], (size_t) search_indices[s]);
+				tmp_dist = iscc_get_sq_dist(data_set, (size_t) query_indices[q], (size_t) search_indices[s]);
 				if (max_dist < tmp_dist) {
 					max_dist = tmp_dist;
 					out_max_indices[q] = search_indices[s];
@@ -196,7 +183,7 @@ bool iscc_get_max_dist(iscc_MaxDistObject* const max_dist_object,
 		for (size_t q = 0; q < len_query_indices; ++q) {
 			max_dist = -1.0;
 			for (size_t s = 0; s < len_search_indices; ++s) {
-				tmp_dist = iscc_get_sq_dist(data_set_object, q, (size_t) search_indices[s]);
+				tmp_dist = iscc_get_sq_dist(data_set, q, (size_t) search_indices[s]);
 				if (max_dist < tmp_dist) {
 					max_dist = tmp_dist;
 					out_max_indices[q] = search_indices[s];
@@ -209,7 +196,7 @@ bool iscc_get_max_dist(iscc_MaxDistObject* const max_dist_object,
 		for (size_t q = 0; q < len_query_indices; ++q) {
 			max_dist = -1.0;
 			for (size_t s = 0; s < len_search_indices; ++s) {
-				tmp_dist = iscc_get_sq_dist(data_set_object, (size_t) query_indices[q], s);
+				tmp_dist = iscc_get_sq_dist(data_set, (size_t) query_indices[q], s);
 				if (max_dist < tmp_dist) {
 					max_dist = tmp_dist;
 					out_max_indices[q] = (iscc_Dpid) s;
@@ -222,7 +209,7 @@ bool iscc_get_max_dist(iscc_MaxDistObject* const max_dist_object,
 		for (size_t q = 0; q < len_query_indices; ++q) {
 			max_dist = -1.0;
 			for (size_t s = 0; s < len_search_indices; ++s) {
-				tmp_dist = iscc_get_sq_dist(data_set_object, q, s);
+				tmp_dist = iscc_get_sq_dist(data_set, q, s);
 				if (max_dist < tmp_dist) {
 					max_dist = tmp_dist;
 					out_max_indices[q] = (iscc_Dpid) s;

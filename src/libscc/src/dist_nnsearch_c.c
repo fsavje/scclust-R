@@ -45,18 +45,18 @@ static inline void iscc_add_dist_to_list(double add_dist,
 // =============================================================================
 
 struct iscc_NNSearchObject {
-	scc_DataSetObject* data_set_object;
+	scc_DataSet* data_set;
 	size_t len_search_indices;
 	const iscc_Dpid* search_indices;
 };
 
 
-bool iscc_init_nn_search_object(void* const data_set_object,
+bool iscc_init_nn_search_object(void* const data_set,
                                 const size_t len_search_indices,
                                 const iscc_Dpid search_indices[const],
                                 iscc_NNSearchObject** const out_nn_search_object)
 {
-	assert(iscc_check_data_set_object(data_set_object, 1));
+	if (!scc_is_initialized_data_set(data_set, 1)) return false;
 	assert(len_search_indices > 0);
 	assert(out_nn_search_object != NULL);
 
@@ -64,7 +64,7 @@ bool iscc_init_nn_search_object(void* const data_set_object,
 	if (*out_nn_search_object == NULL) return false;
 
 	**out_nn_search_object = (iscc_NNSearchObject) {
-		.data_set_object = data_set_object,
+		.data_set = data_set,
 		.len_search_indices = len_search_indices,
 		.search_indices = search_indices,
 	};
@@ -85,11 +85,11 @@ bool iscc_nearest_neighbor_search_digraph(iscc_NNSearchObject* const nn_search_o
                                           iscc_Dpid out_nn_indices[const])
 {
 	assert(nn_search_object != NULL);
-	scc_DataSetObject* const data_set_object = nn_search_object->data_set_object;
+	scc_DataSet* const data_set = nn_search_object->data_set;
 	const size_t len_search_indices = nn_search_object->len_search_indices;
 	const iscc_Dpid* const search_indices = nn_search_object->search_indices;
 
-	assert(iscc_check_data_set_object(data_set_object, len_query_indicators));
+	if (!scc_is_initialized_data_set(data_set, len_query_indicators)) return false;
 	assert(len_search_indices > 0);
 	assert(len_query_indicators > 0);
 	assert(k > 0);
@@ -116,7 +116,7 @@ bool iscc_nearest_neighbor_search_digraph(iscc_NNSearchObject* const nn_search_o
 					const double radius_sq = radius * radius;
 					found = 0;
 					for (; (s < len_search_indices) && (found < k); ++s) {
-						tmp_dist = iscc_get_sq_dist(data_set_object, q, s);
+						tmp_dist = iscc_get_sq_dist(data_set, q, s);
 						if (tmp_dist > radius_sq) continue;
 						iscc_add_dist_to_list(tmp_dist, (iscc_Dpid) s, sort_scratch + found, index_write + found, sort_scratch);
 						++found;
@@ -124,14 +124,14 @@ bool iscc_nearest_neighbor_search_digraph(iscc_NNSearchObject* const nn_search_o
 				} else {
 					found = k;
 					for (; s < k; ++s) {
-						tmp_dist = iscc_get_sq_dist(data_set_object, q, s);
+						tmp_dist = iscc_get_sq_dist(data_set, q, s);
 						iscc_add_dist_to_list(tmp_dist, (iscc_Dpid) s, sort_scratch + s, index_write + s, sort_scratch);
 					}
 				}
 
 				for (; s < len_search_indices; ++s) {
 					assert(found == k);
-					tmp_dist = iscc_get_sq_dist(data_set_object, q, s);
+					tmp_dist = iscc_get_sq_dist(data_set, q, s);
 					if (tmp_dist >= *sort_scratch_end) continue;
 					iscc_add_dist_to_list(tmp_dist, (iscc_Dpid) s, sort_scratch_end, index_write_end, sort_scratch);
 				}
@@ -158,7 +158,7 @@ bool iscc_nearest_neighbor_search_digraph(iscc_NNSearchObject* const nn_search_o
 					const double radius_sq = radius * radius;
 					found = 0;
 					for (; (s < len_search_indices) && (found < k); ++s) {
-						tmp_dist = iscc_get_sq_dist(data_set_object, q, (size_t) search_indices[s]);
+						tmp_dist = iscc_get_sq_dist(data_set, q, (size_t) search_indices[s]);
 						if (tmp_dist > radius_sq) continue;
 						iscc_add_dist_to_list(tmp_dist, search_indices[s], sort_scratch + found, index_write + found, sort_scratch);
 						++found;
@@ -166,14 +166,14 @@ bool iscc_nearest_neighbor_search_digraph(iscc_NNSearchObject* const nn_search_o
 				} else {
 					found = k;
 					for (; s < k; ++s) {
-						tmp_dist = iscc_get_sq_dist(data_set_object, q, (size_t) search_indices[s]);
+						tmp_dist = iscc_get_sq_dist(data_set, q, (size_t) search_indices[s]);
 						iscc_add_dist_to_list(tmp_dist, search_indices[s], sort_scratch + s, index_write + s, sort_scratch);
 					}
 				}
 
 				for (; s < len_search_indices; ++s) {
 					assert(found == k);
-					tmp_dist = iscc_get_sq_dist(data_set_object, q, (size_t) search_indices[s]);
+					tmp_dist = iscc_get_sq_dist(data_set, q, (size_t) search_indices[s]);
 					if (tmp_dist >= *sort_scratch_end) continue;
 					iscc_add_dist_to_list(tmp_dist, search_indices[s], sort_scratch_end, index_write_end, sort_scratch);
 				}
@@ -205,11 +205,11 @@ bool iscc_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search_obj
                                         iscc_Dpid out_nn_indices[const])
 {
 	assert(nn_search_object != NULL);
-	scc_DataSetObject* const data_set_object = nn_search_object->data_set_object;
+	scc_DataSet* const data_set = nn_search_object->data_set;
 	const size_t len_search_indices = nn_search_object->len_search_indices;
 	const iscc_Dpid* const search_indices = nn_search_object->search_indices;
 
-	assert(iscc_check_data_set_object(data_set_object, 1));
+	if (!scc_is_initialized_data_set(data_set, 1)) return false;
 	assert(len_search_indices > 0);
 	assert(len_query_indices > 0);
 	assert(query_indices != NULL);
@@ -233,7 +233,7 @@ bool iscc_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search_obj
 				const double radius_sq = radius * radius;
 				uint32_t found = 0;
 				for (; (s < len_search_indices) && (found < k); ++s) {
-					tmp_dist = iscc_get_sq_dist(data_set_object, (size_t) query_indices[q], s);
+					tmp_dist = iscc_get_sq_dist(data_set, (size_t) query_indices[q], s);
 					if (tmp_dist > radius_sq) continue;
 					iscc_add_dist_to_list(tmp_dist, (iscc_Dpid) s, sort_scratch + found, index_write + found, sort_scratch);
 					++found;
@@ -243,13 +243,13 @@ bool iscc_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search_obj
 				}
 			} else {
 				for (; s < k; ++s) {
-					tmp_dist = iscc_get_sq_dist(data_set_object, (size_t) query_indices[q], s);
+					tmp_dist = iscc_get_sq_dist(data_set, (size_t) query_indices[q], s);
 					iscc_add_dist_to_list(tmp_dist, (iscc_Dpid) s, sort_scratch + s, index_write + s, sort_scratch);
 				}
 			}
 
 			for (; s < len_search_indices; ++s) {
-				tmp_dist = iscc_get_sq_dist(data_set_object, (size_t) query_indices[q], s);
+				tmp_dist = iscc_get_sq_dist(data_set, (size_t) query_indices[q], s);
 				if (tmp_dist >= *sort_scratch_end) continue;
 				iscc_add_dist_to_list(tmp_dist, (iscc_Dpid) s, sort_scratch_end, index_write_end, sort_scratch);
 			}
@@ -264,7 +264,7 @@ bool iscc_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search_obj
 				const double radius_sq = radius * radius;
 				uint32_t found = 0;
 				for (; (s < len_search_indices) && (found < k); ++s) {
-					tmp_dist = iscc_get_sq_dist(data_set_object, (size_t) query_indices[q], (size_t) search_indices[s]);
+					tmp_dist = iscc_get_sq_dist(data_set, (size_t) query_indices[q], (size_t) search_indices[s]);
 					if (tmp_dist > radius_sq) continue;
 					iscc_add_dist_to_list(tmp_dist, search_indices[s], sort_scratch + found, index_write + found, sort_scratch);
 					++found;
@@ -274,13 +274,13 @@ bool iscc_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search_obj
 				}
 			} else {
 				for (; s < k; ++s) {
-					tmp_dist = iscc_get_sq_dist(data_set_object, (size_t) query_indices[q], (size_t) search_indices[s]);
+					tmp_dist = iscc_get_sq_dist(data_set, (size_t) query_indices[q], (size_t) search_indices[s]);
 					iscc_add_dist_to_list(tmp_dist, search_indices[s], sort_scratch + s, index_write + s, sort_scratch);
 				}
 			}
 
 			for (; s < len_search_indices; ++s) {
-				tmp_dist = iscc_get_sq_dist(data_set_object, (size_t) query_indices[q], (size_t) search_indices[s]);
+				tmp_dist = iscc_get_sq_dist(data_set, (size_t) query_indices[q], (size_t) search_indices[s]);
 				if (tmp_dist >= *sort_scratch_end) continue;
 				iscc_add_dist_to_list(tmp_dist, search_indices[s], sort_scratch_end, index_write_end, sort_scratch);
 			}

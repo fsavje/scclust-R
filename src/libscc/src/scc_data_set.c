@@ -35,26 +35,17 @@
 // External function implementations
 // =============================================================================
 
-void scc_free_data_set_object(scc_DataSetObject** const out_data_set_object)
+scc_ErrorCode scc_init_data_set(const uintmax_t num_data_points,
+                                const uintmax_t num_dimensions,
+                                const size_t len_data_matrix,
+                                double data_matrix[const],
+                                const bool deep_matrix_copy,
+                                scc_DataSet** const out_data_set)
 {
-	if ((out_data_set_object != NULL) && (*out_data_set_object != NULL)) {
-		if (!((*out_data_set_object)->external_matrix)) free((void*) (*out_data_set_object)->data_matrix);
-		free(*out_data_set_object);
-		*out_data_set_object = NULL;
-	}
-}
-
-scc_ErrorCode scc_get_data_set_object(const uintmax_t num_data_points,
-                                      const uintmax_t num_dimensions,
-                                      const size_t len_data_matrix,
-                                      double data_matrix[const],
-                                      const bool deep_matrix_copy,
-                                      scc_DataSetObject** const out_data_set_object)
-{
-	if (out_data_set_object == NULL) return iscc_make_error(SCC_ER_NULL_INPUT);
+	if (out_data_set == NULL) return iscc_make_error(SCC_ER_NULL_INPUT);
 	// Initialize to null, so subsequent functions detect invalid clustering
 	// if user doesn't check for errors.
-	*out_data_set_object = NULL;
+	*out_data_set = NULL;
 
 	if (num_data_points == 0) return iscc_make_error(SCC_ER_INVALID_INPUT);
 	if (num_data_points > ISCC_DPID_MAX) return iscc_make_error(SCC_ER_TOO_LARGE_PROBLEM);
@@ -64,11 +55,11 @@ scc_ErrorCode scc_get_data_set_object(const uintmax_t num_data_points,
 	if (len_data_matrix < num_data_points * num_dimensions) return iscc_make_error(SCC_ER_INVALID_INPUT);
 	if (data_matrix == NULL) return iscc_make_error(SCC_ER_NULL_INPUT);
 
-	scc_DataSetObject* tmp_dso = malloc(sizeof(scc_DataSetObject));
+	scc_DataSet* tmp_dso = malloc(sizeof(scc_DataSet));
 	if (tmp_dso == NULL) return iscc_make_error(SCC_ER_NO_MEMORY);
 
-	*tmp_dso = (scc_DataSetObject) {
-		.data_set_object_version = ISCC_CURRENT_DATASETOBJ_VERSION,
+	*tmp_dso = (scc_DataSet) {
+		.data_set_version = ISCC_DATASET_STRUCT_VERSION,
 		.num_data_points = (size_t) num_data_points,
 		.num_dimensions = (uint_fast16_t) num_dimensions,
 		.data_matrix = NULL,
@@ -88,7 +79,29 @@ scc_ErrorCode scc_get_data_set_object(const uintmax_t num_data_points,
 
 	assert(tmp_dso->data_matrix != NULL);
 
-	*out_data_set_object = tmp_dso;
+	*out_data_set = tmp_dso;
 
 	return iscc_no_error();
+}
+
+
+void scc_free_data_set(scc_DataSet** const data_set)
+{
+	if ((data_set != NULL) && (*data_set != NULL)) {
+		if (!((*data_set)->external_matrix)) free((void*) (*data_set)->data_matrix);
+		free(*data_set);
+		*data_set = NULL;
+	}
+}
+
+
+bool scc_is_initialized_data_set(const scc_DataSet* const data_set,
+                                 const uintmax_t num_data_points)
+{
+	if (data_set == NULL) return false;
+	if (data_set->data_set_version != ISCC_DATASET_STRUCT_VERSION) return false;
+	if (data_set->num_data_points < num_data_points) return false;
+	if (data_set->num_dimensions == 0) return false;
+	if (data_set->data_matrix == NULL) return false;
+	return true;
 }

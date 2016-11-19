@@ -48,7 +48,7 @@
 static int iscc_open_search_objects = 0;
 
 struct iscc_NNSearchObject {
-	scc_DataSetObject* data_set_object;
+	scc_DataSet* data_set;
 	size_t len_search_indices;
 	const iscc_Dpid* search_indices;
 	ANNpoint* search_points;
@@ -60,19 +60,19 @@ struct iscc_NNSearchObject {
 // External function implementations
 // =============================================================================
 
-bool iscc_init_nn_search_object(void* const data_set_object,
+bool iscc_init_nn_search_object(void* const data_set,
                                 const size_t len_search_indices,
                                 const iscc_Dpid* const search_indices,
                                 iscc_NNSearchObject** const out_nn_search_object)
 {
 	assert(iscc_open_search_objects >= 0);
-	assert(iscc_check_data_set_object(data_set_object, 1));
 	assert(len_search_indices > 0);
 	assert(out_nn_search_object != NULL);
+	if (data_set == NULL) return false;
+	scc_DataSet* const data_set_cast = static_cast<scc_DataSet*>(data_set);
+	if (!scc_is_initialized_data_set(data_set_cast, len_search_indices)) return false;
 
 	if (len_search_indices > INT_MAX) return false;
-
-	scc_DataSetObject* const data_set_object_cast = static_cast<scc_DataSetObject*>(data_set_object);
 
 	ANNpoint* search_points;
 	try {
@@ -83,15 +83,15 @@ bool iscc_init_nn_search_object(void* const data_set_object,
 	}
 
 	if (search_indices == NULL) {
-		assert(len_search_indices <= data_set_object_cast->num_data_points);
-		double* search_point = data_set_object_cast->data_matrix;
-		for (size_t i = 0; i < len_search_indices; ++i, search_point += data_set_object_cast->num_dimensions) {
+		assert(len_search_indices <= data_set_cast->num_data_points);
+		double* search_point = data_set_cast->data_matrix;
+		for (size_t i = 0; i < len_search_indices; ++i, search_point += data_set_cast->num_dimensions) {
 			search_points[i] = search_point;
 		}
 	} else if (search_indices != NULL) {
 		for (size_t i = 0; i < len_search_indices; ++i) {
-			assert(static_cast<size_t>(search_indices[i]) < data_set_object_cast->num_data_points);
-			search_points[i] = data_set_object_cast->data_matrix + search_indices[i] * data_set_object_cast->num_dimensions;
+			assert(static_cast<size_t>(search_indices[i]) < data_set_cast->num_data_points);
+			search_points[i] = data_set_cast->data_matrix + search_indices[i] * data_set_cast->num_dimensions;
 		}
 	}
 
@@ -99,7 +99,7 @@ bool iscc_init_nn_search_object(void* const data_set_object,
 	try {
 		search_tree = new ANNpointSetConstructor(search_points,
 		                                         static_cast<int>(len_search_indices),
-		                                         static_cast<int>(data_set_object_cast->num_dimensions));
+		                                         static_cast<int>(data_set_cast->num_dimensions));
 	} catch (...) {
 		delete[] search_points;
 		delete *out_nn_search_object;
@@ -107,7 +107,7 @@ bool iscc_init_nn_search_object(void* const data_set_object,
 		return false;
 	}
 
-	(*out_nn_search_object)->data_set_object = data_set_object_cast;
+	(*out_nn_search_object)->data_set = data_set_cast;
 	(*out_nn_search_object)->len_search_indices = len_search_indices;
 	(*out_nn_search_object)->search_indices = search_indices;
 	(*out_nn_search_object)->search_points = search_points;
@@ -130,7 +130,7 @@ bool iscc_nearest_neighbor_search_digraph(iscc_NNSearchObject* const nn_search_o
                                           iscc_Dpid* const out_nn_indices)
 {
 	assert(nn_search_object != NULL);
-	scc_DataSetObject* const data_set_object = nn_search_object->data_set_object;
+	scc_DataSet* const data_set = nn_search_object->data_set;
 	#ifndef NDEBUG
 		const size_t len_search_indices = nn_search_object->len_search_indices;
 		assert(len_search_indices <= INT_MAX);
@@ -139,7 +139,7 @@ bool iscc_nearest_neighbor_search_digraph(iscc_NNSearchObject* const nn_search_o
 	ANNpointSet* const search_tree = nn_search_object->search_tree;
 
 	assert(iscc_open_search_objects > 0);
-	assert(iscc_check_data_set_object(data_set_object, len_query_indicators));
+	if (!scc_is_initialized_data_set(data_set, len_query_indicators)) return false;
 	assert(len_search_indices > 0);
 	assert(search_tree != NULL);
 	assert(len_query_indicators > 0);
@@ -173,7 +173,7 @@ bool iscc_nearest_neighbor_search_digraph(iscc_NNSearchObject* const nn_search_o
 				for (size_t q = 0; q < len_query_indicators; ++q) {
 					out_nn_ref[q + 1] = out_nn_ref[q];
 					if ((query_indicators == NULL) || query_indicators[q]) {
-						const ANNpoint query_point = data_set_object->data_matrix + q * data_set_object->num_dimensions;
+						const ANNpoint query_point = data_set->data_matrix + q * data_set->num_dimensions;
 						search_tree->annkSearch(query_point,    // pointer to query point
 						                        k_int,          // number of neighbors
 						                        out_nn_indices + out_nn_ref[q],    // pointer to start of index result
@@ -189,7 +189,7 @@ bool iscc_nearest_neighbor_search_digraph(iscc_NNSearchObject* const nn_search_o
 				for (size_t q = 0; q < len_query_indicators; ++q) {
 					out_nn_ref[q + 1] = out_nn_ref[q];
 					if ((query_indicators == NULL) || query_indicators[q]) {
-						const ANNpoint query_point = data_set_object->data_matrix + q * data_set_object->num_dimensions;
+						const ANNpoint query_point = data_set->data_matrix + q * data_set->num_dimensions;
 						const int num_found = search_tree->annkFRSearch(query_point,              // pointer to query point
 						                                                radius_sq,                // squared caliper
 						                                                k_int,                    // number of neighbors
@@ -230,7 +230,7 @@ bool iscc_nearest_neighbor_search_digraph(iscc_NNSearchObject* const nn_search_o
 		for (size_t q = 0; q < len_query_indicators; ++q) {
 			out_nn_ref[q + 1] = out_nn_ref[q];
 			if ((query_indicators == NULL) || query_indicators[q]) {
-				const ANNpoint query_point = data_set_object->data_matrix + q * data_set_object->num_dimensions;
+				const ANNpoint query_point = data_set->data_matrix + q * data_set->num_dimensions;
 				search_tree->annkSearch(query_point,    // pointer to query point
 				                        k_int,          // number of neighbors
 				                        idx_scratch,    // pointer to start of index result
@@ -257,7 +257,7 @@ bool iscc_nearest_neighbor_search_digraph(iscc_NNSearchObject* const nn_search_o
 		for (size_t q = 0; q < len_query_indicators; ++q) {
 			out_nn_ref[q + 1] = out_nn_ref[q];
 			if ((query_indicators == NULL) || query_indicators[q]) {
-				const ANNpoint query_point = data_set_object->data_matrix + q * data_set_object->num_dimensions;
+				const ANNpoint query_point = data_set->data_matrix + q * data_set->num_dimensions;
 				int num_found = search_tree->annkFRSearch(query_point,     // pointer to query point
 				                                          radius_sq,       // squared caliper
 				                                          k_int,           // number of neighbors
@@ -304,7 +304,7 @@ bool iscc_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search_obj
                                         iscc_Dpid* const out_nn_indices)
 {
 	assert(nn_search_object != NULL);
-	scc_DataSetObject* const data_set_object = nn_search_object->data_set_object;
+	scc_DataSet* const data_set = nn_search_object->data_set;
 	#ifndef NDEBUG
 		const size_t len_search_indices = nn_search_object->len_search_indices;
 		assert(len_search_indices <= INT_MAX);
@@ -313,7 +313,7 @@ bool iscc_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search_obj
 	ANNpointSet* const search_tree = nn_search_object->search_tree;
 
 	assert(iscc_open_search_objects > 0);
-	assert(iscc_check_data_set_object(data_set_object, 1));
+	if (!scc_is_initialized_data_set(data_set, 1)) return false;
 	assert(len_search_indices > 0);
 	assert(search_tree != NULL);
 	assert(len_query_indices > 0);
@@ -345,7 +345,7 @@ bool iscc_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search_obj
 
 			if (!radius_search) {
 				for (size_t q = 0; q < len_query_indices; ++q) {
-					const ANNpoint query_point = data_set_object->data_matrix + query_indices[q] * data_set_object->num_dimensions;
+					const ANNpoint query_point = data_set->data_matrix + query_indices[q] * data_set->num_dimensions;
 					search_tree->annkSearch(query_point,    // pointer to query point
 					                        k_int,          // number of neighbors
 					                        write_nnidx,    // pointer to start of index result
@@ -358,7 +358,7 @@ bool iscc_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search_obj
 				assert(radius_search);
 				const double radius_sq = radius * radius;
 				for (size_t q = 0; q < len_query_indices; ++q) {
-					const ANNpoint query_point = data_set_object->data_matrix + query_indices[q] * data_set_object->num_dimensions;
+					const ANNpoint query_point = data_set->data_matrix + query_indices[q] * data_set->num_dimensions;
 					int num_found = search_tree->annkFRSearch(query_point,     // pointer to query point
 					                                          radius_sq,       // squared caliper
 					                                          k_int,           // number of neighbors
@@ -393,7 +393,7 @@ bool iscc_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search_obj
 		iscc_Dpid* write_nnidx = out_nn_indices;
 		const ANNidx* const idx_stop = idx_scratch + k;
 		for (size_t q = 0; q < len_query_indices; ++q) {
-			const ANNpoint query_point = data_set_object->data_matrix + query_indices[q] * data_set_object->num_dimensions;
+			const ANNpoint query_point = data_set->data_matrix + query_indices[q] * data_set->num_dimensions;
 			search_tree->annkSearch(query_point,    // pointer to query point
 			                        k_int,          // number of neighbors
 			                        idx_scratch,    // pointer to start of index result
@@ -417,7 +417,7 @@ bool iscc_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search_obj
 		iscc_Dpid* write_nnidx = out_nn_indices;
 		const ANNidx* const idx_stop = idx_scratch + k;
 		for (size_t q = 0; q < len_query_indices; ++q) {
-			const ANNpoint query_point = data_set_object->data_matrix + query_indices[q] * data_set_object->num_dimensions;
+			const ANNpoint query_point = data_set->data_matrix + query_indices[q] * data_set->num_dimensions;
 			int num_found = search_tree->annkFRSearch(query_point,     // pointer to query point
 			                                          radius_sq,       // squared caliper
 			                                          k_int,           // number of neighbors

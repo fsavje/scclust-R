@@ -34,7 +34,7 @@
 // Function prototypes
 // =============================================================================
 
-scc_ErrorCode iscc_get_nng_with_size_constraint(void* data_set_object,
+scc_ErrorCode iscc_get_nng_with_size_constraint(void* data_set,
                                                 size_t num_data_points,
                                                 uint32_t size_constraint,
                                                 const bool primary_data_points[],
@@ -42,7 +42,7 @@ scc_ErrorCode iscc_get_nng_with_size_constraint(void* data_set_object,
                                                 double radius,
                                                 iscc_Digraph* out_nng);
 
-scc_ErrorCode iscc_get_nng_with_type_constraint(void* data_set_object,
+scc_ErrorCode iscc_get_nng_with_type_constraint(void* data_set,
                                                 size_t num_data_points,
                                                 uint32_t size_constraint,
                                                 uint_fast16_t num_types,
@@ -53,14 +53,14 @@ scc_ErrorCode iscc_get_nng_with_type_constraint(void* data_set_object,
                                                 double radius,
                                                 iscc_Digraph* out_nng);
 
-scc_ErrorCode iscc_estimate_avg_seed_dist(void* data_set_object,
+scc_ErrorCode iscc_estimate_avg_seed_dist(void* data_set,
                                           const iscc_SeedResult* seed_result,
                                           const iscc_Digraph* nng,
                                           uint32_t size_constraint,
                                           double* out_avg_seed_dist);
 
 scc_ErrorCode iscc_make_nng_clusters_from_seeds(scc_Clustering* clustering,
-                                                void* data_set_object,
+                                                void* data_set,
                                                 const iscc_SeedResult* seed_result,
                                                 iscc_Digraph* nng,
                                                 bool nng_is_ordered,

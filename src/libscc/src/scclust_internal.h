@@ -127,7 +127,7 @@ struct scc_Clustering {
 };
 
 /// Current version of the clustering struct.
-static const int32_t ISCC_CURRENT_CLUSTSTRUCT_VERSION = 1;
+static const int32_t ISCC_CLUSTERING_STRUCT_VERSION = 722587001;
 
 /** The null clustering.
  *

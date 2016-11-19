@@ -31,16 +31,16 @@
 // Inline function implementations
 // =============================================================================
 
-static inline double iscc_get_sq_dist(const scc_DataSetObject* const data_set_object,
+static inline double iscc_get_sq_dist(const scc_DataSet* const data_set,
                                       size_t index1,
                                       size_t index2)
 {
-	assert(index1 < data_set_object->num_data_points);
-	assert(index2 < data_set_object->num_data_points);
+	assert(index1 < data_set->num_data_points);
+	assert(index2 < data_set->num_data_points);
 
-	const double* data1 = &data_set_object->data_matrix[index1 * data_set_object->num_dimensions];
-	const double* const data1_stop = data1 + data_set_object->num_dimensions;
-	const double* data2 = &data_set_object->data_matrix[index2 * data_set_object->num_dimensions];
+	const double* data1 = &data_set->data_matrix[index1 * data_set->num_dimensions];
+	const double* const data1_stop = data1 + data_set->num_dimensions;
+	const double* data2 = &data_set->data_matrix[index2 * data_set->num_dimensions];
 
 	double tmp_dist = 0.0;
 	while (data1 != data1_stop) {

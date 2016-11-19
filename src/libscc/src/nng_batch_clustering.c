@@ -58,7 +58,7 @@ scc_ErrorCode iscc_run_nng_batches(scc_Clustering* clustering,
 // =============================================================================
 
 scc_ErrorCode scc_nng_clustering_batches(scc_Clustering* const clustering,
-                                         void* const data_set_object,
+                                         void* const data_set,
                                          const uint32_t size_constraint,
                                          const scc_UnassignedMethod unassigned_method,
                                          const bool radius_constraint,
@@ -68,7 +68,7 @@ scc_ErrorCode scc_nng_clustering_batches(scc_Clustering* const clustering,
                                          uint32_t batch_size)
 {
 	if (!iscc_check_input_clustering(clustering)) return iscc_make_error(SCC_ER_INVALID_CLUSTERING);
-	if (!iscc_check_data_set_object(data_set_object, clustering->num_data_points)) return iscc_make_error(SCC_ER_INVALID_DATA_OBJ);
+	if (data_set == NULL) return iscc_make_error(SCC_ER_NULL_INPUT);
 	if (size_constraint < 2) return iscc_make_error(SCC_ER_INVALID_INPUT);
 	if (clustering->num_data_points < size_constraint) return iscc_make_error(SCC_ER_NO_CLUST_EXIST_CONSTRAINT);
 	if ((unassigned_method != SCC_UM_IGNORE) && (unassigned_method != SCC_UM_ASSIGN_BY_NNG)) return iscc_make_error(SCC_ER_INVALID_INPUT);
@@ -83,7 +83,7 @@ scc_ErrorCode scc_nng_clustering_batches(scc_Clustering* const clustering,
 	}
 
 	iscc_NNSearchObject* nn_search_object;
-	if (!iscc_init_nn_search_object(data_set_object,
+	if (!iscc_init_nn_search_object(data_set,
 	                                clustering->num_data_points,
 	                                NULL,
 	                                &nn_search_object)) {
