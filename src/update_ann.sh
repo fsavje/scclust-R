@@ -8,6 +8,12 @@ rm ann_1.1.2/src/Makefile
 cp -R ann_1.1.2/include ann_1.1.2/src ann_1.1.2/Copyright.txt ann_1.1.2/License.txt libann
 rm -rf ann_1.1.2 ann_1.1.2.zip
 
+ed -s libann/include/ANN/ANN.h <<EOF
+,s/#define DLL_API __declspec(dllexport)/#define DLL_API/g
+,s/#define DLL_API __declspec(dllimport)/#define DLL_API/g
+,w
+q
+EOF
 
 cat <<EOF > libann/Makefile
 include \$(MAKECONF)
