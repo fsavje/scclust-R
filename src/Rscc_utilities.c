@@ -67,6 +67,10 @@ SEXP Rscc_check_clustering(const SEXP R_clustering,
 	bool is_OK = false;
 	if ((ec = scc_check_clustering(clustering,
 	                               size_constraint,
+	                               1,
+	                               NULL,
+	                               0,
+	                               NULL,
 	                               &is_OK)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
 		iRscc_scc_error();
@@ -134,13 +138,13 @@ SEXP Rscc_check_clustering_types(const SEXP R_clustering,
 	}
 
 	bool is_OK = false;
-	if ((ec = scc_check_clustering_types(clustering,
-	                                     total_size_constraint,
-	                                     num_types,
-	                                     type_size_constraints,
-	                                     len_type_labels,
-	                                     type_labels,
-	                                     &is_OK)) != SCC_ER_OK) {
+	if ((ec = scc_check_clustering(clustering,
+	                               total_size_constraint,
+	                               num_types,
+	                               type_size_constraints,
+	                               len_type_labels,
+	                               type_labels,
+	                               &is_OK)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
 		iRscc_scc_error();
 	}
@@ -168,7 +172,7 @@ SEXP Rscc_get_clustering_stats(const SEXP R_clustering,
 	const uintmax_t num_dimensions = (uintmax_t) INTEGER(getAttrib(R_distance_object, R_DimSymbol))[0];
 	const uintmax_t num_clusters = (uintmax_t) asInteger(getAttrib(R_clustering, install("cluster_count")));
 
-	if (xlength(R_clustering) != num_data_points) {
+	if (((uintmax_t) xlength(R_clustering)) != num_data_points) {
 		iRscc_error("`R_distance_object` does not match `R_clustering`.");
 	}
 	if (num_clusters == 0) {
@@ -181,7 +185,6 @@ SEXP Rscc_get_clustering_stats(const SEXP R_clustering,
 	                            num_dimensions,
 	                            (size_t) xlength(R_distance_object),
 	                            REAL(R_distance_object),
-	                            false,
 	                            &data_set)) != SCC_ER_OK) {
 		iRscc_scc_error();
 	}

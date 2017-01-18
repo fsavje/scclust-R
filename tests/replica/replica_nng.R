@@ -54,9 +54,7 @@ assign_unassigned <- function(distances,
                               secondary_radius) {
   assigned <- !is.na(cl_label)
   unassigned <- !assigned
-  second_unassigned <- NULL
   if (!is.null(primary_data_points)) {
-    second_unassigned <- unassigned & !primary_data_points
     unassigned <- unassigned & primary_data_points
   }
 
@@ -78,13 +76,14 @@ assign_unassigned <- function(distances,
     }
   }
 
-  if (!is.null(second_unassigned) && any(second_unassigned)) {
+  unassigned <- is.na(cl_label)
+  if (any(unassigned)) {
     if (secondary_unassigned_method == "ignore") {
       # nothing
     } else if (secondary_unassigned_method == "closest_assigned") {
-      cl_label <- match_n_assign(cl_label, which(assigned), second_unassigned, secondary_radius, distances)
+      cl_label <- match_n_assign(cl_label, which(assigned), unassigned, secondary_radius, distances)
     } else if (secondary_unassigned_method == "closest_seed") {
-      cl_label <- match_n_assign(cl_label, seeds, second_unassigned, secondary_radius, distances)
+      cl_label <- match_n_assign(cl_label, seeds, unassigned, secondary_radius, distances)
     } else {
       stop("Unknown options.")
     }

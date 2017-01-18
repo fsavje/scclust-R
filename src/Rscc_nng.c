@@ -84,18 +84,27 @@ SEXP Rscc_nng_clustering(const SEXP R_distance_object,
 	const scc_UnassignedMethod unassigned_method = iRscc_parse_unassigned_method(R_unassigned_method);
 	const scc_UnassignedMethod secondary_unassigned_method = iRscc_parse_unassigned_method(R_secondary_unassigned_method);
 
-	bool radius_constraint = false;
+	scc_RadiusMethod radius_constraint = false;
 	double radius = 0.0;
 	if (isReal(R_radius)) {
 		radius_constraint = true;
 		radius = asReal(R_radius);
 	}
 
-	bool secondary_radius_constraint = false;
+	scc_RadiusMethod primary_radius_constraint = SCC_RM_USE_SEED_RADIUS;
+
+	scc_RadiusMethod secondary_radius_constraint = false;
 	double secondary_radius = 0.0;
 	if (isReal(R_secondary_radius)) {
 		secondary_radius_constraint = true;
 		secondary_radius = asReal(R_secondary_radius);
+	}
+
+	if (strcmp(CHAR(asChar(R_unassigned_method)), "estimated_radius_closest_seed") == 0) {
+		primary_radius_constraint = SCC_RM_USE_ESTIMATED;
+	}
+	if (strcmp(CHAR(asChar(R_secondary_unassigned_method)), "estimated_radius_closest_seed") == 0) {
+		secondary_radius_constraint = SCC_RM_USE_ESTIMATED;
 	}
 
 	size_t len_primary_data_points = 0;
@@ -119,7 +128,6 @@ SEXP Rscc_nng_clustering(const SEXP R_distance_object,
 	                            num_dimensions,
 	                            (size_t) xlength(R_distance_object),
 	                            REAL(R_distance_object),
-	                            false,
 	                            &data_set)) != SCC_ER_OK) {
 		iRscc_scc_error();
 	}
@@ -134,18 +142,23 @@ SEXP Rscc_nng_clustering(const SEXP R_distance_object,
 		iRscc_scc_error();
 	}
 
-	if ((ec = scc_nng_clustering(clustering,
-	                             data_set,
-	                             size_constraint,
-	                             seed_method,
-	                             unassigned_method,
-	                             radius_constraint,
-	                             radius,
-	                             len_primary_data_points,
-	                             primary_data_points,
-	                             secondary_unassigned_method,
-	                             secondary_radius_constraint,
-	                             secondary_radius)) != SCC_ER_OK) {
+	scc_ClusterOptions options = scc_default_cluster_options;
+
+	options.size_constraint = size_constraint;
+	options.seed_method = seed_method;
+	options.len_primary_data_points = len_primary_data_points;
+	options.primary_data_points = primary_data_points;
+	options.primary_unassigned_method = unassigned_method;
+	options.secondary_unassigned_method = secondary_unassigned_method;
+	options.seed_radius = radius_constraint;
+	options.seed_supplied_radius = radius;
+	options.primary_radius = primary_radius_constraint;
+	options.secondary_radius = secondary_radius_constraint;
+	options.secondary_supplied_radius = secondary_radius;
+
+	if ((ec = scc_make_clustering(data_set,
+	                              clustering,
+	                              &options)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
 		scc_free_data_set(&data_set);
 		UNPROTECT(1);
@@ -242,7 +255,6 @@ SEXP Rscc_nng_clustering_batches(const SEXP R_distance_object,
 	                            num_dimensions,
 	                            (size_t) xlength(R_distance_object),
 	                            REAL(R_distance_object),
-	                            false,
 	                            &data_set)) != SCC_ER_OK) {
 		iRscc_scc_error();
 	}
@@ -257,15 +269,21 @@ SEXP Rscc_nng_clustering_batches(const SEXP R_distance_object,
 		iRscc_scc_error();
 	}
 
-	if ((ec = scc_nng_clustering_batches(clustering,
-	                                     data_set,
-	                                     size_constraint,
-	                                     unassigned_method,
-	                                     radius_constraint,
-	                                     radius,
-	                                     len_primary_data_points,
-	                                     primary_data_points,
-	                                     batch_size)) != SCC_ER_OK) {
+	scc_ClusterOptions options = scc_default_cluster_options;
+
+	options.size_constraint = size_constraint;
+	options.seed_method = SCC_SM_BATCHES;
+	options.len_primary_data_points = len_primary_data_points;
+	options.primary_data_points = primary_data_points;
+	options.primary_unassigned_method = unassigned_method;
+	options.secondary_unassigned_method = SCC_UM_IGNORE;
+	options.seed_radius = radius_constraint;
+	options.seed_supplied_radius = radius;
+	options.batch_size = batch_size;
+
+	if ((ec = scc_make_clustering(data_set,
+	                              clustering,
+	                              &options)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
 		scc_free_data_set(&data_set);
 		UNPROTECT(1);
@@ -368,18 +386,27 @@ SEXP Rscc_nng_clustering_types(const SEXP R_distance_object,
 		type_size_constraints[i] = (uint32_t) tmp_type_size_constraints[i];
 	}
 
-	bool radius_constraint = false;
+	scc_RadiusMethod radius_constraint = false;
 	double radius = 0.0;
 	if (isReal(R_radius)) {
 		radius_constraint = true;
 		radius = asReal(R_radius);
 	}
 
-	bool secondary_radius_constraint = false;
+	scc_RadiusMethod primary_radius_constraint = SCC_RM_USE_SEED_RADIUS;
+
+	scc_RadiusMethod secondary_radius_constraint = false;
 	double secondary_radius = 0.0;
 	if (isReal(R_secondary_radius)) {
 		secondary_radius_constraint = true;
 		secondary_radius = asReal(R_secondary_radius);
+	}
+
+	if (strcmp(CHAR(asChar(R_unassigned_method)), "estimated_radius_closest_seed") == 0) {
+		primary_radius_constraint = SCC_RM_USE_ESTIMATED;
+	}
+	if (strcmp(CHAR(asChar(R_secondary_unassigned_method)), "estimated_radius_closest_seed") == 0) {
+		secondary_radius_constraint = SCC_RM_USE_ESTIMATED;
 	}
 
 	size_t len_primary_data_points = 0;
@@ -403,7 +430,6 @@ SEXP Rscc_nng_clustering_types(const SEXP R_distance_object,
 	                            num_dimensions,
 	                            (size_t) xlength(R_distance_object),
 	                            REAL(R_distance_object),
-	                            false,
 	                            &data_set)) != SCC_ER_OK) {
 		iRscc_scc_error();
 	}
@@ -418,22 +444,27 @@ SEXP Rscc_nng_clustering_types(const SEXP R_distance_object,
 		iRscc_scc_error();
 	}
 
-	if ((ec = scc_nng_clustering_types(clustering,
-	                                   data_set,
-	                                   total_size_constraint,
-	                                   num_types,
-	                                   type_size_constraints,
-	                                   len_type_labels,
-	                                   type_labels,
-	                                   seed_method,
-	                                   unassigned_method,
-	                                   radius_constraint,
-	                                   radius,
-	                                   len_primary_data_points,
-	                                   primary_data_points,
-	                                   secondary_unassigned_method,
-	                                   secondary_radius_constraint,
-	                                   secondary_radius)) != SCC_ER_OK) {
+	scc_ClusterOptions options = scc_default_cluster_options;
+
+	options.size_constraint = total_size_constraint;
+	options.num_types = num_types;
+	options.type_constraints = type_size_constraints;
+	options.len_type_labels = len_type_labels;
+	options.type_labels = type_labels;
+	options.seed_method = seed_method;
+	options.len_primary_data_points = len_primary_data_points;
+	options.primary_data_points = primary_data_points;
+	options.primary_unassigned_method = unassigned_method;
+	options.secondary_unassigned_method = secondary_unassigned_method;
+	options.seed_radius = radius_constraint;
+	options.seed_supplied_radius = radius;
+	options.primary_radius = primary_radius_constraint;
+	options.secondary_radius = secondary_radius_constraint;
+	options.secondary_supplied_radius = secondary_radius;
+
+	if ((ec = scc_make_clustering(data_set,
+	                              clustering,
+	                              &options)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
 		scc_free_data_set(&data_set);
 		UNPROTECT(1);
@@ -507,13 +538,13 @@ static scc_UnassignedMethod iRscc_parse_unassigned_method(const SEXP R_unassigne
 	if (strcmp(unassigned_method_string, "ignore") == 0) {
 		return SCC_UM_IGNORE;
 	} else if (strcmp(unassigned_method_string, "by_nng") == 0) {
-		return SCC_UM_ASSIGN_BY_NNG;
+		return SCC_UM_ANY_NEIGHBOR;
 	} else if (strcmp(unassigned_method_string, "closest_assigned") == 0) {
 		return SCC_UM_CLOSEST_ASSIGNED;
 	} else if (strcmp(unassigned_method_string, "closest_seed") == 0) {
 		return SCC_UM_CLOSEST_SEED;
 	} else if (strcmp(unassigned_method_string, "estimated_radius_closest_seed") == 0) {
-		return SCC_UM_CLOSEST_SEED_EST_RADIUS;
+		return SCC_UM_CLOSEST_SEED;
 	} else {
 		iRscc_error("Not a valid unassigned method.");
 	}

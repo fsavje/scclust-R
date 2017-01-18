@@ -2,4 +2,5 @@
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^appveyor\.yml$
+^src/update_ann\.sh$
 ^src/update_scclust\.sh$

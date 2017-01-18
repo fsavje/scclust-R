@@ -322,5 +322,5 @@ test_that("scclust returns errors correctly.", {
   expect_error(c_hierarchical_clustering(size_constraint = 1L),
                regexp = "[(]scclust:src/hierarchical_clustering.c")
   expect_error(nng_clustering(make_distances(matrix(c(0.1, 0.2, 0.3), ncol = 1)), size_constraint = 2L, radius = 0.001),
-               "No clustering satisfying the specified radius constraints exists.")
+               "Infeasible radius constraint.")
 })
