@@ -1,11 +1,11 @@
 MAKECONF = $(R_HOME)/etc$(R_ARCH)/Makeconf
 
 PKG_CPPFLAGS = -Ilibscclust/include -Iannwrapper
-PKG_LIBS = annwrapper/ann_wrapper.o libscclust/lib/libscclust.a libann/lib/libANN.a -lstdc++
+PKG_LIBS = annwrapper/ann_wrapper.o libscclust/lib/libscclust.a libann/lib/libann.a -lstdc++
 
 .PHONY: clean
 
-$(SHLIB): annwrapper/ann_wrapper.o libscclust/lib/libscclust.a libann/lib/libANN.a
+$(SHLIB): annwrapper/ann_wrapper.o libscclust/lib/libscclust.a libann/lib/libann.a
 
 annwrapper/ann_wrapper.o:
 	(cd annwrapper && MAKECONF="$(MAKECONF)" $(MAKE)) || exit 1;
@@ -13,8 +13,11 @@ annwrapper/ann_wrapper.o:
 libscclust/lib/libscclust.a:
 	(cd libscclust && MAKECONF="$(MAKECONF)" $(MAKE)) || exit 1;
 
-libann/lib/libANN.a:
+libann/lib/libann.a:
 	(cd libann && MAKECONF="$(MAKECONF)" $(MAKE)) || exit 1;
 
 clean:
 	$(RM) $(SHLIB) *.o
+	(cd annwrapper && MAKECONF="$(MAKECONF)" $(MAKE) clean) || exit 1;
+	(cd libscclust && MAKECONF="$(MAKECONF)" $(MAKE) clean) || exit 1;
+	(cd libann && MAKECONF="$(MAKECONF)" $(MAKE) clean) || exit 1;
