@@ -27,6 +27,7 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <scclust.h>
+#include <ann_wrapper.h>
 #include "Rscc_error.h"
 
 
@@ -40,6 +41,9 @@ SEXP Rscc_hierarchical_clustering(const SEXP R_distance_object,
                                   const SEXP R_existing_clustering,
                                   const SEXP R_deep_copy)
 {
+	if (!scc_set_ann_dist_search()) {
+		iRscc_error("Cannot change NN search functions to ANN.");
+	}
 	if (!isMatrix(R_distance_object) || !isReal(R_distance_object)) {
 		iRscc_error("`R_distance_object` is not a valid distance object.");
 	}

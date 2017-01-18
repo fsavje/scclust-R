@@ -27,6 +27,7 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <scclust.h>
+#include <ann_wrapper.h>
 #include "Rscc_error.h"
 
 
@@ -52,6 +53,9 @@ SEXP Rscc_nng_clustering(const SEXP R_distance_object,
                          const SEXP R_secondary_unassigned_method,
                          const SEXP R_secondary_radius)
 {
+	if (!scc_set_ann_dist_search()) {
+		iRscc_error("Cannot change NN search functions to ANN.");
+	}
 	if (!isMatrix(R_distance_object) || !isReal(R_distance_object)) {
 		iRscc_error("`R_distance_object` is not a valid distance object.");
 	}
@@ -202,6 +206,9 @@ SEXP Rscc_nng_clustering_batches(const SEXP R_distance_object,
                                  const SEXP R_primary_data_points,
                                  const SEXP R_batch_size)
 {
+	if (!scc_set_ann_dist_search()) {
+		iRscc_error("Cannot change NN search functions to ANN.");
+	}
 	if (!isMatrix(R_distance_object) || !isReal(R_distance_object)) {
 		iRscc_error("`R_distance_object` is not a valid distance object.");
 	}
@@ -331,6 +338,9 @@ SEXP Rscc_nng_clustering_types(const SEXP R_distance_object,
                                const SEXP R_secondary_unassigned_method,
                                const SEXP R_secondary_radius)
 {
+	if (!scc_set_ann_dist_search()) {
+		iRscc_error("Cannot change NN search functions to ANN.");
+	}
 	if (!isMatrix(R_distance_object) || !isReal(R_distance_object)) {
 		iRscc_error("`R_distance_object` is not a valid distance object.");
 	}
