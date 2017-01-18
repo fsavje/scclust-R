@@ -14,7 +14,7 @@ include \$(MAKECONF)
 
 LIBOUT = lib/libann.a
 
-OBJECTS = \\
+LIBOBJ = \\
 	ANN.o \\
 	brute.o \\
 	kd_tree.o \\
@@ -34,11 +34,11 @@ OBJECTS = \\
 
 all : \$(LIBOUT)
 
-\$(LIBOUT) : \$(addprefix src/,\$(OBJECTS))
+\$(LIBOUT) : \$(addprefix src/,\$(LIBOBJ))
 	mkdir -p lib
 	\$(AR) -rcs \$(LIBOUT) \$^
 
-src/%.o : src/%.cpp
+%.o : %.cpp
 	\$(CXX) -c \$(ALL_CPPFLAGS) \$(ALL_CXXFLAGS) -DNDEBUG -Iinclude -Wno-unused-const-variable \$< -o \$@
 
 clean :

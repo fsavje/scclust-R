@@ -1,15 +1,20 @@
 MAKECONF = $(R_HOME)/etc$(R_ARCH)/Makeconf
 
-PKG_CPPFLAGS = -Ilibscc/include
-PKG_LIBS = libscc/libscc.a -lstdc++
+PKG_CPPFLAGS = -Ilibscclust/include -Iannwrapper
+PKG_LIBS = annwrapper/ann_wrapper.o libscclust/lib/libscclust.a libann/lib/libANN.a -lstdc++
 
 .PHONY: clean
 
-$(SHLIB): libscc/libscc.a
+$(SHLIB): annwrapper/ann_wrapper.o libscclust/lib/libscclust.a libann/lib/libANN.a
 
-libscc/libscc.a:
-	(cd libscc && MAKECONF="$(MAKECONF)" $(MAKE) library) || exit 1;
+annwrapper/ann_wrapper.o:
+	(cd annwrapper && MAKECONF="$(MAKECONF)" $(MAKE)) || exit 1;
+
+libscclust/lib/libscclust.a:
+	(cd libscclust && MAKECONF="$(MAKECONF)" $(MAKE)) || exit 1;
+
+libann/lib/libANN.a:
+	(cd libann && MAKECONF="$(MAKECONF)" $(MAKE)) || exit 1;
 
 clean:
 	$(RM) $(SHLIB) *.o
-	(cd libscc && MAKECONF="$(MAKECONF)" $(MAKE) clean) || exit 1;
