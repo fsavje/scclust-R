@@ -296,45 +296,32 @@ test_that("`set_dist_functions` checks input.", {
 # Reset dist functions
 set_dist_functions()
 
+
 # ==============================================================================
 # check_clustering
 # ==============================================================================
 
 test_that("`check_clustering` checks input.", {
   expect_silent(check_clustering(clustering = sound_clustering,
-                                 size_constraint = sound_size_constraint))
+                                 size_constraint = sound_total_size_constraint,
+                                 type_labels = sound_type_labels,
+                                 type_constraints = sound_type_size_constraints))
   expect_error(check_clustering(clustering = unsound_clustering,
-                                size_constraint = sound_size_constraint))
+                                size_constraint = sound_total_size_constraint,
+                                type_labels = sound_type_labels,
+                                type_constraints = sound_type_size_constraints))
   expect_error(check_clustering(clustering = sound_clustering,
-                                size_constraint = unsound_size_constraint))
-})
-
-
-# ==============================================================================
-# check_clustering_types
-# ==============================================================================
-
-test_that("`check_clustering_types` checks input.", {
-  expect_silent(check_clustering_types(clustering = sound_clustering,
-                                       type_labels = sound_type_labels,
-                                       type_size_constraints = sound_type_size_constraints,
-                                       total_size_constraint = sound_total_size_constraint))
-  expect_error(check_clustering_types(clustering = unsound_clustering,
-                                      type_labels = sound_type_labels,
-                                      type_size_constraints = sound_type_size_constraints,
-                                      total_size_constraint = sound_total_size_constraint))
-  expect_error(check_clustering_types(clustering = sound_clustering,
-                                      type_labels = unsound_type_labels,
-                                      type_size_constraints = sound_type_size_constraints,
-                                      total_size_constraint = sound_total_size_constraint))
-  expect_error(check_clustering_types(clustering = sound_clustering,
-                                      type_labels = sound_type_labels,
-                                      type_size_constraints = unsound_type_size_constraints,
-                                      total_size_constraint = sound_total_size_constraint))
-  expect_error(check_clustering_types(clustering = sound_clustering,
-                                      type_labels = sound_type_labels,
-                                      type_size_constraints = sound_type_size_constraints,
-                                      total_size_constraint = unsound_total_size_constraint))
+                                size_constraint = sound_total_size_constraint,
+                                type_labels = unsound_type_labels,
+                                type_constraints = sound_type_size_constraints))
+  expect_error(check_clustering(clustering = sound_clustering,
+                                size_constraint = sound_total_size_constraint,
+                                type_labels = sound_type_labels,
+                                type_constraints = unsound_type_size_constraints))
+  expect_error(check_clustering(clustering = sound_clustering,
+                                size_constraint = unsound_total_size_constraint,
+                                type_labels = sound_type_labels,
+                                type_constraints = sound_type_size_constraints))
 })
 
 

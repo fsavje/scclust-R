@@ -4,12 +4,19 @@
 \alias{check_clustering}
 \title{Check the validity of a clustering.}
 \usage{
-check_clustering(clustering, size_constraint)
+check_clustering(clustering, size_constraint = NULL, type_labels = NULL,
+  type_constraints = NULL)
 }
 \arguments{
 \item{clustering}{a \code{Rscc_clustering} object containing an existing non-empty clustering.}
 
-\item{size_constraint}{an integer with the required minimum cluster size.}
+\item{size_constraint}{an integer with the required minimum cluster size. If \code{NULL},
+only the type constraints will be checked.}
+
+\item{type_labels}{a factor or integer containing the type of each data point. May be \code{NULL} when}
+
+\item{type_constraints}{a named vector containing the type specific size constraints. If \code{NULL},
+only the overall constraint will be checked.}
 }
 \value{
 Returns \code{TRUE} if \code{clustering} satisfies the size constraint, and \code{FALSE}
@@ -43,9 +50,60 @@ check_clustering(my_clust_obj2, 2)
 check_clustering(my_clust_obj1, 5)
 # > FALSE
 
+
+# Clustering
+my_clust_obj3 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
+
+# Data point types
+my_types <- factor(c("x", "y", "y", "z", "z", "x", "y", "z", "x", "x"))
+
+
+# Check whether each cluster contains one point of each
+# of type "x", "y" and "z".
+check_clustering(my_clust_obj3,
+                 NULL,
+                 my_types,
+                 c("x" = 1, "y" = 1, "z" = 1))
+# > TRUE
+
+
+# Check whether each cluster contains one point of each
+# of type "x", "y" and "z" and at least three points in total.
+check_clustering(my_clust_obj3,
+                 3,
+                 my_types,
+                 c("x" = 1, "y" = 1, "z" = 1))
+# > TRUE
+
+
+# Check whether each cluster contains five data points of type "y".
+check_clustering(my_clust_obj3,
+                 NULL,
+                 my_types,
+                 c("y" = 5))
+# > FALSE
+
+
+# Check whether each cluster contains one data point of
+# both "x" and "z" and at least three points in total.
+check_clustering(my_clust_obj3,
+                 3,
+                 my_types,
+                 c("x" = 1, "z" = 1))
+# > TRUE
+
+
+# Using integers as type labels.
+my_int_types <- c(1L, 2L, 2L, 3L, 3L, 1L, 2L, 3L, 1L, 1L)
+check_clustering(my_clust_obj3,
+                 NULL,
+                 my_int_types,
+                 c("1" = 1, "2" = 1, "3" = 1))
+# > TRUE
+
 }
 \seealso{
-\code{\link{check_clustering_types}} checks type-specific size constraints in addition
-         to an overall size constraint.
+See \code{\link{make_clustering}} for details on
+         how to specific type labels and constraints.
 }
 

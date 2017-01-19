@@ -22,9 +22,16 @@
 #' Rscclust: R wrapper for the scclust library
 #'
 #' This package wraps the \code{scclust} C library for R. \code{scclust}
-#' provides functions for size constrained clustering.
+#' provides functions for size constrained clustering. Besides direct wrapper
+#' function, the package provides convenience and utility functions.
 #'
-#' This package is under heavy development, please exercise great caution when using it.
+#' The clustering functions are \code{\link{make_clustering}} and
+#' \code{\link{hierarchical_clustering}}. To get statistics about a clustering
+#' use \code{\link{get_clustering_stats}}. To construct a clustering object from
+#' an existing clustering see \code{\link{Rscc_clustering}}. To check if a clustering
+#' satisfies some clustering constraints use \code{\link{check_clustering}}.
+#'
+#' This package is under development, please exercise caution when using it.
 #'
 #' More information and the latest version is found here:
 #' \url{https://github.com/fsavje/Rscclust}.

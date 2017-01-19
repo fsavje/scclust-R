@@ -52,14 +52,19 @@ set_dist_functions <- function(dist_functions = "ann") {
 #' constraint.
 #'
 #' @param clustering a \code{Rscc_clustering} object containing an existing non-empty clustering.
-#' @param size_constraint an integer with the required minimum cluster size.
+#' @param size_constraint an integer with the required minimum cluster size. If \code{NULL},
+#'                              only the type constraints will be checked.
+#' @param type_labels a factor or integer containing the type of each data point. May be \code{NULL} when
+#                        \code{type_constraints} is NULL.
+#' @param type_constraints a named vector containing the type specific size constraints. If \code{NULL},
+#'                              only the overall constraint will be checked.
 #'
 #' @return Returns \code{TRUE} if \code{clustering} satisfies the size constraint, and \code{FALSE}
 #'         if it does not. Throws an error if \code{clustering} is an invalid clustering.
 #'
-#' @seealso \code{\link{check_clustering_types}} checks type-specific size constraints in addition
-#'          to an overall size constraint.
-#'
+#' @seealso See \code{\link{make_clustering}} for details on
+#'          how to specific type labels and constraints.
+#
 #' @examples
 #' # Each cluster contains at least two data
 #' # points; it's valid for `size_constraint == 2`.
@@ -84,44 +89,9 @@ set_dist_functions <- function(dist_functions = "ann") {
 #' check_clustering(my_clust_obj1, 5)
 #' # > FALSE
 #'
-#' @useDynLib Rscclust Rscc_check_clustering
-#' @export
-check_clustering <- function(clustering,
-                             size_constraint) {
-  ensure_Rscc_clustering(clustering)
-  num_data_points <- data_point_count.Rscc_clustering(clustering)
-  size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
-
-  .Call("Rscc_check_clustering",
-        clustering,
-        size_constraint,
-        NULL,
-        NULL,
-        PACKAGE = "Rscclust")
-}
-
-
-#' Check the validity of a clustering with type constraints.
 #'
-#' \code{check_clustering_types} checks so the inputted clustering satisfies the specified type
-#' and overall size constraints.
-#'
-#' @param clustering a \code{Rscc_clustering} object containing an existing non-empty clustering.
-#' @param type_labels a factor or integer containing the type of each data point.
-#' @param type_size_constraints a named vector containing the type specific size constraints.
-#' @param total_size_constraint an integer with the required minimum cluster size. If \code{NULL},
-#'                              only the type constraints will be checked.
-#'
-#' @return Returns \code{TRUE} if \code{clustering} satisfies the size constraints, and \code{FALSE}
-#'         if it does not. Throws an error if \code{clustering} is an invalid clustering.
-#'
-#' @seealso \code{\link{check_clustering}} checks only overall size constraints in cases where no
-#'          type specific constraints exist. See \code{\link{make_clustering}} for details on
-#'          how to specific type labels and constraints.
-#'
-#' @examples
 #' # Clustering
-#' my_clust_obj <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
+#' my_clust_obj3 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
 #'
 #' # Data point types
 #' my_types <- factor(c("x", "y", "y", "z", "z", "x", "y", "z", "x", "x"))
@@ -129,65 +99,73 @@ check_clustering <- function(clustering,
 #'
 #' # Check whether each cluster contains one point of each
 #' # of type "x", "y" and "z".
-#' check_clustering_types(my_clust_obj,
-#'                        my_types,
-#'                        c("x" = 1, "y" = 1, "z" = 1))
+#' check_clustering(my_clust_obj3,
+#'                  NULL,
+#'                  my_types,
+#'                  c("x" = 1, "y" = 1, "z" = 1))
 #' # > TRUE
 #'
 #'
 #' # Check whether each cluster contains one point of each
 #' # of type "x", "y" and "z" and at least three points in total.
-#' check_clustering_types(my_clust_obj,
-#'                        my_types,
-#'                        c("x" = 1, "y" = 1, "z" = 1),
-#'                        3)
+#' check_clustering(my_clust_obj3,
+#'                  3,
+#'                  my_types,
+#'                  c("x" = 1, "y" = 1, "z" = 1))
 #' # > TRUE
 #'
 #'
 #' # Check whether each cluster contains five data points of type "y".
-#' check_clustering_types(my_clust_obj,
-#'                        my_types,
-#'                        c("y" = 5))
+#' check_clustering(my_clust_obj3,
+#'                  NULL,
+#'                  my_types,
+#'                  c("y" = 5))
 #' # > FALSE
 #'
 #'
 #' # Check whether each cluster contains one data point of
 #' # both "x" and "z" and at least three points in total.
-#' check_clustering_types(my_clust_obj,
-#'                        my_types,
-#'                        c("x" = 1, "z" = 1),
-#'                        3)
+#' check_clustering(my_clust_obj3,
+#'                  3,
+#'                  my_types,
+#'                  c("x" = 1, "z" = 1))
 #' # > TRUE
 #'
 #'
 #' # Using integers as type labels.
 #' my_int_types <- c(1L, 2L, 2L, 3L, 3L, 1L, 2L, 3L, 1L, 1L)
-#' check_clustering_types(my_clust_obj,
-#'                        my_int_types,
-#'                        c("1" = 1, "2" = 1, "3" = 1))
+#' check_clustering(my_clust_obj3,
+#'                  NULL,
+#'                  my_int_types,
+#'                  c("1" = 1, "2" = 1, "3" = 1))
 #' # > TRUE
 #'
 #' @useDynLib Rscclust Rscc_check_clustering
 #' @export
-check_clustering_types <- function(clustering,
-                                   type_labels,
-                                   type_size_constraints,
-                                   total_size_constraint = NULL) {
+check_clustering <- function(clustering,
+                             size_constraint = NULL,
+                             type_labels = NULL,
+                             type_constraints = NULL) {
   ensure_Rscc_clustering(clustering)
   num_data_points <- data_point_count.Rscc_clustering(clustering)
-  type_labels <- coerce_type_labels(type_labels, num_data_points)
-  type_size_constraints <- coerce_type_constraints(type_size_constraints)
-  type_size_constraints <- make_type_size_constraints(type_size_constraints,
-                                                      type_labels)
-  total_size_constraint <- coerce_total_size_constraint(total_size_constraint,
-                                                        type_size_constraints,
-                                                        num_data_points)
+  if (is.null(type_constraints)) {
+    type_labels <- NULL
+    size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
+  } else {
+    type_labels <- coerce_type_labels(type_labels, num_data_points)
+    type_constraints <- coerce_type_constraints(type_constraints)
+    type_constraints <- make_type_size_constraints(type_constraints,
+                                                   type_labels)
+    size_constraint <- coerce_total_size_constraint(size_constraint,
+                                                    type_constraints,
+                                                    num_data_points)
+  }
 
   .Call("Rscc_check_clustering",
         clustering,
-        total_size_constraint,
+        size_constraint,
         unclass(type_labels),
-        type_size_constraints,
+        type_constraints,
         PACKAGE = "Rscclust")
 }
 
