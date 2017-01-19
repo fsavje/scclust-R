@@ -26,15 +26,10 @@
 #ifndef SCC_SCCLUST_SPI_HG
 #define SCC_SCCLUST_SPI_HG
 
-#ifdef __cplusplus
-// So g++ defines integer limits
-#define __STDC_LIMIT_MACROS
-#endif
-
-#include <limits.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include "scclust.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -44,16 +39,6 @@ extern "C" {
 // =============================================================================
 // Internal types
 // =============================================================================
-
-/** Type used for data point IDs. May be unsigned or signed.
- *
- *  \note
- *  Number of data points in any clustering problem must be strictly less
- *  than the maximum number that can be stored in #scc_PointIndex.
- */
-typedef int scc_PointIndex;
-
-static const scc_PointIndex SCC_POINTINDEX_NA = INT_MAX;
 
 /** Type used for arc indices. Must be unsigned.
  *
@@ -67,8 +52,6 @@ typedef struct iscc_MaxDistObject iscc_MaxDistObject;
 
 typedef struct iscc_NNSearchObject iscc_NNSearchObject;
 
-#define SCC_M_POINTINDEX_TYPE_int
-#define SCC_M_POINTINDEX_NA INT_MAX
 #define ISCC_M_ARCINDEX_TYPE_uint32_t
 
 

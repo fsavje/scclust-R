@@ -77,8 +77,8 @@ SEXP Rscc_make_clustering(const SEXP R_distance_object,
 	if (!isString(R_seed_method)) {
 		iRscc_error("`R_seed_method` must be string.");
 	}
-	if (!isNull(R_primary_data_points) && !isLogical(R_primary_data_points)) {
-		iRscc_error("`R_primary_data_points` must be NULL or logical.");
+	if (!isNull(R_primary_data_points) && !isInteger(R_primary_data_points)) {
+		iRscc_error("`R_primary_data_points` must be NULL or integer.");
 	}
 	if (!isString(R_primary_unassigned_method)) {
 		iRscc_error("`R_primary_unassigned_method` must be string.");
@@ -134,20 +134,9 @@ SEXP Rscc_make_clustering(const SEXP R_distance_object,
 		}
 	}
 
-	if (isLogical(R_primary_data_points)) {
-		size_t len_primary_data_points = (size_t) xlength(R_primary_data_points);
-		if (len_primary_data_points < num_data_points) {
-			iRscc_error("Invalid `R_primary_data_points`.");
-		}
-		bool* const primary_data_points = (bool*) R_alloc(len_primary_data_points, sizeof(bool)); // Automatically freed by R on return
-		if (primary_data_points == NULL) iRscc_error("Could not allocate memory.");
-		const int* const tmp_primary_data_points = LOGICAL(R_primary_data_points);
-		for (size_t i = 0; i < len_primary_data_points; ++i) {
-			primary_data_points[i] = (tmp_primary_data_points[i] == 1);
-		}
-
-		options.len_primary_data_points = len_primary_data_points;
-		options.primary_data_points = primary_data_points;
+	if (isInteger(R_primary_data_points)) {
+		options.len_primary_data_points = (size_t) xlength(R_primary_data_points);
+		options.primary_data_points = INTEGER(R_primary_data_points);
 	}
 
 	if (isReal(R_seed_radius)) {

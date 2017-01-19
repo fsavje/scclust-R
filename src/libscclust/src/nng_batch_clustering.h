@@ -38,7 +38,7 @@ scc_ErrorCode scc_nng_clustering_batches(scc_Clustering* clustering,
                                          bool radius_constraint,
                                          double radius,
                                          size_t len_primary_data_points,
-                                         const bool primary_data_points[],
+                                         const scc_PointIndex primary_data_points[],
                                          uint32_t batch_size);
 
 

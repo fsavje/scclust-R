@@ -118,7 +118,8 @@ static void iscc_sort_nng(iscc_Digraph* nng);
 scc_ErrorCode iscc_get_nng_with_size_constraint(void* const data_set,
                                                 const size_t num_data_points,
                                                 const uint32_t size_constraint,
-                                                const bool primary_data_points[const],
+                                                size_t len_primary_data_points,
+                                                const scc_PointIndex primary_data_points[],
                                                 const bool radius_constraint,
                                                 const double radius,
                                                 iscc_Digraph* const out_nng)
@@ -134,12 +135,14 @@ scc_ErrorCode iscc_get_nng_with_size_constraint(void* const data_set,
 	if (primary_data_points == NULL) {
 		num_queries = num_data_points;
 	} else {
-		num_queries = 0;
-		for (size_t i = 0; i < num_data_points; ++i) {
-			num_queries += primary_data_points[i];
-		}
-		if (num_queries == 0) {
-			return iscc_make_error_msg(SCC_ER_NO_SOLUTION, "No primary data points.");
+		num_queries = len_primary_data_points;
+	}
+
+	bool* tmp_primary_data_points = NULL;
+	if (primary_data_points != NULL) {
+		tmp_primary_data_points = calloc(num_data_points, sizeof(bool));
+		for (size_t i = 0; i < len_primary_data_points; ++i) {
+			tmp_primary_data_points[primary_data_points[i]] = true;
 		}
 	}
 
@@ -148,7 +151,7 @@ scc_ErrorCode iscc_get_nng_with_size_constraint(void* const data_set,
 	                        num_data_points,
 	                        NULL,
 	                        num_data_points,
-	                        primary_data_points,
+	                        tmp_primary_data_points,
 	                        NULL,
 	                        size_constraint,
 	                        radius_constraint,
@@ -157,6 +160,8 @@ scc_ErrorCode iscc_get_nng_with_size_constraint(void* const data_set,
 	                        out_nng)) != SCC_ER_OK) {
 		return ec;
 	}
+
+	free(tmp_primary_data_points);
 
 	if (iscc_digraph_is_empty(out_nng)) {
 		iscc_free_digraph(out_nng);
@@ -184,7 +189,8 @@ scc_ErrorCode iscc_get_nng_with_type_constraint(void* const data_set,
                                                 const uint_fast16_t num_types,
                                                 const uint32_t type_constraints[const static num_types],
                                                 const scc_TypeLabel type_labels[const static num_data_points],
-                                                const bool primary_data_points[const],
+                                                size_t len_primary_data_points,
+                                                const scc_PointIndex primary_data_points[],
                                                 const bool radius_constraint,
                                                 const double radius,
                                                 iscc_Digraph* const out_nng)
@@ -204,12 +210,14 @@ scc_ErrorCode iscc_get_nng_with_type_constraint(void* const data_set,
 	if (primary_data_points == NULL) {
 		num_queries = num_data_points;
 	} else {
-		num_queries = 0;
-		for (size_t i = 0; i < num_data_points; ++i) {
-			num_queries += primary_data_points[i];
-		}
-		if (num_queries == 0) {
-			return iscc_make_error_msg(SCC_ER_NO_SOLUTION, "No primary data points.");
+		num_queries = len_primary_data_points;
+	}
+
+	bool* tmp_primary_data_points = NULL;
+	if (primary_data_points != NULL) {
+		tmp_primary_data_points = calloc(num_data_points, sizeof(bool));
+		for (size_t i = 0; i < len_primary_data_points; ++i) {
+			tmp_primary_data_points[primary_data_points[i]] = true;
 		}
 	}
 
@@ -219,21 +227,22 @@ scc_ErrorCode iscc_get_nng_with_type_constraint(void* const data_set,
 		seedable = malloc(sizeof(bool[num_data_points]));
 		if (seedable == NULL) return iscc_make_error(SCC_ER_NO_MEMORY);
 		seedable_const = seedable;
-		if (primary_data_points == NULL) {
+		if (tmp_primary_data_points == NULL) {
 			for (size_t i = 0; i < num_data_points; ++i) {
 				seedable[i] = true;
 			}
 		} else {
-			memcpy(seedable, primary_data_points, sizeof(bool[num_data_points]));
+			memcpy(seedable, tmp_primary_data_points, sizeof(bool[num_data_points]));
 		}
 	} else {
 		seedable = NULL;
-		seedable_const = primary_data_points;
+		seedable_const = tmp_primary_data_points;
 	}
 
 	iscc_Digraph* const nng_by_type = malloc(sizeof(iscc_Digraph[num_types]));
 	if (nng_by_type == NULL) {
 		free(seedable);
+		free(tmp_primary_data_points);
 		return iscc_make_error(SCC_ER_NO_MEMORY);
 	}
 
@@ -246,6 +255,7 @@ scc_ErrorCode iscc_get_nng_with_type_constraint(void* const data_set,
 	                          type_labels,
 	                          &tc)) != SCC_ER_OK) {
 		free(seedable);
+		free(tmp_primary_data_points);
 		free(nng_by_type);
 		return ec;
 	}
@@ -298,6 +308,7 @@ scc_ErrorCode iscc_get_nng_with_type_constraint(void* const data_set,
 	if (ec != SCC_ER_OK) {
 		// When `ec != SCC_ER_OK`, error is from `iscc_digraph_union_and_delete` so `out_nng` is already freed
 		free(seedable);
+		free(tmp_primary_data_points);
 		return ec;
 	}
 
@@ -318,6 +329,7 @@ scc_ErrorCode iscc_get_nng_with_type_constraint(void* const data_set,
 		                        (size_constraint * num_queries),
 		                        &nng_sum[1])) != SCC_ER_OK) {
 			free(seedable);
+			free(tmp_primary_data_points);
 			iscc_free_digraph(&nng_sum[0]);
 			return ec;
 		}
@@ -337,11 +349,13 @@ scc_ErrorCode iscc_get_nng_with_type_constraint(void* const data_set,
 
 		if (ec != SCC_ER_OK) {
 			free(seedable);
+			free(tmp_primary_data_points);
 			return ec;
 		}
 	}
 
 	free(seedable);
+	free(tmp_primary_data_points);
 
 	#ifdef SCC_STABLE_NNG
 		iscc_sort_nng(out_nng);

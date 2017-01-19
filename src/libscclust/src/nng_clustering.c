@@ -91,8 +91,7 @@ scc_ErrorCode scc_make_clustering(void* const data_set,
 		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Invalid data set object.");
 	}
 	scc_ErrorCode ec;
-	if ((ec = iscc_check_cluster_options(options,
-		                                  clustering->num_data_points)) != SCC_ER_OK) {
+	if ((ec = iscc_check_cluster_options(options, clustering->num_data_points)) != SCC_ER_OK) {
 		return ec;
 	}
 	if (clustering->num_clusters != 0) {
@@ -116,6 +115,7 @@ scc_ErrorCode scc_make_clustering(void* const data_set,
 		if ((ec = iscc_get_nng_with_size_constraint(data_set,
 		                                            clustering->num_data_points,
 		                                            options->size_constraint,
+		                                            options->len_primary_data_points,
 		                                            options->primary_data_points,
 		                                            (options->seed_radius == SCC_RM_USE_SUPPLIED),
 		                                            options->seed_supplied_radius,
@@ -130,6 +130,7 @@ scc_ErrorCode scc_make_clustering(void* const data_set,
 		                                            (uint_fast16_t) options->num_types,
 		                                            options->type_constraints,
 		                                            options->type_labels,
+		                                            options->len_primary_data_points,
 		                                            options->primary_data_points,
 		                                            (options->seed_radius == SCC_RM_USE_SUPPLIED),
 		                                            options->seed_supplied_radius,
@@ -205,7 +206,17 @@ static scc_ErrorCode iscc_check_cluster_options(const scc_ClusterOptions* const 
 			(options->seed_method != SCC_SM_BATCHES)) {
 		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Unknown seed method.");
 	}
-	if ((options->primary_data_points != NULL) && (options->len_primary_data_points < num_data_points)) {
+	if ((options->primary_data_points != NULL) && (options->len_primary_data_points == 0)) {
+		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Invalid primary data points.");
+	}
+	if (options->primary_data_points != NULL) {
+		for (size_t i = 1; i < options->len_primary_data_points; ++i) {
+			if (options->primary_data_points[i - 1] >= options->primary_data_points[i]) {
+				return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "`primary_data_points` is not sorted.");
+			}
+		}
+	}
+	if ((options->primary_data_points == NULL) && (options->len_primary_data_points > 0)) {
 		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Invalid primary data points.");
 	}
 	if ((options->primary_data_points == NULL) && (options->secondary_unassigned_method != SCC_UM_IGNORE)) {
@@ -281,7 +292,13 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
 	const bool nng_is_ordered = (options->num_types < 2);
 	const uint32_t size_constraint = options->size_constraint;
 	const scc_SeedMethod seed_method = options->seed_method;
-	const bool* primary_data_points = options->primary_data_points;
+	bool* primary_data_points = NULL;
+	if (options->primary_data_points != NULL) {
+		primary_data_points = calloc(clustering->num_data_points, sizeof(bool));
+		for (size_t i = 0; i < options->len_primary_data_points; ++i) {
+			primary_data_points[options->primary_data_points[i]] = true;
+		}
+	}
 	scc_UnassignedMethod primary_unassigned_method = options->primary_unassigned_method;
 	scc_UnassignedMethod secondary_unassigned_method = options->secondary_unassigned_method;
 	scc_RadiusMethod seed_radius = options->seed_radius;
@@ -299,6 +316,7 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
 
 	scc_ErrorCode ec;
 	if ((ec = iscc_find_seeds(nng, seed_method, &seed_result)) != SCC_ER_OK) {
+		free(primary_data_points);
 		return ec;
 	}
 
@@ -312,6 +330,7 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
 		                                      size_constraint,
 		                                      &avg_seed_dist)) != SCC_ER_OK) {
 			free(seed_result.seeds);
+			free(primary_data_points);
 			return ec;
 		}
 
@@ -321,6 +340,7 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
 				primary_supplied_radius = avg_seed_dist;
 			} else {
 				free(seed_result.seeds);
+				free(primary_data_points);
 				return iscc_make_error_msg(SCC_ER_NO_SOLUTION, "Infeasible radius constraint.");
 			}
 		}
@@ -331,6 +351,7 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
 				secondary_supplied_radius = avg_seed_dist;
 			} else {
 				free(seed_result.seeds);
+				free(primary_data_points);
 				return iscc_make_error_msg(SCC_ER_NO_SOLUTION, "Infeasible radius constraint.");
 			}
 		}
@@ -355,6 +376,7 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
 		clustering->cluster_label = malloc(sizeof(scc_Clabel[clustering->num_data_points]));
 		if (clustering->cluster_label == NULL) {
 			free(seed_result.seeds);
+			free(primary_data_points);
 			return iscc_make_error(SCC_ER_NO_MEMORY);
 		}
 	}
@@ -373,5 +395,6 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
 	                                       secondary_supplied_radius);
 
 	free(seed_result.seeds);
+	free(primary_data_points);
 	return ec;
 }

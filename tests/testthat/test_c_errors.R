@@ -123,9 +123,7 @@ test_that("`Rscc_make_clustering` checks input.", {
   expect_error(c_make_clustering(seed_method = "invalid"),
                regexp = "Not a valid seed method.")
   expect_error(c_make_clustering(primary_data_points = letters[1:8]),
-               regexp = "`R_primary_data_points` must be NULL or logical.")
-  expect_error(c_make_clustering(primary_data_points = rep(TRUE, 6L)),
-               regexp = "Invalid `R_primary_data_points`.")
+               regexp = "`R_primary_data_points` must be NULL or integer.")
   expect_error(c_make_clustering(primary_unassigned_method = 1L),
                regexp = "`R_primary_unassigned_method` must be string.")
   expect_error(c_make_clustering(primary_unassigned_method = "invalid"),

@@ -66,7 +66,7 @@ scc_ErrorCode scc_nng_clustering_batches(scc_Clustering* const clustering,
                                          const bool radius_constraint,
                                          const double radius,
                                          const size_t len_primary_data_points,
-                                         const bool primary_data_points[const],
+                                         const scc_PointIndex primary_data_points[const],
                                          uint32_t batch_size)
 {
 	if (!iscc_check_input_clustering(clustering)) {
@@ -87,7 +87,10 @@ scc_ErrorCode scc_nng_clustering_batches(scc_Clustering* const clustering,
 	if (radius_constraint && (radius <= 0.0)) {
 		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Invalid radius.");
 	}
-	if ((primary_data_points != NULL) && (len_primary_data_points < clustering->num_data_points)) {
+	if ((primary_data_points != NULL) && (len_primary_data_points == 0)) {
+		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Invalid primary data points.");
+	}
+	if ((primary_data_points == NULL) && (len_primary_data_points > 0)) {
 		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Invalid primary data points.");
 	}
 	if (clustering->num_clusters != 0) {
@@ -131,13 +134,21 @@ scc_ErrorCode scc_nng_clustering_batches(scc_Clustering* const clustering,
 		}
 	}
 
+	bool* tmp_primary_data_points = NULL;
+	if (primary_data_points != NULL) {
+		tmp_primary_data_points = calloc(clustering->num_data_points, sizeof(bool));
+		for (size_t i = 0; i < len_primary_data_points; ++i) {
+			tmp_primary_data_points[primary_data_points[i]] = true;
+		}
+	}
+
 	scc_ErrorCode ec = iscc_run_nng_batches(clustering,
 	                                        nn_search_object,
 	                                        size_constraint,
 	                                        (unassigned_method == SCC_UM_IGNORE),
 	                                        radius_constraint,
 	                                        radius,
-	                                        primary_data_points,
+	                                        tmp_primary_data_points,
 	                                        batch_size,
 	                                        batch_indices,
 	                                        out_indices,
@@ -146,6 +157,7 @@ scc_ErrorCode scc_nng_clustering_batches(scc_Clustering* const clustering,
 	free(batch_indices);
 	free(out_indices);
 	free(assigned);
+	free(tmp_primary_data_points);
 	iscc_close_nn_search_object(&nn_search_object);
 
 	return ec;

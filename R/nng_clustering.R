@@ -93,6 +93,7 @@ make_clustering <- function(distance_object,
     secondary_unassigned_method <- "ignore"
   } else {
     ensure_indicators(primary_data_points, num_data_points, TRUE)
+    primary_data_points <- which(primary_data_points) - 1L
   }
 
   primary_unassigned_method <- coerce_args(primary_unassigned_method,
