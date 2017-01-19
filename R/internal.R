@@ -24,6 +24,7 @@
 # ==============================================================================
 
 all_seed_methods <-  c("lexical",
+                       "batches",
                        "inwards_order",
                        "inwards_updating",
                        "inwards_alt_updating",

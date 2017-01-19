@@ -18,6 +18,75 @@
 # along with this program. If not, see http://www.gnu.org/licenses/
 # ==============================================================================
 
+nng_clustering <- function(distance_object,
+                           size_constraint,
+                           seed_method = "exclusion_updating",
+                           unassigned_method = "closest_seed",
+                           radius = NULL,
+                           primary_data_points = NULL,
+                           secondary_unassigned_method = "ignore",
+                           secondary_radius = NULL) {
+  make_clustering(distance_object,
+                  size_constraint,
+                  NULL,
+                  NULL,
+                  seed_method,
+                  primary_data_points,
+                  unassigned_method,
+                  secondary_unassigned_method,
+                  radius,
+                  "seed_radius",
+                  secondary_radius,
+                  NULL)
+}
+
+
+nng_clustering_batches <- function(distance_object,
+                                   size_constraint,
+                                   unassigned_method = "by_nng",
+                                   radius = NULL,
+                                   primary_data_points = NULL,
+                                   batch_size = 100L) {
+  make_clustering(distance_object,
+                  size_constraint,
+                  NULL,
+                  NULL,
+                  "batches",
+                  primary_data_points,
+                  unassigned_method,
+                  "ignore",
+                  radius,
+                  "seed_radius",
+                  NULL,
+                  batch_size)
+}
+
+
+nng_clustering_types <- function(distance_object,
+                                 type_labels,
+                                 type_size_constraints,
+                                 total_size_constraint = NULL,
+                                 seed_method = "exclusion_updating",
+                                 unassigned_method = "closest_seed",
+                                 radius = NULL,
+                                 primary_data_points = NULL,
+                                 secondary_unassigned_method = "ignore",
+                                 secondary_radius = NULL) {
+  make_clustering(distance_object,
+                  total_size_constraint,
+                  unclass(type_labels),
+                  type_size_constraints,
+                  seed_method,
+                  primary_data_points,
+                  unassigned_method,
+                  secondary_unassigned_method,
+                  radius,
+                  "seed_radius",
+                  secondary_radius,
+                  NULL)
+}
+
+
 test_nng_against_replica <- function(distance_object,
                                      size_constraint,
                                      seed_method,

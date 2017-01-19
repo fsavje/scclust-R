@@ -40,7 +40,7 @@ unsound_seed_method <- "unknown"
 sound_unassigned_method <- "ignore"
 unsound_unassigned_method <- "unknown"
 sound_radius <- NULL
-unsound_radius <- "a"
+unsound_radius <- TRUE
 sound_primary_data_points <- rep(TRUE, 10)
 unsound_primary_data_points <- rep(TRUE, 5)
 sound_type_labels <- rep(c(1L, 2L), 5)
@@ -187,253 +187,53 @@ test_that("`hierarchical_clustering_internal` checks input.", {
 
 
 # ==============================================================================
-# nng_clustering
-# ==============================================================================
-
-test_that("`nng_clustering` checks input.", {
-  expect_silent(nng_clustering(distance_object = sound_distance_object,
-                               size_constraint = sound_size_constraint,
-                               seed_method = sound_seed_method,
-                               unassigned_method = sound_unassigned_method,
-                               radius = sound_radius,
-                               primary_data_points = sound_primary_data_points,
-                               secondary_unassigned_method = sound_unassigned_method,
-                               secondary_radius = sound_radius))
-  expect_error(nng_clustering(distance_object = unsound_distance_object,
-                              size_constraint = sound_size_constraint,
-                              seed_method = sound_seed_method,
-                              unassigned_method = sound_unassigned_method,
-                              radius = sound_radius,
-                              primary_data_points = sound_primary_data_points,
-                              secondary_unassigned_method = sound_unassigned_method,
-                              secondary_radius = sound_radius))
-  expect_error(nng_clustering(distance_object = sound_distance_object,
-                              size_constraint = unsound_size_constraint,
-                              seed_method = sound_seed_method,
-                              unassigned_method = sound_unassigned_method,
-                              radius = sound_radius,
-                              primary_data_points = sound_primary_data_points,
-                              secondary_unassigned_method = sound_unassigned_method,
-                              secondary_radius = sound_radius))
-  expect_error(nng_clustering(distance_object = sound_distance_object,
-                              size_constraint = sound_size_constraint,
-                              seed_method = unsound_seed_method,
-                              unassigned_method = sound_unassigned_method,
-                              radius = sound_radius,
-                              primary_data_points = sound_primary_data_points,
-                              secondary_unassigned_method = sound_unassigned_method,
-                              secondary_radius = sound_radius))
-  expect_error(nng_clustering(distance_object = sound_distance_object,
-                              size_constraint = sound_size_constraint,
-                              seed_method = sound_seed_method,
-                              unassigned_method = unsound_unassigned_method,
-                              radius = sound_radius,
-                              primary_data_points = sound_primary_data_points,
-                              secondary_unassigned_method = sound_unassigned_method,
-                              secondary_radius = sound_radius))
-  expect_error(nng_clustering(distance_object = sound_distance_object,
-                              size_constraint = sound_size_constraint,
-                              seed_method = sound_seed_method,
-                              unassigned_method = sound_unassigned_method,
-                              radius = unsound_radius,
-                              primary_data_points = sound_primary_data_points,
-                              secondary_unassigned_method = sound_unassigned_method,
-                              secondary_radius = sound_radius))
-  expect_error(nng_clustering(distance_object = sound_distance_object,
-                              size_constraint = sound_size_constraint,
-                              seed_method = sound_seed_method,
-                              unassigned_method = sound_unassigned_method,
-                              radius = sound_radius,
-                              primary_data_points = unsound_primary_data_points,
-                              secondary_unassigned_method = sound_unassigned_method,
-                              secondary_radius = sound_radius))
-  expect_error(nng_clustering(distance_object = sound_distance_object,
-                              size_constraint = sound_size_constraint,
-                              seed_method = sound_seed_method,
-                              unassigned_method = sound_unassigned_method,
-                              radius = sound_radius,
-                              primary_data_points = sound_primary_data_points,
-                              secondary_unassigned_method = unsound_unassigned_method,
-                              secondary_radius = sound_radius))
-  expect_error(nng_clustering(distance_object = sound_distance_object,
-                              size_constraint = sound_size_constraint,
-                              seed_method = sound_seed_method,
-                              unassigned_method = sound_unassigned_method,
-                              radius = sound_radius,
-                              primary_data_points = sound_primary_data_points,
-                              secondary_unassigned_method = sound_unassigned_method,
-                              secondary_radius = unsound_radius))
-})
-
-
-# ==============================================================================
-# nng_clustering_batches
+# make_clustering
 # ==============================================================================
 
 sound_batch_size <- 100L
 unsound_batch_size <- -100L
 
-test_that("`nng_clustering_batches` checks input.", {
-  expect_silent(nng_clustering_batches(distance_object = sound_distance_object,
-                                       size_constraint = sound_size_constraint,
-                                       unassigned_method = sound_unassigned_method,
-                                       radius = sound_radius,
-                                       primary_data_points = sound_primary_data_points,
-                                       batch_size = sound_batch_size))
-  expect_error(nng_clustering_batches(distance_object = unsound_distance_object,
-                                      size_constraint = sound_size_constraint,
-                                      unassigned_method = sound_unassigned_method,
-                                      radius = sound_radius,
-                                      primary_data_points = sound_primary_data_points,
-                                      batch_size = sound_batch_size))
-  expect_error(nng_clustering_batches(distance_object = sound_distance_object,
-                                      size_constraint = unsound_size_constraint,
-                                      unassigned_method = sound_unassigned_method,
-                                      radius = sound_radius,
-                                      primary_data_points = sound_primary_data_points,
-                                      batch_size = sound_batch_size))
-  expect_error(nng_clustering_batches(distance_object = sound_distance_object,
-                                      size_constraint = sound_size_constraint,
-                                      unassigned_method = unsound_unassigned_method,
-                                      radius = sound_radius,
-                                      primary_data_points = sound_primary_data_points,
-                                      batch_size = sound_batch_size))
-  expect_error(nng_clustering_batches(distance_object = sound_distance_object,
-                                      size_constraint = sound_size_constraint,
-                                      unassigned_method = sound_unassigned_method,
-                                      radius = unsound_radius,
-                                      primary_data_points = sound_primary_data_points,
-                                      batch_size = sound_batch_size))
-  expect_error(nng_clustering_batches(distance_object = sound_distance_object,
-                                      size_constraint = sound_size_constraint,
-                                      unassigned_method = sound_unassigned_method,
-                                      radius = sound_radius,
-                                      primary_data_points = unsound_primary_data_points,
-                                      batch_size = sound_batch_size))
-  expect_error(nng_clustering_batches(distance_object = sound_distance_object,
-                                      size_constraint = sound_size_constraint,
-                                      unassigned_method = sound_unassigned_method,
-                                      radius = sound_radius,
-                                      primary_data_points = sound_primary_data_points,
-                                      batch_size = unsound_batch_size))
-})
+test_make_clustering <- function(distance_object = sound_distance_object,
+                                 size_constraint = sound_total_size_constraint,
+                                 type_labels = sound_type_labels,
+                                 type_constraints = sound_type_size_constraints,
+                                 seed_method = sound_seed_method,
+                                 primary_data_points = sound_primary_data_points,
+                                 primary_unassigned_method = sound_unassigned_method,
+                                 secondary_unassigned_method = sound_unassigned_method,
+                                 seed_radius = sound_radius,
+                                 primary_radius = sound_radius,
+                                 secondary_radius = sound_radius,
+                                 batch_size = sound_batch_size) {
+  make_clustering(distance_object = distance_object,
+                  size_constraint = size_constraint,
+                  type_labels = type_labels,
+                  type_constraints = type_constraints,
+                  seed_method = seed_method,
+                  primary_data_points = primary_data_points,
+                  primary_unassigned_method = primary_unassigned_method,
+                  secondary_unassigned_method = secondary_unassigned_method,
+                  seed_radius = seed_radius,
+                  primary_radius = primary_radius,
+                  secondary_radius = secondary_radius,
+                  batch_size = batch_size)
+}
 
 
-# ==============================================================================
-# nng_clustering_types
-# ==============================================================================
-
-test_that("`nng_clustering_types` checks input.", {
-  expect_silent(nng_clustering_types(distance_object = sound_distance_object,
-                                     type_labels = sound_type_labels,
-                                     type_size_constraints = sound_type_size_constraints,
-                                     total_size_constraint = sound_total_size_constraint,
-                                     seed_method = sound_seed_method,
-                                     unassigned_method = sound_unassigned_method,
-                                     radius = sound_radius,
-                                     primary_data_points = sound_primary_data_points,
-                                     secondary_unassigned_method = sound_unassigned_method,
-                                     secondary_radius = sound_radius))
-  expect_error(nng_clustering_types(distance_object = unsound_distance_object,
-                                    type_labels = sound_type_labels,
-                                    type_size_constraints = sound_type_size_constraints,
-                                    total_size_constraint = sound_total_size_constraint,
-                                    seed_method = sound_seed_method,
-                                    unassigned_method = sound_unassigned_method,
-                                    radius = sound_radius,
-                                    primary_data_points = sound_primary_data_points,
-                                    secondary_unassigned_method = sound_unassigned_method,
-                                    secondary_radius = sound_radius))
-  expect_error(nng_clustering_types(distance_object = sound_distance_object,
-                                    type_labels = unsound_type_labels,
-                                    type_size_constraints = sound_type_size_constraints,
-                                    total_size_constraint = sound_total_size_constraint,
-                                    seed_method = sound_seed_method,
-                                    unassigned_method = sound_unassigned_method,
-                                    radius = sound_radius,
-                                    primary_data_points = sound_primary_data_points,
-                                    secondary_unassigned_method = sound_unassigned_method,
-                                    secondary_radius = sound_radius))
-  expect_error(nng_clustering_types(distance_object = sound_distance_object,
-                                    type_labels = sound_type_labels,
-                                    type_size_constraints = unsound_type_size_constraints,
-                                    total_size_constraint = sound_total_size_constraint,
-                                    seed_method = sound_seed_method,
-                                    unassigned_method = sound_unassigned_method,
-                                    radius = sound_radius,
-                                    primary_data_points = sound_primary_data_points,
-                                    secondary_unassigned_method = sound_unassigned_method,
-                                    secondary_radius = sound_radius))
-  expect_error(nng_clustering_types(distance_object = sound_distance_object,
-                                    type_labels = sound_type_labels,
-                                    type_size_constraints = sound_type_size_constraints,
-                                    total_size_constraint = unsound_total_size_constraint,
-                                    seed_method = sound_seed_method,
-                                    unassigned_method = sound_unassigned_method,
-                                    radius = sound_radius,
-                                    primary_data_points = sound_primary_data_points,
-                                    secondary_unassigned_method = sound_unassigned_method,
-                                    secondary_radius = sound_radius))
-  expect_error(nng_clustering_types(distance_object = sound_distance_object,
-                                    type_labels = sound_type_labels,
-                                    type_size_constraints = sound_type_size_constraints,
-                                    total_size_constraint = sound_total_size_constraint,
-                                    seed_method = unsound_seed_method,
-                                    unassigned_method = sound_unassigned_method,
-                                    radius = sound_radius,
-                                    primary_data_points = sound_primary_data_points,
-                                    secondary_unassigned_method = sound_unassigned_method,
-                                    secondary_radius = sound_radius))
-  expect_error(nng_clustering_types(distance_object = sound_distance_object,
-                                    type_labels = sound_type_labels,
-                                    type_size_constraints = sound_type_size_constraints,
-                                    total_size_constraint = sound_total_size_constraint,
-                                    seed_method = sound_seed_method,
-                                    unassigned_method = unsound_unassigned_method,
-                                    radius = sound_radius,
-                                    primary_data_points = sound_primary_data_points,
-                                    secondary_unassigned_method = sound_unassigned_method,
-                                    secondary_radius = sound_radius))
-  expect_error(nng_clustering_types(distance_object = sound_distance_object,
-                                    type_labels = sound_type_labels,
-                                    type_size_constraints = sound_type_size_constraints,
-                                    total_size_constraint = sound_total_size_constraint,
-                                    seed_method = sound_seed_method,
-                                    unassigned_method = sound_unassigned_method,
-                                    radius = unsound_radius,
-                                    primary_data_points = sound_primary_data_points,
-                                    secondary_unassigned_method = sound_unassigned_method,
-                                    secondary_radius = sound_radius))
-  expect_error(nng_clustering_types(distance_object = sound_distance_object,
-                                    type_labels = sound_type_labels,
-                                    type_size_constraints = sound_type_size_constraints,
-                                    total_size_constraint = sound_total_size_constraint,
-                                    seed_method = sound_seed_method,
-                                    unassigned_method = sound_unassigned_method,
-                                    radius = sound_radius,
-                                    primary_data_points = unsound_primary_data_points,
-                                    secondary_unassigned_method = sound_unassigned_method,
-                                    secondary_radius = sound_radius))
-  expect_error(nng_clustering_types(distance_object = sound_distance_object,
-                                    type_labels = sound_type_labels,
-                                    type_size_constraints = sound_type_size_constraints,
-                                    total_size_constraint = sound_total_size_constraint,
-                                    seed_method = sound_seed_method,
-                                    unassigned_method = sound_unassigned_method,
-                                    radius = sound_radius,
-                                    primary_data_points = sound_primary_data_points,
-                                    secondary_unassigned_method = unsound_unassigned_method,
-                                    secondary_radius = sound_radius))
-  expect_error(nng_clustering_types(distance_object = sound_distance_object,
-                                    type_labels = sound_type_labels,
-                                    type_size_constraints = sound_type_size_constraints,
-                                    total_size_constraint = sound_total_size_constraint,
-                                    seed_method = sound_seed_method,
-                                    unassigned_method = sound_unassigned_method,
-                                    radius = sound_radius,
-                                    primary_data_points = sound_primary_data_points,
-                                    secondary_unassigned_method = sound_unassigned_method,
-                                    secondary_radius = unsound_radius))
+test_that("`nng_clustering` checks input.", {
+  expect_silent(test_make_clustering())
+  expect_error(test_make_clustering(distance_object = unsound_distance_object))
+  expect_error(test_make_clustering(size_constraint = unsound_total_size_constraint))
+  expect_error(test_make_clustering(type_labels = unsound_type_labels))
+  expect_error(test_make_clustering(type_constraints = unsound_type_size_constraints))
+  expect_error(test_make_clustering(seed_method = unsound_seed_method))
+  expect_error(test_make_clustering(primary_data_points = unsound_primary_data_points))
+  expect_error(test_make_clustering(primary_unassigned_method = unsound_unassigned_method))
+  expect_error(test_make_clustering(secondary_unassigned_method = unsound_unassigned_method))
+  expect_error(test_make_clustering(seed_radius = unsound_radius))
+  expect_error(test_make_clustering(primary_radius = unsound_radius))
+  expect_error(test_make_clustering(secondary_radius = unsound_radius))
+  expect_error(test_make_clustering(batch_size = unsound_batch_size))
 })
 
 

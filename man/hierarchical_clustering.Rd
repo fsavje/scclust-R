@@ -65,13 +65,12 @@ in the third stage in batches of \code{size_constraint}, this property is
 retained to the greatest extent possible.
 }
 \seealso{
-\code{\link{nng_clustering}}, \code{\link{nng_clustering_batches}} and
-         \code{\link{nng_clustering_types}} are other clustering functions in the package.
+\code{\link{make_clustering}} is the main clustering function in the package.
 
          Use \code{\link{Rscc_clustering}} to create Rscclust cluster objects from external
          clusterings.
 
-Other clustering.functions: \code{\link{nng_clustering}}
+Other clustering.functions: \code{\link{make_clustering}}
 }
 \keyword{cluster}
 

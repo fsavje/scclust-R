@@ -76,7 +76,7 @@ check_clustering_types(my_clust_obj,
 }
 \seealso{
 \code{\link{check_clustering}} checks only overall size constraints in cases where no
-         type specific constraints exist. See \code{\link{nng_clustering_types}} for details on
+         type specific constraints exist. See \code{\link{make_clustering}} for details on
          how to specific type labels and constraints.
 }
 

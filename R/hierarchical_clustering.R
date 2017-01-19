@@ -75,8 +75,7 @@
 #' @keywords cluster
 #' @family clustering functions
 #'
-#' @seealso \code{\link{nng_clustering}}, \code{\link{nng_clustering_batches}} and
-#'          \code{\link{nng_clustering_types}} are other clustering functions in the package.
+#' @seealso \code{\link{make_clustering}} is the main clustering function in the package.
 #'
 #'          Use \code{\link{Rscc_clustering}} to create Rscclust cluster objects from external
 #'          clusterings.

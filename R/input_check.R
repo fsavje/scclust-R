@@ -271,22 +271,34 @@ coerce_norm_matrix <- function(mat,
 
 
 # Coerce `radius` to NULL or a scalar, positive, non-na, numeric
-coerce_radius <- function(radius) {
+coerce_radius <- function(radius,
+                          is_seed = FALSE) {
   if (!is.null(radius)) {
-    if (!is.numeric(radius)) {
-      new_error("`", match.call()$radius, "` must be numeric or `NULL`.")
-    }
     if (length(radius) != 1L) {
       new_error("`", match.call()$radius, "` must be scalar.")
     }
     if (is.na(radius)) {
       new_error("`", match.call()$radius, "` may not be NA.")
     }
-    if (radius <= 0.0) {
-      new_error("`", match.call()$radius, "` must be positive or `NULL`.")
+    if (is.character(radius)) {
+      choices <- c("no_radius", "seed_radius", "estimated_radius")
+      i <- pmatch(radius, choices, nomatch = 0L)
+      if (i == 0) {
+        new_error("`", match.call()$radius, "` must be one of ", paste0(paste0("\"", choices, "\""), collapse = ", "), ".")
+      }
+      radius <- choices[i]
+      if (is_seed && (radius != "no_radius")) {
+        new_error("`", match.call()$radius, "` may not be \"", radius, "\".")
+      }
+    } else if (is.numeric(radius)) {
+      if (radius <= 0.0) {
+        new_error("`", match.call()$radius, "` must be positive.")
+      }
+      # If `radius` is integer
+      radius <- as.numeric(radius)
+    } else {
+      new_error("`", match.call()$radius, "` must be numeric, character or `NULL`.")
     }
-    # If `radius` is integer
-    radius <- as.numeric(radius)
   }
   radius
 }

@@ -386,28 +386,37 @@ test_that("`coerce_norm_matrix` coerces correctly.", {
 # coerce_radius
 # ==============================================================================
 
-t_coerce_radius <- function(t_radius = 0.5) {
-  coerce_radius(t_radius)
+t_coerce_radius <- function(t_radius = 0.5, t_is_seed = FALSE) {
+  coerce_radius(t_radius, t_is_seed)
 }
 
 test_that("`coerce_radius` checks input.", {
   expect_silent(t_coerce_radius())
   expect_silent(t_coerce_radius(t_radius = 1L))
+  expect_silent(t_coerce_radius(t_radius = "seed_radius"))
   expect_silent(t_coerce_radius(t_radius = NULL))
-  expect_error(t_coerce_radius(t_radius = "a"),
-               regexp = "`t_radius` must be numeric or `NULL`.")
   expect_error(t_coerce_radius(t_radius = c(1.4, 2.4)),
                regexp = "`t_radius` must be scalar.")
   expect_error(t_coerce_radius(t_radius = as.numeric(NA)),
                regexp = "`t_radius` may not be NA.")
+  expect_error(t_coerce_radius(t_radius = "invalid"),
+               regexp = "`t_radius` must be one of \"no_radius\", \"seed_radius\", \"estimated_radius\".")
+  expect_error(t_coerce_radius(t_radius = "seed_radius", t_is_seed = TRUE),
+               regexp = "`t_radius` may not be \"seed_radius\".")
   expect_error(t_coerce_radius(t_radius = -0.5),
-               regexp = "`t_radius` must be positive or `NULL`.")
+               regexp = "`t_radius` must be positive.")
+  expect_error(t_coerce_radius(t_radius = TRUE),
+               regexp = "`t_radius` must be numeric, character or `NULL`.")
 })
 
 test_that("`coerce_radius` coerces correctly.", {
   expect_equal(t_coerce_radius(), 0.5)
   expect_type(t_coerce_radius(t_radius = 1L), "double")
   expect_equal(t_coerce_radius(t_radius = 1L), 1)
+  expect_equal(t_coerce_radius(t_radius = "no_radius"), "no_radius")
+  expect_equal(t_coerce_radius(t_radius = "seed_radius"), "seed_radius")
+  expect_equal(t_coerce_radius(t_radius = "estimated_radius"), "estimated_radius")
+  expect_equal(t_coerce_radius(t_radius = "no_rad"), "no_radius")
   expect_null(t_coerce_radius(t_radius = NULL))
 })
 
