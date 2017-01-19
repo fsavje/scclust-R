@@ -25,12 +25,9 @@
 #include <Rinternals.h>
 
 SEXP Rscc_check_clustering(SEXP R_clustering,
-                           SEXP R_size_constraint);
-
-SEXP Rscc_check_clustering_types(SEXP R_clustering,
-                                 SEXP R_type_labels,
-                                 SEXP R_type_size_constraints,
-                                 SEXP R_total_size_constraint);
+                           SEXP R_size_constraint,
+                           SEXP R_type_labels,
+                           SEXP R_type_constraints);
 
 SEXP Rscc_get_clustering_stats(SEXP R_clustering,
                                SEXP R_distance_object);

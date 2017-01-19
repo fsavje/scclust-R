@@ -159,10 +159,14 @@ temp_clustering2 <- c(1L, 1L, 0L, 1L, 1L, 0L, 0L, 0L)
 attr(temp_clustering2, "cluster_count") <- 0L
 
 c_check_clustering <- function(clustering = temp_clustering1,
-                               size_constraint = 2L) {
+                               size_constraint = 2L,
+                               type_labels = c(1L, 2L, 1L, 1L, 2L, 1L, 2L, 2L),
+                               type_constraints = c("0" = 0L, "1" = 1L, "2" = 1L)) {
   .Call("Rscc_check_clustering",
         clustering,
         size_constraint,
+        unclass(type_labels),
+        type_constraints,
         PACKAGE = "Rscclust")
 }
 
@@ -176,39 +180,16 @@ test_that("`Rscc_check_clustering` checks input.", {
                regexp = "`R_clustering` is empty.")
   expect_error(c_check_clustering(size_constraint = 2.5),
                regexp = "`R_size_constraint` must be integer.")
-})
-
-
-c_check_clustering_types <- function(clustering = temp_clustering1,
-                                     type_labels = c(1L, 2L, 1L, 1L, 2L, 1L, 2L, 2L),
-                                     type_size_constraints = c("0" = 0L, "1" = 1L, "2" = 1L),
-                                     total_size_constraint = 2L) {
-  .Call("Rscc_check_clustering_types",
-        clustering,
-        unclass(type_labels),
-        type_size_constraints,
-        total_size_constraint,
-        PACKAGE = "Rscclust")
-}
-
-test_that("`Rscc_check_clustering_types` checks input.", {
-  expect_silent(c_check_clustering_types())
-  expect_error(c_check_clustering_types(clustering = letters[1:8]),
-               regexp = "`R_clustering` is not a valid clustering object.")
-  expect_error(c_check_clustering_types(clustering = 1:8),
-               regexp = "`R_clustering` is not a valid clustering object.")
-  expect_error(c_check_clustering_types(clustering = temp_clustering2),
-               regexp = "`R_clustering` is empty.")
-  expect_error(c_check_clustering_types(type_labels = letters[1:8]),
-               regexp = "`R_type_labels` must be factor or integer.")
-  expect_error(c_check_clustering_types(type_labels = c(1L, 1L, 2L, 1L, 1L, 2L)),
+  expect_error(c_check_clustering(type_labels = letters[1:8]),
+               regexp = "`R_type_labels` must be factor, integer or NULL.")
+  expect_error(c_make_clustering(type_labels = NULL),
+               regexp = "`R_type_constraints` must be NULL when no types are supplied.")
+  expect_error(c_check_clustering(type_labels = c(1L, 1L, 2L, 1L, 1L, 2L)),
                regexp = "`R_type_labels` does not match `R_clustering`.")
-  expect_error(c_check_clustering_types(type_size_constraints = c("0", "1", "2")),
-               regexp = "`R_type_size_constraints` must be integer.")
-  expect_error(c_check_clustering_types(type_size_constraints = c("0" = 0L, "1" = -1L, "2" = 1L)),
+  expect_error(c_check_clustering(type_constraints = c("0", "1", "2")),
+               regexp = "`R_type_constraints` must be integer.")
+  expect_error(c_check_clustering(type_constraints = c("0" = 0L, "1" = -1L, "2" = 1L)),
                regexp = "Negative type size constraint.")
-  expect_error(c_check_clustering_types(total_size_constraint = 2.5),
-               regexp = "`R_total_size_constraint` must be integer.")
 })
 
 

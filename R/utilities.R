@@ -68,6 +68,8 @@ check_clustering <- function(clustering,
   .Call("Rscc_check_clustering",
         clustering,
         size_constraint,
+        NULL,
+        NULL,
         PACKAGE = "Rscclust")
 }
 
@@ -138,7 +140,7 @@ check_clustering <- function(clustering,
 #'                        c("1" = 1, "2" = 1, "3" = 1))
 #' # > TRUE
 #'
-#' @useDynLib Rscclust Rscc_check_clustering_types
+#' @useDynLib Rscclust Rscc_check_clustering
 #' @export
 check_clustering_types <- function(clustering,
                                    type_labels,
@@ -154,11 +156,11 @@ check_clustering_types <- function(clustering,
                                                         type_size_constraints,
                                                         num_data_points)
 
-  .Call("Rscc_check_clustering_types",
+  .Call("Rscc_check_clustering",
         clustering,
+        total_size_constraint,
         unclass(type_labels),
         type_size_constraints,
-        total_size_constraint,
         PACKAGE = "Rscclust")
 }
 
