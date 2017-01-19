@@ -43,7 +43,7 @@ test_that("`nng_clustering` (find seed stable) returns correct output", {
                         "exclusion_order",
                         "exclusion_updating")) {
     for (unassigned_method in c("ignore",
-                                "by_nng",
+                                "any_neighbor",
                                 "closest_assigned",
                                 "closest_seed",
                                 "estimated_radius_closest_seed")) {

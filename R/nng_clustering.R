@@ -97,15 +97,13 @@ make_clustering <- function(distance_object,
 
   primary_unassigned_method <- coerce_args(primary_unassigned_method,
                                            c("ignore",
-                                             "by_nng",
+                                             "any_neighbor",
                                              "closest_assigned",
-                                             "closest_seed",
-                                             "estimated_radius_closest_seed"))
+                                             "closest_seed"))
   secondary_unassigned_method <- coerce_args(secondary_unassigned_method,
                                              c("ignore",
                                                "closest_assigned",
-                                               "closest_seed",
-                                               "estimated_radius_closest_seed"))
+                                               "closest_seed"))
 
   seed_radius <- coerce_radius(seed_radius, TRUE)
   primary_radius <- coerce_radius(primary_radius, FALSE)

@@ -28,14 +28,14 @@ source("../replica/replica_nng.R", local = TRUE)
 source("utils_nng.R", local = TRUE)
 
 
-by_nng_or_closest_assigned <- function(unassigned_method,
+any_neighbor_or_closest_assigned <- function(unassigned_method,
                                        unassigned,
                                        nng,
                                        assigned,
                                        radius,
                                        cl_label,
                                        distances) {
-  if (unassigned_method == "by_nng") {
+  if (unassigned_method == "any_neighbor") {
     for(i in which(unassigned)) {
       pick <- intersect(which(nng[, i]), which(assigned))
       if (length(pick) > 0) {
@@ -94,7 +94,7 @@ test_that("`nng_clustering_types` (stable) returns correct output", {
                           "exclusion_updating")) {
 
       for (unassigned_method in c("ignore",
-                                  "by_nng",
+                                  "any_neighbor",
                                   "closest_assigned",
                                   "closest_seed",
                                   "estimated_radius_closest_seed")) {

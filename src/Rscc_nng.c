@@ -153,6 +153,14 @@ SEXP Rscc_make_clustering(const SEXP R_distance_object,
 	if (isReal(R_seed_radius)) {
 		options.seed_radius = SCC_RM_USE_SUPPLIED;
 		options.seed_supplied_radius = asReal(R_seed_radius);
+	} else if (isNull(R_seed_radius)) {
+		options.seed_radius = SCC_RM_NO_RADIUS;
+	} else if (isString(R_seed_radius)) {
+		if (strcmp(CHAR(asChar(R_seed_radius)), "no_radius") == 0) {
+			options.seed_radius = SCC_RM_NO_RADIUS;
+		} else {
+			iRscc_error("Not a valid radius method.");
+		}
 	}
 
 	if (isReal(R_primary_radius)) {
@@ -188,15 +196,6 @@ SEXP Rscc_make_clustering(const SEXP R_distance_object,
 			iRscc_error("Not a valid radius method.");
 		}
 	}
-
-	// Remove this later
-	if (strcmp(CHAR(asChar(R_primary_unassigned_method)), "estimated_radius_closest_seed") == 0) {
-		options.primary_radius = SCC_RM_USE_ESTIMATED;
-	}
-	if (strcmp(CHAR(asChar(R_secondary_unassigned_method)), "estimated_radius_closest_seed") == 0) {
-		options.secondary_radius = SCC_RM_USE_ESTIMATED;
-	}
-	// Until here
 
 	if (isInteger(R_batch_size)) {
 		options.batch_size = (uint32_t) asInteger(R_batch_size);
@@ -273,6 +272,8 @@ static scc_SeedMethod iRscc_parse_seed_method(const SEXP R_seed_method)
 	const char* seed_method_string = CHAR(asChar(R_seed_method));
 	if (strcmp(seed_method_string, "lexical") == 0) {
 		return SCC_SM_LEXICAL;
+	} else if (strcmp(seed_method_string, "batches") == 0) {
+		return SCC_SM_BATCHES;
 	} else if (strcmp(seed_method_string, "inwards_order") == 0) {
 		return SCC_SM_INWARDS_ORDER;
 	} else if (strcmp(seed_method_string, "inwards_updating") == 0) {
@@ -283,8 +284,6 @@ static scc_SeedMethod iRscc_parse_seed_method(const SEXP R_seed_method)
 		return SCC_SM_EXCLUSION_ORDER;
 	} else if (strcmp(seed_method_string, "exclusion_updating") == 0) {
 		return SCC_SM_EXCLUSION_UPDATING;
-	} else if (strcmp(seed_method_string, "batches") == 0) {
-		return SCC_SM_BATCHES;
 	} else {
 		iRscc_error("Not a valid seed method.");
 	}
@@ -300,13 +299,11 @@ static scc_UnassignedMethod iRscc_parse_unassigned_method(const SEXP R_unassigne
 	const char* unassigned_method_string = CHAR(asChar(R_unassigned_method));
 	if (strcmp(unassigned_method_string, "ignore") == 0) {
 		return SCC_UM_IGNORE;
-	} else if (strcmp(unassigned_method_string, "by_nng") == 0) {
+	} else if (strcmp(unassigned_method_string, "any_neighbor") == 0) {
 		return SCC_UM_ANY_NEIGHBOR;
 	} else if (strcmp(unassigned_method_string, "closest_assigned") == 0) {
 		return SCC_UM_CLOSEST_ASSIGNED;
 	} else if (strcmp(unassigned_method_string, "closest_seed") == 0) {
-		return SCC_UM_CLOSEST_SEED;
-	} else if (strcmp(unassigned_method_string, "estimated_radius_closest_seed") == 0) {
 		return SCC_UM_CLOSEST_SEED;
 	} else {
 		iRscc_error("Not a valid unassigned method.");
