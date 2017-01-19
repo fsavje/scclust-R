@@ -39,6 +39,25 @@ iscc_dist_functions_struct iscc_dist_functions = {
 };
 
 
+bool scc_reset_dist_functions(void)
+{
+	iscc_dist_functions = (iscc_dist_functions_struct) {
+		.check_data_set = iscc_imp_check_data_set,
+		.get_dist_matrix = iscc_imp_get_dist_matrix,
+		.get_dist_rows = iscc_imp_get_dist_rows,
+		.init_max_dist_object = iscc_imp_init_max_dist_object,
+		.get_max_dist = iscc_imp_get_max_dist,
+		.close_max_dist_object = iscc_imp_close_max_dist_object,
+		.init_nn_search_object = iscc_imp_init_nn_search_object,
+		.nearest_neighbor_search_digraph = iscc_imp_nearest_neighbor_search_digraph,
+		.nearest_neighbor_search_index = iscc_imp_nearest_neighbor_search_index,
+		.close_nn_search_object = iscc_imp_close_nn_search_object,
+	};
+
+	return true;
+}
+
+
 bool scc_set_dist_functions(scc_check_data_set check_data_set,
                             scc_get_dist_matrix get_dist_matrix,
                             scc_get_dist_rows get_dist_rows,

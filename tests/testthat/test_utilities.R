@@ -23,6 +23,19 @@ context("utilities.R")
 
 
 # ==============================================================================
+# set_dist_functions
+# ==============================================================================
+
+test_that("`set_dist_functions` returns correct output", {
+  expect_equal(set_dist_functions(), TRUE)
+  expect_equal(set_dist_functions("internal"), TRUE)
+  expect_equal(set_dist_functions("ann"), TRUE)
+})
+
+# Reset dist functions
+set_dist_functions()
+
+# ==============================================================================
 # check_clustering
 # ==============================================================================
 

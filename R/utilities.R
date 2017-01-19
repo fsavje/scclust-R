@@ -19,6 +19,33 @@
 # ==============================================================================
 
 
+#' Set distance search functions.
+#'
+#' \code{set_dist_functions} sets the distance search functions used by Rscclust to construct
+#' clusterings. The package is loaded with the distance functions set to ANN, i.e., equivalent
+#' to running \code{set_dist_functions()} when the package loads.
+#'
+#' @param dist_functions a string containing either "ann" or "internal".
+#'
+#' @return Returns \code{NULL}.
+#'
+#' @examples
+#' set_dist_functions()
+#' set_dist_functions(dist_functions = "ann")
+#' set_dist_functions(dist_functions = "internal")
+#'
+#' @useDynLib Rscclust Rscc_set_dist_functions
+#' @export
+set_dist_functions <- function(dist_functions = "ann") {
+  dist_functions <- coerce_args(dist_functions,
+                                c("internal",
+                                  "ann"))
+  .Call("Rscc_set_dist_functions",
+        dist_functions,
+        PACKAGE = "Rscclust")
+}
+
+
 #' Check the validity of a clustering.
 #'
 #' \code{check_clustering} checks so the inputted clustering satisfies the specified size

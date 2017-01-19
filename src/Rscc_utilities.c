@@ -26,12 +26,32 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <scclust.h>
+#include <scclust_spi.h>
+#include <ann_wrapper.h>
 #include "Rscc_error.h"
 
 
 // =============================================================================
 // External function implementations
 // =============================================================================
+
+SEXP Rscc_set_dist_functions(const SEXP R_dist_functions)
+{
+	if (!isString(R_dist_functions)) {
+		iRscc_error("`R_dist_functions` must be string.");
+	}
+
+	if (strcmp(CHAR(asChar(R_dist_functions)), "ann") == 0) {
+		if (!scc_set_ann_dist_search()) iRscc_error("Could not set distance functions.");
+	} else if (strcmp(CHAR(asChar(R_dist_functions)), "internal") == 0) {
+		if (!scc_reset_dist_functions()) iRscc_error("Could not reset distance functions.");
+	} else {
+		iRscc_error("Not a valid set of distance functions.");
+	}
+
+	return ScalarLogical(true);
+}
+
 
 SEXP Rscc_check_clustering(const SEXP R_clustering,
                            const SEXP R_size_constraint,

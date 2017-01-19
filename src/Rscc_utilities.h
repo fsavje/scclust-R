@@ -24,6 +24,8 @@
 #include <R.h>
 #include <Rinternals.h>
 
+SEXP Rscc_set_dist_functions(SEXP R_dist_functions);
+
 SEXP Rscc_check_clustering(SEXP R_clustering,
                            SEXP R_size_constraint,
                            SEXP R_type_labels,

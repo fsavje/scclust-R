@@ -485,6 +485,18 @@ test_that("`print.Rscc_clustering` checks input.", {
 
 
 # ==============================================================================
+# set_dist_functions
+# ==============================================================================
+
+test_that("`set_dist_functions` checks input.", {
+  expect_silent(set_dist_functions(dist_functions = "ann"))
+  expect_error(set_dist_functions(dist_functions = "invalid"))
+})
+
+# Reset dist functions
+set_dist_functions()
+
+# ==============================================================================
 # check_clustering
 # ==============================================================================
 

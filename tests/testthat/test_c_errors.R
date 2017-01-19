@@ -158,6 +158,24 @@ attr(temp_clustering1, "cluster_count") <- 2L
 temp_clustering2 <- c(1L, 1L, 0L, 1L, 1L, 0L, 0L, 0L)
 attr(temp_clustering2, "cluster_count") <- 0L
 
+c_set_dist_functions <- function(dist_functions = "internal") {
+  .Call("Rscc_set_dist_functions",
+        dist_functions,
+        PACKAGE = "Rscclust")
+}
+
+test_that("`Rscc_set_dist_functions` checks input.", {
+  expect_silent(c_set_dist_functions())
+  expect_error(c_set_dist_functions(dist_functions = TRUE),
+               regexp = "`R_dist_functions` must be string.")
+  expect_error(c_set_dist_functions(dist_functions = "invalid"),
+               regexp = "Not a valid set of distance functions.")
+})
+
+# Reset dist functions
+set_dist_functions()
+
+
 c_check_clustering <- function(clustering = temp_clustering1,
                                size_constraint = 2L,
                                type_labels = c(1L, 2L, 1L, 1L, 2L, 1L, 2L, 2L),

@@ -45,3 +45,7 @@ NULL
   packageStartupMessage("The `Rscclust` package is under heavy development. Please exercise great caution when using it.")
   packageStartupMessage("Bug reports and suggestions are greatly appreciated. They are best reported here: https://github.com/fsavje/Rscclust/issues")
 }
+
+.onLoad <- function(libname, pkgname) {
+  set_dist_functions()
+}

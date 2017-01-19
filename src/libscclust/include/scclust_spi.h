@@ -134,6 +134,8 @@ typedef bool (*scc_close_nn_search_object) (iscc_NNSearchObject**);
 // SPI functions
 // =============================================================================
 
+bool scc_reset_dist_functions(void);
+
 bool scc_set_dist_functions(scc_check_data_set,
                             scc_get_dist_matrix,
                             scc_get_dist_rows,
