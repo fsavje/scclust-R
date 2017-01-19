@@ -24,31 +24,17 @@
 #include <R.h>
 #include <Rinternals.h>
 
-SEXP Rscc_nng_clustering(SEXP R_distance_object,
-                         SEXP R_size_constraint,
-                         SEXP R_seed_method,
-                         SEXP R_unassigned_method,
-                         SEXP R_radius,
-                         SEXP R_primary_data_points,
-                         SEXP R_secondary_unassigned_method,
-                         SEXP R_secondary_radius);
-
-SEXP Rscc_nng_clustering_batches(SEXP R_distance_object,
-                                 SEXP R_size_constraint,
-                                 SEXP R_unassigned_method,
-                                 SEXP R_radius,
-                                 SEXP R_primary_data_points,
-                                 SEXP R_batch_size);
-
-SEXP Rscc_nng_clustering_types(SEXP R_distance_object,
-                               SEXP R_type_labels,
-                               SEXP R_type_size_constraints,
-                               SEXP R_total_size_constraint,
-                               SEXP R_seed_method,
-                               SEXP R_unassigned_method,
-                               SEXP R_radius,
-                               SEXP R_primary_data_points,
-                               SEXP R_secondary_unassigned_method,
-                               SEXP R_secondary_radius);
+SEXP Rscc_make_clustering(SEXP R_distance_object,
+                          SEXP R_size_constraint,
+                          SEXP R_type_labels,
+                          SEXP R_type_constraints,
+                          SEXP R_seed_method,
+                          SEXP R_primary_data_points,
+                          SEXP R_primary_unassigned_method,
+                          SEXP R_secondary_unassigned_method,
+                          SEXP R_seed_radius,
+                          SEXP R_primary_radius,
+                          SEXP R_secondary_radius,
+                          SEXP R_batch_size);
 
 #endif // ifndef RSCC_NNG_HG

@@ -64,7 +64,7 @@
 #'          \code{\link{hierarchical_clustering}} can be used to refine the clustering
 #'          constructed by this function.
 #'
-#' @useDynLib Rscclust Rscc_nng_clustering
+#' @useDynLib Rscclust Rscc_make_clustering
 #' @export
 nng_clustering <- function(distance_object,
                            size_constraint,
@@ -97,16 +97,21 @@ nng_clustering <- function(distance_object,
                                                "estimated_radius_closest_seed"))
   secondary_radius <- coerce_radius(secondary_radius)
 
-  clustering <- .Call("Rscc_nng_clustering",
+  clustering <- .Call("Rscc_make_clustering",
                       distance_object,
                       size_constraint,
+                      NULL,
+                      NULL,
                       seed_method,
-                      unassigned_method,
-                      radius,
                       primary_data_points,
+                      unassigned_method,
                       secondary_unassigned_method,
+                      radius,
+                      "seed_radius",
                       secondary_radius,
+                      NULL,
                       PACKAGE = "Rscclust")
+
   make_Rscc_clustering(clustering$cluster_labels,
                        clustering$cluster_count,
                        attr(distance_object, "ids", exact = TRUE))
@@ -125,7 +130,7 @@ nng_clustering <- function(distance_object,
 #' @param primary_data_points abc ...
 #' @param batch_size abc ...
 #'
-#' @useDynLib Rscclust Rscc_nng_clustering_batches
+#' @useDynLib Rscclust Rscc_make_clustering
 #' @export
 nng_clustering_batches <- function(distance_object,
                                    size_constraint,
@@ -144,14 +149,21 @@ nng_clustering_batches <- function(distance_object,
   }
   batch_size <- coerce_counts(batch_size, 1L)
 
-  clustering <- .Call("Rscc_nng_clustering_batches",
+  clustering <- .Call("Rscc_make_clustering",
                       distance_object,
                       size_constraint,
-                      unassigned_method,
-                      radius,
+                      NULL,
+                      NULL,
+                      "batches",
                       primary_data_points,
+                      unassigned_method,
+                      "ignore",
+                      radius,
+                      "seed_radius",
+                      NULL,
                       batch_size,
                       PACKAGE = "Rscclust")
+
   make_Rscc_clustering(clustering$cluster_labels,
                        clustering$cluster_count,
                        attr(distance_object, "ids", exact = TRUE))
@@ -173,7 +185,7 @@ nng_clustering_batches <- function(distance_object,
 #' @param secondary_unassigned_method abc ...
 #' @param secondary_radius abc ...
 #'
-#' @useDynLib Rscclust Rscc_nng_clustering_types
+#' @useDynLib Rscclust Rscc_make_clustering
 #' @export
 nng_clustering_types <- function(distance_object,
                                  type_labels,
@@ -214,18 +226,21 @@ nng_clustering_types <- function(distance_object,
                                                "estimated_radius_closest_seed"))
   secondary_radius <- coerce_radius(secondary_radius)
 
-  clustering <- .Call("Rscc_nng_clustering_types",
+  clustering <- .Call("Rscc_make_clustering",
                       distance_object,
+                      total_size_constraint,
                       unclass(type_labels),
                       type_size_constraints,
-                      total_size_constraint,
                       seed_method,
-                      unassigned_method,
-                      radius,
                       primary_data_points,
+                      unassigned_method,
                       secondary_unassigned_method,
+                      radius,
+                      "seed_radius",
                       secondary_radius,
+                      NULL,
                       PACKAGE = "Rscclust")
+
   make_Rscc_clustering(clustering$cluster_labels,
                        clustering$cluster_count,
                        attr(distance_object, "ids", exact = TRUE))
