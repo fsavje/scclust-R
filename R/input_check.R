@@ -270,6 +270,44 @@ coerce_norm_matrix <- function(mat,
 }
 
 
+# Coerce data point indices
+coerce_data_point_indices <- function(indices,
+                                      num_data_points) {
+  if (is.null(indices)) {
+    # do nothing
+  } else if (is.logical(indices)) {
+    if (any(is.na(indices))) {
+      new_error("`", match.call()$indices, "` may not contain NAs.")
+    }
+    if (!any(indices)) {
+      new_error("`", match.call()$indices, "` cannot be all `FALSE`.")
+    }
+    if (length(indices) != num_data_points) {
+      new_error("`", match.call()$indices, "` is not of length `", match.call()$num_data_points, "`.")
+    }
+  } else {
+    if (!is.integer(indices)) {
+      if (is.numeric_integer(indices)) {
+        storage.mode(indices) <- "integer"
+      } else {
+        new_error("`", match.call()$indices, "` must be integer, logical or NULL.")
+      }
+    }
+    if (any(is.na(indices))) {
+      new_error("`", match.call()$indices, "` may not contain NAs.")
+    }
+    if (any(indices < 1L)) {
+      new_error("`", match.call()$indices, "` must be positive.")
+    }
+    if (length(indices) == 0) {
+      new_error("`", match.call()$indices, "` cannot be empty.")
+    }
+  }
+
+  indices
+}
+
+
 # Coerce `radius` to NULL or a scalar, positive, non-na, numeric
 coerce_radius <- function(radius,
                           is_seed = FALSE) {

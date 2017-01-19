@@ -383,6 +383,49 @@ test_that("`coerce_norm_matrix` coerces correctly.", {
 
 
 # ==============================================================================
+# coerce_data_point_indices
+# ==============================================================================
+
+t_coerce_data_point_indices <- function(t_indices = c(TRUE, FALSE, TRUE, TRUE, FALSE),
+                                        t_num_data_points = 5L) {
+  coerce_data_point_indices(t_indices, t_num_data_points)
+}
+
+test_that("`coerce_data_point_indices` checks input.", {
+  expect_silent(t_coerce_data_point_indices())
+  expect_silent(t_coerce_data_point_indices(t_indices = NULL))
+  expect_silent(t_coerce_data_point_indices(t_indices = c(1L, 4L)))
+
+  expect_error(t_coerce_data_point_indices(t_indices = c(TRUE, FALSE, NA, TRUE, FALSE)),
+               regexp = "`t_indices` may not contain NAs.")
+  expect_error(t_coerce_data_point_indices(t_indices = rep(FALSE, 5)),
+               regexp = "`t_indices` cannot be all `FALSE`.")
+  expect_error(t_coerce_data_point_indices(t_indices = c(TRUE, FALSE, FALSE, TRUE)),
+               regexp = "`t_indices` is not of length `t_num_data_points`.")
+  expect_error(t_coerce_data_point_indices(t_indices = letters[1:5]),
+               regexp = "`t_indices` must be integer, logical or NULL.")
+
+  expect_error(t_coerce_data_point_indices(t_indices = c(1L, NA, 4L)),
+               regexp = "`t_indices` may not contain NAs.")
+  expect_error(t_coerce_data_point_indices(t_indices = c(-1L, 2L, 4L)),
+               regexp = "`t_indices` must be positive.")
+  expect_error(t_coerce_data_point_indices(t_indices = integer()),
+               regexp = "`t_indices` cannot be empty.")
+})
+
+test_that("`coerce_data_point_indices` coerces correctly.", {
+  expect_equal(t_coerce_data_point_indices(),
+               c(TRUE, FALSE, TRUE, TRUE, FALSE))
+  expect_equal(t_coerce_data_point_indices(t_indices = NULL),
+               NULL)
+  expect_equal(t_coerce_data_point_indices(t_indices = c(1L, 4L)),
+               c(1L, 4L))
+  expect_equal(t_coerce_data_point_indices(t_indices = as.numeric(c(1L, 4L))),
+               c(1L, 4L))
+})
+
+
+# ==============================================================================
 # coerce_radius
 # ==============================================================================
 

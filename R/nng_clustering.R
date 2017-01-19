@@ -89,11 +89,13 @@ make_clustering <- function(distance_object,
 
   seed_method <- coerce_args(seed_method, all_seed_methods)
 
+  primary_data_points <- coerce_data_point_indices(primary_data_points, num_data_points)
   if (is.null(primary_data_points)) {
     secondary_unassigned_method <- "ignore"
-  } else {
-    ensure_indicators(primary_data_points, num_data_points, TRUE)
+  } else if (is.logical(primary_data_points)) {
     primary_data_points <- which(primary_data_points) - 1L
+  } else if (is.integer(primary_data_points)) {
+    primary_data_points <- primary_data_points - 1L
   }
 
   primary_unassigned_method <- coerce_args(primary_unassigned_method,
