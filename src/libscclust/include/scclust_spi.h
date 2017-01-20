@@ -40,19 +40,9 @@ extern "C" {
 // Internal types
 // =============================================================================
 
-/** Type used for arc indices. Must be unsigned.
- *
- *  \note
- *  Number of arcs in any digraph must be less or equal to
- *  the maximum number that can be stored in #iscc_ArcIndex.
- */
-typedef uint32_t iscc_ArcIndex;
-
 typedef struct iscc_MaxDistObject iscc_MaxDistObject;
 
 typedef struct iscc_NNSearchObject iscc_NNSearchObject;
-
-#define ISCC_M_ARCINDEX_TYPE_uint32_t
 
 
 // =============================================================================
@@ -92,23 +82,15 @@ typedef bool (*scc_init_nn_search_object) (void*,
                                            const scc_PointIndex*,
                                            iscc_NNSearchObject**);
 
-typedef bool (*scc_nearest_neighbor_search_digraph) (iscc_NNSearchObject*,
-                                                     size_t,
-                                                     const bool*,
-                                                     bool*,
-                                                     uint32_t,
-                                                     bool,
-                                                     double,
-                                                     iscc_ArcIndex*,
-                                                     scc_PointIndex*);
-
-typedef bool (*scc_nearest_neighbor_search_index) (iscc_NNSearchObject*,
-                                                   size_t,
-                                                   const scc_PointIndex*,
-                                                   uint32_t,
-                                                   bool,
-                                                   double,
-                                                   scc_PointIndex*);
+typedef bool (*scc_nearest_neighbor_search) (iscc_NNSearchObject*,
+                                             size_t,
+                                             const scc_PointIndex*,
+                                             uint32_t,
+                                             bool,
+                                             double,
+                                             size_t*,
+                                             scc_PointIndex*,
+                                             scc_PointIndex*);
 
 typedef bool (*scc_close_nn_search_object) (iscc_NNSearchObject**);
 
@@ -126,8 +108,7 @@ bool scc_set_dist_functions(scc_check_data_set,
                             scc_get_max_dist,
                             scc_close_max_dist_object,
                             scc_init_nn_search_object,
-                            scc_nearest_neighbor_search_digraph,
-                            scc_nearest_neighbor_search_index,
+                            scc_nearest_neighbor_search,
                             scc_close_nn_search_object);
 
 

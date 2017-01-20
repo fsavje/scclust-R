@@ -159,7 +159,7 @@ scc_ErrorCode iscc_digraph_difference(iscc_Digraph* const minuend_dg,
 	if (row_markers == NULL) return iscc_make_error(SCC_ER_NO_MEMORY);
 
 	for (size_t v = 0; v < minuend_dg->vertices; ++v) {
-		row_markers[v] = SCC_POINTINDEX_NA;
+		row_markers[v] = ISCC_POINTINDEX_MAX_PI;
 	}
 
 	uint32_t row_counter;
@@ -324,7 +324,7 @@ static inline uintmax_t iscc_do_union_and_delete(const uint_fast16_t num_dgs,
 	const scc_PointIndex vertices = (scc_PointIndex) dgs->vertices; // If `scc_PointIndex` is signed
 
 	for (scc_PointIndex v = 0; v < vertices; ++v) {
-		row_markers[v] = SCC_POINTINDEX_NA;
+		row_markers[v] = ISCC_POINTINDEX_MAX_PI;
 	}
 
 	if ((tails_to_keep == NULL) && !write) {
@@ -432,7 +432,7 @@ static inline uintmax_t iscc_do_adjacency_product(const iscc_Digraph* const dg_a
 	const scc_PointIndex* const dg_b_head = dg_b->head;
 
 	for (scc_PointIndex v = 0; v < vertices; ++v) {
-		row_markers[v] = SCC_POINTINDEX_NA;
+		row_markers[v] = ISCC_POINTINDEX_MAX_PI;
 	}
 
 	if (!write) {

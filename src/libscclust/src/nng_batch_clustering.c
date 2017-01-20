@@ -215,6 +215,7 @@ scc_ErrorCode iscc_run_nng_batches(scc_Clustering* const clustering,
 		if (primary_data_points == NULL) {
 			for (; (in_batch < batch_size) && (curr_point < num_data_points); ++curr_point) {
 				if (!assigned[curr_point]) {
+					clustering->cluster_label[curr_point] = SCC_CLABEL_NA;
 					batch_indices[in_batch] = curr_point;
 					++in_batch;
 				}
@@ -222,12 +223,10 @@ scc_ErrorCode iscc_run_nng_batches(scc_Clustering* const clustering,
 		} else {
 			for (; (in_batch < batch_size) && (curr_point < num_data_points); ++curr_point) {
 				if (!assigned[curr_point]) {
+					clustering->cluster_label[curr_point] = SCC_CLABEL_NA;
 					if (primary_data_points[curr_point]) {
 						batch_indices[in_batch] = curr_point;
 						++in_batch;
-					} else {
-						assert(!assigned[curr_point]);
-						clustering->cluster_label[curr_point] = SCC_CLABEL_NA;
 					}
 				}
 			}
@@ -238,75 +237,68 @@ scc_ErrorCode iscc_run_nng_batches(scc_Clustering* const clustering,
 			break;
 		}
 
+		size_t num_ok_in_batch = 0;
 		search_done = true;
-		if (!iscc_nearest_neighbor_search_index(nn_search_object,
-		                                        in_batch,
-		                                        batch_indices,
-		                                        size_constraint,
-		                                        radius_constraint,
-		                                        radius,
-		                                        out_indices)) {
+		if (!iscc_nearest_neighbor_search(nn_search_object,
+		                                  in_batch,
+		                                  batch_indices,
+		                                  size_constraint,
+		                                  radius_constraint,
+		                                  radius,
+		                                  &num_ok_in_batch,
+		                                  batch_indices,
+		                                  out_indices)) {
 			return iscc_make_error(SCC_ER_DIST_SEARCH_ERROR);
 		}
 
 		#ifdef SCC_STABLE_NNG
-		for (size_t i = 0; i < in_batch; ++i) {
-			if (out_indices[(i + 1) * size_constraint - 1] != SCC_POINTINDEX_NA) {
-				qsort(out_indices + i * size_constraint, size_constraint, sizeof(scc_PointIndex), iscc_compare_PointIndex);
-			}
+		for (size_t i = 0; i < num_ok_in_batch; ++i) {
+			qsort(out_indices + i * size_constraint, size_constraint, sizeof(scc_PointIndex), iscc_compare_PointIndex);
 		}
 		#endif // ifdef SCC_STABLE_NNG
 
 		const scc_PointIndex* check_indices = out_indices;
-		for (size_t i = 0; i < in_batch; ++i) {
+		for (size_t i = 0; i < num_ok_in_batch; ++i) {
 			const scc_PointIndex* const stop_check_indices = check_indices + size_constraint;
 			if (!assigned[batch_indices[i]]) {
-				if (stop_check_indices[-1] == SCC_POINTINDEX_NA) {
-					// Radius constraint binding
+				for (; (check_indices != stop_check_indices) && !assigned[*check_indices]; ++check_indices) {}
+				if (check_indices == stop_check_indices) {
+					// `i` has no assigned neighbors and can be seed
+					if (next_cluster_label == SCC_CLABEL_MAX) {
+						return iscc_make_error_msg(SCC_ER_TOO_LARGE_PROBLEM, "Too many clusters (adjust the `scc_Clabel` type).");
+					}
+
 					assert(!assigned[batch_indices[i]]);
-					clustering->cluster_label[batch_indices[i]] = SCC_CLABEL_NA;
-				} else {
-					for (; (check_indices != stop_check_indices) && !assigned[*check_indices]; ++check_indices) {}
-					if (check_indices == stop_check_indices) {
-						// `i` has no assigned neighbors and can be seed
-						if (next_cluster_label == SCC_CLABEL_MAX) {
-							return iscc_make_error_msg(SCC_ER_TOO_LARGE_PROBLEM, "Too many clusters (adjust the `scc_Clabel` type).");
-						}
-
-						assert(!assigned[batch_indices[i]]);
-						const scc_PointIndex* const stop_assign_indices = stop_check_indices - 1;
-						for (check_indices -= size_constraint; check_indices != stop_assign_indices; ++check_indices) {
-							assert(!assigned[*check_indices]);
-							assigned[*check_indices] = true;
-							clustering->cluster_label[*check_indices] = next_cluster_label;
-						}
-						if (assigned[batch_indices[i]]) {
-							// Self-loop from `batch_indices[i]` to `batch_indices[i]` existed among NN
-							assert(!assigned[*check_indices]);
-							assigned[*check_indices] = true;
-							clustering->cluster_label[*check_indices] = next_cluster_label;
-						} else {
-							// Self-loop did not exist
-							assert(!assigned[batch_indices[i]]);
-							assigned[batch_indices[i]] = true;
-							clustering->cluster_label[batch_indices[i]] = next_cluster_label;
-						}
-
-						assert(clustering->cluster_label[batch_indices[i]] == next_cluster_label);
-						++next_cluster_label;
+					const scc_PointIndex* const stop_assign_indices = stop_check_indices - 1;
+					for (check_indices -= size_constraint; check_indices != stop_assign_indices; ++check_indices) {
+						assert(!assigned[*check_indices]);
+						assigned[*check_indices] = true;
+						clustering->cluster_label[*check_indices] = next_cluster_label;
+					}
+					if (assigned[batch_indices[i]]) {
+						// Self-loop from `batch_indices[i]` to `batch_indices[i]` existed among NN
+						assert(!assigned[*check_indices]);
+						assigned[*check_indices] = true;
+						clustering->cluster_label[*check_indices] = next_cluster_label;
 					} else {
-						// `i` has assigned neighbors and cannot be seed
-						if (ignore_unassigned) {
-							assert(!assigned[batch_indices[i]]);
-							clustering->cluster_label[batch_indices[i]] = SCC_CLABEL_NA;
-						} else {
-							// Assign `batch_indices[i]` to a preliminary cluster.
-							// If a future seed wants it as neighbor, it switches cluster.
-							assert(assigned[*check_indices]);
-							assert(clustering->cluster_label[*check_indices] != SCC_CLABEL_NA);
-							assert(!assigned[batch_indices[i]]);
-							clustering->cluster_label[batch_indices[i]] = clustering->cluster_label[*check_indices];
-						}
+						// Self-loop did not exist
+						assert(!assigned[batch_indices[i]]);
+						assigned[batch_indices[i]] = true;
+						clustering->cluster_label[batch_indices[i]] = next_cluster_label;
+					}
+
+					assert(clustering->cluster_label[batch_indices[i]] == next_cluster_label);
+					++next_cluster_label;
+				} else {
+					// `i` has assigned neighbors and cannot be seed
+					if (!ignore_unassigned) {
+						// Assign `batch_indices[i]` to a preliminary cluster.
+						// If a future seed wants it as neighbor, it switches cluster.
+						assert(assigned[*check_indices]);
+						assert(clustering->cluster_label[batch_indices[i]] == SCC_CLABEL_NA);
+						assert(clustering->cluster_label[*check_indices] != SCC_CLABEL_NA);
+						assert(!assigned[batch_indices[i]]);
+						clustering->cluster_label[batch_indices[i]] = clustering->cluster_label[*check_indices];
 					}
 				}
 			}

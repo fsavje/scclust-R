@@ -55,23 +55,15 @@ extern "C" {
 	                                    const scc_PointIndex search_indices[],
 	                                    iscc_NNSearchObject** out_nn_search_object);
 
-	bool iscc_ann_nearest_neighbor_search_digraph(iscc_NNSearchObject* nn_search_object,
-	                                              size_t len_query_indicators,
-	                                              const bool query_indicators[],
-	                                              bool out_query_indicators[],
-	                                              uint32_t k,
-	                                              bool radius_search,
-	                                              double radius,
-	                                              iscc_ArcIndex out_nn_ref[],
-	                                              scc_PointIndex out_nn_indices[]);
-
-	bool iscc_ann_nearest_neighbor_search_index(iscc_NNSearchObject* nn_search_object,
-	                                            size_t len_query_indices,
-	                                            const scc_PointIndex query_indices[],
-	                                            uint32_t k,
-	                                            bool radius_search,
-	                                            double radius,
-	                                            scc_PointIndex out_nn_indices[]);
+	bool iscc_ann_nearest_neighbor_search(iscc_NNSearchObject* nn_search_object,
+	                                      size_t len_query_indices,
+	                                      const scc_PointIndex query_indices[],
+	                                      uint32_t k,
+	                                      bool radius_search,
+	                                      double radius,
+	                                      size_t* out_num_ok_queries,
+	                                      scc_PointIndex out_query_indices[],
+	                                      scc_PointIndex out_nn_indices[]);
 
 	bool iscc_ann_close_nn_search_object(iscc_NNSearchObject** nn_search_object);
 
@@ -104,8 +96,7 @@ bool scc_set_ann_dist_search()
 {
 	return scc_set_dist_functions(NULL, NULL, NULL, NULL, NULL, NULL,
 	                              iscc_ann_init_nn_search_object,
-	                              iscc_ann_nearest_neighbor_search_digraph,
-	                              iscc_ann_nearest_neighbor_search_index,
+	                              iscc_ann_nearest_neighbor_search,
 	                              iscc_ann_close_nn_search_object);
 }
 
@@ -173,188 +164,17 @@ bool iscc_ann_init_nn_search_object(void* const data_set,
 }
 
 
-bool iscc_ann_nearest_neighbor_search_digraph(iscc_NNSearchObject* const nn_search_object,
-                                              const size_t len_query_indicators,
-                                              const bool* const query_indicators,
-                                              bool* const out_query_indicators,
-                                              const uint32_t k,
-                                              const bool radius_search,
-                                              const double radius,
-                                              iscc_ArcIndex* const out_nn_ref,
-                                              scc_PointIndex* const out_nn_indices)
+bool iscc_ann_nearest_neighbor_search(iscc_NNSearchObject* const nn_search_object,
+                                      const size_t len_query_indices,
+                                      const scc_PointIndex* const query_indices,
+                                      const uint32_t k,
+                                      const bool radius_search,
+                                      const double radius,
+                                      size_t* const out_num_ok_queries,
+                                      scc_PointIndex* const out_query_indices,
+                                      scc_PointIndex* const out_nn_indices)
 {
-	assert(nn_search_object != NULL);
-	assert(nn_search_object->nn_search_version == ISCC_ANN_NN_SEARCH_STRUCT_VERSION);
-	scc_DataSet* const data_set = nn_search_object->data_set;
-	#ifndef NDEBUG
-		const size_t len_search_indices = nn_search_object->len_search_indices;
-		assert(len_search_indices <= INT_MAX);
-	#endif
-	const scc_PointIndex* const search_indices = nn_search_object->search_indices;
-	ANNpointSet* const search_tree = nn_search_object->search_tree;
 
-	assert(iscc_ann_open_search_objects > 0);
-	assert(iscc_imp_check_data_set(data_set, len_query_indicators));
-	assert(len_search_indices > 0);
-	assert(search_tree != NULL);
-	assert(len_query_indicators > 0);
-	assert(k > 0);
-	assert(k <= len_search_indices);
-	assert(!radius_search || (radius > 0.0));
-	assert(out_nn_ref != NULL);
-	assert(out_nn_indices != NULL);
-
-	if (k > INT_MAX) return false;
-	const int k_int = static_cast<int>(k);
-
-	out_nn_ref[0] = 0;
-
-	#ifdef SCC_M_POINTINDEX_TYPE_int
-
-		if (search_indices == NULL) {
-
-			// If `scc_PointIndex` is `int` we can send `out_nn_indices` directly to ANN.
-			// When searching on sequential indices (i.e., `search_indices == NULL`),
-			// ANN produces the desired result and we do not need to do translating and/or casting
-
-			ANNdist* dist_scratch;
-			try {
-				dist_scratch = new ANNdist[k];
-			} catch (...) {
-				return false;
-			}
-
-			if (!radius_search) {
-				for (size_t q = 0; q < len_query_indicators; ++q) {
-					out_nn_ref[q + 1] = out_nn_ref[q];
-					if ((query_indicators == NULL) || query_indicators[q]) {
-						const ANNpoint query_point = const_cast<double*>(data_set->data_matrix) + q * data_set->num_dimensions;
-						search_tree->annkSearch(query_point,    // pointer to query point
-						                        k_int,          // number of neighbors
-						                        out_nn_indices + out_nn_ref[q],    // pointer to start of index result
-						                        dist_scratch,   // pointer to start of distance result
-						                        SCC_ANN_EPS);   // error margin
-						out_nn_ref[q + 1] += k;
-					}
-				}
-
-			} else {
-				assert(radius_search);
-				const double radius_sq = radius * radius;
-				for (size_t q = 0; q < len_query_indicators; ++q) {
-					out_nn_ref[q + 1] = out_nn_ref[q];
-					if ((query_indicators == NULL) || query_indicators[q]) {
-						const ANNpoint query_point = const_cast<double*>(data_set->data_matrix) + q * data_set->num_dimensions;
-						const int num_found = search_tree->annkFRSearch(query_point,              // pointer to query point
-						                                                radius_sq,                // squared caliper
-						                                                k_int,                    // number of neighbors
-						                                                out_nn_indices + out_nn_ref[q], // pointer to start of index result
-						                                                dist_scratch,             // pointer to start of distance result
-						                                                SCC_ANN_EPS);             // error margin
-						assert(num_found >= 0);
-						if (num_found >= k_int) {
-							out_nn_ref[q + 1] += k;
-						} else if (out_query_indicators != NULL) {
-							out_query_indicators[q] = false;
-						}
-					}
-				}
-			}
-
-			delete[] dist_scratch;
-
-			return true;
-		}
-
-	#endif // #ifdef SCC_M_POINTINDEX_TYPE_int
-
-	ANNidx* idx_scratch;
-	ANNdist* dist_scratch;
-	try {
-		idx_scratch = new ANNidx[k];
-		dist_scratch = new ANNdist[k];
-	} catch (...) {
-		return false;
-	}
-
-	if (!radius_search) {
-		scc_PointIndex* write_nnidx = out_nn_indices;
-		const ANNidx* const idx_stop = idx_scratch + k;
-		for (size_t q = 0; q < len_query_indicators; ++q) {
-			out_nn_ref[q + 1] = out_nn_ref[q];
-			if ((query_indicators == NULL) || query_indicators[q]) {
-				const ANNpoint query_point = const_cast<double*>(data_set->data_matrix) + q * data_set->num_dimensions;
-				search_tree->annkSearch(query_point,    // pointer to query point
-				                        k_int,          // number of neighbors
-				                        idx_scratch,    // pointer to start of index result
-				                        dist_scratch,   // pointer to start of distance result
-				                        SCC_ANN_EPS);   // error margin
-				if (search_indices == NULL) {
-					// Sequential indices, just do casting
-					for (const ANNidx* idx_tmp = idx_scratch; idx_tmp != idx_stop; ++idx_tmp, ++write_nnidx) {
-						*write_nnidx = static_cast<scc_PointIndex>(*idx_tmp);
-					}
-				} else {
-					// Not sequential indices, translate to original indices
-					for (const ANNidx* idx_tmp = idx_scratch; idx_tmp != idx_stop; ++idx_tmp, ++write_nnidx) {
-						*write_nnidx = search_indices[*idx_tmp];
-					}
-				}
-				out_nn_ref[q + 1] += k;
-			}
-		}
-
-	} else { // radius_search
-		const double radius_sq = radius * radius;
-		scc_PointIndex* write_nnidx = out_nn_indices;
-		for (size_t q = 0; q < len_query_indicators; ++q) {
-			out_nn_ref[q + 1] = out_nn_ref[q];
-			if ((query_indicators == NULL) || query_indicators[q]) {
-				const ANNpoint query_point = const_cast<double*>(data_set->data_matrix) + q * data_set->num_dimensions;
-				int num_found = search_tree->annkFRSearch(query_point,     // pointer to query point
-				                                          radius_sq,       // squared caliper
-				                                          k_int,           // number of neighbors
-				                                          idx_scratch,     // pointer to start of index result
-				                                          dist_scratch,    // pointer to start of distance result
-				                                          SCC_ANN_EPS);    // error margin
-
-				assert(num_found >= 0);
-				if (num_found >= k_int) {
-					const ANNidx* const idx_stop = idx_scratch + k;
-					if (search_indices == NULL) {
-						// Sequential indices, just do casting
-						for (const ANNidx* idx_tmp = idx_scratch; idx_tmp != idx_stop; ++idx_tmp, ++write_nnidx) {
-							*write_nnidx = static_cast<scc_PointIndex>(*idx_tmp);
-						}
-					} else {
-						// Not sequential indices, translate to original indices
-						for (const ANNidx* idx_tmp = idx_scratch; idx_tmp != idx_stop; ++idx_tmp, ++write_nnidx) {
-							*write_nnidx = search_indices[*idx_tmp];
-						}
-					}
-					out_nn_ref[q + 1] += k;
-				} else if (out_query_indicators != NULL) {
-					out_query_indicators[q] = false;
-				}
-			}
-		}
-	}
-
-	delete[] idx_scratch;
-	delete[] dist_scratch;
-
-	return true;
-}
-
-
-bool iscc_ann_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search_object,
-                                            const size_t len_query_indices,
-                                            const scc_PointIndex* const query_indices,
-                                            const uint32_t k,
-                                            const bool radius_search,
-                                            const double radius,
-                                            scc_PointIndex* const out_nn_indices)
-{
 	assert(nn_search_object != NULL);
 	assert(nn_search_object->nn_search_version == ISCC_ANN_NN_SEARCH_STRUCT_VERSION);
 	scc_DataSet* const data_set = nn_search_object->data_set;
@@ -370,10 +190,10 @@ bool iscc_ann_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search
 	assert(len_search_indices > 0);
 	assert(search_tree != NULL);
 	assert(len_query_indices > 0);
-	assert(query_indices != NULL);
 	assert(k > 0);
 	assert(k <= len_search_indices);
 	assert(!radius_search || (radius > 0.0));
+	assert(out_num_ok_queries != NULL);
 	assert(out_nn_indices != NULL);
 
 	if (k > INT_MAX) return false;
@@ -382,8 +202,6 @@ bool iscc_ann_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search
 	#ifdef SCC_M_POINTINDEX_TYPE_int
 
 		if (search_indices == NULL) {
-
-			scc_PointIndex* write_nnidx = out_nn_indices;
 
 			// If `scc_PointIndex` is `int` we can send `out_nn_indices` directly to ANN.
 			// When searching on sequential indices (i.e., `search_indices == NULL`),
@@ -396,42 +214,63 @@ bool iscc_ann_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search
 				return false;
 			}
 
+			size_t num_ok_queries = 0;
+
 			if (!radius_search) {
+				int* write_nnidx = out_nn_indices;
 				for (size_t q = 0; q < len_query_indices; ++q) {
-					const ANNpoint query_point = const_cast<double*>(data_set->data_matrix) + query_indices[q] * data_set->num_dimensions;
+					size_t query = q;
+					if (query_indices != NULL) {
+						query = (size_t) query_indices[q];
+					}
+					const ANNpoint query_point = const_cast<double*>(data_set->data_matrix) + query * data_set->num_dimensions;
 					search_tree->annkSearch(query_point,    // pointer to query point
 					                        k_int,          // number of neighbors
 					                        write_nnidx,    // pointer to start of index result
 					                        dist_scratch,   // pointer to start of distance result
 					                        SCC_ANN_EPS);   // error margin
-					write_nnidx += k;
+					if (out_query_indices != NULL) {
+						out_query_indices[num_ok_queries] = (scc_PointIndex) query;
+					}
+					++num_ok_queries;
+					write_nnidx += k_int;
 				}
-
 			} else {
 				assert(radius_search);
 				const double radius_sq = radius * radius;
+				int* write_nnidx = out_nn_indices;
 				for (size_t q = 0; q < len_query_indices; ++q) {
-					const ANNpoint query_point = const_cast<double*>(data_set->data_matrix) + query_indices[q] * data_set->num_dimensions;
-					int num_found = search_tree->annkFRSearch(query_point,     // pointer to query point
-					                                          radius_sq,       // squared caliper
-					                                          k_int,           // number of neighbors
-					                                          write_nnidx,     // pointer to start of index result
-					                                          dist_scratch,    // pointer to start of distance result
-					                                          SCC_ANN_EPS);    // error margin
-					assert(num_found >= 0);
-					for (; num_found < k_int; ++num_found) {
-						write_nnidx[num_found] = SCC_POINTINDEX_NA;
+					size_t query = q;
+					if (query_indices != NULL) {
+						query = (size_t) query_indices[q];
 					}
-					write_nnidx += k;
-				}
+					const ANNpoint query_point = const_cast<double*>(data_set->data_matrix) + query * data_set->num_dimensions;
+					const int num_found = search_tree->annkFRSearch(query_point,              // pointer to query point
+					                                                radius_sq,                // squared caliper
+					                                                k_int,                    // number of neighbors
+					                                                write_nnidx,              // pointer to start of index result
+					                                                dist_scratch,             // pointer to start of distance result
+					                                                SCC_ANN_EPS);             // error margin
+					assert(num_found >= 0);
+					if (num_found >= k_int) {
+						if (out_query_indices != NULL) {
+							out_query_indices[num_ok_queries] = (scc_PointIndex) query;
+						}
+						++num_ok_queries;
+						write_nnidx += k_int;
+					}
 			}
 
 			delete[] dist_scratch;
 
+			*out_num_ok_queries = num_ok_queries;
+
 			return true;
 		}
+	}
 
 	#endif // #ifdef SCC_M_POINTINDEX_TYPE_int
+
 
 	ANNidx* idx_scratch;
 	ANNdist* dist_scratch;
@@ -442,11 +281,17 @@ bool iscc_ann_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search
 		return false;
 	}
 
+	size_t num_ok_queries = 0;
+
 	if (!radius_search) {
 		scc_PointIndex* write_nnidx = out_nn_indices;
 		const ANNidx* const idx_stop = idx_scratch + k;
 		for (size_t q = 0; q < len_query_indices; ++q) {
-			const ANNpoint query_point = const_cast<double*>(data_set->data_matrix) + query_indices[q] * data_set->num_dimensions;
+			size_t query = q;
+			if (query_indices != NULL) {
+				query = (size_t) query_indices[q];
+			}
+			const ANNpoint query_point = const_cast<double*>(data_set->data_matrix) + query * data_set->num_dimensions;
 			search_tree->annkSearch(query_point,    // pointer to query point
 			                        k_int,          // number of neighbors
 			                        idx_scratch,    // pointer to start of index result
@@ -463,44 +308,54 @@ bool iscc_ann_nearest_neighbor_search_index(iscc_NNSearchObject* const nn_search
 					*write_nnidx = search_indices[*idx_tmp];
 				}
 			}
+			if (out_query_indices != NULL) {
+				out_query_indices[num_ok_queries] = (scc_PointIndex) query;
+			}
+			++num_ok_queries;
 		}
 
-	} else { // radius_search
+	} else {
+		assert(radius_search);
 		const double radius_sq = radius * radius;
 		scc_PointIndex* write_nnidx = out_nn_indices;
-		const ANNidx* const idx_stop = idx_scratch + k;
 		for (size_t q = 0; q < len_query_indices; ++q) {
-			const ANNpoint query_point = const_cast<double*>(data_set->data_matrix) + query_indices[q] * data_set->num_dimensions;
+			size_t query = q;
+			if (query_indices != NULL) {
+				query = (size_t) query_indices[q];
+			}
+			const ANNpoint query_point = const_cast<double*>(data_set->data_matrix) + query * data_set->num_dimensions;
 			int num_found = search_tree->annkFRSearch(query_point,     // pointer to query point
 			                                          radius_sq,       // squared caliper
 			                                          k_int,           // number of neighbors
 			                                          idx_scratch,     // pointer to start of index result
 			                                          dist_scratch,    // pointer to start of distance result
 			                                          SCC_ANN_EPS);    // error margin
-
 			assert(num_found >= 0);
-			const ANNidx* idx_tmp = idx_scratch;
-			if (num_found >= k_int) num_found = k_int;
-			const ANNidx* const idx_found_stop = idx_scratch + num_found;
-			if (search_indices == NULL) {
-				// Sequential indices, just do casting
-				for (; idx_tmp != idx_found_stop; ++idx_tmp, ++write_nnidx) {
-					*write_nnidx = static_cast<scc_PointIndex>(*idx_tmp);
+			if (num_found >= k_int) {
+				const ANNidx* const idx_stop = idx_scratch + k;
+				if (search_indices == NULL) {
+					// Sequential indices, just do casting
+					for (const ANNidx* idx_tmp = idx_scratch; idx_tmp != idx_stop; ++idx_tmp, ++write_nnidx) {
+						*write_nnidx = static_cast<scc_PointIndex>(*idx_tmp);
+					}
+				} else {
+					// Not sequential indices, translate to original indices
+					for (const ANNidx* idx_tmp = idx_scratch; idx_tmp != idx_stop; ++idx_tmp, ++write_nnidx) {
+						*write_nnidx = search_indices[*idx_tmp];
+					}
 				}
-			} else {
-				// Not sequential indices, translate to original indices
-				for (; idx_tmp != idx_found_stop; ++idx_tmp, ++write_nnidx) {
-					*write_nnidx = search_indices[*idx_tmp];
+				if (out_query_indices != NULL) {
+					out_query_indices[num_ok_queries] = (scc_PointIndex) query;
 				}
-			}
-			for (; idx_tmp != idx_stop; ++idx_tmp, ++write_nnidx) {
-				*write_nnidx = SCC_POINTINDEX_NA;
+				++num_ok_queries;
 			}
 		}
 	}
 
 	delete[] idx_scratch;
 	delete[] dist_scratch;
+
+	*out_num_ok_queries = num_ok_queries;
 
 	return true;
 }

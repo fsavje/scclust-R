@@ -33,8 +33,7 @@ iscc_dist_functions_struct iscc_dist_functions = {
 	.get_max_dist = iscc_imp_get_max_dist,
 	.close_max_dist_object = iscc_imp_close_max_dist_object,
 	.init_nn_search_object = iscc_imp_init_nn_search_object,
-	.nearest_neighbor_search_digraph = iscc_imp_nearest_neighbor_search_digraph,
-	.nearest_neighbor_search_index = iscc_imp_nearest_neighbor_search_index,
+	.nearest_neighbor_search = iscc_imp_nearest_neighbor_search,
 	.close_nn_search_object = iscc_imp_close_nn_search_object,
 };
 
@@ -49,8 +48,7 @@ bool scc_reset_dist_functions(void)
 		.get_max_dist = iscc_imp_get_max_dist,
 		.close_max_dist_object = iscc_imp_close_max_dist_object,
 		.init_nn_search_object = iscc_imp_init_nn_search_object,
-		.nearest_neighbor_search_digraph = iscc_imp_nearest_neighbor_search_digraph,
-		.nearest_neighbor_search_index = iscc_imp_nearest_neighbor_search_index,
+		.nearest_neighbor_search = iscc_imp_nearest_neighbor_search,
 		.close_nn_search_object = iscc_imp_close_nn_search_object,
 	};
 
@@ -65,8 +63,7 @@ bool scc_set_dist_functions(scc_check_data_set check_data_set,
                             scc_get_max_dist get_max_dist,
                             scc_close_max_dist_object close_max_dist_object,
                             scc_init_nn_search_object init_nn_search_object,
-                            scc_nearest_neighbor_search_digraph nearest_neighbor_search_digraph,
-                            scc_nearest_neighbor_search_index nearest_neighbor_search_index,
+                            scc_nearest_neighbor_search nearest_neighbor_search,
                             scc_close_nn_search_object close_nn_search_object)
 {
 	if (check_data_set != NULL) {
@@ -94,16 +91,13 @@ bool scc_set_dist_functions(scc_check_data_set check_data_set,
 	}
 
 	if (init_nn_search_object != NULL &&
-			nearest_neighbor_search_digraph != NULL &&
-			nearest_neighbor_search_index != NULL &&
+			nearest_neighbor_search != NULL &&
 			close_nn_search_object != NULL) {
 		iscc_dist_functions.init_nn_search_object = init_nn_search_object;
-		iscc_dist_functions.nearest_neighbor_search_digraph = nearest_neighbor_search_digraph;
-		iscc_dist_functions.nearest_neighbor_search_index = nearest_neighbor_search_index;
+		iscc_dist_functions.nearest_neighbor_search = nearest_neighbor_search;
 		iscc_dist_functions.close_nn_search_object = close_nn_search_object;
 	} else if (init_nn_search_object != NULL ||
-			nearest_neighbor_search_digraph != NULL ||
-			nearest_neighbor_search_index != NULL ||
+			nearest_neighbor_search != NULL ||
 			close_nn_search_object != NULL) {
 		return false;
 	}

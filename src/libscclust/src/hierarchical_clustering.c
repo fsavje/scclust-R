@@ -439,7 +439,7 @@ static scc_ErrorCode iscc_hi_break_cluster_into_two(iscc_hi_ClusterItem* const c
 	assert(out_new_cluster != NULL);
 
 	scc_ErrorCode ec;
-	scc_PointIndex center1 = SCC_POINTINDEX_NA, center2 = SCC_POINTINDEX_NA; // Initialize these to avoid gcc warning
+	scc_PointIndex center1 = ISCC_POINTINDEX_MAX_PI, center2 = ISCC_POINTINDEX_MAX_PI; // Initialize these to avoid gcc warning
 	// `iscc_hi_find_centers` must be before `iscc_hi_get_next_marker`
 	// since the marker becomes invalid after `iscc_hi_find_centers`
 	if ((ec = iscc_hi_find_centers(cluster_to_break,

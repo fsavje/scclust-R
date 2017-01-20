@@ -24,6 +24,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include "../include/scclust.h"
 #include "../include/scclust_spi.h"
 
 #ifdef __cplusplus
@@ -81,26 +82,16 @@ bool iscc_imp_init_nn_search_object(void* data_set,
                                     const scc_PointIndex search_indices[],
                                     iscc_NNSearchObject** out_nn_search_object);
 
-// `out_nn_ref` must be of length `len_query_indicators + 1`
-// `out_nn_indices` must be of length `k * sum(num_query_indicators)`
-bool iscc_imp_nearest_neighbor_search_digraph(iscc_NNSearchObject* nn_search_object,
-                                              size_t len_query_indicators,
-                                              const bool query_indicators[],
-                                              bool out_query_indicators[],
-                                              uint32_t k,
-                                              bool radius_search,
-                                              double radius,
-                                              iscc_ArcIndex out_nn_ref[],
-                                              scc_PointIndex out_nn_indices[]);
-
 // `out_nn_indices` must be of length `k * len_query_indices`
-bool iscc_imp_nearest_neighbor_search_index(iscc_NNSearchObject* nn_search_object,
-                                            size_t len_query_indices,
-                                            const scc_PointIndex query_indices[],
-                                            uint32_t k,
-                                            bool radius_search,
-                                            double radius,
-                                            scc_PointIndex out_nn_indices[]);
+bool iscc_imp_nearest_neighbor_search(iscc_NNSearchObject* nn_search_object,
+                                      size_t len_query_indices,
+                                      const scc_PointIndex query_indices[],
+                                      uint32_t k,
+                                      bool radius_search,
+                                      double radius,
+                                      size_t* out_num_ok_queries,
+                                      scc_PointIndex out_query_indices[],
+                                      scc_PointIndex out_nn_indices[]);
 
 bool iscc_imp_close_nn_search_object(iscc_NNSearchObject** nn_search_object);
 

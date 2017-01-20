@@ -126,10 +126,6 @@ typedef int scc_PointIndex;
 /// Macro for data point ID type.
 #define SCC_M_POINTINDEX_TYPE_int
 
-// Remove!?
-static const scc_PointIndex SCC_POINTINDEX_NA = INT_MAX;
-#define SCC_M_POINTINDEX_NA INT_MAX
-
 
 /** Type used for cluster labels.
  *
@@ -273,6 +269,9 @@ enum scc_SeedMethod {
 	 */
 	SCC_SM_LEXICAL,
 
+
+	SCC_SM_BATCHES,
+
 	/** Find seeds ordered by inwards pointing arcs.
 	 *
 	 *  This method counts vertices' inwards pointing arcs and finds seeds in ascending order by the arc count. Vertices pointing to a seed cannot
@@ -312,9 +311,6 @@ enum scc_SeedMethod {
 	 *  seed so that only edges where the tails that still can become seeds are counted.
 	 */
 	SCC_SM_EXCLUSION_UPDATING,
-
-
-	SCC_SM_BATCHES,
 };
 
 /// Typedef for the scc_NNGMethod enum
