@@ -219,9 +219,6 @@ static scc_ErrorCode iscc_check_cluster_options(const scc_ClusterOptions* const 
 	if ((options->primary_data_points == NULL) && (options->len_primary_data_points > 0)) {
 		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Invalid primary data points.");
 	}
-	if ((options->primary_data_points == NULL) && (options->secondary_unassigned_method != SCC_UM_IGNORE)) {
-		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Invalid unassigned method.");
-	}
 
 	if ((options->primary_unassigned_method != SCC_UM_IGNORE) &&
 			(options->primary_unassigned_method != SCC_UM_ANY_NEIGHBOR) &&

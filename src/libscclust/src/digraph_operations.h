@@ -83,9 +83,9 @@ scc_ErrorCode iscc_delete_loops(iscc_Digraph* dg);
  *
  *  \param num_dgs number of digraph to calculate union for. Must be non-zero.
  *  \param[in] dgs the digraphs. Must be of length \p num_dgs.
- *  \param[in] tails_to_keep indicators of tails for which the arcs should be *kept*.
+ *  \param[in] len_tails_to_keep length of \p tails_to_keep.
+ *  \param[in] tails_to_keep indices of tails for which the arcs should be *kept*.
  *                           If `NULL` no arcs (except self-loops) are deleted.
- *                           If not `NULL`, it must be of the same length as the number of vertices in the digraphs.
  *  \param[out] out_dg the union of \p dgs.
  *
  *  \note All digraphs in \p dgs must contain equally many vertices.
@@ -93,7 +93,8 @@ scc_ErrorCode iscc_delete_loops(iscc_Digraph* dg);
  */
 scc_ErrorCode iscc_digraph_union_and_delete(uint_fast16_t num_in_dgs,
                                             const iscc_Digraph in_dgs[static num_in_dgs],
-                                            const bool tails_to_keep[],
+                                            size_t len_tails_to_keep,
+                                            const scc_PointIndex tails_to_keep[],
                                             bool keep_self_loops,
                                             iscc_Digraph* out_dg);
 

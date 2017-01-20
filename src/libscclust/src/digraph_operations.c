@@ -37,7 +37,8 @@
 static inline uintmax_t iscc_do_union_and_delete(uint_fast16_t num_dgs,
                                                  const iscc_Digraph dgs[restrict static num_dgs],
                                                  scc_PointIndex row_markers[restrict],
-                                                 const bool tails_to_keep[restrict],
+                                                 size_t len_tails_to_keep,
+                                                 const scc_PointIndex tails_to_keep[restrict],
                                                  bool keep_self_loops,
                                                  bool write,
                                                  iscc_ArcIndex out_tail_ptr[restrict],
@@ -86,7 +87,8 @@ scc_ErrorCode iscc_delete_loops(iscc_Digraph* const dg)
 
 scc_ErrorCode iscc_digraph_union_and_delete(const uint_fast16_t num_in_dgs,
                                             const iscc_Digraph in_dgs[const static num_in_dgs],
-                                            const bool tails_to_keep[const],
+                                            const size_t len_tails_to_keep,
+                                            const scc_PointIndex tails_to_keep[const],
                                             const bool keep_self_loops,
                                             iscc_Digraph* const out_dg)
 {
@@ -116,7 +118,7 @@ scc_ErrorCode iscc_digraph_union_and_delete(const uint_fast16_t num_in_dgs,
 		iscc_reset_error();
 
 		out_arcs_write = iscc_do_union_and_delete(num_in_dgs, in_dgs,
-		                                          row_markers, tails_to_keep,
+		                                          row_markers, len_tails_to_keep, tails_to_keep,
 		                                          keep_self_loops, false, NULL, NULL);
 
 		// Try again. If fail, give up.
@@ -127,7 +129,7 @@ scc_ErrorCode iscc_digraph_union_and_delete(const uint_fast16_t num_in_dgs,
 	}
 
 	out_arcs_write = iscc_do_union_and_delete(num_in_dgs, in_dgs,
-	                                          row_markers, tails_to_keep,
+	                                          row_markers, len_tails_to_keep, tails_to_keep,
 	                                          keep_self_loops, true, out_dg->tail_ptr, out_dg->head);
 
 	free(row_markers);
@@ -300,7 +302,8 @@ scc_ErrorCode iscc_adjacency_product(const iscc_Digraph* const in_dg_a,
 static inline uintmax_t iscc_do_union_and_delete(const uint_fast16_t num_dgs,
                                                  const iscc_Digraph dgs[restrict const static num_dgs],
                                                  scc_PointIndex row_markers[restrict const],
-                                                 const bool tails_to_keep[restrict const],
+                                                 const size_t len_tails_to_keep,
+                                                 const scc_PointIndex tails_to_keep[restrict const],
                                                  const bool keep_self_loops,
                                                  const bool write,
                                                  iscc_ArcIndex out_tail_ptr[restrict const],
@@ -343,17 +346,15 @@ static inline uintmax_t iscc_do_union_and_delete(const uint_fast16_t num_dgs,
 		}
 
 	} else if ((tails_to_keep != NULL) && !write) {
-		for (scc_PointIndex v = 0; v < vertices; ++v) {
-			if (tails_to_keep[v]) {
-				if (!keep_self_loops) row_markers[v] = v;
-				for (uint_fast16_t i = 0; i < num_dgs; ++i) {
-					const scc_PointIndex* const arc_i_stop = dgs[i].head + dgs[i].tail_ptr[v + 1];
-					for (const scc_PointIndex* arc_i = dgs[i].head + dgs[i].tail_ptr[v];
-					        arc_i != arc_i_stop; ++arc_i) {
-						if (row_markers[*arc_i] != v) {
-							row_markers[*arc_i] = v;
-							++counter;
-						}
+		for (size_t v = 0; v < len_tails_to_keep; ++v) {
+			if (!keep_self_loops) row_markers[tails_to_keep[v]] = tails_to_keep[v];
+			for (uint_fast16_t i = 0; i < num_dgs; ++i) {
+				const scc_PointIndex* const arc_i_stop = dgs[i].head + dgs[i].tail_ptr[tails_to_keep[v] + 1];
+				for (const scc_PointIndex* arc_i = dgs[i].head + dgs[i].tail_ptr[tails_to_keep[v]];
+				        arc_i != arc_i_stop; ++arc_i) {
+					if (row_markers[*arc_i] != tails_to_keep[v]) {
+						row_markers[*arc_i] = tails_to_keep[v];
+						++counter;
 					}
 				}
 			}
@@ -382,8 +383,11 @@ static inline uintmax_t iscc_do_union_and_delete(const uint_fast16_t num_dgs,
 	} else if ((tails_to_keep != NULL) && write) {
 		assert(out_tail_ptr != NULL);
 		out_tail_ptr[0] = 0;
+		const scc_PointIndex* next_tail_to_keep = tails_to_keep;
+		const scc_PointIndex* const stop_tails_to_keep = tails_to_keep + len_tails_to_keep;
 		for (scc_PointIndex v = 0; v < vertices; ++v) {
-			if (tails_to_keep[v]) {
+			if ((next_tail_to_keep != stop_tails_to_keep) && (*next_tail_to_keep == v)) {
+				++next_tail_to_keep;
 				if (!keep_self_loops) row_markers[v] = v;
 				for (uint_fast16_t i = 0; i < num_dgs; ++i) {
 					const scc_PointIndex* const arc_i_stop = dgs[i].head + dgs[i].tail_ptr[v + 1];

@@ -69,7 +69,8 @@ static scc_ErrorCode iscc_findseeds_exclusion(const iscc_Digraph* nng,
 //iscc_findseeds_approximation();
 
 static scc_ErrorCode iscc_fs_exclusion_graph(const iscc_Digraph* nng,
-                                             const bool* not_excluded,
+                                             size_t len_not_excluded,
+                                             const scc_PointIndex not_excluded[],
                                              iscc_Digraph* out_dg);
 
 static inline scc_ErrorCode iscc_fs_add_seed(scc_PointIndex s,
@@ -384,16 +385,42 @@ static scc_ErrorCode iscc_findseeds_exclusion(const iscc_Digraph* const nng,
 	bool* const not_excluded = malloc(sizeof(bool[nng->vertices]));
 	if (not_excluded == NULL) return iscc_make_error(SCC_ER_NO_MEMORY);
 
-	for (size_t v = 0; v < nng->vertices; ++v) {
-		not_excluded[v] = (nng->tail_ptr[v] != nng->tail_ptr[v + 1]);
+	// FIX THIS
+	size_t tmp_num_not_excluded = 0;
+	scc_PointIndex* tmp_index_not_excluded = malloc(sizeof(scc_PointIndex[nng->vertices]));
+	if (tmp_index_not_excluded == NULL) {
+		free(not_excluded);
+		iscc_make_error(SCC_ER_NO_MEMORY);
 	}
+	assert(nng->vertices <= ISCC_POINTINDEX_MAX);
+	const scc_PointIndex vertices_pi = (scc_PointIndex) nng->vertices; // If `scc_PointIndex` is signed
+	for (scc_PointIndex v = 0; v < vertices_pi; ++v) {
+		not_excluded[v] = (nng->tail_ptr[v] != nng->tail_ptr[v + 1]);
+		tmp_index_not_excluded[tmp_num_not_excluded] = v;
+		tmp_num_not_excluded += not_excluded[v];
+	}
+	if (tmp_num_not_excluded == nng->vertices) {
+		tmp_num_not_excluded = 0;
+		free(tmp_index_not_excluded);
+		tmp_index_not_excluded = NULL;
+	}
+	// UNTIL HERE
+
+	//for (size_t v = 0; v < nng->vertices; ++v) {
+	//	not_excluded[v] = (nng->tail_ptr[v] != nng->tail_ptr[v + 1]);
+	//}
 
 	scc_ErrorCode ec;
 	iscc_Digraph exclusion_graph;
-	if ((ec = iscc_fs_exclusion_graph(nng, not_excluded, &exclusion_graph)) != SCC_ER_OK) {
+	if ((ec = iscc_fs_exclusion_graph(nng, tmp_num_not_excluded, tmp_index_not_excluded, &exclusion_graph)) != SCC_ER_OK) {
 		free(not_excluded);
 		return ec;
 	}
+
+	// FIX THIS
+	free(tmp_index_not_excluded);
+	tmp_index_not_excluded = NULL;
+	// UNTIL HERE
 
 	iscc_fs_SortResult sort;
 	if ((ec = iscc_fs_sort_by_inwards(&exclusion_graph, updating, &sort)) != SCC_ER_OK) {
@@ -498,12 +525,12 @@ bool iscc_findseeds_onearc_updating(const scc_Digraph* const nng, ...) {
 
 
 static scc_ErrorCode iscc_fs_exclusion_graph(const iscc_Digraph* const nng,
-                                             const bool* const not_excluded,
+                                             const size_t len_not_excluded,
+                                             const scc_PointIndex not_excluded[const],
                                              iscc_Digraph* const out_dg)
 {
 	assert(iscc_digraph_is_valid(nng));
 	assert(!iscc_digraph_is_empty(nng));
-	assert(not_excluded != NULL);
 	assert(out_dg != NULL);
 
 	scc_ErrorCode ec;
@@ -526,7 +553,7 @@ static scc_ErrorCode iscc_fs_exclusion_graph(const iscc_Digraph* const nng,
 	 * by calling `iscc_digraph_union_and_delete` with `not_excluded`.
 	 */
 	const iscc_Digraph nng_sum[2] = { *nng, nng_nng_transpose };
-	ec = iscc_digraph_union_and_delete(2, nng_sum, not_excluded, false, out_dg);
+	ec = iscc_digraph_union_and_delete(2, nng_sum, len_not_excluded, not_excluded, false, out_dg);
 	iscc_free_digraph(&nng_nng_transpose);
 	if (ec != SCC_ER_OK) return ec;
 
