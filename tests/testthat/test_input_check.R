@@ -266,6 +266,7 @@ t_coerce_distance_data <- function(t_data = matrix(as.numeric(1:10), nrow = 5),
 test_that("`coerce_distance_data` checks input.", {
   expect_silent(t_coerce_distance_data())
   expect_silent(t_coerce_distance_data(t_data = matrix(1:10, nrow = 5)))
+  expect_silent(t_coerce_distance_data(t_data = 1:10))
   expect_silent(t_coerce_distance_data(t_data = data.frame(matrix(1:10, nrow = 5))))
   expect_silent(t_coerce_distance_data(t_id_variable = letters[1:5]))
   expect_silent(t_coerce_distance_data(t_data = t_distance_data_frame,
@@ -273,12 +274,12 @@ test_that("`coerce_distance_data` checks input.", {
   expect_silent(t_coerce_distance_data(t_data = t_distance_data_frame,
                                        t_id_variable = "id",
                                        t_dist_variables = c("x", "y")))
-  expect_error(t_coerce_distance_data(t_data = 1:10),
-               regexp = "`t_data` must be matrix or data frame.")
+  expect_error(t_coerce_distance_data(t_data = dist(1:10)),
+               regexp = "`t_data` must be vector, matrix or data frame.")
   expect_error(t_coerce_distance_data(t_data = matrix(1:2, nrow = 1)),
                regexp = "`t_data` must contain at least two data points.")
   expect_error(t_coerce_distance_data(t_dist_variables = "X1"),
-               regexp = "`t_dist_variables` must be NULL when `t_data` is matrix.")
+               regexp = "`t_dist_variables` must be NULL when `t_data` is matrix or vector.")
   expect_error(t_coerce_distance_data(t_data = t_distance_data_frame,
                                       t_id_variable = "xxx"),
                regexp = "`t_id_variable` does not exists as column in `t_data`.")

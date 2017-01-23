@@ -180,15 +180,18 @@ coerce_counts <- function(counts,
 coerce_distance_data <- function(data,
                                  id_variable,
                                  dist_variables) {
-  if (!is.data.frame(data) && !is.matrix(data)) {
-    new_error("`", match.call()$data, "` must be matrix or data frame.")
+  if (!is.data.frame(data) && !is.matrix(data) && !is.vector(data)) {
+    new_error("`", match.call()$data, "` must be vector, matrix or data frame.")
+  }
+  if (is.vector(data)) {
+    data <- matrix(data, nrow = length(data))
   }
   if (nrow(data) < 2L) {
     new_error("`", match.call()$data, "` must contain at least two data points.")
   }
   if (is.matrix(data)) {
     if (!is.null(dist_variables)) {
-      new_error("`", match.call()$dist_variables, "` must be NULL when `", match.call()$data, "` is matrix.")
+      new_error("`", match.call()$dist_variables, "` must be NULL when `", match.call()$data, "` is matrix or vector.")
     }
   } else {
     # is.data.frame(data) == TRUE
