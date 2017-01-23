@@ -55,7 +55,7 @@ test_that("`nng_clustering_batches` returns correct output", {
                                  100L)
   test_nng_batch_against_replica(test_distances1,
                                  2L,
-                                 "by_nng",
+                                 "any_neighbor",
                                  NULL,
                                  NULL,
                                  10L)
@@ -85,7 +85,7 @@ test_that("`nng_clustering_batches` returns correct output", {
                                  100L)
   test_nng_batch_against_replica(test_distances1,
                                  2L,
-                                 "by_nng",
+                                 "any_neighbor",
                                  NULL,
                                  primary_data_points,
                                  10L)
@@ -103,7 +103,7 @@ test_that("`nng_clustering_batches` returns correct output", {
                                  100L)
   test_nng_batch_against_replica(test_distances1,
                                  2L,
-                                 "by_nng",
+                                 "any_neighbor",
                                  test_radius,
                                  NULL,
                                  10L)
@@ -121,7 +121,7 @@ test_that("`nng_clustering_batches` returns correct output", {
                                  100L)
   test_nng_batch_against_replica(test_distances1,
                                  2L,
-                                 "by_nng",
+                                 "any_neighbor",
                                  test_radius,
                                  primary_data_points,
                                  10L)
@@ -132,7 +132,7 @@ test_that("`nng_clustering_batches` returns correct output (combinations)", {
   skip_on_cran()
   skip_if_not(run_slow_tests)
 
-  for (unassigned_method in c("ignore", "by_nng")) {
+  for (unassigned_method in c("ignore", "any_neighbor")) {
     for (radius in c(0, 0.1, 0.2)) {
       for (do_primary_data_points in c("N", "Y")) {
         for (batch_size in c(1L, 10L, 100L, 1000L)) {

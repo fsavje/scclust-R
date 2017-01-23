@@ -18,6 +18,103 @@
 # along with this program. If not, see http://www.gnu.org/licenses/
 # ==============================================================================
 
+nng_clustering <- function(distance_object,
+                           size_constraint,
+                           seed_method = "exclusion_updating",
+                           unassigned_method = "closest_seed",
+                           radius = NULL,
+                           primary_data_points = NULL,
+                           secondary_unassigned_method = "ignore",
+                           secondary_radius = NULL) {
+  primary_radius <- "seed_radius"
+  if (unassigned_method == "estimated_radius_closest_seed") {
+    unassigned_method <- "closest_seed"
+    primary_radius <- "estimated_radius"
+  }
+
+  if (secondary_unassigned_method == "estimated_radius_closest_seed") {
+    secondary_unassigned_method <- "closest_seed"
+    secondary_radius <- "estimated_radius"
+  }
+
+  make_clustering(distance_object,
+                  size_constraint,
+                  NULL,
+                  NULL,
+                  seed_method,
+                  primary_data_points,
+                  unassigned_method,
+                  secondary_unassigned_method,
+                  radius,
+                  primary_radius,
+                  secondary_radius,
+                  NULL)
+}
+
+
+nng_clustering_batches <- function(distance_object,
+                                   size_constraint,
+                                   unassigned_method = "any_neighbor",
+                                   radius = NULL,
+                                   primary_data_points = NULL,
+                                   batch_size = 100L) {
+  primary_radius <- "seed_radius"
+  if (unassigned_method == "estimated_radius_closest_seed") {
+    unassigned_method <- "closest_seed"
+    primary_radius <- "estimated_radius"
+  }
+
+  make_clustering(distance_object,
+                  size_constraint,
+                  NULL,
+                  NULL,
+                  "batches",
+                  primary_data_points,
+                  unassigned_method,
+                  "ignore",
+                  radius,
+                  primary_radius,
+                  NULL,
+                  batch_size)
+}
+
+
+nng_clustering_types <- function(distance_object,
+                                 type_labels,
+                                 type_size_constraints,
+                                 total_size_constraint = NULL,
+                                 seed_method = "exclusion_updating",
+                                 unassigned_method = "closest_seed",
+                                 radius = NULL,
+                                 primary_data_points = NULL,
+                                 secondary_unassigned_method = "ignore",
+                                 secondary_radius = NULL) {
+  primary_radius <- "seed_radius"
+  if (unassigned_method == "estimated_radius_closest_seed") {
+    unassigned_method <- "closest_seed"
+    primary_radius <- "estimated_radius"
+  }
+
+  if (secondary_unassigned_method == "estimated_radius_closest_seed") {
+    secondary_unassigned_method <- "closest_seed"
+    secondary_radius <- "estimated_radius"
+  }
+
+  make_clustering(distance_object,
+                  total_size_constraint,
+                  unclass(type_labels),
+                  type_size_constraints,
+                  seed_method,
+                  primary_data_points,
+                  unassigned_method,
+                  secondary_unassigned_method,
+                  radius,
+                  primary_radius,
+                  secondary_radius,
+                  NULL)
+}
+
+
 test_nng_against_replica <- function(distance_object,
                                      size_constraint,
                                      seed_method,

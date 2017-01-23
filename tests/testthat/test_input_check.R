@@ -266,6 +266,7 @@ t_coerce_distance_data <- function(t_data = matrix(as.numeric(1:10), nrow = 5),
 test_that("`coerce_distance_data` checks input.", {
   expect_silent(t_coerce_distance_data())
   expect_silent(t_coerce_distance_data(t_data = matrix(1:10, nrow = 5)))
+  expect_silent(t_coerce_distance_data(t_data = 1:10))
   expect_silent(t_coerce_distance_data(t_data = data.frame(matrix(1:10, nrow = 5))))
   expect_silent(t_coerce_distance_data(t_id_variable = letters[1:5]))
   expect_silent(t_coerce_distance_data(t_data = t_distance_data_frame,
@@ -273,12 +274,12 @@ test_that("`coerce_distance_data` checks input.", {
   expect_silent(t_coerce_distance_data(t_data = t_distance_data_frame,
                                        t_id_variable = "id",
                                        t_dist_variables = c("x", "y")))
-  expect_error(t_coerce_distance_data(t_data = 1:10),
-               regexp = "`t_data` must be matrix or data frame.")
+  expect_error(t_coerce_distance_data(t_data = dist(1:10)),
+               regexp = "`t_data` must be vector, matrix or data frame.")
   expect_error(t_coerce_distance_data(t_data = matrix(1:2, nrow = 1)),
                regexp = "`t_data` must contain at least two data points.")
   expect_error(t_coerce_distance_data(t_dist_variables = "X1"),
-               regexp = "`t_dist_variables` must be NULL when `t_data` is matrix.")
+               regexp = "`t_dist_variables` must be NULL when `t_data` is matrix or vector.")
   expect_error(t_coerce_distance_data(t_data = t_distance_data_frame,
                                       t_id_variable = "xxx"),
                regexp = "`t_id_variable` does not exists as column in `t_data`.")
@@ -383,31 +384,83 @@ test_that("`coerce_norm_matrix` coerces correctly.", {
 
 
 # ==============================================================================
+# coerce_data_point_indices
+# ==============================================================================
+
+t_coerce_data_point_indices <- function(t_indices = c(TRUE, FALSE, TRUE, TRUE, FALSE),
+                                        t_num_data_points = 5L) {
+  coerce_data_point_indices(t_indices, t_num_data_points)
+}
+
+test_that("`coerce_data_point_indices` checks input.", {
+  expect_silent(t_coerce_data_point_indices())
+  expect_silent(t_coerce_data_point_indices(t_indices = NULL))
+  expect_silent(t_coerce_data_point_indices(t_indices = c(1L, 4L)))
+
+  expect_error(t_coerce_data_point_indices(t_indices = c(TRUE, FALSE, NA, TRUE, FALSE)),
+               regexp = "`t_indices` may not contain NAs.")
+  expect_error(t_coerce_data_point_indices(t_indices = rep(FALSE, 5)),
+               regexp = "`t_indices` cannot be all `FALSE`.")
+  expect_error(t_coerce_data_point_indices(t_indices = c(TRUE, FALSE, FALSE, TRUE)),
+               regexp = "`t_indices` is not of length `t_num_data_points`.")
+  expect_error(t_coerce_data_point_indices(t_indices = letters[1:5]),
+               regexp = "`t_indices` must be integer, logical or NULL.")
+
+  expect_error(t_coerce_data_point_indices(t_indices = c(1L, NA, 4L)),
+               regexp = "`t_indices` may not contain NAs.")
+  expect_error(t_coerce_data_point_indices(t_indices = c(-1L, 2L, 4L)),
+               regexp = "`t_indices` must be positive.")
+  expect_error(t_coerce_data_point_indices(t_indices = integer()),
+               regexp = "`t_indices` cannot be empty.")
+})
+
+test_that("`coerce_data_point_indices` coerces correctly.", {
+  expect_equal(t_coerce_data_point_indices(),
+               c(TRUE, FALSE, TRUE, TRUE, FALSE))
+  expect_equal(t_coerce_data_point_indices(t_indices = NULL),
+               NULL)
+  expect_equal(t_coerce_data_point_indices(t_indices = c(1L, 4L)),
+               c(1L, 4L))
+  expect_equal(t_coerce_data_point_indices(t_indices = as.numeric(c(1L, 4L))),
+               c(1L, 4L))
+})
+
+
+# ==============================================================================
 # coerce_radius
 # ==============================================================================
 
-t_coerce_radius <- function(t_radius = 0.5) {
-  coerce_radius(t_radius)
+t_coerce_radius <- function(t_radius = 0.5, t_is_seed = FALSE) {
+  coerce_radius(t_radius, t_is_seed)
 }
 
 test_that("`coerce_radius` checks input.", {
   expect_silent(t_coerce_radius())
   expect_silent(t_coerce_radius(t_radius = 1L))
+  expect_silent(t_coerce_radius(t_radius = "seed_radius"))
   expect_silent(t_coerce_radius(t_radius = NULL))
-  expect_error(t_coerce_radius(t_radius = "a"),
-               regexp = "`t_radius` must be numeric or `NULL`.")
   expect_error(t_coerce_radius(t_radius = c(1.4, 2.4)),
                regexp = "`t_radius` must be scalar.")
   expect_error(t_coerce_radius(t_radius = as.numeric(NA)),
                regexp = "`t_radius` may not be NA.")
+  expect_error(t_coerce_radius(t_radius = "invalid"),
+               regexp = "`t_radius` must be one of \"no_radius\", \"seed_radius\", \"estimated_radius\".")
+  expect_error(t_coerce_radius(t_radius = "seed_radius", t_is_seed = TRUE),
+               regexp = "`t_radius` may not be \"seed_radius\".")
   expect_error(t_coerce_radius(t_radius = -0.5),
-               regexp = "`t_radius` must be positive or `NULL`.")
+               regexp = "`t_radius` must be positive.")
+  expect_error(t_coerce_radius(t_radius = TRUE),
+               regexp = "`t_radius` must be numeric, character or `NULL`.")
 })
 
 test_that("`coerce_radius` coerces correctly.", {
   expect_equal(t_coerce_radius(), 0.5)
   expect_type(t_coerce_radius(t_radius = 1L), "double")
   expect_equal(t_coerce_radius(t_radius = 1L), 1)
+  expect_equal(t_coerce_radius(t_radius = "no_radius"), "no_radius")
+  expect_equal(t_coerce_radius(t_radius = "seed_radius"), "seed_radius")
+  expect_equal(t_coerce_radius(t_radius = "estimated_radius"), "estimated_radius")
+  expect_equal(t_coerce_radius(t_radius = "no_rad"), "no_radius")
   expect_null(t_coerce_radius(t_radius = NULL))
 })
 

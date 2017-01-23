@@ -142,7 +142,7 @@ test_that("`nng_clustering` returns correct output", {
   test_nng_against_replica(test_distances1,
                            2L,
                            "lexical",
-                           "by_nng",
+                           "any_neighbor",
                            NULL,
                            NULL,
                            "ignore",
@@ -183,7 +183,7 @@ test_that("`nng_clustering` returns correct output", {
   test_nng_against_replica(test_distances1,
                            2L,
                            "lexical",
-                           "by_nng",
+                           "any_neighbor",
                            test_radius,
                            NULL,
                            "ignore",
@@ -294,7 +294,7 @@ test_that("`nng_clustering` returns correct output (combinations)", {
                         "exclusion_order",
                         "exclusion_updating")) {
     for (unassigned_method in c("ignore",
-                                "by_nng",
+                                "any_neighbor",
                                 "closest_assigned",
                                 "closest_seed",
                                 "estimated_radius_closest_seed")) {

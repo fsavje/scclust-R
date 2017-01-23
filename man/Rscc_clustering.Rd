@@ -49,11 +49,10 @@ my_clust_obj5 <- Rscc_clustering(my_labels5, ids = my_ids)
 }
 \seealso{
 Functions that accept the Rscclust cluster object as input are
-\code{\link{hierarchical_clustering}}, \code{\link{check_clustering}},
-\code{\link{check_clustering_types}} and \code{\link{get_clustering_stats}} for
+\code{\link{hierarchical_clustering}}, \code{\link{check_clustering}}
+and \code{\link{get_clustering_stats}}.
 
 \code{Rscc_clustering} does not derive clusterings from data sets; for that
-functionality see \code{\link{nng_clustering}}, \code{\link{nng_clustering_batches}},
-\code{\link{nng_clustering_types}} and \code{\link{hierarchical_clustering}}.
+functionality see \code{\link{make_clustering}} and \code{\link{hierarchical_clustering}}.
 }
 

@@ -33,7 +33,7 @@ test_that("`nng_clustering_batches` (stable) returns correct output", {
   skip_if_not(compiled_with_stable_nng, "Only run this when scclust is compiled with the -DSCC_STABLE_NNG flag.")
 
   for (size_constraint in c(2L, 3L, 6L)) {
-    for (unassigned_method in c("ignore", "by_nng")) {
+    for (unassigned_method in c("ignore", "any_neighbor")) {
       radius_to_use <- c(0, 0.1, 0.2, 0.3)
       if (size_constraint == 6L) {
         radius_to_use <- c(0, 0.3, 0.4)

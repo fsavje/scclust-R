@@ -33,6 +33,7 @@ idvar <- paste0("a", 1:100)
 
 test_data_matrix <- matrix(c(cov1, cov2, cov3), nrow = 100)
 test_data_matrix_single <- matrix(cov1, nrow = 100)
+test_data_vector <- cov1
 test_data_df1 <- data.frame(cov1 = cov1, cov2 = cov2, cov3 = cov3)
 test_data_df2 <- data.frame(cov1 = cov1, cov2 = cov2, cov3 = cov3, extracol = 101:200)
 test_data_df3 <- data.frame(idcol = idvar, cov1 = cov1, cov2 = cov2, cov3 = cov3, stringsAsFactors = FALSE)
@@ -45,6 +46,8 @@ test_data_factors <- data.frame(cov1 = cov1, cov2 = factor(rep(1:10, 10)))
 
 test_data_matrix_wNA <- test_data_matrix
 test_data_matrix_wNA[55, 2] <- NA
+test_data_vector_wNA <- test_data_vector
+test_data_vector_wNA[55] <- NA
 test_data_df1_wNA <- test_data_df1
 test_data_df1_wNA$cov2[34] <- NA
 
@@ -102,6 +105,20 @@ test_that("`make_distances` accepts 1D matrix input.", {
   expect_error(make_distances(test_data_matrix_single, id_variable = idvar[1:50]))
   expect_error(make_distances(test_data_matrix_single, id_variable = "idcol"))
   expect_error(make_distances(test_data_matrix_single, dist_variables = c("cov1", "cov2", "cov3")))
+})
+
+
+test_that("`make_distances` accepts vector input.", {
+  expect_is(make_distances(test_data_vector), "Rscc_distances")
+  expect_equal(make_distances(test_data_vector), ref_out_vanilla_single)
+  expect_equal(as.matrix(make_distances(test_data_vector)), ref_dist_mat_simple_single)
+  expect_error(make_distances(test_data_vector_wNA))
+  expect_is(make_distances(test_data_vector, id_variable = idvar), "Rscc_distances")
+  expect_equal(make_distances(test_data_vector, id_variable = idvar), ref_out_ids_single)
+  expect_equal(unname(as.matrix(make_distances(test_data_vector, id_variable = idvar))), unname(ref_dist_mat_simple_single))
+  expect_error(make_distances(test_data_vector, id_variable = idvar[1:50]))
+  expect_error(make_distances(test_data_vector, id_variable = "idcol"))
+  expect_error(make_distances(test_data_vector, dist_variables = c("cov1", "cov2", "cov3")))
 })
 
 test_that("`make_distances` accepts data.frame input.", {

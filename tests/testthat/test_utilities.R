@@ -23,6 +23,20 @@ context("utilities.R")
 
 
 # ==============================================================================
+# set_dist_functions
+# ==============================================================================
+
+test_that("`set_dist_functions` returns correct output", {
+  expect_equal(set_dist_functions(), TRUE)
+  expect_equal(set_dist_functions("internal"), TRUE)
+  expect_equal(set_dist_functions("ann"), TRUE)
+})
+
+# Reset dist functions
+set_dist_functions()
+
+
+# ==============================================================================
 # check_clustering
 # ==============================================================================
 
@@ -30,6 +44,7 @@ cl1 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
 cl2 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1)
 cl3 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), ids = letters[1:10])
 cl4 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1, ids = letters[1:10])
+dp_types <- factor(c("x", "y", "y", "z", "z", "x", "y", "z", "x", "x"))
 
 test_that("`check_clustering` returns correct output", {
   expect_equal(check_clustering(cl1, 2), TRUE)
@@ -44,47 +59,34 @@ test_that("`check_clustering` returns correct output", {
   expect_equal(check_clustering(cl4, 2), TRUE)
   expect_equal(check_clustering(cl4, 3), TRUE)
   expect_equal(check_clustering(cl4, 4), FALSE)
-})
 
+  expect_equal(check_clustering(cl1, NULL, dp_types, c("x" = 1, "y" = 1, "z" = 1)), TRUE)
+  expect_equal(check_clustering(cl1, 3, dp_types, c("x" = 1, "y" = 1, "z" = 1)), TRUE)
+  expect_equal(check_clustering(cl1, NULL, dp_types, c("x" = 1, "z" = 1)), TRUE)
+  expect_equal(check_clustering(cl1, 3, dp_types, c("y" = 1, "z" = 1)), TRUE)
+  expect_equal(check_clustering(cl1, 4, dp_types, c("x" = 1, "y" = 1, "z" = 1)), FALSE)
+  expect_equal(check_clustering(cl1, NULL, dp_types, c("x" = 3, "y" = 1, "z" = 1)), FALSE)
 
-# ==============================================================================
-# check_clustering_types
-# ==============================================================================
+  expect_equal(check_clustering(cl2, NULL, dp_types, c("x" = 1, "y" = 1, "z" = 1)), TRUE)
+  expect_equal(check_clustering(cl2, 3, dp_types, c("x" = 1, "y" = 1, "z" = 1)), TRUE)
+  expect_equal(check_clustering(cl2, NULL, dp_types, c("x" = 1, "z" = 1)), TRUE)
+  expect_equal(check_clustering(cl2, 3, dp_types, c("y" = 1, "z" = 1)), TRUE)
+  expect_equal(check_clustering(cl2, 4, dp_types, c("x" = 1, "y" = 1, "z" = 1)), FALSE)
+  expect_equal(check_clustering(cl2, NULL, dp_types, c("x" = 3, "y" = 1, "z" = 1)), FALSE)
 
-cl1 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
-cl2 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1)
-cl3 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), ids = letters[1:10])
-cl4 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1, ids = letters[1:10])
-dp_types <- factor(c("x", "y", "y", "z", "z", "x", "y", "z", "x", "x"))
+  expect_equal(check_clustering(cl3, NULL, dp_types, c("x" = 1, "y" = 1, "z" = 1)), TRUE)
+  expect_equal(check_clustering(cl3, 3, dp_types, c("x" = 1, "y" = 1, "z" = 1)), TRUE)
+  expect_equal(check_clustering(cl3, NULL, dp_types, c("x" = 1, "z" = 1)), TRUE)
+  expect_equal(check_clustering(cl3, 3, dp_types, c("y" = 1, "z" = 1)), TRUE)
+  expect_equal(check_clustering(cl3, 4, dp_types, c("x" = 1, "y" = 1, "z" = 1)), FALSE)
+  expect_equal(check_clustering(cl3, NULL, dp_types, c("x" = 3, "y" = 1, "z" = 1)), FALSE)
 
-test_that("`check_clustering_types` returns correct output", {
-  expect_equal(check_clustering_types(cl1, dp_types, c("x" = 1, "y" = 1, "z" = 1)), TRUE)
-  expect_equal(check_clustering_types(cl1, dp_types, c("x" = 1, "y" = 1, "z" = 1), 3), TRUE)
-  expect_equal(check_clustering_types(cl1, dp_types, c("x" = 1, "z" = 1)), TRUE)
-  expect_equal(check_clustering_types(cl1, dp_types, c("y" = 1, "z" = 1), 3), TRUE)
-  expect_equal(check_clustering_types(cl1, dp_types, c("x" = 1, "y" = 1, "z" = 1), 4), FALSE)
-  expect_equal(check_clustering_types(cl1, dp_types, c("x" = 3, "y" = 1, "z" = 1)), FALSE)
-
-  expect_equal(check_clustering_types(cl2, dp_types, c("x" = 1, "y" = 1, "z" = 1)), TRUE)
-  expect_equal(check_clustering_types(cl2, dp_types, c("x" = 1, "y" = 1, "z" = 1), 3), TRUE)
-  expect_equal(check_clustering_types(cl2, dp_types, c("x" = 1, "z" = 1)), TRUE)
-  expect_equal(check_clustering_types(cl2, dp_types, c("y" = 1, "z" = 1), 3), TRUE)
-  expect_equal(check_clustering_types(cl2, dp_types, c("x" = 1, "y" = 1, "z" = 1), 4), FALSE)
-  expect_equal(check_clustering_types(cl2, dp_types, c("x" = 3, "y" = 1, "z" = 1)), FALSE)
-
-  expect_equal(check_clustering_types(cl3, dp_types, c("x" = 1, "y" = 1, "z" = 1)), TRUE)
-  expect_equal(check_clustering_types(cl3, dp_types, c("x" = 1, "y" = 1, "z" = 1), 3), TRUE)
-  expect_equal(check_clustering_types(cl3, dp_types, c("x" = 1, "z" = 1)), TRUE)
-  expect_equal(check_clustering_types(cl3, dp_types, c("y" = 1, "z" = 1), 3), TRUE)
-  expect_equal(check_clustering_types(cl3, dp_types, c("x" = 1, "y" = 1, "z" = 1), 4), FALSE)
-  expect_equal(check_clustering_types(cl3, dp_types, c("x" = 3, "y" = 1, "z" = 1)), FALSE)
-
-  expect_equal(check_clustering_types(cl4, dp_types, c("x" = 1, "y" = 1, "z" = 1)), TRUE)
-  expect_equal(check_clustering_types(cl4, dp_types, c("x" = 1, "y" = 1, "z" = 1), 3), TRUE)
-  expect_equal(check_clustering_types(cl4, dp_types, c("x" = 1, "z" = 1)), TRUE)
-  expect_equal(check_clustering_types(cl4, dp_types, c("y" = 1, "z" = 1), 3), TRUE)
-  expect_equal(check_clustering_types(cl4, dp_types, c("x" = 1, "y" = 1, "z" = 1), 4), FALSE)
-  expect_equal(check_clustering_types(cl4, dp_types, c("x" = 3, "y" = 1, "z" = 1)), FALSE)
+  expect_equal(check_clustering(cl4, NULL, dp_types, c("x" = 1, "y" = 1, "z" = 1)), TRUE)
+  expect_equal(check_clustering(cl4, 3, dp_types, c("x" = 1, "y" = 1, "z" = 1)), TRUE)
+  expect_equal(check_clustering(cl4, NULL, dp_types, c("x" = 1, "z" = 1)), TRUE)
+  expect_equal(check_clustering(cl4, 3, dp_types, c("y" = 1, "z" = 1)), TRUE)
+  expect_equal(check_clustering(cl4, 4, dp_types, c("x" = 1, "y" = 1, "z" = 1)), FALSE)
+  expect_equal(check_clustering(cl4, NULL, dp_types, c("x" = 3, "y" = 1, "z" = 1)), FALSE)
 })
 
 

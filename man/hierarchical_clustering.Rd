@@ -32,7 +32,7 @@ functions in the package.
 \details{
 While \code{hierarchical_clustering} can be used alone to derive size constrained
 clusterings, its main purpose is to be used with the nearest neighbor graph (NNG)
-functions in the package (e.g., \code{\link{nng_clustering}}). The clusterings
+functions in the package (i.e., \code{\link{make_clustering}}). The clusterings
 produced by the NNG functions tend produce large clusters in regions with many
 data points. In some cases, it is beneficial to divide these clusters into smaller
 groups. \code{hierarchical_clustering} can be use to achieve that.
@@ -65,13 +65,12 @@ in the third stage in batches of \code{size_constraint}, this property is
 retained to the greatest extent possible.
 }
 \seealso{
-\code{\link{nng_clustering}}, \code{\link{nng_clustering_batches}} and
-         \code{\link{nng_clustering_types}} are other clustering functions in the package.
+\code{\link{make_clustering}} is the main clustering function in the package.
 
          Use \code{\link{Rscc_clustering}} to create Rscclust cluster objects from external
          clusterings.
 
-Other clustering.functions: \code{\link{nng_clustering}}
+Other clustering.functions: \code{\link{make_clustering}}
 }
 \keyword{cluster}
 

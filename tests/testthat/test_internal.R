@@ -29,6 +29,7 @@ context("Internal functions")
 test_that("Constants are correct", {
   expect_identical(all_seed_methods,
                    c("lexical",
+                     "batches",
                      "inwards_order",
                      "inwards_updating",
                      "inwards_alt_updating",

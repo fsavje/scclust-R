@@ -180,15 +180,18 @@ coerce_counts <- function(counts,
 coerce_distance_data <- function(data,
                                  id_variable,
                                  dist_variables) {
-  if (!is.data.frame(data) && !is.matrix(data)) {
-    new_error("`", match.call()$data, "` must be matrix or data frame.")
+  if (!is.data.frame(data) && !is.matrix(data) && !is.vector(data)) {
+    new_error("`", match.call()$data, "` must be vector, matrix or data frame.")
+  }
+  if (is.vector(data)) {
+    data <- matrix(data, nrow = length(data))
   }
   if (nrow(data) < 2L) {
     new_error("`", match.call()$data, "` must contain at least two data points.")
   }
   if (is.matrix(data)) {
     if (!is.null(dist_variables)) {
-      new_error("`", match.call()$dist_variables, "` must be NULL when `", match.call()$data, "` is matrix.")
+      new_error("`", match.call()$dist_variables, "` must be NULL when `", match.call()$data, "` is matrix or vector.")
     }
   } else {
     # is.data.frame(data) == TRUE
@@ -270,23 +273,73 @@ coerce_norm_matrix <- function(mat,
 }
 
 
-# Coerce `radius` to NULL or a scalar, positive, non-na, numeric
-coerce_radius <- function(radius) {
-  if (!is.null(radius)) {
-    if (!is.numeric(radius)) {
-      new_error("`", match.call()$radius, "` must be numeric or `NULL`.")
+# Coerce data point indices
+coerce_data_point_indices <- function(indices,
+                                      num_data_points) {
+  if (is.null(indices)) {
+    # do nothing
+  } else if (is.logical(indices)) {
+    if (any(is.na(indices))) {
+      new_error("`", match.call()$indices, "` may not contain NAs.")
     }
+    if (!any(indices)) {
+      new_error("`", match.call()$indices, "` cannot be all `FALSE`.")
+    }
+    if (length(indices) != num_data_points) {
+      new_error("`", match.call()$indices, "` is not of length `", match.call()$num_data_points, "`.")
+    }
+  } else {
+    if (!is.integer(indices)) {
+      if (is.numeric_integer(indices)) {
+        storage.mode(indices) <- "integer"
+      } else {
+        new_error("`", match.call()$indices, "` must be integer, logical or NULL.")
+      }
+    }
+    if (any(is.na(indices))) {
+      new_error("`", match.call()$indices, "` may not contain NAs.")
+    }
+    if (any(indices < 1L)) {
+      new_error("`", match.call()$indices, "` must be positive.")
+    }
+    if (length(indices) == 0) {
+      new_error("`", match.call()$indices, "` cannot be empty.")
+    }
+  }
+
+  indices
+}
+
+
+# Coerce `radius` to NULL or a scalar, positive, non-na, numeric
+coerce_radius <- function(radius,
+                          is_seed = FALSE) {
+  if (!is.null(radius)) {
     if (length(radius) != 1L) {
       new_error("`", match.call()$radius, "` must be scalar.")
     }
     if (is.na(radius)) {
       new_error("`", match.call()$radius, "` may not be NA.")
     }
-    if (radius <= 0.0) {
-      new_error("`", match.call()$radius, "` must be positive or `NULL`.")
+    if (is.character(radius)) {
+      choices <- c("no_radius", "seed_radius", "estimated_radius")
+      i <- pmatch(radius, choices, nomatch = 0L)
+      if (i == 0) {
+        new_error("`", match.call()$radius, "` must be one of ", paste0(paste0("\"", choices, "\""), collapse = ", "), ".")
+      }
+      radius <- choices[i]
+      if (is_seed && (radius != "no_radius")) {
+        new_error("`", match.call()$radius, "` may not be \"", radius, "\".")
+      }
+    } else if (is.numeric(radius)) {
+      if (radius <= 0.0) {
+        new_error("`", match.call()$radius, "` must be positive.")
+      }
+      # If `radius` is integer
+      radius <- as.numeric(radius)
+    } else {
+      new_error("`", match.call()$radius, "` must be numeric, character or `NULL`.")
     }
-    # If `radius` is integer
-    radius <- as.numeric(radius)
   }
   radius
 }

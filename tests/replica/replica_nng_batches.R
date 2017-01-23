@@ -9,7 +9,7 @@ batch_assign <- function(nng,
         assigned[nng[, i]] <<- TRUE
         cl_label[nng[, i]] <<- current_label
         current_label <<- current_label + 1
-      } else if (unassigned_method == "by_nng") {
+      } else if (unassigned_method == "any_neighbor") {
         cand <- which(nng[, i])
         cl_label[i] <<- cl_label[cand[assigned[cand]][1]]
       }
@@ -22,14 +22,14 @@ batch_assign <- function(nng,
 
 replica_nng_clustering_batches <- function(distance_object,
                                            size_constraint,
-                                           unassigned_method = "by_nng",
+                                           unassigned_method = "any_neighbor",
                                            radius = NULL,
                                            primary_data_points = NULL) {
   ensure_distances(distance_object)
   num_data_points <- data_point_count.Rscc_distances(distance_object)
   size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
   unassigned_method <- coerce_args(unassigned_method,
-                                   c("ignore", "by_nng"))
+                                   c("ignore", "any_neighbor"))
   radius <- coerce_radius(radius)
   if (!is.null(primary_data_points)) {
     ensure_indicators(primary_data_points, num_data_points, TRUE)

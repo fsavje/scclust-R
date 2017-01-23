@@ -1,4 +1,4 @@
-by_nng_or_closest_assigned <- function(unassigned_method,
+any_neighbor_or_closest_assigned <- function(unassigned_method,
                                        unassigned,
                                        nng,
                                        assigned,
