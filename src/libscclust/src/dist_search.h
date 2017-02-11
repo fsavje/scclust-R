@@ -48,18 +48,18 @@ extern iscc_dist_functions_struct iscc_dist_functions;
 // Miscellaneous functions
 // =============================================================================
 
-inline bool iscc_check_data_set(void* data_set,
-                                size_t num_data_points)
+static inline bool iscc_check_data_set(void* data_set,
+                                       size_t num_data_points)
 {
 	return iscc_dist_functions.check_data_set(data_set,
 	                                          num_data_points);
 }
 
 
-inline bool iscc_get_dist_matrix(void* data_set,
-                                 size_t len_point_indices,
-                                 const scc_PointIndex point_indices[],
-                                 double output_dists[])
+static inline bool iscc_get_dist_matrix(void* data_set,
+                                        size_t len_point_indices,
+                                        const scc_PointIndex point_indices[],
+                                        double output_dists[])
 {
 	return iscc_dist_functions.get_dist_matrix(data_set,
 	                                           len_point_indices,
@@ -68,12 +68,12 @@ inline bool iscc_get_dist_matrix(void* data_set,
 }
 
 
-inline bool iscc_get_dist_rows(void* data_set,
-                               size_t len_query_indices,
-                               const scc_PointIndex query_indices[],
-                               size_t len_column_indices,
-                               const scc_PointIndex column_indices[],
-                               double output_dists[])
+static inline bool iscc_get_dist_rows(void* data_set,
+                                      size_t len_query_indices,
+                                      const scc_PointIndex query_indices[],
+                                      size_t len_column_indices,
+                                      const scc_PointIndex column_indices[],
+                                      double output_dists[])
 {
 	return iscc_dist_functions.get_dist_rows(data_set,
 	                                         len_query_indices,
@@ -88,10 +88,10 @@ inline bool iscc_get_dist_rows(void* data_set,
 // Max dist functions
 // =============================================================================
 
-inline bool iscc_init_max_dist_object(void* data_set,
-                                      size_t len_search_indices,
-                                      const scc_PointIndex search_indices[],
-                                      iscc_MaxDistObject** out_max_dist_object)
+static inline bool iscc_init_max_dist_object(void* data_set,
+                                             size_t len_search_indices,
+                                             const scc_PointIndex search_indices[],
+                                             iscc_MaxDistObject** out_max_dist_object)
 {
 	return iscc_dist_functions.init_max_dist_object(data_set,
 	                                                len_search_indices,
@@ -100,11 +100,11 @@ inline bool iscc_init_max_dist_object(void* data_set,
 }
 
 
-inline bool iscc_get_max_dist(iscc_MaxDistObject* max_dist_object,
-                              size_t len_query_indices,
-                              const scc_PointIndex query_indices[],
-                              scc_PointIndex out_max_indices[],
-                              double out_max_dists[])
+static inline bool iscc_get_max_dist(iscc_MaxDistObject* max_dist_object,
+                                     size_t len_query_indices,
+                                     const scc_PointIndex query_indices[],
+                                     scc_PointIndex out_max_indices[],
+                                     double out_max_dists[])
 {
 	return iscc_dist_functions.get_max_dist(max_dist_object,
 	                                        len_query_indices,
@@ -114,7 +114,7 @@ inline bool iscc_get_max_dist(iscc_MaxDistObject* max_dist_object,
 }
 
 
-inline bool iscc_close_max_dist_object(iscc_MaxDistObject** max_dist_object)
+static inline bool iscc_close_max_dist_object(iscc_MaxDistObject** max_dist_object)
 {
 	return iscc_dist_functions.close_max_dist_object(max_dist_object);
 }
@@ -124,10 +124,10 @@ inline bool iscc_close_max_dist_object(iscc_MaxDistObject** max_dist_object)
 // Nearest neighbor search functions
 // =============================================================================
 
-inline bool iscc_init_nn_search_object(void* data_set,
-                                       size_t len_search_indices,
-                                       const scc_PointIndex search_indices[],
-                                       iscc_NNSearchObject** out_nn_search_object)
+static inline bool iscc_init_nn_search_object(void* data_set,
+                                              size_t len_search_indices,
+                                              const scc_PointIndex search_indices[],
+                                              iscc_NNSearchObject** out_nn_search_object)
 {
 	return iscc_dist_functions.init_nn_search_object(data_set,
 	                                                 len_search_indices,
@@ -136,15 +136,15 @@ inline bool iscc_init_nn_search_object(void* data_set,
 }
 
 
-inline bool iscc_nearest_neighbor_search(iscc_NNSearchObject* nn_search_object,
-                                         size_t len_query_indices,
-                                         const scc_PointIndex query_indices[],
-                                         uint32_t k,
-                                         bool radius_search,
-                                         double radius,
-                                         size_t* out_num_ok_queries,
-                                         scc_PointIndex out_query_indices[],
-                                         scc_PointIndex out_nn_indices[])
+static inline bool iscc_nearest_neighbor_search(iscc_NNSearchObject* nn_search_object,
+                                                size_t len_query_indices,
+                                                const scc_PointIndex query_indices[],
+                                                uint32_t k,
+                                                bool radius_search,
+                                                double radius,
+                                                size_t* out_num_ok_queries,
+                                                scc_PointIndex out_query_indices[],
+                                                scc_PointIndex out_nn_indices[])
 {
 	return iscc_dist_functions.nearest_neighbor_search(nn_search_object,
 	                                                   len_query_indices,
@@ -158,7 +158,7 @@ inline bool iscc_nearest_neighbor_search(iscc_NNSearchObject* nn_search_object,
 }
 
 
-inline bool iscc_close_nn_search_object(iscc_NNSearchObject** nn_search_object)
+static inline bool iscc_close_nn_search_object(iscc_NNSearchObject** nn_search_object)
 {
 	return iscc_dist_functions.close_nn_search_object(nn_search_object);
 }
