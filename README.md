@@ -1,7 +1,7 @@
 # scclust for R
 
 [![Build Status](https://travis-ci.org/fsavje/scclust-R.svg?branch=master)](https://travis-ci.org/fsavje/scclust-R)
-[![Build status](https://ci.appveyor.com/api/projects/status/5fvj2nm3ssfmsjab/branch/master?svg=true)](https://ci.appveyor.com/project/fsavje/rscclust/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/27c35hhx7vpigs7k/branch/master?svg=true)](https://ci.appveyor.com/project/fsavje/scclust-r/branch/master)
 [![codecov](https://codecov.io/gh/fsavje/scclust-R/branch/master/graph/badge.svg)](https://codecov.io/gh/fsavje/scclust-R)
 
 This is an R wrapper for the [scclust library](https://github.com/fsavje/scclust). The package can be used to construct size constrained clusterings. Subject to user-specified conditions on the minimum size and composition of the clusters, scclust derives a partition of a set of data points so that the similarity of points assigned to the same cluster is maximized.
