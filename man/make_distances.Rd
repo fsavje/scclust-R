@@ -135,4 +135,3 @@ all.equal(as.matrix(my_distances7), tmp_distances)
 # > TRUE
 
 }
-

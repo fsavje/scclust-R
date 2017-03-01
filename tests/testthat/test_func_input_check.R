@@ -1,6 +1,6 @@
 # ==============================================================================
-# Rscclust -- R wrapper for the scclust library
-# https://github.com/fsavje/Rscclust
+# scclust for R -- R wrapper for the scclust library
+# https://github.com/fsavje/scclust-R
 #
 # Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
 #
@@ -18,7 +18,7 @@
 # along with this program. If not, see http://www.gnu.org/licenses/
 # ==============================================================================
 
-library(Rscclust)
+library(scclust)
 context("Input checking in exported functions")
 
 
@@ -31,7 +31,7 @@ sound_distance_object <- make_distances(matrix(c(1, 4, 3, 2, 45, 6, 3, 2, 6, 5,
 unsound_distance_object <- letters[1:10]
 sound_size_constraint <- 2L
 unsound_size_constraint <- 0L
-sound_clustering <- Rscc_clustering(c(rep("a", 5), rep("b", 5)))
+sound_clustering <- scc_clustering(c(rep("a", 5), rep("b", 5)))
 unsound_clustering <- c(rep("a", 5), rep("b", 5))
 sound_bool <- TRUE
 unsound_bool <- "a"
@@ -101,22 +101,22 @@ test_that("`make_distances` checks input.", {
 
 
 # ==============================================================================
-# Rscc_distances methods
+# scc_distances methods
 # ==============================================================================
 
-test_that("`data_point_count.Rscc_distances` checks input.", {
-  expect_silent(data_point_count.Rscc_distances(sound_distance_object))
-  expect_error(data_point_count.Rscc_distances(unsound_distance_object))
+test_that("`data_point_count.scc_distances` checks input.", {
+  expect_silent(data_point_count.scc_distances(sound_distance_object))
+  expect_error(data_point_count.scc_distances(unsound_distance_object))
 })
 
-test_that("`print.Rscc_distances` checks input.", {
-  expect_output(print.Rscc_distances(sound_distance_object))
-  expect_error(print.Rscc_distances(unsound_distance_object))
+test_that("`print.scc_distances` checks input.", {
+  expect_output(print.scc_distances(sound_distance_object))
+  expect_error(print.scc_distances(unsound_distance_object))
 })
 
-test_that("`as.matrix.Rscc_distances` checks input.", {
-  expect_silent(as.matrix.Rscc_distances(sound_distance_object))
-  expect_error(as.matrix.Rscc_distances(unsound_distance_object))
+test_that("`as.matrix.scc_distances` checks input.", {
+  expect_silent(as.matrix.scc_distances(sound_distance_object))
+  expect_error(as.matrix.scc_distances(unsound_distance_object))
 })
 
 
@@ -238,7 +238,7 @@ test_that("`nng_clustering` checks input.", {
 
 
 # ==============================================================================
-# Rscc_clustering methods
+# scc_clustering methods
 # ==============================================================================
 
 sound_cluster_labels <- 1:10
@@ -248,19 +248,19 @@ unsound_unassigned_labels <- c(1L, "a")
 sound_ids <- letters[1:10]
 unsound_ids <- letters[1:5]
 
-test_that("`Rscc_clustering` checks input.", {
-  expect_silent(Rscc_clustering(cluster_labels = sound_cluster_labels,
-                                unassigned_labels = sound_unassigned_labels,
-                                ids = sound_ids))
-  expect_error(Rscc_clustering(cluster_labels = unsound_cluster_labels,
+test_that("`scc_clustering` checks input.", {
+  expect_silent(scc_clustering(cluster_labels = sound_cluster_labels,
                                unassigned_labels = sound_unassigned_labels,
                                ids = sound_ids))
-  expect_error(Rscc_clustering(cluster_labels = sound_cluster_labels,
-                               unassigned_labels = unsound_unassigned_labels,
-                               ids = sound_ids))
-  expect_error(Rscc_clustering(cluster_labels = sound_cluster_labels,
-                               unassigned_labels = sound_unassigned_labels,
-                               ids = unsound_ids))
+  expect_error(scc_clustering(cluster_labels = unsound_cluster_labels,
+                              unassigned_labels = sound_unassigned_labels,
+                              ids = sound_ids))
+  expect_error(scc_clustering(cluster_labels = sound_cluster_labels,
+                              unassigned_labels = unsound_unassigned_labels,
+                              ids = sound_ids))
+  expect_error(scc_clustering(cluster_labels = sound_cluster_labels,
+                              unassigned_labels = sound_unassigned_labels,
+                              ids = unsound_ids))
 })
 
 test_that("`cluster_count` checks input.", {
@@ -268,19 +268,19 @@ test_that("`cluster_count` checks input.", {
   expect_error(cluster_count(unsound_clustering))
 })
 
-test_that("`data_point_count.Rscc_clustering` checks input.", {
-  expect_silent(data_point_count.Rscc_clustering(sound_clustering))
-  expect_error(data_point_count.Rscc_clustering(unsound_clustering))
+test_that("`data_point_count.scc_clustering` checks input.", {
+  expect_silent(data_point_count.scc_clustering(sound_clustering))
+  expect_error(data_point_count.scc_clustering(unsound_clustering))
 })
 
-test_that("`as.data.frame.Rscc_clustering` checks input.", {
-  expect_silent(as.data.frame.Rscc_clustering(sound_clustering))
-  expect_error(as.data.frame.Rscc_clustering(unsound_clustering))
+test_that("`as.data.frame.scc_clustering` checks input.", {
+  expect_silent(as.data.frame.scc_clustering(sound_clustering))
+  expect_error(as.data.frame.scc_clustering(unsound_clustering))
 })
 
-test_that("`print.Rscc_clustering` checks input.", {
-  expect_output(print.Rscc_clustering(sound_clustering))
-  expect_error(print.Rscc_clustering(unsound_clustering))
+test_that("`print.scc_clustering` checks input.", {
+  expect_output(print.scc_clustering(sound_clustering))
+  expect_error(print.scc_clustering(unsound_clustering))
 })
 
 

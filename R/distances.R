@@ -1,6 +1,6 @@
 # ==============================================================================
-# Rscclust -- R wrapper for the scclust library
-# https://github.com/fsavje/Rscclust
+# scclust for R -- R wrapper for the scclust library
+# https://github.com/fsavje/scclust-R
 #
 # Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
 #
@@ -188,23 +188,23 @@ make_distances <- function(data,
             ids = id_variable,
             normalization = normalize,
             weights = weights,
-            class = c("Rscc_distances"))
+            class = c("scc_distances"))
 }
 
 
-#' Check \code{Rscc_distances} object
+#' Check \code{scc_distances} object
 #'
-#' \code{is.Rscc_distances} checks whether the provided object
-#' is a valid instance of the \code{Rscc_distances} class.
+#' \code{is.scc_distances} checks whether the provided object
+#' is a valid instance of the \code{scc_distances} class.
 #'
 #' @param obj  object to check.
 #'
 #' @return Returns \code{TRUE} if \code{obj} is a valid
-#'         \code{Rscc_distances} object, otherwise \code{FALSE}.
+#'         \code{scc_distances} object, otherwise \code{FALSE}.
 #'
 #' @export
-is.Rscc_distances <- function(obj) {
-  inherits(obj, "Rscc_distances") &&
+is.scc_distances <- function(obj) {
+  inherits(obj, "scc_distances") &&
     is.matrix(obj) &&
     is.numeric(obj) &&
     (is.null(attr(obj, "ids", exact = TRUE)) ||
@@ -220,28 +220,28 @@ is.Rscc_distances <- function(obj) {
 
 
 #' @export
-data_point_count.Rscc_distances <- function(x) {
+data_point_count.scc_distances <- function(x) {
   stopifnot(is.matrix(x))
   ncol(x)
 }
 
 
 #' @export
-print.Rscc_distances <- function(x, ...) {
-  stopifnot(is.Rscc_distances(x))
+print.scc_distances <- function(x, ...) {
+  stopifnot(is.scc_distances(x))
   if (ncol(x) > 20L) {
     warning(paste0("`", match.call()$x, "` contains too many data points, showing the first 20 out of the total ", ncol(x), "."),
             call. = FALSE,
             noBreaks. = TRUE)
     x <- make_distances(t(x[, 1:20]), id_variable = attr(x, "ids", exact = TRUE)[1:20])
   }
-  print(as.matrix.Rscc_distances(x))
+  print(as.matrix.scc_distances(x))
 }
 
 
 #' @export
-as.matrix.Rscc_distances <- function(x, ...) {
-  stopifnot(is.Rscc_distances(x))
+as.matrix.scc_distances <- function(x, ...) {
+  stopifnot(is.scc_distances(x))
   tmp <- as.matrix(stats::dist(t(unclass(x))))
   if (!is.null(attr(x, "ids", exact = TRUE))) {
     colnames(tmp) <- rownames(tmp) <- attr(x, "ids", exact = TRUE)

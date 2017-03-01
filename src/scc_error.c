@@ -1,6 +1,6 @@
 /* =============================================================================
- * Rscclust -- R wrapper for the scclust library
- * https://github.com/fsavje/Rscclust
+ * scclust for R -- R wrapper for the scclust library
+ * https://github.com/fsavje/scclust-R
  *
  * Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
  *
@@ -18,15 +18,24 @@
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ========================================================================== */
 
-#ifndef RSCC_ERROR_HG
-#define RSCC_ERROR_HG
+#include "scc_error.h"
 
-#define iRscc_error(msg) (iRscc_error__(msg, __FILE__, __LINE__))
+#include <R.h>
+#include <Rinternals.h>
+#include <scclust.h>
 
-void iRscc_error__(const char* msg,
-                   const char* file,
-                   int line);
 
-void iRscc_scc_error();
+void iRscc_error__(const char* const msg,
+                   const char* const file,
+                   const int line) {
+	char error_buffer[255];
+	snprintf(error_buffer, 255, "(%s:%d) %s", file, line, msg);
+	error(error_buffer);
+}
 
-#endif // ifndef RSCC_ERROR_HG
+
+void iRscc_scc_error(void) {
+	char error_buffer[255];
+	scc_get_latest_error(255, error_buffer);
+	error(error_buffer);
+}

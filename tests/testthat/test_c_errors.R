@@ -1,6 +1,6 @@
 # ==============================================================================
-# Rscclust -- R wrapper for the scclust library
-# https://github.com/fsavje/Rscclust
+# scclust for R -- R wrapper for the scclust library
+# https://github.com/fsavje/scclust-R
 #
 # Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
 #
@@ -18,12 +18,12 @@
 # along with this program. If not, see http://www.gnu.org/licenses/
 # ==============================================================================
 
-library(Rscclust)
+library(scclust)
 context("Input checking in C code")
 
 
 # ==============================================================================
-# Rscc_hierarchical.c
+# scc_hierarchical.c
 # ==============================================================================
 
 c_hierarchical_clustering <- function(distance_object = matrix(as.numeric(1:16), ncol = 8),
@@ -37,7 +37,7 @@ c_hierarchical_clustering <- function(distance_object = matrix(as.numeric(1:16),
         batch_assign,
         existing_clustering,
         deep_copy,
-        PACKAGE = "Rscclust")
+        PACKAGE = "scclust")
 }
 
 temp_existing_clustering1 <- 1:6
@@ -69,7 +69,7 @@ test_that("`Rscc_hierarchical_clustering` checks input.", {
 
 
 # ==============================================================================
-# Rscc_nng.c
+# scc_nng.c
 # ==============================================================================
 
 c_make_clustering <- function(distance_object = matrix(as.numeric(1:16), ncol = 8),
@@ -97,7 +97,7 @@ c_make_clustering <- function(distance_object = matrix(as.numeric(1:16), ncol = 
         primary_radius,
         secondary_radius,
         batch_size,
-        PACKAGE = "Rscclust")
+        PACKAGE = "scclust")
 }
 
 test_that("`Rscc_make_clustering` checks input.", {
@@ -148,7 +148,7 @@ test_that("`Rscc_make_clustering` checks input.", {
 
 
 # ==============================================================================
-# Rscc_utilities.c
+# scc_utilities.c
 # ==============================================================================
 
 temp_clustering1 <- c(1L, 1L, 0L, 1L, 1L, 0L, 0L, 0L)
@@ -159,7 +159,7 @@ attr(temp_clustering2, "cluster_count") <- 0L
 c_set_dist_functions <- function(dist_functions = "internal") {
   .Call("Rscc_set_dist_functions",
         dist_functions,
-        PACKAGE = "Rscclust")
+        PACKAGE = "scclust")
 }
 
 test_that("`Rscc_set_dist_functions` checks input.", {
@@ -183,7 +183,7 @@ c_check_clustering <- function(clustering = temp_clustering1,
         size_constraint,
         unclass(type_labels),
         type_constraints,
-        PACKAGE = "Rscclust")
+        PACKAGE = "scclust")
 }
 
 test_that("`Rscc_check_clustering` checks input.", {
@@ -214,7 +214,7 @@ c_get_clustering_stats <- function(clustering = temp_clustering1,
   .Call("Rscc_get_clustering_stats",
         clustering,
         distance_object,
-        PACKAGE = "Rscclust")
+        PACKAGE = "scclust")
 }
 
 test_that("`Rscc_get_clustering_stats` checks input.", {

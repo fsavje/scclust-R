@@ -1,6 +1,6 @@
 # ==============================================================================
-# Rscclust -- R wrapper for the scclust library
-# https://github.com/fsavje/Rscclust
+# scclust for R -- R wrapper for the scclust library
+# https://github.com/fsavje/scclust-R
 #
 # Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
 #

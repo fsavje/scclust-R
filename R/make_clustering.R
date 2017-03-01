@@ -1,6 +1,6 @@
 # ==============================================================================
-# Rscclust -- R wrapper for the scclust library
-# https://github.com/fsavje/Rscclust
+# scclust for R -- R wrapper for the scclust library
+# https://github.com/fsavje/scclust-R
 #
 # Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
 #
@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-#' Nearest neighbor graph based clustering function
+#' Size constrained clustering
 #'
 #' \code{make_clustering} derives a clustering statisfying the specified
 #' size constraints. It implements an algorithm that first summaries the
@@ -49,7 +49,7 @@
 #'                         points to clusters.
 #' @param batch_size ...
 #'
-#' @return Returns a Rscclust cluster object containing the derived clustering.
+#' @return Returns a scclust cluster object containing the derived clustering.
 #'
 #' @keywords cluster
 #' @family clustering functions
@@ -57,7 +57,7 @@
 #' @seealso \code{\link{hierarchical_clustering}} can be used to refine the clustering
 #'          constructed by this function.
 #'
-#' @useDynLib Rscclust Rscc_make_clustering
+#' @useDynLib scclust Rscc_make_clustering
 #' @export
 make_clustering <- function(distance_object,
                             size_constraint = NULL,
@@ -72,7 +72,7 @@ make_clustering <- function(distance_object,
                             secondary_radius = NULL,
                             batch_size = 100L) {
   ensure_distances(distance_object)
-  num_data_points <- data_point_count.Rscc_distances(distance_object)
+  num_data_points <- data_point_count.scc_distances(distance_object)
 
   if (is.null(type_constraints)) {
     type_labels <- NULL
@@ -127,9 +127,9 @@ make_clustering <- function(distance_object,
                       primary_radius,
                       secondary_radius,
                       batch_size,
-                      PACKAGE = "Rscclust")
+                      PACKAGE = "scclust")
 
-  make_Rscc_clustering(clustering$cluster_labels,
-                       clustering$cluster_count,
-                       attr(distance_object, "ids", exact = TRUE))
+  make_scc_clustering(clustering$cluster_labels,
+                      clustering$cluster_count,
+                      attr(distance_object, "ids", exact = TRUE))
 }

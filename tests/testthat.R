@@ -1,4 +1,4 @@
 library(testthat)
-library(Rscclust)
+library(scclust)
 
-test_check("Rscclust")
+test_check("scclust")

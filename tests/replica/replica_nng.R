@@ -27,12 +27,12 @@ match_n_assign <- function(cl_label,
 
 
 any_neighbor_or_closest_assigned <- function(unassigned_method,
-                                       unassigned,
-                                       nng,
-                                       assigned,
-                                       radius,
-                                       cl_label,
-                                       distances) {
+                                             unassigned,
+                                             nng,
+                                             assigned,
+                                             radius,
+                                             cl_label,
+                                             distances) {
   if (unassigned_method == "any_neighbor") {
     unassigned <- apply(nng, 2, any) & unassigned
   }
@@ -63,12 +63,12 @@ assign_unassigned <- function(distances,
       # nothing
     } else if (unassigned_method == "any_neighbor" || unassigned_method == "closest_assigned") {
       cl_label <- any_neighbor_or_closest_assigned(unassigned_method,
-                                             unassigned,
-                                             nng,
-                                             assigned,
-                                             radius,
-                                             cl_label,
-                                             distances)
+                                                   unassigned,
+                                                   nng,
+                                                   assigned,
+                                                   radius,
+                                                   cl_label,
+                                                   distances)
     } else if (unassigned_method == "closest_seed") {
       cl_label <- match_n_assign(cl_label, seeds, unassigned, radius, distances)
     } else {
@@ -113,7 +113,7 @@ replica_nng_clustering <- function(distance_object,
                                    secondary_unassigned_method = "ignore",
                                    secondary_radius = NULL) {
   ensure_distances(distance_object)
-  num_data_points <- data_point_count.Rscc_distances(distance_object)
+  num_data_points <- data_point_count.scc_distances(distance_object)
   size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
   seed_method <- coerce_args(seed_method, all_seed_methods)
   unassigned_method <- coerce_args(unassigned_method,
@@ -162,9 +162,9 @@ replica_nng_clustering <- function(distance_object,
                                 secondary_unassigned_method,
                                 secondary_radius)
 
-  make_Rscc_clustering(as.integer(cl_label),
-                       length(unique(cl_label[!is.na(cl_label)])),
-                       attr(distance_object, "ids", exact = TRUE))
+  make_scc_clustering(as.integer(cl_label),
+                      length(unique(cl_label[!is.na(cl_label)])),
+                      attr(distance_object, "ids", exact = TRUE))
 }
 
 
@@ -180,7 +180,7 @@ replica_nng_clustering_types <- function(distance_object,
                                          secondary_unassigned_method = "ignore",
                                          secondary_radius = NULL) {
   ensure_distances(distance_object)
-  num_data_points <- data_point_count.Rscc_distances(distance_object)
+  num_data_points <- data_point_count.scc_distances(distance_object)
   type_labels <- coerce_type_labels(type_labels, num_data_points)
   type_size_constraints <- coerce_type_constraints(type_size_constraints)
   type_size_constraints <- make_type_size_constraints(type_size_constraints,
@@ -237,7 +237,7 @@ replica_nng_clustering_types <- function(distance_object,
                                 secondary_unassigned_method,
                                 secondary_radius)
 
-  make_Rscc_clustering(as.integer(cl_label),
-                       length(unique(cl_label[!is.na(cl_label)])),
-                       attr(distance_object, "ids", exact = TRUE))
+  make_scc_clustering(as.integer(cl_label),
+                      length(unique(cl_label[!is.na(cl_label)])),
+                      attr(distance_object, "ids", exact = TRUE))
 }

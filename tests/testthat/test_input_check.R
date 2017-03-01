@@ -1,6 +1,6 @@
 # ==============================================================================
-# Rscclust -- R wrapper for the scclust library
-# https://github.com/fsavje/Rscclust
+# scclust for R -- R wrapper for the scclust library
+# https://github.com/fsavje/scclust-R
 #
 # Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
 #
@@ -18,7 +18,7 @@
 # along with this program. If not, see http://www.gnu.org/licenses/
 # ==============================================================================
 
-library(Rscclust)
+library(scclust)
 context("Input checking in R code")
 
 
@@ -79,7 +79,7 @@ test_that("`ensure_distances` checks input.", {
   expect_silent(t_ensure_distances())
   expect_silent(t_ensure_distances(t_req_length = 5))
   expect_error(t_ensure_distances(t_distances = "a"),
-               regexp = "`t_distances` is not a `Rscc_distances` object.")
+               regexp = "`t_distances` is not a `scc_distances` object.")
   expect_error(t_ensure_distances(t_req_length = 4),
                regexp = "`t_distances` does not contain `t_req_length` data points.")
 })
@@ -113,20 +113,20 @@ test_that("`ensure_indicators` checks input.", {
 
 
 # ==============================================================================
-# ensure_Rscc_clustering
+# ensure_scc_clustering
 # ==============================================================================
 
-t_ensure_Rscc_clustering <- function(t_clustering = Rscc_clustering(rep(letters[1:5], 2)),
-                                     t_req_length = NULL) {
-  ensure_Rscc_clustering(t_clustering, t_req_length)
+t_ensure_scc_clustering <- function(t_clustering = scc_clustering(rep(letters[1:5], 2)),
+                                    t_req_length = NULL) {
+  ensure_scc_clustering(t_clustering, t_req_length)
 }
 
-test_that("`ensure_Rscc_clustering` checks input.", {
-  expect_silent(t_ensure_Rscc_clustering())
-  expect_silent(t_ensure_Rscc_clustering(t_req_length = 10))
-  expect_error(t_ensure_Rscc_clustering(t_clustering = "a"),
-               regexp = "`t_clustering` is not a `Rscc_clustering` object.")
-  expect_error(t_ensure_Rscc_clustering(t_req_length = 4),
+test_that("`ensure_scc_clustering` checks input.", {
+  expect_silent(t_ensure_scc_clustering())
+  expect_silent(t_ensure_scc_clustering(t_req_length = 10))
+  expect_error(t_ensure_scc_clustering(t_clustering = "a"),
+               regexp = "`t_clustering` is not a `scc_clustering` object.")
+  expect_error(t_ensure_scc_clustering(t_req_length = 4),
                regexp = "`t_clustering` does not contain `t_req_length` data points.")
 })
 

@@ -1,6 +1,6 @@
 # ==============================================================================
-# Rscclust -- R wrapper for the scclust library
-# https://github.com/fsavje/Rscclust
+# scclust for R -- R wrapper for the scclust library
+# https://github.com/fsavje/scclust-R
 #
 # Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
 #
@@ -18,7 +18,7 @@
 # along with this program. If not, see http://www.gnu.org/licenses/
 # ==============================================================================
 
-library(Rscclust)
+library(scclust)
 context("utilities.R")
 
 
@@ -40,10 +40,10 @@ set_dist_functions()
 # check_clustering
 # ==============================================================================
 
-cl1 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
-cl2 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1)
-cl3 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), ids = letters[1:10])
-cl4 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1, ids = letters[1:10])
+cl1 <- scc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
+cl2 <- scc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1)
+cl3 <- scc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), ids = letters[1:10])
+cl4 <- scc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1, ids = letters[1:10])
 dp_types <- factor(c("x", "y", "y", "z", "z", "x", "y", "z", "x", "x"))
 
 test_that("`check_clustering` returns correct output", {
@@ -94,18 +94,18 @@ test_that("`check_clustering` returns correct output", {
 # get_clustering_stats
 # ==============================================================================
 
-cl1 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
-cl2 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1)
-cl3 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), ids = letters[1:10])
-cl4 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1, ids = letters[1:10])
-cl5 <- make_Rscc_clustering(c(1L, 1L, 3L, 4L, 3L, 4L, 4L, 1L, 3L, 3L),
-                            5L, NULL)
-cl6 <- make_Rscc_clustering(c(NA, NA, 3L, 4L, 3L, 4L, 4L, NA, 3L, 3L),
-                            5L, NULL)
-cl7 <- make_Rscc_clustering(c(1L, 1L, 3L, 4L, 3L, 4L, 4L, 1L, 3L, 3L),
-                            5L, ids = letters[1:10])
-cl8 <- make_Rscc_clustering(c(NA, NA, 3L, 4L, 3L, 4L, 4L, NA, 3L, 3L),
-                            5L, ids = letters[1:10])
+cl1 <- scc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
+cl2 <- scc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1)
+cl3 <- scc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), ids = letters[1:10])
+cl4 <- scc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1, ids = letters[1:10])
+cl5 <- make_scc_clustering(c(1L, 1L, 3L, 4L, 3L, 4L, 4L, 1L, 3L, 3L),
+                           5L, NULL)
+cl6 <- make_scc_clustering(c(NA, NA, 3L, 4L, 3L, 4L, 4L, NA, 3L, 3L),
+                           5L, NULL)
+cl7 <- make_scc_clustering(c(1L, 1L, 3L, 4L, 3L, 4L, 4L, 1L, 3L, 3L),
+                           5L, ids = letters[1:10])
+cl8 <- make_scc_clustering(c(NA, NA, 3L, 4L, 3L, 4L, 4L, NA, 3L, 3L),
+                           5L, ids = letters[1:10])
 dp_data <- matrix(c(1.43247031975424, -0.0743079629128504, 0.664288699457021, 0.041257931075698, -0.745804833010271, -0.603411650921577, -0.705441137672159, 1.1906572821574, 1.25508544074284, -0.732099707199829, 1.18248873752832, 0.0593032947441447, 0.547530248329181, -1.30988291210263, -1.92018121606691, 0.212216066820278, -1.32505024286282, -1.27119614395428, -0.207545316189576, -1.51865610892823),
                   ncol = 2)
 
@@ -124,7 +124,7 @@ all_assigned_stats <- structure(list(
   cl_avg_max_dist = 2.32024663290364,
   cl_avg_dist_weighted = 1.79285753468519,
   cl_avg_dist_unweighted = 1.77519414590393
-), class = c("Rscc_clustering_stats"))
+), class = c("scc_clustering_stats"))
 
 some_assigned_stats <- structure(list(
   num_data_points = 10L,
@@ -141,7 +141,7 @@ some_assigned_stats <- structure(list(
   cl_avg_max_dist = 2.24758417693106,
   cl_avg_dist_weighted = 1.67825802795953,
   cl_avg_dist_unweighted = 1.63266302700004
-), class = c("Rscc_clustering_stats"))
+), class = c("scc_clustering_stats"))
 
 all_assigned_emptycl_stats <- structure(list(
   num_data_points = 10L,
@@ -158,7 +158,7 @@ all_assigned_emptycl_stats <- structure(list(
   cl_avg_max_dist = 2.32024663290364,
   cl_avg_dist_weighted = 1.79285753468519,
   cl_avg_dist_unweighted = 1.77519414590393
-), class = c("Rscc_clustering_stats"))
+), class = c("scc_clustering_stats"))
 
 some_assigned_emptycl_stats <- structure(list(
   num_data_points = 10L,
@@ -175,7 +175,7 @@ some_assigned_emptycl_stats <- structure(list(
   cl_avg_max_dist = 2.24758417693106,
   cl_avg_dist_weighted = 1.67825802795953,
   cl_avg_dist_unweighted = 1.63266302700004
-), class = c("Rscc_clustering_stats"))
+), class = c("scc_clustering_stats"))
 
 test_that("`get_clustering_stats` returns correct output", {
   expect_equal(get_clustering_stats(cl1, make_distances(dp_data)), all_assigned_stats)
@@ -188,7 +188,7 @@ test_that("`get_clustering_stats` returns correct output", {
   expect_equal(get_clustering_stats(cl8, make_distances(dp_data)), some_assigned_emptycl_stats)
 })
 
-test_that("`print.Rscc_clustering_stats` prints correctly", {
+test_that("`print.scc_clustering_stats` prints correctly", {
   expect_output(print(all_assigned_stats), "num_data_points        10.0000000", fixed = TRUE)
   expect_output(print(all_assigned_stats), "num_assigned           10.0000000", fixed = TRUE)
   expect_output(print(all_assigned_stats), "num_clusters            3.0000000", fixed = TRUE)

@@ -1,6 +1,6 @@
 # ==============================================================================
-# Rscclust -- R wrapper for the scclust library
-# https://github.com/fsavje/Rscclust
+# scclust for R -- R wrapper for the scclust library
+# https://github.com/fsavje/scclust-R
 #
 # Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
 #
@@ -21,7 +21,7 @@
 
 #' Set distance search functions.
 #'
-#' \code{set_dist_functions} sets the distance search functions used by Rscclust to construct
+#' \code{set_dist_functions} sets the distance search functions used by scclust to construct
 #' clusterings. The package is loaded with the distance functions set to ANN, i.e., equivalent
 #' to running \code{set_dist_functions()} when the package loads.
 #'
@@ -34,7 +34,7 @@
 #' set_dist_functions(dist_functions = "ann")
 #' set_dist_functions(dist_functions = "internal")
 #'
-#' @useDynLib Rscclust Rscc_set_dist_functions
+#' @useDynLib scclust Rscc_set_dist_functions
 #' @export
 set_dist_functions <- function(dist_functions = "ann") {
   dist_functions <- coerce_args(dist_functions,
@@ -42,7 +42,7 @@ set_dist_functions <- function(dist_functions = "ann") {
                                   "ann"))
   .Call("Rscc_set_dist_functions",
         dist_functions,
-        PACKAGE = "Rscclust")
+        PACKAGE = "scclust")
 }
 
 
@@ -51,7 +51,7 @@ set_dist_functions <- function(dist_functions = "ann") {
 #' \code{check_clustering} checks so the inputted clustering satisfies the specified size
 #' constraint.
 #'
-#' @param clustering a \code{Rscc_clustering} object containing an existing non-empty clustering.
+#' @param clustering a \code{scc_clustering} object containing an existing non-empty clustering.
 #' @param size_constraint an integer with the required minimum cluster size. If \code{NULL},
 #'                              only the type constraints will be checked.
 #' @param type_labels a factor or integer containing the type of each data point. May be \code{NULL} when
@@ -68,18 +68,18 @@ set_dist_functions <- function(dist_functions = "ann") {
 #' @examples
 #' # Each cluster contains at least two data
 #' # points; it's valid for `size_constraint == 2`.
-#' my_clust_obj1 <- Rscc_clustering(c("A", "A", "B", "C",
-#'                                    "B", "C", "C", "A",
-#'                                    "B", "B"))
+#' my_clust_obj1 <- scc_clustering(c("A", "A", "B", "C",
+#'                                   "B", "C", "C", "A",
+#'                                   "B", "B"))
 #' check_clustering(my_clust_obj1, 2)
 #' # > TRUE
 #'
 #'
 #' # One cluster contains only one point. This is
 #' # an invalid clustering for `size_constraint == 2`.
-#' my_clust_obj2 <- Rscc_clustering(c("A", "A", "B", "C",
-#'                                    "B", "C", "C", "A",
-#'                                    "B", "B", "D"))
+#' my_clust_obj2 <- scc_clustering(c("A", "A", "B", "C",
+#'                                   "B", "C", "C", "A",
+#'                                   "B", "B", "D"))
 #' check_clustering(my_clust_obj2, 2)
 #' # > FALSE
 #'
@@ -91,7 +91,7 @@ set_dist_functions <- function(dist_functions = "ann") {
 #'
 #'
 #' # Clustering
-#' my_clust_obj3 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
+#' my_clust_obj3 <- scc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
 #'
 #' # Data point types
 #' my_types <- factor(c("x", "y", "y", "z", "z", "x", "y", "z", "x", "x"))
@@ -140,14 +140,14 @@ set_dist_functions <- function(dist_functions = "ann") {
 #'                  c("1" = 1, "2" = 1, "3" = 1))
 #' # > TRUE
 #'
-#' @useDynLib Rscclust Rscc_check_clustering
+#' @useDynLib scclust Rscc_check_clustering
 #' @export
 check_clustering <- function(clustering,
                              size_constraint = NULL,
                              type_labels = NULL,
                              type_constraints = NULL) {
-  ensure_Rscc_clustering(clustering)
-  num_data_points <- data_point_count.Rscc_clustering(clustering)
+  ensure_scc_clustering(clustering)
+  num_data_points <- data_point_count.scc_clustering(clustering)
   if (is.null(type_constraints)) {
     type_labels <- NULL
     size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
@@ -166,7 +166,7 @@ check_clustering <- function(clustering,
         size_constraint,
         unclass(type_labels),
         type_constraints,
-        PACKAGE = "Rscclust")
+        PACKAGE = "scclust")
 }
 
 
@@ -226,15 +226,15 @@ check_clustering <- function(clustering,
 #' \code{cl_avg_dist_unweighted} is defined as:
 #' \deqn{\sum_{c\in C} \frac{AD(c)}{|C|}}{\sum_[c in C] AD(c) / count(C)}
 #'
-#' @param clustering a \code{Rscc_clustering} object containing an existing non-empty clustering.
+#' @param clustering a \code{scc_clustering} object containing an existing non-empty clustering.
 #' @param distance_object a distance object as produced by \code{\link{make_distances}}.
 #'
-#' @return Returns a list of class "Rscc_clustering_stats" containing important statistics
+#' @return Returns a list of class "scc_clustering_stats" containing important statistics
 #'         about the inputted clustering.
 #'
 #' @examples
-#' my_clust_obj <- Rscc_clustering(c("A", "A", "B", "C", "B",
-#'                                   "C", "C", "A", "B", "B"))
+#' my_clust_obj <- scc_clustering(c("A", "A", "B", "C", "B",
+#'                                  "C", "C", "A", "B", "B"))
 #' my_data_points <- data.frame(x = c(0.1, 0.2, 0.3, 0.4, 0.5,
 #'                                    0.6, 0.7, 0.8, 0.9, 1.0),
 #'                              y = c(10, 9, 8, 7, 6,
@@ -259,25 +259,25 @@ check_clustering <- function(clustering,
 #' # > cl_avg_dist_weighted    1.5575594
 #' # > cl_avg_dist_unweighted  1.5847484
 #'
-#' @useDynLib Rscclust Rscc_get_clustering_stats
+#' @useDynLib scclust Rscc_get_clustering_stats
 #' @export
 get_clustering_stats <- function(clustering,
                                  distance_object) {
-  ensure_Rscc_clustering(clustering)
-  num_data_points <- data_point_count.Rscc_clustering(clustering)
+  ensure_scc_clustering(clustering)
+  num_data_points <- data_point_count.scc_clustering(clustering)
   ensure_distances(distance_object, num_data_points)
 
   clust_stats <- .Call("Rscc_get_clustering_stats",
                        clustering,
                        distance_object,
-                       PACKAGE = "Rscclust")
+                       PACKAGE = "scclust")
   structure(clust_stats,
-            class = c("Rscc_clustering_stats"))
+            class = c("scc_clustering_stats"))
 }
 
 
 #' @export
-print.Rscc_clustering_stats <- function(x, ...) {
+print.scc_clustering_stats <- function(x, ...) {
   tmp_table <- as.table(format(as.matrix(unlist(x))))
   colnames(tmp_table) <- "Value"
   print(tmp_table)

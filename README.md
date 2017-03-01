@@ -1,33 +1,33 @@
-# Rscclust
+# scclust for R
 
-[![Build Status](https://travis-ci.org/fsavje/Rscclust.svg?branch=master)](https://travis-ci.org/fsavje/Rscclust)
+[![Build Status](https://travis-ci.org/fsavje/scclust-R.svg?branch=master)](https://travis-ci.org/fsavje/scclust-R)
 [![Build status](https://ci.appveyor.com/api/projects/status/5fvj2nm3ssfmsjab/branch/master?svg=true)](https://ci.appveyor.com/project/fsavje/rscclust/branch/master)
-[![codecov](https://codecov.io/gh/fsavje/Rscclust/branch/master/graph/badge.svg)](https://codecov.io/gh/fsavje/Rscclust)
+[![codecov](https://codecov.io/gh/fsavje/scclust-R/branch/master/graph/badge.svg)](https://codecov.io/gh/fsavje/scclust-R)
 
-Rscclust is an R wrapper for the [scclust library](https://github.com/fsavje/scclust). The package can be used to construct size constrained clusterings. Subject to user-specified conditions on the minimum size and composition of the clusters, Rscclust derives a partition of a set of data points so that the similarity of points assigned to the same cluster is maximized.
+This is an R wrapper for the [scclust library](https://github.com/fsavje/scclust). The package can be used to construct size constrained clusterings. Subject to user-specified conditions on the minimum size and composition of the clusters, scclust derives a partition of a set of data points so that the similarity of points assigned to the same cluster is maximized.
 
-Rscclust is made with large data sets in mind, and it can cluster hundreds of millions of data points within minutes on an ordinary desktop computer. 
+scclust is made with large data sets in mind, and it can cluster hundreds of millions of data points within minutes on an ordinary desktop computer. 
 
 The package is currently in alpha, and breaking changes to the API might happen.
 
 
-## How to install Rscclust
+## How to install scclust for R
 
-Rscclust is not yet on CRAN, but you can install the current development version using [devtools](https://github.com/hadley/devtools):
+scclust is not yet on CRAN, but you can install the current development version using [devtools](https://github.com/hadley/devtools):
 
 ```R
-devtools::install_github("fsavje/Rscclust")
+devtools::install_github("fsavje/scclust-R")
 ```
 
-Rscclust contains compiled code. You must, therefore, have a development environment installed. (Use `devtools::has_devel()` to check whether you do.) If no development environment exists, Windows users download and install [Rtools](http://cran.r-project.org/bin/windows/Rtools) and macOS users download and install [Xcode](https://itunes.apple.com/us/app/xcode/id497799835).
+The package contains compiled code. You must, therefore, have a development environment installed. (Use `devtools::has_devel()` to check whether you do.) If no development environment exists, Windows users download and install [Rtools](http://cran.r-project.org/bin/windows/Rtools) and macOS users download and install [Xcode](https://itunes.apple.com/us/app/xcode/id497799835).
 
 
-## How to use Rscclust
+## How to use scclust
 
-The following snippet shows how Rscclust can be used to make clusterings with both size and type constraints:
+The following snippet shows how scclust can be used to make clusterings with both size and type constraints:
 
 ```R
-library("Rscclust")
+library("scclust")
 
 set.seed(123456)
 

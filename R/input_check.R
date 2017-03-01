@@ -1,6 +1,6 @@
 # ==============================================================================
-# Rscclust -- R wrapper for the scclust library
-# https://github.com/fsavje/Rscclust
+# scclust for R -- R wrapper for the scclust library
+# https://github.com/fsavje/scclust-R
 #
 # Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
 #
@@ -58,13 +58,13 @@ is.numeric_integer <- function(x) {
 # Ensure functions
 # ==============================================================================
 
-# Ensure that `distances` is `Rscc_distances` object
+# Ensure that `distances` is `scc_distances` object
 ensure_distances <- function(distances,
                              req_length = NULL) {
-  if (!is.Rscc_distances(distances)) {
-    new_error("`", match.call()$distances, "` is not a `Rscc_distances` object.")
+  if (!is.scc_distances(distances)) {
+    new_error("`", match.call()$distances, "` is not a `scc_distances` object.")
   }
-  if (!is.null(req_length) && (data_point_count.Rscc_distances(distances) != req_length)) {
+  if (!is.null(req_length) && (data_point_count.scc_distances(distances) != req_length)) {
     new_error("`", match.call()$distances, "` does not contain `", match.call()$req_length, "` data points.")
   }
 }
@@ -91,13 +91,13 @@ ensure_indicators <- function(indicators,
 }
 
 
-# Ensure that `clustering` is a `Rscc_clustering` object
-ensure_Rscc_clustering <- function(clustering,
-                                   req_length = NULL) {
-  if (!is.Rscc_clustering(clustering)) {
-    new_error("`", match.call()$clustering, "` is not a `Rscc_clustering` object.")
+# Ensure that `clustering` is a `scc_clustering` object
+ensure_scc_clustering <- function(clustering,
+                                  req_length = NULL) {
+  if (!is.scc_clustering(clustering)) {
+    new_error("`", match.call()$clustering, "` is not a `scc_clustering` object.")
   }
-  if (!is.null(req_length) && (data_point_count.Rscc_clustering(clustering) != req_length)) {
+  if (!is.null(req_length) && (data_point_count.scc_clustering(clustering) != req_length)) {
     new_error("`", match.call()$clustering, "` does not contain `", match.call()$req_length, "` data points.")
   }
 }

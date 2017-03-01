@@ -1,6 +1,6 @@
 # ==============================================================================
-# Rscclust -- R wrapper for the scclust library
-# https://github.com/fsavje/Rscclust
+# scclust for R -- R wrapper for the scclust library
+# https://github.com/fsavje/scclust-R
 #
 # Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
 #
@@ -18,7 +18,7 @@
 # along with this program. If not, see http://www.gnu.org/licenses/
 # ==============================================================================
 
-library(Rscclust)
+library(scclust)
 context("data_point_count")
 
 
@@ -27,9 +27,9 @@ test_that("`data_point_count` dispatches correctly", {
                    3L)
   expect_identical(data_point_count(make_distances(matrix(c(0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.1, 0.2, 0.3, 0.3), ncol = 2))),
                    5L)
-  expect_identical(data_point_count(Rscc_clustering(c("a", "b", "c", "a", "b", "c", "a"))),
+  expect_identical(data_point_count(scc_clustering(c("a", "b", "c", "a", "b", "c", "a"))),
                    7L)
-  expect_identical(data_point_count(Rscc_clustering(c("a", "b", "c", "a", "b", "c", "a", "d", "e", "d"))),
+  expect_identical(data_point_count(scc_clustering(c("a", "b", "c", "a", "b", "c", "a", "d", "e", "d"))),
                    10L)
   expect_error(data_point_count("invalid"),
                regexp = "Unknown class")

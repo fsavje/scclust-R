@@ -1,6 +1,6 @@
 /* =============================================================================
- * Rscclust -- R wrapper for the scclust library
- * https://github.com/fsavje/Rscclust
+ * scclust for R -- R wrapper for the scclust library
+ * https://github.com/fsavje/scclust-R
  *
  * Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
  *
@@ -18,23 +18,20 @@
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ========================================================================== */
 
-#ifndef RSCC_NNG_HG
-#define RSCC_NNG_HG
+#ifndef RSCC_UTILITIES_HG
+#define RSCC_UTILITIES_HG
 
 #include <R.h>
 #include <Rinternals.h>
 
-SEXP Rscc_make_clustering(SEXP R_distance_object,
-                          SEXP R_size_constraint,
-                          SEXP R_type_labels,
-                          SEXP R_type_constraints,
-                          SEXP R_seed_method,
-                          SEXP R_primary_data_points,
-                          SEXP R_primary_unassigned_method,
-                          SEXP R_secondary_unassigned_method,
-                          SEXP R_seed_radius,
-                          SEXP R_primary_radius,
-                          SEXP R_secondary_radius,
-                          SEXP R_batch_size);
+SEXP Rscc_set_dist_functions(SEXP R_dist_functions);
 
-#endif // ifndef RSCC_NNG_HG
+SEXP Rscc_check_clustering(SEXP R_clustering,
+                           SEXP R_size_constraint,
+                           SEXP R_type_labels,
+                           SEXP R_type_constraints);
+
+SEXP Rscc_get_clustering_stats(SEXP R_clustering,
+                               SEXP R_distance_object);
+
+#endif // ifndef RSCC_UTILITIES_HG

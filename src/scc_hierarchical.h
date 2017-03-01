@@ -1,6 +1,6 @@
 /* =============================================================================
- * Rscclust -- R wrapper for the scclust library
- * https://github.com/fsavje/Rscclust
+ * scclust for R -- R wrapper for the scclust library
+ * https://github.com/fsavje/scclust-R
  *
  * Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
  *
@@ -18,24 +18,16 @@
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ========================================================================== */
 
-#include "Rscc_error.h"
+#ifndef RSCC_HIERARCHICAL_HG
+#define RSCC_HIERARCHICAL_HG
 
 #include <R.h>
 #include <Rinternals.h>
-#include <scclust.h>
 
+SEXP Rscc_hierarchical_clustering(SEXP R_distance_object,
+                                  SEXP R_size_constraint,
+                                  SEXP R_batch_assign,
+                                  SEXP R_existing_clustering,
+                                  SEXP R_deep_copy);
 
-void iRscc_error__(const char* const msg,
-                   const char* const file,
-                   const int line) {
-	char error_buffer[255];
-	snprintf(error_buffer, 255, "(%s:%d) %s", file, line, msg);
-	error(error_buffer);
-}
-
-
-void iRscc_scc_error(void) {
-	char error_buffer[255];
-	scc_get_latest_error(255, error_buffer);
-	error(error_buffer);
-}
+#endif // ifndef RSCC_HIERARCHICAL_HG

@@ -1,6 +1,6 @@
 # ==============================================================================
-# Rscclust -- R wrapper for the scclust library
-# https://github.com/fsavje/Rscclust
+# scclust for R -- R wrapper for the scclust library
+# https://github.com/fsavje/scclust-R
 #
 # Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
 #
@@ -36,13 +36,13 @@ all_seed_methods <-  c("lexical",
 # Class constructors
 # ==============================================================================
 
-make_Rscc_clustering <- function(cluster_labels,
-                                 cluster_count,
-                                 ids) {
+make_scc_clustering <- function(cluster_labels,
+                                cluster_count,
+                                ids) {
   structure(cluster_labels,
             cluster_count = cluster_count,
             ids = ids,
-            class = c("Rscc_clustering"))
+            class = c("scc_clustering"))
 }
 
 

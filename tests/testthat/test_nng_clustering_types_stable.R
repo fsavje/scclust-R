@@ -1,6 +1,6 @@
 # ==============================================================================
-# Rscclust -- R wrapper for the scclust library
-# https://github.com/fsavje/Rscclust
+# scclust for R -- R wrapper for the scclust library
+# https://github.com/fsavje/scclust-R
 #
 # Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
 #
@@ -18,7 +18,7 @@
 # along with this program. If not, see http://www.gnu.org/licenses/
 # ==============================================================================
 
-library(Rscclust)
+library(scclust)
 context("nng_clustering_types (stable)")
 
 source("config.R", local = TRUE)
@@ -29,12 +29,12 @@ source("utils_nng.R", local = TRUE)
 
 
 any_neighbor_or_closest_assigned <- function(unassigned_method,
-                                       unassigned,
-                                       nng,
-                                       assigned,
-                                       radius,
-                                       cl_label,
-                                       distances) {
+                                             unassigned,
+                                             nng,
+                                             assigned,
+                                             radius,
+                                             cl_label,
+                                             distances) {
   if (unassigned_method == "any_neighbor") {
     for(i in which(unassigned)) {
       pick <- intersect(which(nng[, i]), which(assigned))

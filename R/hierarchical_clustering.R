@@ -1,6 +1,6 @@
 # ==============================================================================
-# Rscclust -- R wrapper for the scclust library
-# https://github.com/fsavje/Rscclust
+# scclust for R -- R wrapper for the scclust library
+# https://github.com/fsavje/scclust-R
 #
 # Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
 #
@@ -65,19 +65,19 @@
 #' @param size_constraint an integer with the required minimum cluster size.
 #' @param batch_assign a bool indicating whether data points should be assigned in batches when
 #'                            spliting clusters.
-#' @param existing_clustering \code{NULL} or a \code{Rscc_clustering} object containing an existing
+#' @param existing_clustering \code{NULL} or a \code{scc_clustering} object containing an existing
 #'                            non-empty clustering. If \code{NULL}, the function will start with a
 #'                            single cluster containing all data points (i.e., it derives a clustering
 #'                            from scratch).
 #'
-#' @return Returns a Rscclust cluster object containing the derived clustering.
+#' @return Returns a scclust cluster object containing the derived clustering.
 #'
 #' @keywords cluster
 #' @family clustering functions
 #'
 #' @seealso \code{\link{make_clustering}} is the main clustering function in the package.
 #'
-#'          Use \code{\link{Rscc_clustering}} to create Rscclust cluster objects from external
+#'          Use \code{\link{scc_clustering}} to create scclust cluster objects from external
 #'          clusterings.
 #'
 #' @export
@@ -86,11 +86,11 @@ hierarchical_clustering <- function(distance_object,
                                     batch_assign = TRUE,
                                     existing_clustering = NULL) {
   ensure_distances(distance_object)
-  num_data_points <- data_point_count.Rscc_distances(distance_object)
+  num_data_points <- data_point_count.scc_distances(distance_object)
   size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
   ensure_indicators(batch_assign, 1L)
   if (!is.null(existing_clustering)) {
-    ensure_Rscc_clustering(existing_clustering, num_data_points)
+    ensure_scc_clustering(existing_clustering, num_data_points)
   }
 
   hierarchical_clustering_internal(distance_object,
@@ -126,22 +126,22 @@ hierarchical_clustering <- function(distance_object,
 #'                  refining the clustering.
 #' @inheritParams hierarchical_clustering
 #'
-#' @return Returns a Rscclust cluster object containing the derived clustering.
+#' @return Returns a scclust cluster object containing the derived clustering.
 #'
 #' @keywords internal
 #'
-#' @useDynLib Rscclust Rscc_hierarchical_clustering
+#' @useDynLib scclust Rscc_hierarchical_clustering
 hierarchical_clustering_internal <- function(distance_object,
                                              size_constraint,
                                              batch_assign = TRUE,
                                              existing_clustering = NULL,
                                              deep_copy = TRUE) {
   ensure_distances(distance_object)
-  num_data_points <- data_point_count.Rscc_distances(distance_object)
+  num_data_points <- data_point_count.scc_distances(distance_object)
   size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
   ensure_indicators(batch_assign, 1L)
   if (!is.null(existing_clustering)) {
-    ensure_Rscc_clustering(existing_clustering, num_data_points)
+    ensure_scc_clustering(existing_clustering, num_data_points)
   }
   ensure_indicators(deep_copy, 1L)
 
@@ -151,8 +151,8 @@ hierarchical_clustering_internal <- function(distance_object,
                       batch_assign,
                       existing_clustering,
                       deep_copy,
-                      PACKAGE = "Rscclust")
-  make_Rscc_clustering(clustering$cluster_labels,
-                       clustering$cluster_count,
-                       attr(distance_object, "ids", exact = TRUE))
+                      PACKAGE = "scclust")
+  make_scc_clustering(clustering$cluster_labels,
+                      clustering$cluster_count,
+                      attr(distance_object, "ids", exact = TRUE))
 }

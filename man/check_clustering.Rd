@@ -8,7 +8,7 @@ check_clustering(clustering, size_constraint = NULL, type_labels = NULL,
   type_constraints = NULL)
 }
 \arguments{
-\item{clustering}{a \code{Rscc_clustering} object containing an existing non-empty clustering.}
+\item{clustering}{a \code{scc_clustering} object containing an existing non-empty clustering.}
 
 \item{size_constraint}{an integer with the required minimum cluster size. If \code{NULL},
 only the type constraints will be checked.}
@@ -29,18 +29,18 @@ constraint.
 \examples{
 # Each cluster contains at least two data
 # points; it's valid for `size_constraint == 2`.
-my_clust_obj1 <- Rscc_clustering(c("A", "A", "B", "C",
-                                   "B", "C", "C", "A",
-                                   "B", "B"))
+my_clust_obj1 <- scc_clustering(c("A", "A", "B", "C",
+                                  "B", "C", "C", "A",
+                                  "B", "B"))
 check_clustering(my_clust_obj1, 2)
 # > TRUE
 
 
 # One cluster contains only one point. This is
 # an invalid clustering for `size_constraint == 2`.
-my_clust_obj2 <- Rscc_clustering(c("A", "A", "B", "C",
-                                   "B", "C", "C", "A",
-                                   "B", "B", "D"))
+my_clust_obj2 <- scc_clustering(c("A", "A", "B", "C",
+                                  "B", "C", "C", "A",
+                                  "B", "B", "D"))
 check_clustering(my_clust_obj2, 2)
 # > FALSE
 
@@ -52,7 +52,7 @@ check_clustering(my_clust_obj1, 5)
 
 
 # Clustering
-my_clust_obj3 <- Rscc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
+my_clust_obj3 <- scc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
 
 # Data point types
 my_types <- factor(c("x", "y", "y", "z", "z", "x", "y", "z", "x", "x"))
@@ -106,4 +106,3 @@ check_clustering(my_clust_obj3,
 See \code{\link{make_clustering}} for details on
          how to specific type labels and constraints.
 }
-

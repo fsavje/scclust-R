@@ -1,6 +1,6 @@
 /* =============================================================================
- * Rscclust -- R wrapper for the scclust library
- * https://github.com/fsavje/Rscclust
+ * scclust for R -- R wrapper for the scclust library
+ * https://github.com/fsavje/scclust-R
  *
  * Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
  *
@@ -18,20 +18,15 @@
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ========================================================================== */
 
-#ifndef RSCC_UTILITIES_HG
-#define RSCC_UTILITIES_HG
+#ifndef RSCC_ERROR_HG
+#define RSCC_ERROR_HG
 
-#include <R.h>
-#include <Rinternals.h>
+#define iRscc_error(msg) (iRscc_error__(msg, __FILE__, __LINE__))
 
-SEXP Rscc_set_dist_functions(SEXP R_dist_functions);
+void iRscc_error__(const char* msg,
+                   const char* file,
+                   int line);
 
-SEXP Rscc_check_clustering(SEXP R_clustering,
-                           SEXP R_size_constraint,
-                           SEXP R_type_labels,
-                           SEXP R_type_constraints);
+void iRscc_scc_error();
 
-SEXP Rscc_get_clustering_stats(SEXP R_clustering,
-                               SEXP R_distance_object);
-
-#endif // ifndef RSCC_UTILITIES_HG
+#endif // ifndef RSCC_ERROR_HG

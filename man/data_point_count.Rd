@@ -7,7 +7,7 @@
 data_point_count(x)
 }
 \arguments{
-\item{x}{an Rscc_clustering or Rscc_distances object}
+\item{x}{an scc_clustering or scc_distances object}
 }
 \value{
 Returns an integer with the number of data points in \code{x}.
@@ -16,4 +16,3 @@ Returns an integer with the number of data points in \code{x}.
 \code{data_point_count} returns the number of data points in a clustering
 or distance object.
 }
-

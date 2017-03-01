@@ -1,6 +1,6 @@
 /* =============================================================================
- * Rscclust -- R wrapper for the scclust library
- * https://github.com/fsavje/Rscclust
+ * scclust for R -- R wrapper for the scclust library
+ * https://github.com/fsavje/scclust-R
  *
  * Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
  *
@@ -18,7 +18,7 @@
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ========================================================================== */
 
-#include "Rscc_nng.h"
+#include "scc_make_clustering.h"
 
 #include <limits.h>
 #include <stdbool.h>
@@ -27,7 +27,7 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <scclust.h>
-#include "Rscc_error.h"
+#include "scc_error.h"
 
 
 // =============================================================================

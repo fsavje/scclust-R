@@ -1,10 +1,10 @@
 any_neighbor_or_closest_assigned <- function(unassigned_method,
-                                       unassigned,
-                                       nng,
-                                       assigned,
-                                       radius,
-                                       cl_label,
-                                       distances) {
+                                             unassigned,
+                                             nng,
+                                             assigned,
+                                             radius,
+                                             cl_label,
+                                             distances) {
   for(i in which(unassigned)) {
     pick <- intersect(which(nng[, i]), which(assigned))
     if (length(pick) > 0) {

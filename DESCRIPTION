@@ -1,4 +1,4 @@
-Package: Rscclust
+Package: scclust
 Type: Package
 Title: R Wrapper For the scclust Library
 Version: 0.0.1
@@ -12,9 +12,9 @@ Imports: stats
 Suggests: testthat
 NeedsCompilation: yes
 License: GPL (>= 3) + file LICENSE
-LicenseNote: The Rscclust package includes the scclust library
+LicenseNote: The scclust R package includes the scclust C library
     (distributed under the LGPLv2.1 license) and the ANN library
     (distributed under the LGPLv2.1 license).
-URL: https://github.com/fsavje/Rscclust
-BugReports: https://github.com/fsavje/Rscclust/issues
-RoxygenNote: 5.0.1
+URL: https://github.com/fsavje/scclust-R
+BugReports: https://github.com/fsavje/scclust-R/issues
+RoxygenNote: 6.0.1

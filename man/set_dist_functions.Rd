@@ -13,7 +13,7 @@ set_dist_functions(dist_functions = "ann")
 Returns \code{NULL}.
 }
 \description{
-\code{set_dist_functions} sets the distance search functions used by Rscclust to construct
+\code{set_dist_functions} sets the distance search functions used by scclust to construct
 clusterings. The package is loaded with the distance functions set to ANN, i.e., equivalent
 to running \code{set_dist_functions()} when the package loads.
 }
@@ -23,4 +23,3 @@ set_dist_functions(dist_functions = "ann")
 set_dist_functions(dist_functions = "internal")
 
 }
-

@@ -1,6 +1,6 @@
 # ==============================================================================
-# Rscclust -- R wrapper for the scclust library
-# https://github.com/fsavje/Rscclust
+# scclust for R -- R wrapper for the scclust library
+# https://github.com/fsavje/scclust-R
 #
 # Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
 #
@@ -18,7 +18,7 @@
 # along with this program. If not, see http://www.gnu.org/licenses/
 # ==============================================================================
 
-library(Rscclust)
+library(scclust)
 context("Internal functions")
 
 
@@ -39,15 +39,15 @@ test_that("Constants are correct", {
 
 
 # ==============================================================================
-# make_Rscc_clustering
+# make_scc_clustering
 # ==============================================================================
 
-test_that("`make_Rscc_clustering` constructs correct object", {
-  expect_identical(make_Rscc_clustering(1:10, 10L, letters[1:10]),
+test_that("`make_scc_clustering` constructs correct object", {
+  expect_identical(make_scc_clustering(1:10, 10L, letters[1:10]),
                    structure(1:10,
                              cluster_count = 10L,
                              ids = letters[1:10],
-                             class = c("Rscc_clustering")))
+                             class = c("scc_clustering")))
 })
 
 

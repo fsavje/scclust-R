@@ -1,6 +1,6 @@
 # ==============================================================================
-# Rscclust -- R wrapper for the scclust library
-# https://github.com/fsavje/Rscclust
+# scclust for R -- R wrapper for the scclust library
+# https://github.com/fsavje/scclust-R
 #
 # Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
 #
@@ -23,7 +23,7 @@
 #' \code{data_point_count} returns the number of data points in a clustering
 #' or distance object.
 #'
-#' @param x  an Rscc_clustering or Rscc_distances object
+#' @param x  an scc_clustering or scc_distances object
 #'
 #' @return Returns an integer with the number of data points in \code{x}.
 #'

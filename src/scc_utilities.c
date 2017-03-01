@@ -1,6 +1,6 @@
 /* =============================================================================
- * Rscclust -- R wrapper for the scclust library
- * https://github.com/fsavje/Rscclust
+ * scclust for R -- R wrapper for the scclust library
+ * https://github.com/fsavje/scclust-R
  *
  * Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
  *
@@ -18,7 +18,7 @@
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ========================================================================== */
 
-#include "Rscc_utilities.h"
+#include "scc_utilities.h"
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -28,7 +28,7 @@
 #include <scclust.h>
 #include <scclust_spi.h>
 #include <ann_wrapper.h>
-#include "Rscc_error.h"
+#include "scc_error.h"
 
 
 // =============================================================================

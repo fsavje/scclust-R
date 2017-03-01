@@ -15,13 +15,13 @@ hierarchical_clustering(distance_object, size_constraint, batch_assign = TRUE,
 \item{batch_assign}{a bool indicating whether data points should be assigned in batches when
 spliting clusters.}
 
-\item{existing_clustering}{\code{NULL} or a \code{Rscc_clustering} object containing an existing
+\item{existing_clustering}{\code{NULL} or a \code{scc_clustering} object containing an existing
 non-empty clustering. If \code{NULL}, the function will start with a
 single cluster containing all data points (i.e., it derives a clustering
 from scratch).}
 }
 \value{
-Returns a Rscclust cluster object containing the derived clustering.
+Returns a scclust cluster object containing the derived clustering.
 }
 \description{
 \code{hierarchical_clustering} derives a clustering statisfying a specified
@@ -67,10 +67,9 @@ retained to the greatest extent possible.
 \seealso{
 \code{\link{make_clustering}} is the main clustering function in the package.
 
-         Use \code{\link{Rscc_clustering}} to create Rscclust cluster objects from external
+         Use \code{\link{scc_clustering}} to create scclust cluster objects from external
          clusterings.
 
-Other clustering.functions: \code{\link{make_clustering}}
+Other clustering functions: \code{\link{make_clustering}}
 }
 \keyword{cluster}
-
