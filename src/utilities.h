@@ -24,6 +24,16 @@
 #include <R.h>
 #include <Rinternals.h>
 
+
+#define set_dist_functions)
+
+
+
+bool dist_functions_are_set = false;
+
+
+
+
 SEXP Rscc_set_dist_functions(SEXP R_dist_functions);
 
 SEXP Rscc_check_clustering(SEXP R_clustering,
