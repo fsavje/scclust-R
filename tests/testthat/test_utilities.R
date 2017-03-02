@@ -178,14 +178,14 @@ some_assigned_emptycl_stats <- structure(list(
 ), class = c("scc_clustering_stats"))
 
 test_that("`get_clustering_stats` returns correct output", {
-  expect_equal(get_clustering_stats(cl1, make_distances(dp_data)), all_assigned_stats)
-  expect_equal(get_clustering_stats(cl2, make_distances(dp_data)), some_assigned_stats)
-  expect_equal(get_clustering_stats(cl3, make_distances(dp_data)), all_assigned_stats)
-  expect_equal(get_clustering_stats(cl4, make_distances(dp_data)), some_assigned_stats)
-  expect_equal(get_clustering_stats(cl5, make_distances(dp_data)), all_assigned_emptycl_stats)
-  expect_equal(get_clustering_stats(cl6, make_distances(dp_data)), some_assigned_emptycl_stats)
-  expect_equal(get_clustering_stats(cl7, make_distances(dp_data)), all_assigned_emptycl_stats)
-  expect_equal(get_clustering_stats(cl8, make_distances(dp_data)), some_assigned_emptycl_stats)
+  expect_equal(get_clustering_stats(cl1, distances::distances(dp_data)), all_assigned_stats)
+  expect_equal(get_clustering_stats(cl2, distances::distances(dp_data)), some_assigned_stats)
+  expect_equal(get_clustering_stats(cl3, distances::distances(dp_data)), all_assigned_stats)
+  expect_equal(get_clustering_stats(cl4, distances::distances(dp_data)), some_assigned_stats)
+  expect_equal(get_clustering_stats(cl5, distances::distances(dp_data)), all_assigned_emptycl_stats)
+  expect_equal(get_clustering_stats(cl6, distances::distances(dp_data)), some_assigned_emptycl_stats)
+  expect_equal(get_clustering_stats(cl7, distances::distances(dp_data)), all_assigned_emptycl_stats)
+  expect_equal(get_clustering_stats(cl8, distances::distances(dp_data)), some_assigned_emptycl_stats)
 })
 
 test_that("`print.scc_clustering_stats` prints correctly", {

@@ -8,7 +8,7 @@ hierarchical_clustering(distance_object, size_constraint, batch_assign = TRUE,
   existing_clustering = NULL)
 }
 \arguments{
-\item{distance_object}{a distance object as produced by \code{\link{make_distances}}.}
+\item{distance_object}{a distance object as produced by \code{\link[distances]{distances}}.}
 
 \item{size_constraint}{an integer with the required minimum cluster size.}
 

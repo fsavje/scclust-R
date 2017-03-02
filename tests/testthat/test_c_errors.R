@@ -29,14 +29,12 @@ context("Input checking in C code")
 c_hierarchical_clustering <- function(distance_object = matrix(as.numeric(1:16), ncol = 8),
                                       size_constraint = 2L,
                                       batch_assign = FALSE,
-                                      existing_clustering = NULL,
-                                      deep_copy = TRUE) {
+                                      existing_clustering = NULL) {
   .Call("Rscc_hierarchical_clustering",
         distance_object,
         size_constraint,
         batch_assign,
         existing_clustering,
-        deep_copy,
         PACKAGE = "scclust")
 }
 
@@ -63,8 +61,6 @@ test_that("`Rscc_hierarchical_clustering` checks input.", {
                regexp = "`R_existing_clustering` does not match `R_distance_object`.")
   expect_error(c_hierarchical_clustering(existing_clustering = temp_existing_clustering2),
                regexp = "`R_existing_clustering` is empty.")
-  expect_error(c_hierarchical_clustering(deep_copy = 1),
-               regexp = "`R_deep_copy` must be logical.")
 })
 
 
@@ -242,6 +238,6 @@ test_that("scclust returns errors correctly.", {
   expect_silent(c_hierarchical_clustering())
   expect_error(c_hierarchical_clustering(size_constraint = 1L),
                regexp = "[(]scclust:src/hierarchical_clustering.c")
-  expect_error(make_clustering(make_distances(matrix(c(0.1, 0.2, 0.3), ncol = 1)), size_constraint = 2L, seed_radius = 0.001),
+  expect_error(make_clustering(distances::distances(matrix(c(0.1, 0.2, 0.3), ncol = 1)), size_constraint = 2L, seed_radius = 0.001),
                "Infeasible radius constraint.")
 })

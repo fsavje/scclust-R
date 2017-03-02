@@ -26,7 +26,7 @@ replica_nng_clustering_batches <- function(distance_object,
                                            radius = NULL,
                                            primary_data_points = NULL) {
   ensure_distances(distance_object)
-  num_data_points <- data_point_count.scc_distances(distance_object)
+  num_data_points <- length(distance_object)
   size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
   unassigned_method <- coerce_args(unassigned_method,
                                    c("ignore", "any_neighbor"))

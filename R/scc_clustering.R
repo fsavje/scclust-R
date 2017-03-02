@@ -116,13 +116,6 @@ cluster_count <- function(clustering) {
 
 
 #' @export
-data_point_count.scc_clustering <- function(x) {
-  stopifnot(is.integer(x))
-  length(x)
-}
-
-
-#' @export
 as.data.frame.scc_clustering <- function(x,
                                          row.names = NULL,
                                          ...) {

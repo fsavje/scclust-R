@@ -37,8 +37,7 @@
 SEXP Rscc_hierarchical_clustering(const SEXP R_distance_object,
                                   const SEXP R_size_constraint,
                                   const SEXP R_batch_assign,
-                                  const SEXP R_existing_clustering,
-                                  const SEXP R_deep_copy)
+                                  const SEXP R_existing_clustering)
 {
 	if (!isMatrix(R_distance_object) || !isReal(R_distance_object)) {
 		iRscc_error("`R_distance_object` is not a valid distance object.");
@@ -52,15 +51,11 @@ SEXP Rscc_hierarchical_clustering(const SEXP R_distance_object,
 	if (!isNull(R_existing_clustering) && !isInteger(R_existing_clustering)) {
 		iRscc_error("`R_existing_clustering` is not a valid clustering object.");
 	}
-	if (!isLogical(R_deep_copy)) {
-		iRscc_error("`R_deep_copy` must be logical.");
-	}
 
 	const uintmax_t num_data_points = (uintmax_t) INTEGER(getAttrib(R_distance_object, R_DimSymbol))[1];
 	const uintmax_t num_dimensions = (uintmax_t) INTEGER(getAttrib(R_distance_object, R_DimSymbol))[0];
 	const uint32_t size_constraint = (uint32_t) asInteger(R_size_constraint);
 	const bool batch_assign = (bool) asLogical(R_batch_assign);
-	const bool deep_copy = (bool) asLogical(R_deep_copy);
 
 	scc_ErrorCode ec;
 	scc_DataSet* data_set;
@@ -95,12 +90,7 @@ SEXP Rscc_hierarchical_clustering(const SEXP R_distance_object,
 			iRscc_error("`R_existing_clustering` is empty.");
 		}
 
-		if (deep_copy) {
-			R_cluster_labels = PROTECT(duplicate(R_existing_clustering));
-		} else {
-			R_cluster_labels = PROTECT(R_existing_clustering);
-		}
-
+		R_cluster_labels = PROTECT(duplicate(R_existing_clustering));
 		setAttrib(R_cluster_labels, install("class"), R_NilValue);
 		setAttrib(R_cluster_labels, install("cluster_count"), R_NilValue);
 		setAttrib(R_cluster_labels, install("ids"), R_NilValue);

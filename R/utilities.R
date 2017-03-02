@@ -147,7 +147,7 @@ check_clustering <- function(clustering,
                              type_labels = NULL,
                              type_constraints = NULL) {
   ensure_scc_clustering(clustering)
-  num_data_points <- data_point_count.scc_clustering(clustering)
+  num_data_points <- length(clustering)
   if (is.null(type_constraints)) {
     type_labels <- NULL
     size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
@@ -227,19 +227,21 @@ check_clustering <- function(clustering,
 #' \deqn{\sum_{c\in C} \frac{AD(c)}{|C|}}{\sum_[c in C] AD(c) / count(C)}
 #'
 #' @param clustering a \code{scc_clustering} object containing an existing non-empty clustering.
-#' @param distance_object a distance object as produced by \code{\link{make_distances}}.
+#' @param distance_object a distance object as produced by \code{\link[distances]{distances}}.
 #'
 #' @return Returns a list of class "scc_clustering_stats" containing important statistics
 #'         about the inputted clustering.
 #'
 #' @examples
+#' library(distances)
+#'
 #' my_clust_obj <- scc_clustering(c("A", "A", "B", "C", "B",
 #'                                  "C", "C", "A", "B", "B"))
 #' my_data_points <- data.frame(x = c(0.1, 0.2, 0.3, 0.4, 0.5,
 #'                                    0.6, 0.7, 0.8, 0.9, 1.0),
 #'                              y = c(10, 9, 8, 7, 6,
 #'                                    10, 9, 8, 7, 6))
-#' my_distance_obj <- make_distances(my_data_points)
+#' my_distance_obj <- distances(my_data_points)
 #'
 #' get_clustering_stats(my_clust_obj, my_distance_obj)
 #'
@@ -264,7 +266,7 @@ check_clustering <- function(clustering,
 get_clustering_stats <- function(clustering,
                                  distance_object) {
   ensure_scc_clustering(clustering)
-  num_data_points <- data_point_count.scc_clustering(clustering)
+  num_data_points <- length(clustering)
   ensure_distances(distance_object, num_data_points)
 
   clust_stats <- .Call("Rscc_get_clustering_stats",

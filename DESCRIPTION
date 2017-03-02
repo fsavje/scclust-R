@@ -8,10 +8,13 @@ Description: Package that wraps the scclust C library for R. scclust provides
     functions for size constrained clustering.
 Depends:
     R (>= 3.2.3)
-Imports: stats
+Imports:
+    distances
 Suggests: testthat
+Remotes: fsavje/distances
 NeedsCompilation: yes
 License: GPL (>= 3) + file LICENSE
+Encoding: UTF-8
 LicenseNote: The scclust R package includes the scclust C library
     (distributed under the LGPLv2.1 license) and the ANN library
     (distributed under the LGPLv2.1 license).

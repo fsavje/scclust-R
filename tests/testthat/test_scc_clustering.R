@@ -112,13 +112,13 @@ test_that("`cluster_count` returns correct output", {
 
 
 # ==============================================================================
-# data_point_count.scc_clustering
+# length.scc_clustering
 # ==============================================================================
 
-test_that("`data_point_count.scc_clustering` returns correct output", {
-  expect_identical(data_point_count.scc_clustering(scc_clustering(c("a", "b", "c", "a", "b", "c", "a"))),
+test_that("`length.scc_clustering` returns correct output", {
+  expect_identical(length(scc_clustering(c("a", "b", "c", "a", "b", "c", "a"))),
                    7L)
-  expect_identical(data_point_count.scc_clustering(scc_clustering(c("a", "b", "c", "a", "b", "c", "a", "d", "e", "d"))),
+  expect_identical(length(scc_clustering(c("a", "b", "c", "a", "b", "c", "a", "d", "e", "d"))),
                    10L)
 })
 
