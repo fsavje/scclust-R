@@ -114,7 +114,7 @@ make_clustering <- function(distance_object,
     batch_size <- coerce_counts(batch_size, 1L)
   }
 
-  clustering <- .Call("Rscc_make_clustering",
+  clustering <- .Call(Rscc_make_clustering,
                       distance_object,
                       size_constraint,
                       unclass(type_labels),
@@ -126,8 +126,7 @@ make_clustering <- function(distance_object,
                       seed_radius,
                       primary_radius,
                       secondary_radius,
-                      batch_size,
-                      PACKAGE = "scclust")
+                      batch_size)
 
   make_scc_clustering(clustering$cluster_labels,
                       clustering$cluster_count,

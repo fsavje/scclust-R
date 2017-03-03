@@ -18,23 +18,23 @@
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ========================================================================== */
 
-#ifndef RSCC_MAKE_CLUSTERING_HG
-#define RSCC_MAKE_CLUSTERING_HG
+#ifndef RSCC_INTERNAL_HG
+#define RSCC_INTERNAL_HG
 
+#include <stdbool.h>
 #include <R.h>
 #include <Rinternals.h>
 
-SEXP Rscc_make_clustering(SEXP R_distances,
-                          SEXP R_size_constraint,
-                          SEXP R_type_labels,
-                          SEXP R_type_constraints,
-                          SEXP R_seed_method,
-                          SEXP R_primary_data_points,
-                          SEXP R_primary_unassigned_method,
-                          SEXP R_secondary_unassigned_method,
-                          SEXP R_seed_radius,
-                          SEXP R_primary_radius,
-                          SEXP R_secondary_radius,
-                          SEXP R_batch_size);
+#define Rscc_set_dist_functions() (void)((Rscc_dist_functions_are_set) || (Rscc_set_dist_functions__(), 0))
 
-#endif // ifndef RSCC_MAKE_CLUSTERING_HG
+#define Rscc_get_distances_pointer(distances) ((void*) distances)
+
+extern bool Rscc_dist_functions_are_set;
+
+void Rscc_set_dist_functions__(void);
+
+bool idist_check_distance_object(SEXP R_distances);
+
+int idist_num_data_points(SEXP R_distances);
+
+#endif // ifndef RSCC_INTERNAL_HG

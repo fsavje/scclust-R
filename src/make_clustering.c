@@ -18,16 +18,15 @@
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ========================================================================== */
 
-#include "scc_make_clustering.h"
-
+#include "make_clustering.h"
 #include <limits.h>
-#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <R.h>
 #include <Rinternals.h>
 #include <scclust.h>
-#include "scc_error.h"
+#include "error.h"
+#include "internal.h"
 
 
 // =============================================================================
@@ -43,7 +42,7 @@ static scc_UnassignedMethod iRscc_parse_unassigned_method(SEXP R_unassigned_meth
 // External function implementations
 // =============================================================================
 
-SEXP Rscc_make_clustering(const SEXP R_distance_object,
+SEXP Rscc_make_clustering(const SEXP R_distances,
                           const SEXP R_size_constraint,
                           const SEXP R_type_labels,
                           const SEXP R_type_constraints,
@@ -56,8 +55,10 @@ SEXP Rscc_make_clustering(const SEXP R_distance_object,
                           const SEXP R_secondary_radius,
                           const SEXP R_batch_size)
 {
-	if (!isMatrix(R_distance_object) || !isReal(R_distance_object)) {
-		iRscc_error("`R_distance_object` is not a valid distance object.");
+	Rscc_set_dist_functions();
+
+	if (!idist_check_distance_object(R_distances)) {
+		iRscc_error("`R_distances` is not a valid distance object.");
 	}
 	if (!isInteger(R_size_constraint)) {
 		iRscc_error("`R_size_constraint` must be integer.");
@@ -99,9 +100,7 @@ SEXP Rscc_make_clustering(const SEXP R_distance_object,
 		iRscc_error("`R_batch_size` must be NULL or integer.");
 	}
 
-
-	const uintmax_t num_data_points = (uintmax_t) INTEGER(getAttrib(R_distance_object, R_DimSymbol))[1];
-	const uintmax_t num_dimensions = (uintmax_t) INTEGER(getAttrib(R_distance_object, R_DimSymbol))[0];
+	const uintmax_t num_data_points = (uintmax_t) idist_num_data_points(R_distances);
 
 	scc_ClusterOptions options = scc_default_cluster_options;
 
@@ -114,7 +113,7 @@ SEXP Rscc_make_clustering(const SEXP R_distance_object,
 		const uintmax_t num_types = (uintmax_t) xlength(R_type_constraints);
 		const size_t len_type_labels = (size_t) xlength(R_type_labels);
 		if (len_type_labels != num_data_points) {
-			iRscc_error("`R_type_labels` does not match `R_distance_object`.");
+			iRscc_error("`R_type_labels` does not match `R_distances`.");
 		}
 		if (num_types >= 2) {
 			uint32_t* const type_constraints = (uint32_t*) R_alloc(num_types, sizeof(uint32_t)); // Automatically freed by R on return
@@ -190,37 +189,23 @@ SEXP Rscc_make_clustering(const SEXP R_distance_object,
 		options.batch_size = (uint32_t) asInteger(R_batch_size);
 	}
 
-
 	scc_ErrorCode ec;
-	scc_DataSet* data_set;
-	if ((ec = scc_init_data_set(num_data_points,
-	                            num_dimensions,
-	                            (size_t) xlength(R_distance_object),
-	                            REAL(R_distance_object),
-	                            &data_set)) != SCC_ER_OK) {
-		iRscc_scc_error();
-	}
-
 	SEXP R_cluster_labels = PROTECT(allocVector(INTSXP, (R_xlen_t) num_data_points));
 	scc_Clustering* clustering;
 	if ((ec = scc_init_empty_clustering(num_data_points,
 	                                    INTEGER(R_cluster_labels),
 	                                    &clustering)) != SCC_ER_OK) {
-		scc_free_data_set(&data_set);
 		UNPROTECT(1);
 		iRscc_scc_error();
 	}
 
-	if ((ec = scc_make_clustering(data_set,
+	if ((ec = scc_make_clustering(Rscc_get_distances_pointer(R_distances),
 	                              clustering,
 	                              &options)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
-		scc_free_data_set(&data_set);
 		UNPROTECT(1);
 		iRscc_scc_error();
 	}
-
-	scc_free_data_set(&data_set);
 
 	uintmax_t num_clusters = 0;
 	if ((ec = scc_get_clustering_info(clustering,

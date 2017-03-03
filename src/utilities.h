@@ -24,24 +24,12 @@
 #include <R.h>
 #include <Rinternals.h>
 
-
-#define set_dist_functions)
-
-
-
-bool dist_functions_are_set = false;
-
-
-
-
-SEXP Rscc_set_dist_functions(SEXP R_dist_functions);
-
 SEXP Rscc_check_clustering(SEXP R_clustering,
                            SEXP R_size_constraint,
                            SEXP R_type_labels,
                            SEXP R_type_constraints);
 
 SEXP Rscc_get_clustering_stats(SEXP R_clustering,
-                               SEXP R_distance_object);
+                               SEXP R_distances);
 
 #endif // ifndef RSCC_UTILITIES_HG

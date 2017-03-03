@@ -18,8 +18,7 @@
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ========================================================================== */
 
-#include "scc_error.h"
-
+#include "error.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <scclust.h>

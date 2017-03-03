@@ -94,12 +94,11 @@ hierarchical_clustering <- function(distance_object,
     ensure_scc_clustering(existing_clustering, num_data_points)
   }
 
-  clustering <- .Call("Rscc_hierarchical_clustering",
+  clustering <- .Call(Rscc_hierarchical_clustering,
                       distance_object,
                       size_constraint,
                       batch_assign,
-                      existing_clustering,
-                      PACKAGE = "scclust")
+                      existing_clustering)
   make_scc_clustering(clustering$cluster_labels,
                       clustering$cluster_count,
                       attr(distance_object, "ids", exact = TRUE))

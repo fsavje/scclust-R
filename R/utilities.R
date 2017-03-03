@@ -19,33 +19,6 @@
 # ==============================================================================
 
 
-#' Set distance search functions.
-#'
-#' \code{set_dist_functions} sets the distance search functions used by scclust to construct
-#' clusterings. The package is loaded with the distance functions set to ANN, i.e., equivalent
-#' to running \code{set_dist_functions()} when the package loads.
-#'
-#' @param dist_functions a string containing either "ann" or "internal".
-#'
-#' @return Returns \code{NULL}.
-#'
-#' @examples
-#' set_dist_functions()
-#' set_dist_functions(dist_functions = "ann")
-#' set_dist_functions(dist_functions = "internal")
-#'
-#' @useDynLib scclust Rscc_set_dist_functions
-#' @export
-set_dist_functions <- function(dist_functions = "ann") {
-  dist_functions <- coerce_args(dist_functions,
-                                c("internal",
-                                  "ann"))
-  .Call("Rscc_set_dist_functions",
-        dist_functions,
-        PACKAGE = "scclust")
-}
-
-
 #' Check the validity of a clustering.
 #'
 #' \code{check_clustering} checks so the inputted clustering satisfies the specified size
@@ -161,12 +134,11 @@ check_clustering <- function(clustering,
                                                     num_data_points)
   }
 
-  .Call("Rscc_check_clustering",
+  .Call(Rscc_check_clustering,
         clustering,
         size_constraint,
         unclass(type_labels),
-        type_constraints,
-        PACKAGE = "scclust")
+        type_constraints)
 }
 
 
@@ -269,10 +241,9 @@ get_clustering_stats <- function(clustering,
   num_data_points <- length(clustering)
   ensure_distances(distance_object, num_data_points)
 
-  clust_stats <- .Call("Rscc_get_clustering_stats",
+  clust_stats <- .Call(Rscc_get_clustering_stats,
                        clustering,
-                       distance_object,
-                       PACKAGE = "scclust")
+                       distance_object)
   structure(clust_stats,
             class = c("scc_clustering_stats"))
 }
