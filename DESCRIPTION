@@ -7,9 +7,9 @@ Authors@R: c(person("Fredrik", "Savje", email = "fredrik.savje@berkeley.edu", ro
 Description: Package that wraps the scclust C library for R. scclust provides
     functions for size constrained clustering.
 Depends:
-    R (>= 3.2.3)
-Imports:
+    R (>= 3.2.3),
     distances
+Imports:
 Suggests: testthat
 Remotes: fsavje/distances
 NeedsCompilation: yes
