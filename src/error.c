@@ -18,20 +18,23 @@
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ========================================================================== */
 
-#ifndef RSCC_UTILITIES_HG
-#define RSCC_UTILITIES_HG
-
+#include "error.h"
 #include <R.h>
 #include <Rinternals.h>
+#include <scclust.h>
 
-SEXP Rscc_set_dist_functions(SEXP R_dist_functions);
 
-SEXP Rscc_check_clustering(SEXP R_clustering,
-                           SEXP R_size_constraint,
-                           SEXP R_type_labels,
-                           SEXP R_type_constraints);
+void iRscc_error__(const char* const msg,
+                   const char* const file,
+                   const int line) {
+	char error_buffer[255];
+	snprintf(error_buffer, 255, "(%s:%d) %s", file, line, msg);
+	error(error_buffer);
+}
 
-SEXP Rscc_get_clustering_stats(SEXP R_clustering,
-                               SEXP R_distance_object);
 
-#endif // ifndef RSCC_UTILITIES_HG
+void iRscc_scc_error(void) {
+	char error_buffer[255];
+	scc_get_latest_error(255, error_buffer);
+	error(error_buffer);
+}

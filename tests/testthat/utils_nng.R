@@ -296,7 +296,7 @@ test_data <- matrix(c(9.8864788, 9.5334187, 1.4438035, 9.1983830, 0.2522823, 9.4
                       4.7172250, 1.4076662, 3.4434990, 8.7564740, 9.8500421, 2.3985647, 9.6960007, 2.6405423, 1.9812322, 7.3725567,
                       2.8214478, 6.1441961, 1.3165908, 7.2738551, 4.9275615, 4.0848332, 1.4137695, 6.4601333, 8.1038091, 3.6685625), ncol = 2)
 
-test_distances1 <- make_distances(test_data)
+test_distances1 <- distances::distances(test_data)
 
 primary_data_points <- c(FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE,
                          TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE,

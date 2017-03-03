@@ -104,7 +104,7 @@ replica_hierarchical_clustering <- function(distance_object,
                                             batch_assign = TRUE,
                                             existing_clustering = NULL) {
   ensure_distances(distance_object)
-  num_data_points <- data_point_count.scc_distances(distance_object)
+  num_data_points <- length(distance_object)
   size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
   ensure_indicators(batch_assign, 1L)
   if (!is.null(existing_clustering)) {

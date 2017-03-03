@@ -18,8 +18,7 @@
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ========================================================================== */
 
-#include "scc_hierarchical.h"
-
+#include "hierarchical.h"
 #include <limits.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -27,21 +26,23 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <scclust.h>
-#include "scc_error.h"
+#include "error.h"
+#include "internal.h"
 
 
 // =============================================================================
 // External function implementations
 // =============================================================================
 
-SEXP Rscc_hierarchical_clustering(const SEXP R_distance_object,
+SEXP Rscc_hierarchical_clustering(const SEXP R_distances,
                                   const SEXP R_size_constraint,
                                   const SEXP R_batch_assign,
-                                  const SEXP R_existing_clustering,
-                                  const SEXP R_deep_copy)
+                                  const SEXP R_existing_clustering)
 {
-	if (!isMatrix(R_distance_object) || !isReal(R_distance_object)) {
-		iRscc_error("`R_distance_object` is not a valid distance object.");
+	Rscc_set_dist_functions();
+
+	if (!idist_check_distance_object(R_distances)) {
+		iRscc_error("`R_distances` is not a valid distance object.");
 	}
 	if (!isInteger(R_size_constraint)) {
 		iRscc_error("`R_size_constraint` must be integer.");
@@ -52,26 +53,12 @@ SEXP Rscc_hierarchical_clustering(const SEXP R_distance_object,
 	if (!isNull(R_existing_clustering) && !isInteger(R_existing_clustering)) {
 		iRscc_error("`R_existing_clustering` is not a valid clustering object.");
 	}
-	if (!isLogical(R_deep_copy)) {
-		iRscc_error("`R_deep_copy` must be logical.");
-	}
 
-	const uintmax_t num_data_points = (uintmax_t) INTEGER(getAttrib(R_distance_object, R_DimSymbol))[1];
-	const uintmax_t num_dimensions = (uintmax_t) INTEGER(getAttrib(R_distance_object, R_DimSymbol))[0];
+	const uintmax_t num_data_points = (uintmax_t) idist_num_data_points(R_distances);
 	const uint32_t size_constraint = (uint32_t) asInteger(R_size_constraint);
 	const bool batch_assign = (bool) asLogical(R_batch_assign);
-	const bool deep_copy = (bool) asLogical(R_deep_copy);
 
 	scc_ErrorCode ec;
-	scc_DataSet* data_set;
-	if ((ec = scc_init_data_set(num_data_points,
-	                            num_dimensions,
-	                            (size_t) xlength(R_distance_object),
-	                            REAL(R_distance_object),
-	                            &data_set)) != SCC_ER_OK) {
-		iRscc_scc_error();
-	}
-
 	SEXP R_cluster_labels;
 	scc_Clustering* clustering;
 	if (isNull(R_existing_clustering)) {
@@ -79,7 +66,6 @@ SEXP Rscc_hierarchical_clustering(const SEXP R_distance_object,
 		if ((ec = scc_init_empty_clustering(num_data_points,
 		                                    INTEGER(R_cluster_labels),
 		                                    &clustering)) != SCC_ER_OK) {
-			scc_free_data_set(&data_set);
 			UNPROTECT(1);
 			iRscc_scc_error();
 		}
@@ -88,19 +74,14 @@ SEXP Rscc_hierarchical_clustering(const SEXP R_distance_object,
 			iRscc_error("`R_existing_clustering` is not a valid clustering object.");
 		}
 		if (((uintmax_t) xlength(R_existing_clustering)) != num_data_points) {
-			iRscc_error("`R_existing_clustering` does not match `R_distance_object`.");
+			iRscc_error("`R_existing_clustering` does not match `R_distances`.");
 		}
 		const uintmax_t existing_num_clusters = (uintmax_t) asInteger(getAttrib(R_existing_clustering, install("cluster_count")));
 		if (existing_num_clusters == 0) {
 			iRscc_error("`R_existing_clustering` is empty.");
 		}
 
-		if (deep_copy) {
-			R_cluster_labels = PROTECT(duplicate(R_existing_clustering));
-		} else {
-			R_cluster_labels = PROTECT(R_existing_clustering);
-		}
-
+		R_cluster_labels = PROTECT(duplicate(R_existing_clustering));
 		setAttrib(R_cluster_labels, install("class"), R_NilValue);
 		setAttrib(R_cluster_labels, install("cluster_count"), R_NilValue);
 		setAttrib(R_cluster_labels, install("ids"), R_NilValue);
@@ -110,23 +91,19 @@ SEXP Rscc_hierarchical_clustering(const SEXP R_distance_object,
 		                                       INTEGER(R_cluster_labels),
 		                                       false,
 		                                       &clustering)) != SCC_ER_OK) {
-			scc_free_data_set(&data_set);
 			UNPROTECT(1);
 			iRscc_scc_error();
 		}
 	}
 
-	if ((ec = scc_hierarchical_clustering(data_set,
+	if ((ec = scc_hierarchical_clustering(Rscc_get_distances_pointer(R_distances),
 	                                      clustering,
 	                                      size_constraint,
 	                                      batch_assign)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
-		scc_free_data_set(&data_set);
 		UNPROTECT(1);
 		iRscc_scc_error();
 	}
-
-	scc_free_data_set(&data_set);
 
 	uintmax_t num_clusters = 0;
 	if ((ec = scc_get_clustering_info(clustering,

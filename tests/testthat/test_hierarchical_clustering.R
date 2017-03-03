@@ -124,7 +124,7 @@ test_data <- matrix(c(0.0436, 0.9723, 0.5366, 0.1065, 0.5340, 0.3437, 0.2933, 0.
                       0.6781, 0.6921, 0.4024, 0.0273, 0.3808, 0.2799, 0.2430, 0.1689, 0.1598, 0.0208,
                       0.5561, 0.8567, 0.0660, 0.4726, 0.5772, 0.0277, 0.0141, 0.1749, 0.4614, 0.9239), ncol = 2)
 
-test_distances1 <- make_distances(test_data)
+test_distances1 <- distances::distances(test_data)
 prev_clust1 <- scc_clustering(c(9, 3, 4, 4, 7, 0, 5, 0, 6, 7, 4, 7, 4, 6, 4, 9, 9, 2, 4, 6, 7, 5, 5, 5, 3, 5, 2, 9, 6, 4, 6, 8, 0,
                                 9, 2, 2, 5, 5, 5, 6, 5, 2, 1, 1, 3, 6, 7, 9, 1, 8, 4, 8, 3, 1, 6, 8, 5, 7, 0, 7, 1, 1, 3, 0, 3, 9,
                                 0, 9, 9, 2, 4, 9, 8, 2, 0, 4, 9, 7, 9, 9, 2, 1, 7, 9, 8, 4, 9, 4, 6, 8, 2, 6, 8, 8, 2, 8, 9, 9, 5,
@@ -289,49 +289,9 @@ test_data <- matrix(c(0.0436, 0.9723, 0.5366, 0.1065, 0.5340, 0.3437, 0.2933, 0.
                       0.5747, 0.5449, 0.3050, 0.1893, 0.9559, 0.4274, 0.1691, 0.3504, 0.5032, 0.4387,
                       0.1264, 0.5995, 0.4948, 0.8134, 0.1887, 0.4399, 0.2289, 0.4345, 0.7754, 0.5619), ncol = 2)
 
-test_distances2 <- make_distances(test_data)
+test_distances2 <- distances::distances(test_data)
 prev_clust3ref <- scc_clustering(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
 prev_clust3a <- scc_clustering(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
 prev_clust3b <- scc_clustering(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
 prev_clust3c <- scc_clustering(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
 prev_clust3d <- scc_clustering(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
-
-
-test_that("`hierarchical_clustering` (without deep copy) returns correct output", {
-  expect_identical(hierarchical_clustering_internal(distance_object = test_distances2,
-                                                    size_constraint = 2L,
-                                                    batch_assign = TRUE,
-                                                    existing_clustering = prev_clust3a,
-                                                    deep_copy = FALSE),
-                   replica_hierarchical_clustering(distance_object = test_distances2,
-                                                   size_constraint = 2L,
-                                                   batch_assign = TRUE,
-                                                   existing_clustering = prev_clust3ref))
-  expect_identical(hierarchical_clustering_internal(distance_object = test_distances2,
-                                                    size_constraint = 3L,
-                                                    batch_assign = TRUE,
-                                                    existing_clustering = prev_clust3b,
-                                                    deep_copy = FALSE),
-                   replica_hierarchical_clustering(distance_object = test_distances2,
-                                                   size_constraint = 3L,
-                                                   batch_assign = TRUE,
-                                                   existing_clustering = prev_clust3ref))
-  expect_identical(hierarchical_clustering_internal(distance_object = test_distances2,
-                                                    size_constraint = 2L,
-                                                    batch_assign = FALSE,
-                                                    existing_clustering = prev_clust3c,
-                                                    deep_copy = FALSE),
-                   replica_hierarchical_clustering(distance_object = test_distances2,
-                                                   size_constraint = 2L,
-                                                   batch_assign = FALSE,
-                                                   existing_clustering = prev_clust3ref))
-  expect_identical(hierarchical_clustering_internal(distance_object = test_distances2,
-                                                    size_constraint = 3L,
-                                                    batch_assign = FALSE,
-                                                    existing_clustering = prev_clust3d,
-                                                    deep_copy = FALSE),
-                   replica_hierarchical_clustering(distance_object = test_distances2,
-                                                   size_constraint = 3L,
-                                                   batch_assign = FALSE,
-                                                   existing_clustering = prev_clust3ref))
-})

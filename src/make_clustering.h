@@ -24,7 +24,7 @@
 #include <R.h>
 #include <Rinternals.h>
 
-SEXP Rscc_make_clustering(SEXP R_distance_object,
+SEXP Rscc_make_clustering(SEXP R_distances,
                           SEXP R_size_constraint,
                           SEXP R_type_labels,
                           SEXP R_type_constraints,

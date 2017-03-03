@@ -18,40 +18,20 @@
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ========================================================================== */
 
-#include "scc_utilities.h"
-
+#include "utilities.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <R.h>
 #include <Rinternals.h>
 #include <scclust.h>
-#include <scclust_spi.h>
-#include <ann_wrapper.h>
-#include "scc_error.h"
+#include "error.h"
+#include "internal.h"
 
 
 // =============================================================================
 // External function implementations
 // =============================================================================
-
-SEXP Rscc_set_dist_functions(const SEXP R_dist_functions)
-{
-	if (!isString(R_dist_functions)) {
-		iRscc_error("`R_dist_functions` must be string.");
-	}
-
-	if (strcmp(CHAR(asChar(R_dist_functions)), "ann") == 0) {
-		if (!scc_set_ann_dist_search()) iRscc_error("Could not set distance functions.");
-	} else if (strcmp(CHAR(asChar(R_dist_functions)), "internal") == 0) {
-		if (!scc_reset_dist_functions()) iRscc_error("Could not reset distance functions.");
-	} else {
-		iRscc_error("Not a valid set of distance functions.");
-	}
-
-	return ScalarLogical(true);
-}
-
 
 SEXP Rscc_check_clustering(const SEXP R_clustering,
                            const SEXP R_size_constraint,
@@ -141,60 +121,49 @@ SEXP Rscc_check_clustering(const SEXP R_clustering,
 
 
 SEXP Rscc_get_clustering_stats(const SEXP R_clustering,
-                               const SEXP R_distance_object)
+                               const SEXP R_distances)
 {
+	Rscc_set_dist_functions();
+
 	if (!isInteger(R_clustering)) {
 		iRscc_error("`R_clustering` is not a valid clustering object.");
 	}
 	if (!isInteger(getAttrib(R_clustering, install("cluster_count")))) {
 		iRscc_error("`R_clustering` is not a valid clustering object.");
 	}
-	if (!isMatrix(R_distance_object) || !isReal(R_distance_object)) {
-		iRscc_error("`R_distance_object` is not a valid distance object.");
+	if (!idist_check_distance_object(R_distances)) {
+		iRscc_error("`R_distances` is not a valid distance object.");
 	}
 
-	const uintmax_t num_data_points = (uintmax_t) INTEGER(getAttrib(R_distance_object, R_DimSymbol))[1];
-	const uintmax_t num_dimensions = (uintmax_t) INTEGER(getAttrib(R_distance_object, R_DimSymbol))[0];
+	const uintmax_t num_data_points = (uintmax_t) idist_num_data_points(R_distances);
 	const uintmax_t num_clusters = (uintmax_t) asInteger(getAttrib(R_clustering, install("cluster_count")));
 
 	if (((uintmax_t) xlength(R_clustering)) != num_data_points) {
-		iRscc_error("`R_distance_object` does not match `R_clustering`.");
+		iRscc_error("`R_distances` does not match `R_clustering`.");
 	}
 	if (num_clusters == 0) {
 		iRscc_error("`R_clustering` is empty.");
 	}
 
 	scc_ErrorCode ec;
-	scc_DataSet* data_set;
-	if ((ec = scc_init_data_set(num_data_points,
-	                            num_dimensions,
-	                            (size_t) xlength(R_distance_object),
-	                            REAL(R_distance_object),
-	                            &data_set)) != SCC_ER_OK) {
-		iRscc_scc_error();
-	}
-
 	scc_Clustering* clustering;
 	if ((ec = scc_init_existing_clustering(num_data_points,
 	                                       num_clusters,
 	                                       INTEGER(R_clustering),
 	                                       false,
 	                                       &clustering)) != SCC_ER_OK) {
-		scc_free_data_set(&data_set);
 		iRscc_scc_error();
 	}
 
 	scc_ClusteringStats clust_stats;
 	if ((ec = scc_get_clustering_stats(clustering,
-	                                   data_set,
+	                                   Rscc_get_distances_pointer(R_distances),
 	                                   &clust_stats)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
-		scc_free_data_set(&data_set);
 		iRscc_scc_error();
 	}
 
 	scc_free_clustering(&clustering);
-	scc_free_data_set(&data_set);
 
 	if (clust_stats.num_data_points > INT_MAX) iRscc_error("Too many data points.");
 	if (clust_stats.num_assigned > INT_MAX) iRscc_error("Too many assigned data points.");

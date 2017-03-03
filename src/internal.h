@@ -18,24 +18,23 @@
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ========================================================================== */
 
-#include "scc_error.h"
+#ifndef RSCC_INTERNAL_HG
+#define RSCC_INTERNAL_HG
 
+#include <stdbool.h>
 #include <R.h>
 #include <Rinternals.h>
-#include <scclust.h>
 
+#define Rscc_set_dist_functions() (void)((Rscc_dist_functions_are_set) || (Rscc_set_dist_functions__(), 0))
 
-void iRscc_error__(const char* const msg,
-                   const char* const file,
-                   const int line) {
-	char error_buffer[255];
-	snprintf(error_buffer, 255, "(%s:%d) %s", file, line, msg);
-	error(error_buffer);
-}
+#define Rscc_get_distances_pointer(distances) ((void*) distances)
 
+extern bool Rscc_dist_functions_are_set;
 
-void iRscc_scc_error(void) {
-	char error_buffer[255];
-	scc_get_latest_error(255, error_buffer);
-	error(error_buffer);
-}
+void Rscc_set_dist_functions__(void);
+
+bool idist_check_distance_object(SEXP R_distances);
+
+int idist_num_data_points(SEXP R_distances);
+
+#endif // ifndef RSCC_INTERNAL_HG

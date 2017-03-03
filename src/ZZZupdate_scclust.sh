@@ -2,8 +2,6 @@
 
 rm -rf libscclust
 mkdir libscclust
-rm -rf annwrapper
-mkdir annwrapper
 wget https://github.com/fsavje/scclust/archive/master.zip
 unzip master.zip
 cd libscclust
@@ -49,22 +47,6 @@ all : \$(LIBOUT)
 
 clean :
 	\$(RM) -rf lib src/*.o
-EOF
-
-
-mv libscclust/examples/ann/ann_wrapper.cpp libscclust/examples/ann/ann_wrapper.h annwrapper/
-cat <<EOF > annwrapper/Makefile
-include \$(MAKECONF)
-
-.PHONY : all clean
-
-all : ann_wrapper.o
-
-ann_wrapper.o: ann_wrapper.cpp ../libscclust ../libann
-	\$(CXX) -c \$(ALL_CPPFLAGS) \$(ALL_CXXFLAGS) -DNDEBUG -I../libscclust -I../libann \$< -o \$@
-
-clean :
-	\$(RM) -f ann_wrapper.o
 EOF
 
 rm -r scclust-master master.zip

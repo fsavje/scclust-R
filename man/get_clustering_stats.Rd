@@ -9,7 +9,7 @@ get_clustering_stats(clustering, distance_object)
 \arguments{
 \item{clustering}{a \code{scc_clustering} object containing an existing non-empty clustering.}
 
-\item{distance_object}{a distance object as produced by \code{\link{make_distances}}.}
+\item{distance_object}{a distance object as produced by \code{\link[distances]{distances}}.}
 }
 \value{
 Returns a list of class "scc_clustering_stats" containing important statistics
@@ -72,13 +72,15 @@ where \eqn{num_assigned}{num_assigned} is the number of assigned data points (se
 \deqn{\sum_{c\in C} \frac{AD(c)}{|C|}}{\sum_[c in C] AD(c) / count(C)}
 }
 \examples{
+library(distances)
+
 my_clust_obj <- scc_clustering(c("A", "A", "B", "C", "B",
                                  "C", "C", "A", "B", "B"))
 my_data_points <- data.frame(x = c(0.1, 0.2, 0.3, 0.4, 0.5,
                                    0.6, 0.7, 0.8, 0.9, 1.0),
                              y = c(10, 9, 8, 7, 6,
                                    10, 9, 8, 7, 6))
-my_distance_obj <- make_distances(my_data_points)
+my_distance_obj <- distances(my_data_points)
 
 get_clustering_stats(my_clust_obj, my_distance_obj)
 

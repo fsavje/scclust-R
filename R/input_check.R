@@ -58,13 +58,13 @@ is.numeric_integer <- function(x) {
 # Ensure functions
 # ==============================================================================
 
-# Ensure that `distances` is `scc_distances` object
+# Ensure that `distances` is `distances` object
 ensure_distances <- function(distances,
                              req_length = NULL) {
-  if (!is.scc_distances(distances)) {
+  if (!distances::is.distances(distances)) {
     new_error("`", match.call()$distances, "` is not a `scc_distances` object.")
   }
-  if (!is.null(req_length) && (data_point_count.scc_distances(distances) != req_length)) {
+  if (!is.null(req_length) && (length(distances) != req_length)) {
     new_error("`", match.call()$distances, "` does not contain `", match.call()$req_length, "` data points.")
   }
 }
@@ -97,7 +97,7 @@ ensure_scc_clustering <- function(clustering,
   if (!is.scc_clustering(clustering)) {
     new_error("`", match.call()$clustering, "` is not a `scc_clustering` object.")
   }
-  if (!is.null(req_length) && (data_point_count.scc_clustering(clustering) != req_length)) {
+  if (!is.null(req_length) && (length(clustering) != req_length)) {
     new_error("`", match.call()$clustering, "` does not contain `", match.call()$req_length, "` data points.")
   }
 }
@@ -173,103 +173,6 @@ coerce_counts <- function(counts,
     new_error("`", match.call()$counts, "` is not of length `", match.call()$req_length, "`.")
   }
   counts
-}
-
-
-# Coerce `data` to non-NA, numeric matrix and extract `id_variable`
-coerce_distance_data <- function(data,
-                                 id_variable,
-                                 dist_variables) {
-  if (!is.data.frame(data) && !is.matrix(data) && !is.vector(data)) {
-    new_error("`", match.call()$data, "` must be vector, matrix or data frame.")
-  }
-  if (is.vector(data)) {
-    data <- matrix(data, nrow = length(data))
-  }
-  if (nrow(data) < 2L) {
-    new_error("`", match.call()$data, "` must contain at least two data points.")
-  }
-  if (is.matrix(data)) {
-    if (!is.null(dist_variables)) {
-      new_error("`", match.call()$dist_variables, "` must be NULL when `", match.call()$data, "` is matrix or vector.")
-    }
-  } else {
-    # is.data.frame(data) == TRUE
-    if (!is.null(id_variable) && (length(id_variable) == 1)) {
-      if (!(as.character(id_variable) %in% colnames(data))) {
-        new_error("`", match.call()$id_variable, "` does not exists as column in `", match.call()$data, "`.")
-      }
-      if (is.null(dist_variables)) {
-        dist_variables <- setdiff(colnames(data), as.character(id_variable))
-      }
-      id_variable <- data[, as.character(id_variable), drop = TRUE]
-    }
-    if (!is.null(dist_variables)) {
-      if (!all(as.character(dist_variables) %in% colnames(data))) {
-        new_error("Some entries in `", match.call()$dist_variables, "` do not exist as columns in `", match.call()$data, "`.")
-      }
-      data <- data[, as.character(dist_variables), drop = FALSE]
-    }
-    for (col in names(data)) {
-      if (!is.double(data[, col])) {
-        if (is.numeric(data[, col])) {
-          data[, col] <- as.double(data[, col])
-        } else if (is.factor(data[, col])) {
-          new_warning("Factor columns in `", match.call()$data, "` are coerced to numeric.")
-          data[, col] <- as.double(data[, col])
-        } else {
-          new_error("Cannot coerce all data columns in `", match.call()$data, "` to numeric.")
-        }
-      }
-    }
-    data <- as.matrix(data)
-  }
-  if (!is.double(data)) {
-    if (is.numeric(data)) {
-      storage.mode(data) <- "double"
-    } else {
-      new_error("`", match.call()$data, "` must be numeric.")
-    }
-  }
-  if (any(is.na(data))) {
-    new_error("`", match.call()$data, "` may not contain NAs.")
-  }
-  if (!is.null(id_variable) && (length(id_variable) != nrow(data))) {
-    new_error("`", match.call()$id_variable, "` does not match `", match.call()$data, "`.")
-  }
-  list(data = unname(data),
-       id_variable = id_variable)
-}
-
-
-# Coerce `mat` to symmetric, positive-semidefinite, numeric matrix
-coerce_norm_matrix <- function(mat,
-                               num_cov) {
-  if (is.data.frame(mat)) {
-    mat <- as.matrix(mat)
-  } else if (is.vector(mat)) {
-    mat <- diag(mat)
-  }
-  mat <- unname(mat)
-  if (!is.matrix(mat)) {
-    new_error("`", match.call()$mat, "` must be matrix, data.frame or vector.")
-  }
-  if (!is.numeric(mat)) {
-    new_error("`", match.call()$mat, "` must be numeric.")
-  }
-  if (any(is.na(mat))) {
-    new_error("`", match.call()$mat, "` may not contain NAs.")
-  }
-  if (!isSymmetric(mat)) {
-    new_error("`", match.call()$mat, "` must be symmetric.")
-  }
-  if (ncol(mat) != num_cov) {
-    new_error("The dimensions of `", match.call()$mat, "` do not correspond to `", match.call()$num_cov, "`.")
-  }
-  if (any(eigen(mat, symmetric = TRUE, only.values = TRUE)$values <= 2 * .Machine$double.eps)) {
-    new_error("`", match.call()$mat, "` must be positive-semidefinite.")
-  }
-  mat
 }
 
 

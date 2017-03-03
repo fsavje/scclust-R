@@ -61,7 +61,7 @@
 #' retained to the greatest extent possible.
 #'
 #'
-#' @param distance_object a distance object as produced by \code{\link{make_distances}}.
+#' @param distance_object a distance object as produced by \code{\link[distances]{distances}}.
 #' @param size_constraint an integer with the required minimum cluster size.
 #' @param batch_assign a bool indicating whether data points should be assigned in batches when
 #'                            spliting clusters.
@@ -80,78 +80,25 @@
 #'          Use \code{\link{scc_clustering}} to create scclust cluster objects from external
 #'          clusterings.
 #'
+#' @useDynLib scclust Rscc_hierarchical_clustering
 #' @export
 hierarchical_clustering <- function(distance_object,
                                     size_constraint,
                                     batch_assign = TRUE,
                                     existing_clustering = NULL) {
   ensure_distances(distance_object)
-  num_data_points <- data_point_count.scc_distances(distance_object)
+  num_data_points <- length(distance_object)
   size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
   ensure_indicators(batch_assign, 1L)
   if (!is.null(existing_clustering)) {
     ensure_scc_clustering(existing_clustering, num_data_points)
   }
 
-  hierarchical_clustering_internal(distance_object,
-                                   size_constraint,
-                                   batch_assign,
-                                   existing_clustering,
-                                   deep_copy = TRUE)
-}
-
-
-#' Internal hierarchical clustering function
-#'
-#' ATTENTION! Using this function has side-effects on your R environment,
-#' ensure you properly understand what this does before using it.
-#' In most cases, \code{\link{hierarchical_clustering}} is the preferred
-#' choice.
-#'
-#' \code{hierarchical_clustering_internal} is identical to
-#' \code{\link{hierarchical_clustering}} except for the
-#' \code{deep_copy} parameter. When \code{deep_copy == TRUE}, the
-#' two functions are identical. However, when
-#' \code{deep_copy == FALSE}, \code{hierarchical_clustering_internal}
-#' will \strong{not} make a deep copy of \code{existing_clustering} before
-#' refining the clustering. That is, any changes will be made in place, and
-#' \code{existing_clustering} will be invalidated by calling
-#' this function. This is useful when refining an
-#' existing clustering and the inputted clustering is not of interest.
-#'
-#' See \code{\link{hierarchical_clustering}} for detailed documentation.
-#'
-#' @param deep_copy a bool indicating whether a deep copy of
-#'                  \code{existing_clustering} should be made before
-#'                  refining the clustering.
-#' @inheritParams hierarchical_clustering
-#'
-#' @return Returns a scclust cluster object containing the derived clustering.
-#'
-#' @keywords internal
-#'
-#' @useDynLib scclust Rscc_hierarchical_clustering
-hierarchical_clustering_internal <- function(distance_object,
-                                             size_constraint,
-                                             batch_assign = TRUE,
-                                             existing_clustering = NULL,
-                                             deep_copy = TRUE) {
-  ensure_distances(distance_object)
-  num_data_points <- data_point_count.scc_distances(distance_object)
-  size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
-  ensure_indicators(batch_assign, 1L)
-  if (!is.null(existing_clustering)) {
-    ensure_scc_clustering(existing_clustering, num_data_points)
-  }
-  ensure_indicators(deep_copy, 1L)
-
-  clustering <- .Call("Rscc_hierarchical_clustering",
+  clustering <- .Call(Rscc_hierarchical_clustering,
                       distance_object,
                       size_constraint,
                       batch_assign,
-                      existing_clustering,
-                      deep_copy,
-                      PACKAGE = "scclust")
+                      existing_clustering)
   make_scc_clustering(clustering$cluster_labels,
                       clustering$cluster_count,
                       attr(distance_object, "ids", exact = TRUE))

@@ -27,7 +27,7 @@
 #' constructs the clusterings based on the graph. The function is intended
 #' to run fast while ensuring near-optimal performance.
 #'
-#' @param distance_object a distance object as produced by \code{\link{make_distances}}.
+#' @param distance_object a distance object as produced by \code{\link[distances]{distances}}.
 #' @param size_constraint an integer with the required minimum cluster size.
 #' @param type_labels ...
 #' @param type_constraints ...
@@ -72,7 +72,7 @@ make_clustering <- function(distance_object,
                             secondary_radius = NULL,
                             batch_size = 100L) {
   ensure_distances(distance_object)
-  num_data_points <- data_point_count.scc_distances(distance_object)
+  num_data_points <- length(distance_object)
 
   if (is.null(type_constraints)) {
     type_labels <- NULL
@@ -114,7 +114,7 @@ make_clustering <- function(distance_object,
     batch_size <- coerce_counts(batch_size, 1L)
   }
 
-  clustering <- .Call("Rscc_make_clustering",
+  clustering <- .Call(Rscc_make_clustering,
                       distance_object,
                       size_constraint,
                       unclass(type_labels),
@@ -126,8 +126,7 @@ make_clustering <- function(distance_object,
                       seed_radius,
                       primary_radius,
                       secondary_radius,
-                      batch_size,
-                      PACKAGE = "scclust")
+                      batch_size)
 
   make_scc_clustering(clustering$cluster_labels,
                       clustering$cluster_count,

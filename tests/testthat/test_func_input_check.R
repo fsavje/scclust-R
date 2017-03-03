@@ -26,7 +26,7 @@ context("Input checking in exported functions")
 # Shared objects
 # ==============================================================================
 
-sound_distance_object <- make_distances(matrix(c(1, 4, 3, 2, 45, 6, 3, 2, 6, 5,
+sound_distance_object <- distances::distances(matrix(c(1, 4, 3, 2, 45, 6, 3, 2, 6, 5,
                                                  34, 2, 4, 6, 4, 6, 4, 2, 7, 8), nrow = 10))
 unsound_distance_object <- letters[1:10]
 sound_size_constraint <- 2L
@@ -49,75 +49,6 @@ sound_type_size_constraints <- c("1" = 1L, "2" = 1L)
 unsound_type_size_constraints <- c(1L, 1L)
 sound_total_size_constraint <- 3L
 unsound_total_size_constraint <- 100L
-
-
-# ==============================================================================
-# make_distances
-# ==============================================================================
-
-sound_data <- matrix(c(1, 4, 3, 2, 45, 6, 3, 2, 6, 5), nrow = 5)
-unsound_data <- matrix(letters[1:10], nrow = 5)
-sound_id_variable <- letters[1:5]
-unsound_id_variable <- letters[1:3]
-sound_dist_variables <- NULL
-unsound_dist_variables <- dist(1:10)
-sound_normalize <- "mahalanobize"
-unsound_normalize <- matrix(c(-1, 2, 2, 3), ncol = 2)
-sound_weights <- NULL
-unsound_weights <- matrix(letters[1:4], ncol = 2)
-
-test_that("`make_distances` checks input.", {
-  expect_silent(make_distances(data = sound_data,
-                               id_variable = sound_id_variable,
-                               dist_variables = sound_dist_variables,
-                               normalize = sound_normalize,
-                               weights = sound_weights))
-  expect_error(make_distances(data = unsound_data,
-                              id_variable = sound_id_variable,
-                              dist_variables = sound_dist_variables,
-                              normalize = sound_normalize,
-                              weights = sound_weights))
-  expect_error(make_distances(data = sound_data,
-                              id_variable = unsound_id_variable,
-                              dist_variables = sound_dist_variables,
-                              normalize = sound_normalize,
-                              weights = sound_weights))
-  expect_error(make_distances(data = sound_data,
-                              id_variable = sound_id_variable,
-                              dist_variables = unsound_dist_variables,
-                              normalize = sound_normalize,
-                              weights = sound_weights))
-  expect_error(make_distances(data = sound_data,
-                              id_variable = sound_id_variable,
-                              dist_variables = sound_dist_variables,
-                              normalize = unsound_normalize,
-                              weights = sound_weights))
-  expect_error(make_distances(data = sound_data,
-                              id_variable = sound_id_variable,
-                              dist_variables = sound_dist_variables,
-                              normalize = sound_normalize,
-                              weights = unsound_weights))
-})
-
-
-# ==============================================================================
-# scc_distances methods
-# ==============================================================================
-
-test_that("`data_point_count.scc_distances` checks input.", {
-  expect_silent(data_point_count.scc_distances(sound_distance_object))
-  expect_error(data_point_count.scc_distances(unsound_distance_object))
-})
-
-test_that("`print.scc_distances` checks input.", {
-  expect_output(print.scc_distances(sound_distance_object))
-  expect_error(print.scc_distances(unsound_distance_object))
-})
-
-test_that("`as.matrix.scc_distances` checks input.", {
-  expect_silent(as.matrix.scc_distances(sound_distance_object))
-  expect_error(as.matrix.scc_distances(unsound_distance_object))
-})
 
 
 # ==============================================================================
@@ -145,44 +76,6 @@ test_that("`hierarchical_clustering` checks input.", {
                                        size_constraint = sound_size_constraint,
                                        batch_assign = sound_bool,
                                        existing_clustering = unsound_clustering))
-})
-
-
-# ==============================================================================
-# hierarchical_clustering_internal
-# ==============================================================================
-
-test_that("`hierarchical_clustering_internal` checks input.", {
-  expect_silent(hierarchical_clustering_internal(distance_object = sound_distance_object,
-                                                 size_constraint = sound_size_constraint,
-                                                 batch_assign = sound_bool,
-                                                 existing_clustering = sound_clustering,
-                                                 deep_copy = sound_bool))
-  expect_error(hierarchical_clustering_internal(distance_object = unsound_distance_object,
-                                                size_constraint = sound_size_constraint,
-                                                batch_assign = sound_bool,
-                                                existing_clustering = sound_clustering,
-                                                deep_copy = sound_bool))
-  expect_error(hierarchical_clustering_internal(distance_object = sound_distance_object,
-                                                size_constraint = unsound_size_constraint,
-                                                batch_assign = sound_bool,
-                                                existing_clustering = sound_clustering,
-                                                deep_copy = sound_bool))
-  expect_error(hierarchical_clustering_internal(distance_object = sound_distance_object,
-                                                size_constraint = sound_size_constraint,
-                                                batch_assign = unsound_bool,
-                                                existing_clustering = sound_clustering,
-                                                deep_copy = sound_bool))
-  expect_error(hierarchical_clustering_internal(distance_object = sound_distance_object,
-                                                size_constraint = sound_size_constraint,
-                                                batch_assign = sound_bool,
-                                                existing_clustering = unsound_clustering,
-                                                deep_copy = sound_bool))
-  expect_error(hierarchical_clustering_internal(distance_object = sound_distance_object,
-                                                size_constraint = sound_size_constraint,
-                                                batch_assign = sound_bool,
-                                                existing_clustering = sound_clustering,
-                                                deep_copy = unsound_bool))
 })
 
 
@@ -268,11 +161,6 @@ test_that("`cluster_count` checks input.", {
   expect_error(cluster_count(unsound_clustering))
 })
 
-test_that("`data_point_count.scc_clustering` checks input.", {
-  expect_silent(data_point_count.scc_clustering(sound_clustering))
-  expect_error(data_point_count.scc_clustering(unsound_clustering))
-})
-
 test_that("`as.data.frame.scc_clustering` checks input.", {
   expect_silent(as.data.frame.scc_clustering(sound_clustering))
   expect_error(as.data.frame.scc_clustering(unsound_clustering))
@@ -282,19 +170,6 @@ test_that("`print.scc_clustering` checks input.", {
   expect_output(print.scc_clustering(sound_clustering))
   expect_error(print.scc_clustering(unsound_clustering))
 })
-
-
-# ==============================================================================
-# set_dist_functions
-# ==============================================================================
-
-test_that("`set_dist_functions` checks input.", {
-  expect_silent(set_dist_functions(dist_functions = "ann"))
-  expect_error(set_dist_functions(dist_functions = "invalid"))
-})
-
-# Reset dist functions
-set_dist_functions()
 
 
 # ==============================================================================
