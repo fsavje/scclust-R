@@ -27,24 +27,36 @@
 #include <scclust_spi.h>
 #include "error.h"
 
+// =============================================================================
+// External variables
+// =============================================================================
 
 bool Rscc_dist_functions_are_set = false;
+
+
+// =============================================================================
+// Internal function prototypes
+// =============================================================================
 
 bool Rscc_check_data_set(void* data_set,
                          size_t num_data_points);
 
 
+// =============================================================================
+// External function implementations
+// =============================================================================
+
 void Rscc_set_dist_functions__(void)
 {
 	if (!scc_set_dist_functions(Rscc_check_data_set,
-                               (scc_get_dist_matrix) R_GetCCallable("distances", "idist_get_dist_matrix"),
-                               (scc_get_dist_rows) R_GetCCallable("distances", "idist_get_dist_columns"),
-                               (scc_init_max_dist_object) R_GetCCallable("distances", "idist_init_max_distance_search"),
-                               (scc_get_max_dist) R_GetCCallable("distances", "idist_max_distance_search"),
-                               (scc_close_max_dist_object) R_GetCCallable("distances", "idist_close_max_distance_search"),
-                               (scc_init_nn_search_object) R_GetCCallable("distances", "idist_init_nearest_neighbor_search"),
-                               (scc_nearest_neighbor_search) R_GetCCallable("distances", "idist_nearest_neighbor_search"),
-                               (scc_close_nn_search_object) R_GetCCallable("distances", "idist_close_nearest_neighbor_search"))) {
+	                            (scc_get_dist_matrix) R_GetCCallable("distances", "idist_get_dist_matrix"),
+	                            (scc_get_dist_rows) R_GetCCallable("distances", "idist_get_dist_columns"),
+	                            (scc_init_max_dist_object) R_GetCCallable("distances", "idist_init_max_distance_search"),
+	                            (scc_get_max_dist) R_GetCCallable("distances", "idist_max_distance_search"),
+	                            (scc_close_max_dist_object) R_GetCCallable("distances", "idist_close_max_distance_search"),
+	                            (scc_init_nn_search_object) R_GetCCallable("distances", "idist_init_nearest_neighbor_search"),
+	                            (scc_nearest_neighbor_search) R_GetCCallable("distances", "idist_nearest_neighbor_search"),
+	                            (scc_close_nn_search_object) R_GetCCallable("distances", "idist_close_nearest_neighbor_search"))) {
 		iRscc_scc_error();
 	}
 	Rscc_dist_functions_are_set = true;
@@ -70,6 +82,10 @@ int idist_num_data_points(const SEXP R_distances)
 	return func(R_distances);
 }
 
+
+// =============================================================================
+// Internal function implementations
+// =============================================================================
 
 bool Rscc_check_data_set(void* const data_set,
                          const size_t num_data_points)

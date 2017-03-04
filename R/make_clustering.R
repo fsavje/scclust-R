@@ -57,7 +57,6 @@
 #' @seealso \code{\link{hierarchical_clustering}} can be used to refine the clustering
 #'          constructed by this function.
 #'
-#' @useDynLib scclust Rscc_make_clustering
 #' @export
 make_clustering <- function(distance_object,
                             size_constraint = NULL,

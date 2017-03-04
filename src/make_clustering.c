@@ -195,7 +195,6 @@ SEXP Rscc_make_clustering(const SEXP R_distances,
 	if ((ec = scc_init_empty_clustering(num_data_points,
 	                                    INTEGER(R_cluster_labels),
 	                                    &clustering)) != SCC_ER_OK) {
-		UNPROTECT(1);
 		iRscc_scc_error();
 	}
 
@@ -203,7 +202,6 @@ SEXP Rscc_make_clustering(const SEXP R_distances,
 	                              clustering,
 	                              &options)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
-		UNPROTECT(1);
 		iRscc_scc_error();
 	}
 
@@ -212,7 +210,6 @@ SEXP Rscc_make_clustering(const SEXP R_distances,
 	                                  NULL,
 	                                  &num_clusters)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
-		UNPROTECT(1);
 		iRscc_scc_error();
 	}
 

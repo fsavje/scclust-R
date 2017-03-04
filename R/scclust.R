@@ -46,9 +46,11 @@
 #' @docType package
 #' @name scclust-package
 #' @aliases scclust
+#'
+#' @import distances
 NULL
 
-.onAttach <- function(libname, pkgname) {
-  packageStartupMessage("The `scclust` package is under development. Please exercise caution when using it.")
-  packageStartupMessage("Bug reports and suggestions are greatly appreciated. They are best reported here: https://github.com/fsavje/scclust-R/issues")
+#' @useDynLib scclust, .registration = TRUE
+.onUnload <- function (libpath) {
+  library.dynam.unload("scclust", libpath)
 }

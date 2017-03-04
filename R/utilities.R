@@ -113,7 +113,6 @@
 #'                  c("1" = 1, "2" = 1, "3" = 1))
 #' # > TRUE
 #'
-#' @useDynLib scclust Rscc_check_clustering
 #' @export
 check_clustering <- function(clustering,
                              size_constraint = NULL,
@@ -233,7 +232,6 @@ check_clustering <- function(clustering,
 #' # > cl_avg_dist_weighted    1.5575594
 #' # > cl_avg_dist_unweighted  1.5847484
 #'
-#' @useDynLib scclust Rscc_get_clustering_stats
 #' @export
 get_clustering_stats <- function(clustering,
                                  distance_object) {

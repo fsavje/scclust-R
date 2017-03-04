@@ -80,7 +80,6 @@
 #'          Use \code{\link{scc_clustering}} to create scclust cluster objects from external
 #'          clusterings.
 #'
-#' @useDynLib scclust Rscc_hierarchical_clustering
 #' @export
 hierarchical_clustering <- function(distance_object,
                                     size_constraint,
