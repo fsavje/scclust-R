@@ -103,6 +103,22 @@ test_that("`nng_clustering` returns correct output", {
                            "inwards_order",
                            "ignore",
                            NULL,
+                           which(primary_data_points),
+                           "ignore",
+                           NULL)
+  test_nng_against_replica(test_distances1,
+                           2L,
+                           "inwards_updating",
+                           "ignore",
+                           NULL,
+                           which(primary_data_points),
+                           "ignore",
+                           NULL)
+  test_nng_against_replica(test_distances1,
+                           3L,
+                           "inwards_order",
+                           "ignore",
+                           NULL,
                            primary_data_points,
                            "ignore",
                            NULL)

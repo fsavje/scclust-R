@@ -143,12 +143,6 @@ SEXP Rscc_sc_clustering(const SEXP R_distances,
 		options.seed_supplied_radius = asReal(R_seed_radius);
 	} else if (isNull(R_seed_radius)) {
 		options.seed_radius = SCC_RM_NO_RADIUS;
-	} else if (isString(R_seed_radius)) {
-		if (strcmp(CHAR(asChar(R_seed_radius)), "no_radius") == 0) {
-			options.seed_radius = SCC_RM_NO_RADIUS;
-		} else {
-			iRscc_error("Not a valid radius method.");
-		}
 	}
 
 	if (isReal(R_primary_radius)) {

@@ -224,22 +224,21 @@ coerce_radius <- function(radius,
     if (is.na(radius)) {
       new_error("`", match.call()$radius, "` may not be NA.")
     }
-    if (is.character(radius)) {
+    if (is.character(radius) && !is_seed) {
       choices <- c("no_radius", "seed_radius", "estimated_radius")
       i <- pmatch(radius, choices, nomatch = 0L)
       if (i == 0) {
         new_error("`", match.call()$radius, "` must be one of ", paste0(paste0("\"", choices, "\""), collapse = ", "), ".")
       }
       radius <- choices[i]
-      if (is_seed && (radius != "no_radius")) {
-        new_error("`", match.call()$radius, "` may not be \"", radius, "\".")
-      }
     } else if (is.numeric(radius)) {
       if (radius <= 0.0) {
         new_error("`", match.call()$radius, "` must be positive.")
       }
       # If `radius` is integer
       radius <- as.numeric(radius)
+    } else if (is_seed) {
+      new_error("`", match.call()$radius, "` must be numeric or `NULL`.")
     } else {
       new_error("`", match.call()$radius, "` must be numeric, character or `NULL`.")
     }

@@ -123,6 +123,13 @@ test_nng_against_replica <- function(distances,
                                      primary_data_points,
                                      secondary_unassigned_method,
                                      secondary_radius) {
+
+  replica_primary_data_points <- primary_data_points
+  if (is.integer(replica_primary_data_points)) {
+    replica_primary_data_points <- rep(FALSE, length(distances))
+    replica_primary_data_points[primary_data_points] <- TRUE
+  }
+
   eval(bquote(expect_identical(nng_clustering(distances,
                                               size_constraint,
                                               seed_method,
@@ -136,7 +143,7 @@ test_nng_against_replica <- function(distances,
                                                       seed_method,
                                                       unassigned_method,
                                                       radius,
-                                                      primary_data_points,
+                                                      replica_primary_data_points,
                                                       secondary_unassigned_method,
                                                       secondary_radius))))
 }

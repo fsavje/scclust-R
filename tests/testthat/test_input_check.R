@@ -310,7 +310,7 @@ test_that("`coerce_radius` checks input.", {
   expect_error(t_coerce_radius(t_radius = "invalid"),
                regexp = "`t_radius` must be one of \"no_radius\", \"seed_radius\", \"estimated_radius\".")
   expect_error(t_coerce_radius(t_radius = "seed_radius", t_is_seed = TRUE),
-               regexp = "`t_radius` may not be \"seed_radius\".")
+               regexp = "`t_radius` must be numeric or `NULL`.")
   expect_error(t_coerce_radius(t_radius = -0.5),
                regexp = "`t_radius` must be positive.")
   expect_error(t_coerce_radius(t_radius = TRUE),
