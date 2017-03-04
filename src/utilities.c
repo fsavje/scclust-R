@@ -33,10 +33,10 @@
 // External function implementations
 // =============================================================================
 
-SEXP Rscc_check_clustering(const SEXP R_clustering,
-                           const SEXP R_size_constraint,
-                           const SEXP R_type_labels,
-                           const SEXP R_type_constraints)
+SEXP Rscc_check_scclust(const SEXP R_clustering,
+                        const SEXP R_size_constraint,
+                        const SEXP R_type_labels,
+                        const SEXP R_type_constraints)
 {
 	if (!isInteger(R_clustering)) {
 		iRscc_error("`R_clustering` is not a valid clustering object.");

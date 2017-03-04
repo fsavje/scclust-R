@@ -49,7 +49,7 @@ my_clust_obj5 <- scclust(my_labels5, ids = my_ids)
 }
 \seealso{
 Functions that accept the scclust cluster object as input are
-\code{\link{hierarchical_clustering}}, \code{\link{check_clustering}}
+\code{\link{hierarchical_clustering}}, \code{\link{check_scclust}}
 and \code{\link{get_scclust_stats}}.
 
 \code{scclust} does not derive clusterings from data sets; for that

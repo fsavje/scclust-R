@@ -3,7 +3,7 @@
 S3method(as.data.frame,scclust)
 S3method(print,scclust)
 S3method(print,scclust_stats)
-export(check_clustering)
+export(check_scclust)
 export(cluster_count)
 export(get_scclust_stats)
 export(hierarchical_clustering)

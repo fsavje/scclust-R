@@ -24,10 +24,10 @@
 #include <R.h>
 #include <Rinternals.h>
 
-SEXP Rscc_check_clustering(SEXP R_clustering,
-                           SEXP R_size_constraint,
-                           SEXP R_type_labels,
-                           SEXP R_type_constraints);
+SEXP Rscc_check_scclust(SEXP R_clustering,
+                        SEXP R_size_constraint,
+                        SEXP R_type_labels,
+                        SEXP R_type_constraints);
 
 SEXP Rscc_get_scclust_stats(SEXP R_clustering,
                             SEXP R_distances);

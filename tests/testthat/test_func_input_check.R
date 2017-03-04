@@ -173,30 +173,30 @@ test_that("`print.scclust` checks input.", {
 
 
 # ==============================================================================
-# check_clustering
+# check_scclust
 # ==============================================================================
 
-test_that("`check_clustering` checks input.", {
-  expect_silent(check_clustering(clustering = sound_clustering,
-                                 size_constraint = sound_total_size_constraint,
-                                 type_labels = sound_type_labels,
-                                 type_constraints = sound_type_size_constraints))
-  expect_error(check_clustering(clustering = unsound_clustering,
-                                size_constraint = sound_total_size_constraint,
-                                type_labels = sound_type_labels,
-                                type_constraints = sound_type_size_constraints))
-  expect_error(check_clustering(clustering = sound_clustering,
-                                size_constraint = sound_total_size_constraint,
-                                type_labels = unsound_type_labels,
-                                type_constraints = sound_type_size_constraints))
-  expect_error(check_clustering(clustering = sound_clustering,
-                                size_constraint = sound_total_size_constraint,
-                                type_labels = sound_type_labels,
-                                type_constraints = unsound_type_size_constraints))
-  expect_error(check_clustering(clustering = sound_clustering,
-                                size_constraint = unsound_total_size_constraint,
-                                type_labels = sound_type_labels,
-                                type_constraints = sound_type_size_constraints))
+test_that("`check_scclust` checks input.", {
+  expect_silent(check_scclust(clustering = sound_clustering,
+                              size_constraint = sound_total_size_constraint,
+                              type_labels = sound_type_labels,
+                              type_constraints = sound_type_size_constraints))
+  expect_error(check_scclust(clustering = unsound_clustering,
+                             size_constraint = sound_total_size_constraint,
+                             type_labels = sound_type_labels,
+                             type_constraints = sound_type_size_constraints))
+  expect_error(check_scclust(clustering = sound_clustering,
+                             size_constraint = sound_total_size_constraint,
+                             type_labels = unsound_type_labels,
+                             type_constraints = sound_type_size_constraints))
+  expect_error(check_scclust(clustering = sound_clustering,
+                             size_constraint = sound_total_size_constraint,
+                             type_labels = sound_type_labels,
+                             type_constraints = unsound_type_size_constraints))
+  expect_error(check_scclust(clustering = sound_clustering,
+                             size_constraint = unsound_total_size_constraint,
+                             type_labels = sound_type_labels,
+                             type_constraints = sound_type_size_constraints))
 })
 
 

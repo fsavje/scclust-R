@@ -27,7 +27,7 @@
 static const R_CallMethodDef callMethods[] = {
 	{"Rscc_hierarchical_clustering",  (DL_FUNC) &Rscc_hierarchical_clustering,  4},
 	{"Rscc_sc_clustering",            (DL_FUNC) &Rscc_sc_clustering,           12},
-	{"Rscc_check_clustering",         (DL_FUNC) &Rscc_check_clustering,         4},
+	{"Rscc_check_scclust",            (DL_FUNC) &Rscc_check_scclust,            4},
 	{"Rscc_get_scclust_stats",        (DL_FUNC) &Rscc_get_scclust_stats,        2},
 	{NULL,                            NULL,                                     0}
 };
