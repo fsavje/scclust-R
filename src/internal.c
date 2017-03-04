@@ -38,7 +38,7 @@ void Rscc_set_dist_functions__(void)
 {
 	if (!scc_set_dist_functions(Rscc_check_data_set,
                                (scc_get_dist_matrix) R_GetCCallable("distances", "idist_get_dist_matrix"),
-                               (scc_get_dist_rows) R_GetCCallable("distances", "idist_get_dist_rows"),
+                               (scc_get_dist_rows) R_GetCCallable("distances", "idist_get_dist_columns"),
                                (scc_init_max_dist_object) R_GetCCallable("distances", "idist_init_max_distance_search"),
                                (scc_get_max_dist) R_GetCCallable("distances", "idist_max_distance_search"),
                                (scc_close_max_dist_object) R_GetCCallable("distances", "idist_close_max_distance_search"),

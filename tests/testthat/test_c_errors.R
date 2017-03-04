@@ -203,7 +203,7 @@ test_that("`Rscc_get_clustering_stats` checks input.", {
                regexp = "`R_distances` is not a valid distance object.")
   expect_error(c_get_clustering_stats(distance_object = matrix(1:16, ncol = 8)),
                regexp = "`R_distances` is not a valid distance object.")
-  expect_error(c_get_clustering_stats(distance_object = matrix(as.numeric(1:14), ncol = 7)),
+  expect_error(c_get_clustering_stats(distance_object = distances::distances(matrix(as.numeric(1:14), ncol = 7))),
                regexp = "`R_distances` does not match `R_clustering`.")
 })
 
