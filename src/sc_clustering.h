@@ -18,23 +18,23 @@
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ========================================================================== */
 
-#ifndef RSCC_MAKE_CLUSTERING_HG
-#define RSCC_MAKE_CLUSTERING_HG
+#ifndef RSCC_SC_CLUSTERING_HG
+#define RSCC_SC_CLUSTERING_HG
 
 #include <R.h>
 #include <Rinternals.h>
 
-SEXP Rscc_make_clustering(SEXP R_distances,
-                          SEXP R_size_constraint,
-                          SEXP R_type_labels,
-                          SEXP R_type_constraints,
-                          SEXP R_seed_method,
-                          SEXP R_primary_data_points,
-                          SEXP R_primary_unassigned_method,
-                          SEXP R_secondary_unassigned_method,
-                          SEXP R_seed_radius,
-                          SEXP R_primary_radius,
-                          SEXP R_secondary_radius,
-                          SEXP R_batch_size);
+SEXP Rscc_sc_clustering(SEXP R_distances,
+                        SEXP R_size_constraint,
+                        SEXP R_type_labels,
+                        SEXP R_type_constraints,
+                        SEXP R_seed_method,
+                        SEXP R_primary_data_points,
+                        SEXP R_primary_unassigned_method,
+                        SEXP R_secondary_unassigned_method,
+                        SEXP R_seed_radius,
+                        SEXP R_primary_radius,
+                        SEXP R_secondary_radius,
+                        SEXP R_batch_size);
 
-#endif // ifndef RSCC_MAKE_CLUSTERING_HG
+#endif // ifndef RSCC_SC_CLUSTERING_HG

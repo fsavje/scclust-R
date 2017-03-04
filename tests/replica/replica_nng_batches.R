@@ -20,13 +20,13 @@ batch_assign <- function(nng,
 }
 
 
-replica_nng_clustering_batches <- function(distance_object,
+replica_nng_clustering_batches <- function(distances,
                                            size_constraint,
                                            unassigned_method = "any_neighbor",
                                            radius = NULL,
                                            primary_data_points = NULL) {
-  ensure_distances(distance_object)
-  num_data_points <- length(distance_object)
+  ensure_distances(distances)
+  num_data_points <- length(distances)
   size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
   unassigned_method <- coerce_args(unassigned_method,
                                    c("ignore", "any_neighbor"))
@@ -35,7 +35,7 @@ replica_nng_clustering_batches <- function(distance_object,
     ensure_indicators(primary_data_points, num_data_points, TRUE)
   }
 
-  distances <- as.matrix(distance_object)
+  distances <- as.matrix(distances)
   nng <- get_simple_nng(distances,
                         size_constraint,
                         radius,
@@ -43,7 +43,7 @@ replica_nng_clustering_batches <- function(distance_object,
 
   cl_label <- batch_assign(nng, unassigned_method)
 
-  make_scc_clustering(as.integer(cl_label),
-                      length(unique(cl_label[!is.na(cl_label)])),
-                      attr(distance_object, "ids", exact = TRUE))
+  make_scclust(as.integer(cl_label),
+               length(unique(cl_label[!is.na(cl_label)])),
+               attr(distances, "ids", exact = TRUE))
 }

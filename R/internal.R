@@ -36,13 +36,13 @@ all_seed_methods <-  c("lexical",
 # Class constructors
 # ==============================================================================
 
-make_scc_clustering <- function(cluster_labels,
-                                cluster_count,
-                                ids) {
+make_scclust <- function(cluster_labels,
+                         cluster_count,
+                         ids) {
   structure(cluster_labels,
             cluster_count = cluster_count,
             ids = ids,
-            class = c("scc_clustering"))
+            class = c("scclust"))
 }
 
 

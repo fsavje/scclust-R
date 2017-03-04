@@ -125,157 +125,157 @@ test_data <- matrix(c(0.0436, 0.9723, 0.5366, 0.1065, 0.5340, 0.3437, 0.2933, 0.
                       0.5561, 0.8567, 0.0660, 0.4726, 0.5772, 0.0277, 0.0141, 0.1749, 0.4614, 0.9239), ncol = 2)
 
 test_distances1 <- distances::distances(test_data)
-prev_clust1 <- scc_clustering(c(9, 3, 4, 4, 7, 0, 5, 0, 6, 7, 4, 7, 4, 6, 4, 9, 9, 2, 4, 6, 7, 5, 5, 5, 3, 5, 2, 9, 6, 4, 6, 8, 0,
-                                9, 2, 2, 5, 5, 5, 6, 5, 2, 1, 1, 3, 6, 7, 9, 1, 8, 4, 8, 3, 1, 6, 8, 5, 7, 0, 7, 1, 1, 3, 0, 3, 9,
-                                0, 9, 9, 2, 4, 9, 8, 2, 0, 4, 9, 7, 9, 9, 2, 1, 7, 9, 8, 4, 9, 4, 6, 8, 2, 6, 8, 8, 2, 8, 9, 9, 5,
-                                9, 4, 4, 8, 8, 6, 5, 5, 7, 8, 7, 2, 5, 4, 5, 2, 2, 4, 6, 7, 8, 2, 7, 5, 5, 6, 7, 2, 4, 9, 1, 6, 8,
-                                8, 1, 4, 9, 2, 7, 6, 1, 1, 5, 5, 7, 5, 2, 9, 8, 2, 1, 6, 7, 0, 6, 6, 8, 8, 0, 3, 7, 6, 0, 1, 4, 3,
-                                3, 1, 3, 8, 3, 0, 1, 6, 5, 9, 1, 0, 3, 9, 1, 6, 2, 3, 9, 5, 2, 9, 3, 6, 6, 2, 4, 8, 3, 5, 4, 1, 0,
-                                3, 2, 1, 4, 6, 4, 7, 3, 3, 7, 0, 8, 7, 3, 1, 2, 4, 3, 7, 4, 0, 6, 7, 9, 0, 0, 0, 7, 5, 8, 1, 9, 6,
-                                6, 6, 1, 3, 2, 0, 5, 1, 9, 1, 9, 1, 1, 3, 7, 1, 9, 1, 9, 8, 1, 2, 8, 8, 8, 0, 5, 5, 2, 6, 3, 2, 3,
-                                8, 2, 3, 2, 0, 7, 9, 7, 1, 0, 5, 1, 1, 1, 1, 7, 4, 2, 4, 9, 9, 6, 5, 8, 9, 2, 8, 2, 8, 3, 6, 7, 3,
-                                8, 6, 1, 7, 7, 6, 1, 5, 8, 6, 6, 6, 3, 7, 6, 5, 3, 7, 6, 7, 4, 4, 2, 1, 3, 0, 5, 3, 7, 5, 1, 0, 0,
-                                3, 7, 0, 1, 3, 7, 6, 6, 8, 9, 1, 5, 3, 6, 9, 9, 2, 7, 2, 9, 6, 8, 4, 2, 0, 1, 8, 1, 1, 3, 1, 7, 2,
-                                3, 4, 9, 8, 3, 6, 3, 9, 1, 6, 4, 3, 1, 8, 0, 2, 8, 6, 5, 2, 9, 0, 8, 7, 9, 9, 5, 7, 4, 2, 4, 0, 6,
-                                5, 3, 9, 5, 4, 1, 8, 4, 2, 6, 1, 1, 3, 8, 1, 6, 7, 9, 1, 0, 4, 3, 3, 7, 9, 4, 2, 0, 2, 7, 6, 0, 7,
-                                3, 0, 5, 9, 9, 6, 6, 8, 3, 1, 5, 3, 5, 6, 5, 1, 3, 6, 5, 2, 4, 5, 3, 2, 1, 6, 5, 3, 0, 3, 3, 8, 0,
-                                4, 0, 9, 3, 6, 1, 1, 1, 9, 5, 0, 3, 8, 5, 4, 6, 7, 8, 6, 5, 1, 4, 7, 3, 0, 0, 0, 7, 4, 6, 5, 1, 3,
-                                8, 0, 5, 4, 8))
-prev_clust2 <- scc_clustering(c(17, 6, 5, 6, 19, 2, 8, 12, 3, 3, 14, 16, 1, 1, 7, 7, 4, 5, 0, 13, 19, 5, 9, 17, 8, 6, 8, 3, 8, 18, 15,
-                                14, 11, 5, 12, 17, 8, 4, 11, 13, 8, 0, 17, 17, 17, 5, 12, 15, 2, 13, 3, 13, 1, 5, 12, 9, 19, 0, 19, 16,
-                                19, 5, 2, 4, 17, 13, 9, 15, 1, 17, 13, 14, 11, 8, 11, 15, 14, 19, 15, 15, 4, 13, 2, 15, 3, 6, 4, 12, 7,
-                                14, 19, 6, 9, 11, 7, 7, 11, 10, 15, 10, 17, 5, 6, 0, 11, 10, 15, 4, 8, 15, 12, 4, 13, 0, 2, 17, 17, 0,
-                                13, 13, 7, 9, 3, 8, 19, 1, 3, 18, 12, 6, 5, 3, 14, 0, 19, 2, 0, 17, 12, 12, 17, 14, 2, 11, 17, 7, 14,
-                                1, 1, 12, 16, 3, 6, 19, 6, 2, 8, 17, 2, 17, 14, 14, 18, 9, 17, 12, 4, 14, 16, 12, 12, 19, 13, 7, 10, 18,
-                                16, 14, 11, 5, 2, 10, 15, 17, 3, 15, 16, 16, 3, 11, 6, 6, 16, 0, 13, 7, 5, 15, 14, 8, 11, 9, 14, 7, 7,
-                                15, 13, 6, 10, 4, 14, 16, 16, 7, 18, 0, 9, 11, 7, 18, 9, 17, 1, 5, 4, 12, 7, 1, 5, 10, 13, 17, 17, 13,
-                                8, 15, 0, 13, 0, 6, 4, 18, 14, 1, 4, 10, 1, 15, 2, 9, 1, 16, 7, 3, 3, 11, 7, 3, 4, 15, 9, 6, 17, 14, 4,
-                                16, 8, 14, 11, 2, 12, 16, 6, 9, 12, 19, 19, 1, 4, 15, 7, 2, 6, 0, 19, 19, 13, 16, 2, 4, 11, 10, 16, 8,
-                                19, 12, 15, 3, 11, 12, 11, 10, 0, 15, 16, 13, 12, 4, 3, 6, 16, 19, 3, 18, 9, 1, 13, 17, 12, 7, 8, 14, 2,
-                                3, 7, 9, 7, 10, 3, 14, 9, 10, 13, 7, 6, 18, 12, 11, 2, 10, 12, 3, 9, 15, 5, 10, 3, 1, 8, 10, 10, 6, 6, 6,
-                                6, 15, 13, 2, 12, 0, 12, 13, 11, 6, 17, 1, 0, 16, 17, 10, 0, 10, 11, 7, 4, 0, 15, 0, 16, 5, 7, 2, 13, 11,
-                                6, 19, 5, 11, 3, 17, 18, 15, 6, 8, 9, 6, 0, 13, 15, 17, 1, 5, 11, 15, 6, 6, 2, 11, 19, 5, 3, 7, 0, 0, 1, 5,
-                                11, 12, 16, 12, 14, 9, 14, 16, 19, 17, 15, 8, 12, 5, 2, 1, 16, 7, 17, 6, 15, 8, 4, 3, 11, 3, 13, 1, 6, 18,
-                                4, 18, 12, 9, 0, 19, 10, 9, 18, 3, 13, 8, 7, 3, 16, 7, 0, 11, 15, 16, 17, 16, 16, 17, 11, 13, 14, 13, 7, 10,
-                                4, 0, 2, 18, 17, 10, 4, 12, 14, 9, 18, 16, 8, 16, 11, 2, 19, 12, 8, 11, 18, 3, 7, 2))
+prev_clust1 <- scclust(c(9, 3, 4, 4, 7, 0, 5, 0, 6, 7, 4, 7, 4, 6, 4, 9, 9, 2, 4, 6, 7, 5, 5, 5, 3, 5, 2, 9, 6, 4, 6, 8, 0,
+                         9, 2, 2, 5, 5, 5, 6, 5, 2, 1, 1, 3, 6, 7, 9, 1, 8, 4, 8, 3, 1, 6, 8, 5, 7, 0, 7, 1, 1, 3, 0, 3, 9,
+                         0, 9, 9, 2, 4, 9, 8, 2, 0, 4, 9, 7, 9, 9, 2, 1, 7, 9, 8, 4, 9, 4, 6, 8, 2, 6, 8, 8, 2, 8, 9, 9, 5,
+                         9, 4, 4, 8, 8, 6, 5, 5, 7, 8, 7, 2, 5, 4, 5, 2, 2, 4, 6, 7, 8, 2, 7, 5, 5, 6, 7, 2, 4, 9, 1, 6, 8,
+                         8, 1, 4, 9, 2, 7, 6, 1, 1, 5, 5, 7, 5, 2, 9, 8, 2, 1, 6, 7, 0, 6, 6, 8, 8, 0, 3, 7, 6, 0, 1, 4, 3,
+                         3, 1, 3, 8, 3, 0, 1, 6, 5, 9, 1, 0, 3, 9, 1, 6, 2, 3, 9, 5, 2, 9, 3, 6, 6, 2, 4, 8, 3, 5, 4, 1, 0,
+                         3, 2, 1, 4, 6, 4, 7, 3, 3, 7, 0, 8, 7, 3, 1, 2, 4, 3, 7, 4, 0, 6, 7, 9, 0, 0, 0, 7, 5, 8, 1, 9, 6,
+                         6, 6, 1, 3, 2, 0, 5, 1, 9, 1, 9, 1, 1, 3, 7, 1, 9, 1, 9, 8, 1, 2, 8, 8, 8, 0, 5, 5, 2, 6, 3, 2, 3,
+                         8, 2, 3, 2, 0, 7, 9, 7, 1, 0, 5, 1, 1, 1, 1, 7, 4, 2, 4, 9, 9, 6, 5, 8, 9, 2, 8, 2, 8, 3, 6, 7, 3,
+                         8, 6, 1, 7, 7, 6, 1, 5, 8, 6, 6, 6, 3, 7, 6, 5, 3, 7, 6, 7, 4, 4, 2, 1, 3, 0, 5, 3, 7, 5, 1, 0, 0,
+                         3, 7, 0, 1, 3, 7, 6, 6, 8, 9, 1, 5, 3, 6, 9, 9, 2, 7, 2, 9, 6, 8, 4, 2, 0, 1, 8, 1, 1, 3, 1, 7, 2,
+                         3, 4, 9, 8, 3, 6, 3, 9, 1, 6, 4, 3, 1, 8, 0, 2, 8, 6, 5, 2, 9, 0, 8, 7, 9, 9, 5, 7, 4, 2, 4, 0, 6,
+                         5, 3, 9, 5, 4, 1, 8, 4, 2, 6, 1, 1, 3, 8, 1, 6, 7, 9, 1, 0, 4, 3, 3, 7, 9, 4, 2, 0, 2, 7, 6, 0, 7,
+                         3, 0, 5, 9, 9, 6, 6, 8, 3, 1, 5, 3, 5, 6, 5, 1, 3, 6, 5, 2, 4, 5, 3, 2, 1, 6, 5, 3, 0, 3, 3, 8, 0,
+                         4, 0, 9, 3, 6, 1, 1, 1, 9, 5, 0, 3, 8, 5, 4, 6, 7, 8, 6, 5, 1, 4, 7, 3, 0, 0, 0, 7, 4, 6, 5, 1, 3,
+                         8, 0, 5, 4, 8))
+prev_clust2 <- scclust(c(17, 6, 5, 6, 19, 2, 8, 12, 3, 3, 14, 16, 1, 1, 7, 7, 4, 5, 0, 13, 19, 5, 9, 17, 8, 6, 8, 3, 8, 18, 15,
+                         14, 11, 5, 12, 17, 8, 4, 11, 13, 8, 0, 17, 17, 17, 5, 12, 15, 2, 13, 3, 13, 1, 5, 12, 9, 19, 0, 19, 16,
+                         19, 5, 2, 4, 17, 13, 9, 15, 1, 17, 13, 14, 11, 8, 11, 15, 14, 19, 15, 15, 4, 13, 2, 15, 3, 6, 4, 12, 7,
+                         14, 19, 6, 9, 11, 7, 7, 11, 10, 15, 10, 17, 5, 6, 0, 11, 10, 15, 4, 8, 15, 12, 4, 13, 0, 2, 17, 17, 0,
+                         13, 13, 7, 9, 3, 8, 19, 1, 3, 18, 12, 6, 5, 3, 14, 0, 19, 2, 0, 17, 12, 12, 17, 14, 2, 11, 17, 7, 14,
+                         1, 1, 12, 16, 3, 6, 19, 6, 2, 8, 17, 2, 17, 14, 14, 18, 9, 17, 12, 4, 14, 16, 12, 12, 19, 13, 7, 10, 18,
+                         16, 14, 11, 5, 2, 10, 15, 17, 3, 15, 16, 16, 3, 11, 6, 6, 16, 0, 13, 7, 5, 15, 14, 8, 11, 9, 14, 7, 7,
+                         15, 13, 6, 10, 4, 14, 16, 16, 7, 18, 0, 9, 11, 7, 18, 9, 17, 1, 5, 4, 12, 7, 1, 5, 10, 13, 17, 17, 13,
+                         8, 15, 0, 13, 0, 6, 4, 18, 14, 1, 4, 10, 1, 15, 2, 9, 1, 16, 7, 3, 3, 11, 7, 3, 4, 15, 9, 6, 17, 14, 4,
+                         16, 8, 14, 11, 2, 12, 16, 6, 9, 12, 19, 19, 1, 4, 15, 7, 2, 6, 0, 19, 19, 13, 16, 2, 4, 11, 10, 16, 8,
+                         19, 12, 15, 3, 11, 12, 11, 10, 0, 15, 16, 13, 12, 4, 3, 6, 16, 19, 3, 18, 9, 1, 13, 17, 12, 7, 8, 14, 2,
+                         3, 7, 9, 7, 10, 3, 14, 9, 10, 13, 7, 6, 18, 12, 11, 2, 10, 12, 3, 9, 15, 5, 10, 3, 1, 8, 10, 10, 6, 6, 6,
+                         6, 15, 13, 2, 12, 0, 12, 13, 11, 6, 17, 1, 0, 16, 17, 10, 0, 10, 11, 7, 4, 0, 15, 0, 16, 5, 7, 2, 13, 11,
+                         6, 19, 5, 11, 3, 17, 18, 15, 6, 8, 9, 6, 0, 13, 15, 17, 1, 5, 11, 15, 6, 6, 2, 11, 19, 5, 3, 7, 0, 0, 1, 5,
+                         11, 12, 16, 12, 14, 9, 14, 16, 19, 17, 15, 8, 12, 5, 2, 1, 16, 7, 17, 6, 15, 8, 4, 3, 11, 3, 13, 1, 6, 18,
+                         4, 18, 12, 9, 0, 19, 10, 9, 18, 3, 13, 8, 7, 3, 16, 7, 0, 11, 15, 16, 17, 16, 16, 17, 11, 13, 14, 13, 7, 10,
+                         4, 0, 2, 18, 17, 10, 4, 12, 14, 9, 18, 16, 8, 16, 11, 2, 19, 12, 8, 11, 18, 3, 7, 2))
 
 
 test_that("`hierarchical_clustering` returns correct output", {
-  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+  expect_identical(hierarchical_clustering(distances = test_distances1,
                                            size_constraint = 2L,
                                            batch_assign = TRUE),
-                   replica_hierarchical_clustering(distance_object = test_distances1,
+                   replica_hierarchical_clustering(distances = test_distances1,
                                                    size_constraint = 2L,
                                                    batch_assign = TRUE))
-  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+  expect_identical(hierarchical_clustering(distances = test_distances1,
                                            size_constraint = 3L,
                                            batch_assign = TRUE),
-                   replica_hierarchical_clustering(distance_object = test_distances1,
+                   replica_hierarchical_clustering(distances = test_distances1,
                                                    size_constraint = 3L,
                                                    batch_assign = TRUE))
-  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+  expect_identical(hierarchical_clustering(distances = test_distances1,
                                            size_constraint = 10L,
                                            batch_assign = TRUE),
-                   replica_hierarchical_clustering(distance_object = test_distances1,
+                   replica_hierarchical_clustering(distances = test_distances1,
                                                    size_constraint = 10L,
                                                    batch_assign = TRUE))
-  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+  expect_identical(hierarchical_clustering(distances = test_distances1,
                                            size_constraint = 11L,
                                            batch_assign = TRUE),
-                   replica_hierarchical_clustering(distance_object = test_distances1,
+                   replica_hierarchical_clustering(distances = test_distances1,
                                                    size_constraint = 11L,
                                                    batch_assign = TRUE))
 
 
-  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+  expect_identical(hierarchical_clustering(distances = test_distances1,
                                            size_constraint = 2L,
                                            batch_assign = FALSE),
-                   replica_hierarchical_clustering(distance_object = test_distances1,
+                   replica_hierarchical_clustering(distances = test_distances1,
                                                    size_constraint = 2L,
                                                    batch_assign = FALSE))
-  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+  expect_identical(hierarchical_clustering(distances = test_distances1,
                                            size_constraint = 3L,
                                            batch_assign = FALSE),
-                   replica_hierarchical_clustering(distance_object = test_distances1,
+                   replica_hierarchical_clustering(distances = test_distances1,
                                                    size_constraint = 3L,
                                                    batch_assign = FALSE))
-  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+  expect_identical(hierarchical_clustering(distances = test_distances1,
                                            size_constraint = 10L,
                                            batch_assign = FALSE),
-                   replica_hierarchical_clustering(distance_object = test_distances1,
+                   replica_hierarchical_clustering(distances = test_distances1,
                                                    size_constraint = 10L,
                                                    batch_assign = FALSE))
-  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+  expect_identical(hierarchical_clustering(distances = test_distances1,
                                            size_constraint = 11L,
                                            batch_assign = FALSE),
-                   replica_hierarchical_clustering(distance_object = test_distances1,
+                   replica_hierarchical_clustering(distances = test_distances1,
                                                    size_constraint = 11L,
                                                    batch_assign = FALSE))
 
 
-  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+  expect_identical(hierarchical_clustering(distances = test_distances1,
                                            size_constraint = 2L,
                                            batch_assign = TRUE,
                                            existing_clustering = prev_clust1),
-                   replica_hierarchical_clustering(distance_object = test_distances1,
+                   replica_hierarchical_clustering(distances = test_distances1,
                                                    size_constraint = 2L,
                                                    batch_assign = TRUE,
                                                    existing_clustering = prev_clust1))
-  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+  expect_identical(hierarchical_clustering(distances = test_distances1,
                                            size_constraint = 3L,
                                            batch_assign = TRUE,
                                            existing_clustering = prev_clust1),
-                   replica_hierarchical_clustering(distance_object = test_distances1,
+                   replica_hierarchical_clustering(distances = test_distances1,
                                                    size_constraint = 3L,
                                                    batch_assign = TRUE,
                                                    existing_clustering = prev_clust1))
-  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+  expect_identical(hierarchical_clustering(distances = test_distances1,
                                            size_constraint = 2L,
                                            batch_assign = FALSE,
                                            existing_clustering = prev_clust1),
-                   replica_hierarchical_clustering(distance_object = test_distances1,
+                   replica_hierarchical_clustering(distances = test_distances1,
                                                    size_constraint = 2L,
                                                    batch_assign = FALSE,
                                                    existing_clustering = prev_clust1))
-  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+  expect_identical(hierarchical_clustering(distances = test_distances1,
                                            size_constraint = 3L,
                                            batch_assign = FALSE,
                                            existing_clustering = prev_clust1),
-                   replica_hierarchical_clustering(distance_object = test_distances1,
+                   replica_hierarchical_clustering(distances = test_distances1,
                                                    size_constraint = 3L,
                                                    batch_assign = FALSE,
                                                    existing_clustering = prev_clust1))
 
 
-  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+  expect_identical(hierarchical_clustering(distances = test_distances1,
                                            size_constraint = 2L,
                                            batch_assign = TRUE,
                                            existing_clustering = prev_clust2),
-                   replica_hierarchical_clustering(distance_object = test_distances1,
+                   replica_hierarchical_clustering(distances = test_distances1,
                                                    size_constraint = 2L,
                                                    batch_assign = TRUE,
                                                    existing_clustering = prev_clust2))
-  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+  expect_identical(hierarchical_clustering(distances = test_distances1,
                                            size_constraint = 3L,
                                            batch_assign = TRUE,
                                            existing_clustering = prev_clust2),
-                   replica_hierarchical_clustering(distance_object = test_distances1,
+                   replica_hierarchical_clustering(distances = test_distances1,
                                                    size_constraint = 3L,
                                                    batch_assign = TRUE,
                                                    existing_clustering = prev_clust2))
-  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+  expect_identical(hierarchical_clustering(distances = test_distances1,
                                            size_constraint = 2L,
                                            batch_assign = FALSE,
                                            existing_clustering = prev_clust2),
-                   replica_hierarchical_clustering(distance_object = test_distances1,
+                   replica_hierarchical_clustering(distances = test_distances1,
                                                    size_constraint = 2L,
                                                    batch_assign = FALSE,
                                                    existing_clustering = prev_clust2))
-  expect_identical(hierarchical_clustering(distance_object = test_distances1,
+  expect_identical(hierarchical_clustering(distances = test_distances1,
                                            size_constraint = 3L,
                                            batch_assign = FALSE,
                                            existing_clustering = prev_clust2),
-                   replica_hierarchical_clustering(distance_object = test_distances1,
+                   replica_hierarchical_clustering(distances = test_distances1,
                                                    size_constraint = 3L,
                                                    batch_assign = FALSE,
                                                    existing_clustering = prev_clust2))
@@ -290,8 +290,8 @@ test_data <- matrix(c(0.0436, 0.9723, 0.5366, 0.1065, 0.5340, 0.3437, 0.2933, 0.
                       0.1264, 0.5995, 0.4948, 0.8134, 0.1887, 0.4399, 0.2289, 0.4345, 0.7754, 0.5619), ncol = 2)
 
 test_distances2 <- distances::distances(test_data)
-prev_clust3ref <- scc_clustering(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
-prev_clust3a <- scc_clustering(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
-prev_clust3b <- scc_clustering(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
-prev_clust3c <- scc_clustering(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
-prev_clust3d <- scc_clustering(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
+prev_clust3ref <- scclust(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
+prev_clust3a <- scclust(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
+prev_clust3b <- scclust(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
+prev_clust3c <- scclust(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))
+prev_clust3d <- scclust(c(2, 0, 3, 0, 2, 0, 2, 0, 2, 2, 1, 2, 3, 1, 0, 3, 0, 1, 1, 2, 3, 1, 1, 3, 2, 1, 2, 3, 0, 0))

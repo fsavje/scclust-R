@@ -39,15 +39,15 @@ test_that("Constants are correct", {
 
 
 # ==============================================================================
-# make_scc_clustering
+# make_scclust
 # ==============================================================================
 
-test_that("`make_scc_clustering` constructs correct object", {
-  expect_identical(make_scc_clustering(1:10, 10L, letters[1:10]),
+test_that("`make_scclust` constructs correct object", {
+  expect_identical(make_scclust(1:10, 10L, letters[1:10]),
                    structure(1:10,
                              cluster_count = 10L,
                              ids = letters[1:10],
-                             class = c("scc_clustering")))
+                             class = c("scclust")))
 })
 
 

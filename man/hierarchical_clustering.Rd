@@ -4,18 +4,18 @@
 \alias{hierarchical_clustering}
 \title{Hierarchical clustering function}
 \usage{
-hierarchical_clustering(distance_object, size_constraint, batch_assign = TRUE,
+hierarchical_clustering(distances, size_constraint, batch_assign = TRUE,
   existing_clustering = NULL)
 }
 \arguments{
-\item{distance_object}{a distance object as produced by \code{\link[distances]{distances}}.}
+\item{distances}{a distance object as produced by \code{\link[distances]{distances}}.}
 
 \item{size_constraint}{an integer with the required minimum cluster size.}
 
 \item{batch_assign}{a bool indicating whether data points should be assigned in batches when
 spliting clusters.}
 
-\item{existing_clustering}{\code{NULL} or a \code{scc_clustering} object containing an existing
+\item{existing_clustering}{\code{NULL} or a \code{scclust} object containing an existing
 non-empty clustering. If \code{NULL}, the function will start with a
 single cluster containing all data points (i.e., it derives a clustering
 from scratch).}
@@ -32,7 +32,7 @@ functions in the package.
 \details{
 While \code{hierarchical_clustering} can be used alone to derive size constrained
 clusterings, its main purpose is to be used with the nearest neighbor graph (NNG)
-functions in the package (i.e., \code{\link{make_clustering}}). The clusterings
+functions in the package (i.e., \code{\link{sc_clustering}}). The clusterings
 produced by the NNG functions tend produce large clusters in regions with many
 data points. In some cases, it is beneficial to divide these clusters into smaller
 groups. \code{hierarchical_clustering} can be use to achieve that.
@@ -65,11 +65,11 @@ in the third stage in batches of \code{size_constraint}, this property is
 retained to the greatest extent possible.
 }
 \seealso{
-\code{\link{make_clustering}} is the main clustering function in the package.
+\code{\link{sc_clustering}} is the main clustering function in the package.
 
-         Use \code{\link{scc_clustering}} to create scclust cluster objects from external
+         Use \code{\link{scclust}} to create scclust cluster objects from external
          clusterings.
 
-Other clustering functions: \code{\link{make_clustering}}
+Other clustering functions: \code{\link{sc_clustering}}
 }
 \keyword{cluster}

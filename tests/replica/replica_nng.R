@@ -104,7 +104,7 @@ est_average_seed_dist <- function(distances,
 }
 
 
-replica_nng_clustering <- function(distance_object,
+replica_nng_clustering <- function(distances,
                                    size_constraint,
                                    seed_method = "exclusion_updating",
                                    unassigned_method = "closest_seed",
@@ -112,8 +112,8 @@ replica_nng_clustering <- function(distance_object,
                                    primary_data_points = NULL,
                                    secondary_unassigned_method = "ignore",
                                    secondary_radius = NULL) {
-  ensure_distances(distance_object)
-  num_data_points <- length(distance_object)
+  ensure_distances(distances)
+  num_data_points <- length(distances)
   size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
   seed_method <- coerce_args(seed_method, all_seed_methods)
   unassigned_method <- coerce_args(unassigned_method,
@@ -135,7 +135,7 @@ replica_nng_clustering <- function(distance_object,
                                                "estimated_radius_closest_seed"))
   secondary_radius <- coerce_radius(secondary_radius)
 
-  distances <- as.matrix(distance_object)
+  distances <- as.matrix(distances)
   nng <- get_simple_nng(distances,
                         size_constraint,
                         radius,
@@ -162,14 +162,14 @@ replica_nng_clustering <- function(distance_object,
                                 secondary_unassigned_method,
                                 secondary_radius)
 
-  make_scc_clustering(as.integer(cl_label),
-                      length(unique(cl_label[!is.na(cl_label)])),
-                      attr(distance_object, "ids", exact = TRUE))
+  make_scclust(as.integer(cl_label),
+               length(unique(cl_label[!is.na(cl_label)])),
+               attr(distances, "ids", exact = TRUE))
 }
 
 
 
-replica_nng_clustering_types <- function(distance_object,
+replica_nng_clustering_types <- function(distances,
                                          type_labels,
                                          type_size_constraints,
                                          total_size_constraint = NULL,
@@ -179,8 +179,8 @@ replica_nng_clustering_types <- function(distance_object,
                                          primary_data_points = NULL,
                                          secondary_unassigned_method = "ignore",
                                          secondary_radius = NULL) {
-  ensure_distances(distance_object)
-  num_data_points <- length(distance_object)
+  ensure_distances(distances)
+  num_data_points <- length(distances)
   type_labels <- coerce_type_labels(type_labels, num_data_points)
   type_size_constraints <- coerce_type_constraints(type_size_constraints)
   type_size_constraints <- make_type_size_constraints(type_size_constraints,
@@ -208,7 +208,7 @@ replica_nng_clustering_types <- function(distance_object,
                                                "estimated_radius_closest_seed"))
   secondary_radius <- coerce_radius(secondary_radius)
 
-  distances <- as.matrix(distance_object)
+  distances <- as.matrix(distances)
   nng <- get_type_nng(distances,
                       type_labels,
                       type_size_constraints,
@@ -237,7 +237,7 @@ replica_nng_clustering_types <- function(distance_object,
                                 secondary_unassigned_method,
                                 secondary_radius)
 
-  make_scc_clustering(as.integer(cl_label),
-                      length(unique(cl_label[!is.na(cl_label)])),
-                      attr(distance_object, "ids", exact = TRUE))
+  make_scclust(as.integer(cl_label),
+               length(unique(cl_label[!is.na(cl_label)])),
+               attr(distances, "ids", exact = TRUE))
 }

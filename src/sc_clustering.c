@@ -18,7 +18,7 @@
  * along with this program. If not, see http://www.gnu.org/licenses/
  * ========================================================================== */
 
-#include "make_clustering.h"
+#include "sc_clustering.h"
 #include <limits.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -42,18 +42,18 @@ static scc_UnassignedMethod iRscc_parse_unassigned_method(SEXP R_unassigned_meth
 // External function implementations
 // =============================================================================
 
-SEXP Rscc_make_clustering(const SEXP R_distances,
-                          const SEXP R_size_constraint,
-                          const SEXP R_type_labels,
-                          const SEXP R_type_constraints,
-                          const SEXP R_seed_method,
-                          const SEXP R_primary_data_points,
-                          const SEXP R_primary_unassigned_method,
-                          const SEXP R_secondary_unassigned_method,
-                          const SEXP R_seed_radius,
-                          const SEXP R_primary_radius,
-                          const SEXP R_secondary_radius,
-                          const SEXP R_batch_size)
+SEXP Rscc_sc_clustering(const SEXP R_distances,
+                        const SEXP R_size_constraint,
+                        const SEXP R_type_labels,
+                        const SEXP R_type_constraints,
+                        const SEXP R_seed_method,
+                        const SEXP R_primary_data_points,
+                        const SEXP R_primary_unassigned_method,
+                        const SEXP R_secondary_unassigned_method,
+                        const SEXP R_seed_radius,
+                        const SEXP R_primary_radius,
+                        const SEXP R_secondary_radius,
+                        const SEXP R_batch_size)
 {
 	Rscc_set_dist_functions();
 

@@ -91,11 +91,11 @@ ensure_indicators <- function(indicators,
 }
 
 
-# Ensure that `clustering` is a `scc_clustering` object
-ensure_scc_clustering <- function(clustering,
-                                  req_length = NULL) {
-  if (!is.scc_clustering(clustering)) {
-    new_error("`", match.call()$clustering, "` is not a `scc_clustering` object.")
+# Ensure that `clustering` is a `scclust` object
+ensure_scclust <- function(clustering,
+                           req_length = NULL) {
+  if (!is.scclust(clustering)) {
+    new_error("`", match.call()$clustering, "` is not a `scclust` object.")
   }
   if (!is.null(req_length) && (length(clustering) != req_length)) {
     new_error("`", match.call()$clustering, "` does not contain `", match.call()$req_length, "` data points.")

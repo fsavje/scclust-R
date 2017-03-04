@@ -19,38 +19,124 @@
 # ==============================================================================
 
 
-#' scclust: R wrapper for the scclust library
+#' Constructor for scclust clustering objects.
 #'
-#' This package wraps the \code{scclust} C library for R. \code{scclust}
-#' provides functions for size constrained clustering. Besides direct wrapper
-#' function, the package provides convenience and utility functions.
+#' \code{scclust} constructs a scclust clustering object from existing cluster
+#' labels. It is useful when using scclust's clustering functions to refine an
+#' existing clustering.
 #'
-#' The clustering functions are \code{\link{make_clustering}} and
-#' \code{\link{hierarchical_clustering}}. To get statistics about a clustering
-#' use \code{\link{get_clustering_stats}}. To construct a clustering object from
-#' an existing clustering see \code{\link{scc_clustering}}. To check if a clustering
-#' satisfies some clustering constraints use \code{\link{check_clustering}}.
+#' @param cluster_labels a vector containing each data point's cluster label.
+#' @param unassigned_labels a vector containing cluster labels that denote unassigned data points.
+#' @param ids optional IDs of the data points. Should be a vector of the same length as
+#'            \code{cluster_labels} or \code{NULL}. If \code{NULL}, the IDs are set to
+#'            \code{1:length(cluster_labels)}.
 #'
-#' This package is under development, please exercise caution when using it.
+#' @return Returns a scclust cluster object to be used when calling the
+#'         clustering functions.
 #'
-#' More information and the latest version is found here:
-#' \url{https://github.com/fsavje/scclust-R}.
+#' @seealso
+#' Functions that accept the scclust cluster object as input are
+#' \code{\link{hierarchical_clustering}}, \code{\link{check_clustering}}
+#' and \code{\link{get_scclust_stats}}.
 #'
-#' More information about the underlying \code{scclust} library is found here:
-#' \url{https://github.com/fsavje/scclust}.
+#' \code{scclust} does not derive clusterings from data sets; for that
+#' functionality see \code{\link{sc_clustering}} and \code{\link{hierarchical_clustering}}.
 #'
-#' Bug reports and suggestions are greatly appreciated. They
-#' are best reported here:
-#' \url{https://github.com/fsavje/scclust-R/issues}.
+#' @examples
+#' # 10 data points in 3 clusters
+#' my_labels1 <- c("A", "A", "B", "C", "B", "C", "C", "A", "B", "B")
+#' my_clust_obj1 <- scclust(my_labels1)
 #'
-#' @docType package
-#' @name scclust-package
-#' @aliases scclust
+#' # 10 data points in 3 clusters, integer labels
+#' my_labels2 <- c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2)
+#' my_clust_obj2 <- scclust(my_labels2)
 #'
-#' @import distances
-NULL
+#' # 8 data points in 3 clusters, and 2 points unassigned
+#' my_labels3 <- c("A", "A", "B", "C", "NONE", "C", "C", "NONE", "B", "B")
+#' my_clust_obj3 <- scclust(my_labels3, "NONE")
+#'
+#' # Different unassiged labels
+#' my_labels4 <- c("A", "A", "B", "C", "NONE", "C", "C", "0", "B", "B")
+#' my_clust_obj4 <- scclust(my_labels4, c("NONE", "0"))
+#'
+#' # Custom data point IDs
+#' my_labels5 <- c("A", "A", "B", "C", "B", "C", "C", "A", "B", "B")
+#' my_ids <- letters[1:10]
+#' my_clust_obj5 <- scclust(my_labels5, ids = my_ids)
+#'
+#' @export
+scclust <- function(cluster_labels,
+                    unassigned_labels = NULL,
+                    ids = NULL) {
+  cluster_labels <- coerce_cluster_labels(cluster_labels, unassigned_labels)
+  if (!is.null(ids)) {
+    ids <- coerce_character(ids, length(cluster_labels))
+  }
 
-#' @useDynLib scclust, .registration = TRUE
-.onUnload <- function (libpath) {
-  library.dynam.unload("scclust", libpath)
+  make_scclust(as.integer(cluster_labels) - 1L,
+               nlevels(cluster_labels),
+               ids)
+}
+
+
+#' Check \code{scclust} object
+#'
+#' \code{is.scclust} checks whether the provided object
+#' is a valid instance of the \code{scclust} class. It does
+#' not check whether the clustering itself is sensible.
+#'
+#' @param obj  object to check.
+#'
+#' @return Returns \code{TRUE} if \code{obj} is a valid
+#'         \code{scclust} object, otherwise \code{FALSE}.
+#'
+#' @export
+is.scclust <- function(obj) {
+  is.integer(obj) &&
+    inherits(obj, "scclust") &&
+    is.integer(attr(obj, "cluster_count", exact = TRUE)) &&
+    length(attr(obj, "cluster_count", exact = TRUE)) == 1 &&
+    attr(obj, "cluster_count", exact = TRUE) >= 0L
+}
+
+
+#' Number of clusters in clustering
+#'
+#' \code{cluster_count} returns the number of clusters in a clustering object.
+#'
+#' @param clustering  an scclust object
+#'
+#' @return Returns an integer with the number of clusters in \code{clustering}.
+#'
+#' @export
+cluster_count <- function(clustering) {
+  ensure_scclust(clustering)
+  attr(clustering, "cluster_count", exact = TRUE)
+}
+
+
+#' @export
+as.data.frame.scclust <- function(x,
+                                  row.names = NULL,
+                                  ...) {
+  stopifnot(is.scclust(x))
+  ids <- attr(x, "ids", exact = TRUE)
+  if (is.null(ids)) ids <- 1:length(x)
+  data.frame(id = ids,
+             cluster_label = as.integer(x),
+             row.names = row.names,
+             ...)
+}
+
+
+#' @export
+print.scclust <- function(x,
+                          ...) {
+  stopifnot(is.scclust(x))
+  ids <- attr(x, "ids", exact = TRUE)
+  if (is.null(ids)) ids <- as.character(1:length(x))
+  stopifnot(is.character(ids))
+  xx <- as.integer(x)
+  names(xx) <- ids
+  print(xx)
 }

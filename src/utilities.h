@@ -29,7 +29,7 @@ SEXP Rscc_check_clustering(SEXP R_clustering,
                            SEXP R_type_labels,
                            SEXP R_type_constraints);
 
-SEXP Rscc_get_clustering_stats(SEXP R_clustering,
-                               SEXP R_distances);
+SEXP Rscc_get_scclust_stats(SEXP R_clustering,
+                            SEXP R_distances);
 
 #endif // ifndef RSCC_UTILITIES_HG

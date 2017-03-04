@@ -99,16 +99,16 @@ run_hierarchical <- function (num_data_points,
 }
 
 
-replica_hierarchical_clustering <- function(distance_object,
+replica_hierarchical_clustering <- function(distances,
                                             size_constraint,
                                             batch_assign = TRUE,
                                             existing_clustering = NULL) {
-  ensure_distances(distance_object)
-  num_data_points <- length(distance_object)
+  ensure_distances(distances)
+  num_data_points <- length(distances)
   size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
   ensure_indicators(batch_assign, 1L)
   if (!is.null(existing_clustering)) {
-    ensure_scc_clustering(existing_clustering, num_data_points)
+    ensure_scclust(existing_clustering, num_data_points)
   }
 
   if (!is.null(existing_clustering)) {
@@ -119,11 +119,11 @@ replica_hierarchical_clustering <- function(distance_object,
 
   new_labels <- run_hierarchical(num_data_points,
                                  cluster_queue,
-                                 as.matrix(distance_object),
+                                 as.matrix(distances),
                                  size_constraint,
                                  batch_assign)
 
-  make_scc_clustering(new_labels,
-                      length(unique(new_labels)),
-                      attr(distance_object, "ids", exact = TRUE))
+  make_scclust(new_labels,
+               length(unique(new_labels)),
+               attr(distances, "ids", exact = TRUE))
 }

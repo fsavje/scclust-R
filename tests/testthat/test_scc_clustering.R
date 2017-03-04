@@ -19,11 +19,11 @@
 # ==============================================================================
 
 library(scclust)
-context("scc_clustering.R")
+context("scclust.R")
 
 
 # ==============================================================================
-# scc_clustering
+# scclust
 # ==============================================================================
 
 cl_labels <- as.integer(c(0, 0, 1, 2, 1, 2, 2, 0, 1, 1))
@@ -32,70 +32,70 @@ cl_labels_wNA <- as.integer(c(0, 0, 1, 2, NA, 2, 2, NA, 1, 1))
 cl_obj_simple <- structure(cl_labels,
                            cluster_count = 3L,
                            ids = NULL,
-                           class = c("scc_clustering"))
+                           class = c("scclust"))
 
 cl_obj_wNA <- structure(cl_labels_wNA,
                         cluster_count = 3L,
                         ids = NULL,
-                        class = c("scc_clustering"))
+                        class = c("scclust"))
 
 cl_obj_wID <- structure(cl_labels,
                         cluster_count = 3L,
                         ids = letters[1:10],
-                        class = c("scc_clustering"))
+                        class = c("scclust"))
 
 cl_obj_wIDnNA <- structure(cl_labels_wNA,
                            cluster_count = 3L,
                            ids = letters[1:10],
-                           class = c("scc_clustering"))
+                           class = c("scclust"))
 
-test_that("`scc_clustering` returns correct output", {
-  expect_identical(scc_clustering(c("A", "A", "B", "C", "B", "C", "C", "A", "B", "B")),
+test_that("`scclust` returns correct output", {
+  expect_identical(scclust(c("A", "A", "B", "C", "B", "C", "C", "A", "B", "B")),
                    cl_obj_simple)
-  expect_identical(scc_clustering(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2)),
+  expect_identical(scclust(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2)),
                    cl_obj_simple)
-  expect_identical(scc_clustering(c("A", "A", "B", "C", "NONE", "C", "C", "NONE", "B", "B"), "NONE"),
+  expect_identical(scclust(c("A", "A", "B", "C", "NONE", "C", "C", "NONE", "B", "B"), "NONE"),
                    cl_obj_wNA)
-  expect_identical(scc_clustering(c("A", "A", "B", "C", "NONE", "C", "C", "0", "B", "B"), c("NONE", "0")),
+  expect_identical(scclust(c("A", "A", "B", "C", "NONE", "C", "C", "0", "B", "B"), c("NONE", "0")),
                    cl_obj_wNA)
-  expect_identical(scc_clustering(c(1, 1, 2, 3, 0, 3, 3, 0, 2, 2), 0),
+  expect_identical(scclust(c(1, 1, 2, 3, 0, 3, 3, 0, 2, 2), 0),
                    cl_obj_wNA)
-  expect_identical(scc_clustering(c("A", "A", "B", "C", "B", "C", "C", "A", "B", "B"), ids = letters[1:10]),
+  expect_identical(scclust(c("A", "A", "B", "C", "B", "C", "C", "A", "B", "B"), ids = letters[1:10]),
                    cl_obj_wID)
-  expect_identical(scc_clustering(c("A", "A", "B", "C", "NONE", "C", "C", "0", "B", "B"), c("NONE", "0"), ids = letters[1:10]),
+  expect_identical(scclust(c("A", "A", "B", "C", "NONE", "C", "C", "0", "B", "B"), c("NONE", "0"), ids = letters[1:10]),
                    cl_obj_wIDnNA)
 })
 
 
 # ==============================================================================
-# is.scc_clustering
+# is.scclust
 # ==============================================================================
 
-test_that("`is.scc_clustering` returns correct output", {
-  expect_true(is.scc_clustering(cl_obj_simple))
-  expect_true(is.scc_clustering(structure(1:10L,
-                                          cluster_count = 10L,
-                                          ids = NULL,
-                                          class = c("scc_clustering"))))
-  expect_false(is.scc_clustering(structure(letters[1:10],
-                                           cluster_count = 10L,
-                                           ids = NULL,
-                                           class = c("scc_clustering"))))
-  expect_false(is.scc_clustering(structure(1:10L,
-                                           cluster_count = 10L,
-                                           ids = NULL,
-                                           class = c("abc"))))
-  expect_false(is.scc_clustering(structure(1:10L,
-                                           ids = NULL,
-                                           class = c("scc_clustering"))))
-  expect_false(is.scc_clustering(structure(1:10L,
-                                           cluster_count = 1:2,
-                                           ids = NULL,
-                                           class = c("scc_clustering"))))
-  expect_false(is.scc_clustering(structure(1:10L,
-                                           cluster_count = -10L,
-                                           ids = NULL,
-                                           class = c("scc_clustering"))))
+test_that("`is.scclust` returns correct output", {
+  expect_true(is.scclust(cl_obj_simple))
+  expect_true(is.scclust(structure(1:10L,
+                                   cluster_count = 10L,
+                                   ids = NULL,
+                                   class = c("scclust"))))
+  expect_false(is.scclust(structure(letters[1:10],
+                                    cluster_count = 10L,
+                                    ids = NULL,
+                                    class = c("scclust"))))
+  expect_false(is.scclust(structure(1:10L,
+                                    cluster_count = 10L,
+                                    ids = NULL,
+                                    class = c("abc"))))
+  expect_false(is.scclust(structure(1:10L,
+                                    ids = NULL,
+                                    class = c("scclust"))))
+  expect_false(is.scclust(structure(1:10L,
+                                    cluster_count = 1:2,
+                                    ids = NULL,
+                                    class = c("scclust"))))
+  expect_false(is.scclust(structure(1:10L,
+                                    cluster_count = -10L,
+                                    ids = NULL,
+                                    class = c("scclust"))))
 })
 
 
@@ -104,30 +104,30 @@ test_that("`is.scc_clustering` returns correct output", {
 # ==============================================================================
 
 test_that("`cluster_count` returns correct output", {
-  expect_identical(cluster_count(scc_clustering(c("a", "b", "c", "a", "b", "c", "a"))),
+  expect_identical(cluster_count(scclust(c("a", "b", "c", "a", "b", "c", "a"))),
                    3L)
-  expect_identical(cluster_count(scc_clustering(c("a", "b", "c", "a", "b", "c", "a", "d", "e", "d"))),
+  expect_identical(cluster_count(scclust(c("a", "b", "c", "a", "b", "c", "a", "d", "e", "d"))),
                    5L)
 })
 
 
 # ==============================================================================
-# length.scc_clustering
+# length.scclust
 # ==============================================================================
 
-test_that("`length.scc_clustering` returns correct output", {
-  expect_identical(length(scc_clustering(c("a", "b", "c", "a", "b", "c", "a"))),
+test_that("`length.scclust` returns correct output", {
+  expect_identical(length(scclust(c("a", "b", "c", "a", "b", "c", "a"))),
                    7L)
-  expect_identical(length(scc_clustering(c("a", "b", "c", "a", "b", "c", "a", "d", "e", "d"))),
+  expect_identical(length(scclust(c("a", "b", "c", "a", "b", "c", "a", "d", "e", "d"))),
                    10L)
 })
 
 
 # ==============================================================================
-# as.data.frame.scc_clustering
+# as.data.frame.scclust
 # ==============================================================================
 
-test_that("`as.data.frame.scc_clustering` returns correct output", {
+test_that("`as.data.frame.scclust` returns correct output", {
   expect_identical(as.data.frame(cl_obj_simple),
                    data.frame(id = 1:10, cluster_label = cl_labels))
   expect_identical(as.data.frame(cl_obj_wNA),
@@ -140,9 +140,9 @@ test_that("`as.data.frame.scc_clustering` returns correct output", {
 
 
 # ==============================================================================
-# print.scc_clustering
+# print.scclust
 # ==============================================================================
 
-test_that("`print.scc_clustering` prints correctly", {
+test_that("`print.scclust` prints correctly", {
   expect_output(print(cl_obj_simple), "0  0  1  2  1  2  2  0  1  1", fixed = TRUE)
 })

@@ -18,7 +18,7 @@
 # along with this program. If not, see http://www.gnu.org/licenses/
 # ==============================================================================
 
-nng_clustering <- function(distance_object,
+nng_clustering <- function(distances,
                            size_constraint,
                            seed_method = "exclusion_updating",
                            unassigned_method = "closest_seed",
@@ -37,22 +37,22 @@ nng_clustering <- function(distance_object,
     secondary_radius <- "estimated_radius"
   }
 
-  make_clustering(distance_object,
-                  size_constraint,
-                  NULL,
-                  NULL,
-                  seed_method,
-                  primary_data_points,
-                  unassigned_method,
-                  secondary_unassigned_method,
-                  radius,
-                  primary_radius,
-                  secondary_radius,
-                  NULL)
+  sc_clustering(distances,
+                size_constraint,
+                NULL,
+                NULL,
+                seed_method,
+                primary_data_points,
+                unassigned_method,
+                secondary_unassigned_method,
+                radius,
+                primary_radius,
+                secondary_radius,
+                NULL)
 }
 
 
-nng_clustering_batches <- function(distance_object,
+nng_clustering_batches <- function(distances,
                                    size_constraint,
                                    unassigned_method = "any_neighbor",
                                    radius = NULL,
@@ -64,22 +64,22 @@ nng_clustering_batches <- function(distance_object,
     primary_radius <- "estimated_radius"
   }
 
-  make_clustering(distance_object,
-                  size_constraint,
-                  NULL,
-                  NULL,
-                  "batches",
-                  primary_data_points,
-                  unassigned_method,
-                  "ignore",
-                  radius,
-                  primary_radius,
-                  NULL,
-                  batch_size)
+  sc_clustering(distances,
+                size_constraint,
+                NULL,
+                NULL,
+                "batches",
+                primary_data_points,
+                unassigned_method,
+                "ignore",
+                radius,
+                primary_radius,
+                NULL,
+                batch_size)
 }
 
 
-nng_clustering_types <- function(distance_object,
+nng_clustering_types <- function(distances,
                                  type_labels,
                                  type_size_constraints,
                                  total_size_constraint = NULL,
@@ -100,22 +100,22 @@ nng_clustering_types <- function(distance_object,
     secondary_radius <- "estimated_radius"
   }
 
-  make_clustering(distance_object,
-                  total_size_constraint,
-                  unclass(type_labels),
-                  type_size_constraints,
-                  seed_method,
-                  primary_data_points,
-                  unassigned_method,
-                  secondary_unassigned_method,
-                  radius,
-                  primary_radius,
-                  secondary_radius,
-                  NULL)
+  sc_clustering(distances,
+                total_size_constraint,
+                unclass(type_labels),
+                type_size_constraints,
+                seed_method,
+                primary_data_points,
+                unassigned_method,
+                secondary_unassigned_method,
+                radius,
+                primary_radius,
+                secondary_radius,
+                NULL)
 }
 
 
-test_nng_against_replica <- function(distance_object,
+test_nng_against_replica <- function(distances,
                                      size_constraint,
                                      seed_method,
                                      unassigned_method,
@@ -123,7 +123,7 @@ test_nng_against_replica <- function(distance_object,
                                      primary_data_points,
                                      secondary_unassigned_method,
                                      secondary_radius) {
-  eval(bquote(expect_identical(nng_clustering(distance_object,
+  eval(bquote(expect_identical(nng_clustering(distances,
                                               size_constraint,
                                               seed_method,
                                               unassigned_method,
@@ -131,7 +131,7 @@ test_nng_against_replica <- function(distance_object,
                                               primary_data_points,
                                               secondary_unassigned_method,
                                               secondary_radius),
-                               replica_nng_clustering(distance_object,
+                               replica_nng_clustering(distances,
                                                       size_constraint,
                                                       seed_method,
                                                       unassigned_method,
@@ -142,19 +142,19 @@ test_nng_against_replica <- function(distance_object,
 }
 
 
-test_nng_batch_against_replica <- function(distance_object,
+test_nng_batch_against_replica <- function(distances,
                                            size_constraint,
                                            unassigned_method,
                                            radius,
                                            primary_data_points,
                                            batch_size) {
-  eval(bquote(expect_identical(nng_clustering_batches(distance_object,
+  eval(bquote(expect_identical(nng_clustering_batches(distances,
                                                       size_constraint,
                                                       unassigned_method,
                                                       radius,
                                                       primary_data_points,
                                                       batch_size),
-                               replica_nng_clustering_batches(distance_object,
+                               replica_nng_clustering_batches(distances,
                                                               size_constraint,
                                                               unassigned_method,
                                                               radius,
@@ -162,7 +162,7 @@ test_nng_batch_against_replica <- function(distance_object,
 }
 
 
-test_nng_types_against_replica <- function(distance_object,
+test_nng_types_against_replica <- function(distances,
                                            type_labels,
                                            type_size_constraints,
                                            total_size_constraint,
@@ -172,7 +172,7 @@ test_nng_types_against_replica <- function(distance_object,
                                            primary_data_points,
                                            secondary_unassigned_method,
                                            secondary_radius) {
-  eval(bquote(expect_identical(nng_clustering_types(distance_object,
+  eval(bquote(expect_identical(nng_clustering_types(distances,
                                                     type_labels,
                                                     type_size_constraints,
                                                     total_size_constraint,
@@ -182,7 +182,7 @@ test_nng_types_against_replica <- function(distance_object,
                                                     primary_data_points,
                                                     secondary_unassigned_method,
                                                     secondary_radius),
-                               replica_nng_clustering_types(distance_object,
+                               replica_nng_clustering_types(distances,
                                                             type_labels,
                                                             type_size_constraints,
                                                             total_size_constraint,

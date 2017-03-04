@@ -120,8 +120,8 @@ SEXP Rscc_check_clustering(const SEXP R_clustering,
 }
 
 
-SEXP Rscc_get_clustering_stats(const SEXP R_clustering,
-                               const SEXP R_distances)
+SEXP Rscc_get_scclust_stats(const SEXP R_clustering,
+                            const SEXP R_distances)
 {
 	Rscc_set_dist_functions();
 

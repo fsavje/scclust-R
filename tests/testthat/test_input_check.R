@@ -113,20 +113,20 @@ test_that("`ensure_indicators` checks input.", {
 
 
 # ==============================================================================
-# ensure_scc_clustering
+# ensure_scclust
 # ==============================================================================
 
-t_ensure_scc_clustering <- function(t_clustering = scc_clustering(rep(letters[1:5], 2)),
-                                    t_req_length = NULL) {
-  ensure_scc_clustering(t_clustering, t_req_length)
+t_ensure_scclust <- function(t_clustering = scclust(rep(letters[1:5], 2)),
+                             t_req_length = NULL) {
+  ensure_scclust(t_clustering, t_req_length)
 }
 
-test_that("`ensure_scc_clustering` checks input.", {
-  expect_silent(t_ensure_scc_clustering())
-  expect_silent(t_ensure_scc_clustering(t_req_length = 10))
-  expect_error(t_ensure_scc_clustering(t_clustering = "a"),
-               regexp = "`t_clustering` is not a `scc_clustering` object.")
-  expect_error(t_ensure_scc_clustering(t_req_length = 4),
+test_that("`ensure_scclust` checks input.", {
+  expect_silent(t_ensure_scclust())
+  expect_silent(t_ensure_scclust(t_req_length = 10))
+  expect_error(t_ensure_scclust(t_clustering = "a"),
+               regexp = "`t_clustering` is not a `scclust` object.")
+  expect_error(t_ensure_scclust(t_req_length = 4),
                regexp = "`t_clustering` does not contain `t_req_length` data points.")
 })
 
