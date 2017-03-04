@@ -31,12 +31,10 @@
 #' an existing clustering see \code{\link{scclust}}. To check if a clustering
 #' satisfies some clustering constraints use \code{\link{check_clustering}}.
 #'
-#' This package is under development, please exercise caution when using it.
-#'
-#' More information and the latest version is found here:
+#' See the package's website for more information:
 #' \url{https://github.com/fsavje/scclust-R}.
 #'
-#' More information about the underlying \code{scclust} library is found here:
+#' More information about the \code{scclust} C library is found here:
 #' \url{https://github.com/fsavje/scclust}.
 #'
 #' Bug reports and suggestions are greatly appreciated. They
@@ -45,7 +43,6 @@
 #'
 #' @docType package
 #' @name scclust-package
-#' @aliases scclust
 #'
 #' @import distances
 NULL

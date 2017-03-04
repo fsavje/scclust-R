@@ -3,7 +3,6 @@
 \docType{package}
 \name{scclust-package}
 \alias{scclust-package}
-\alias{scclust}
 \title{scclust: R wrapper for the scclust library}
 \description{
 This package wraps the \code{scclust} C library for R. \code{scclust}
@@ -17,12 +16,10 @@ use \code{\link{get_scclust_stats}}. To construct a clustering object from
 an existing clustering see \code{\link{scclust}}. To check if a clustering
 satisfies some clustering constraints use \code{\link{check_clustering}}.
 
-This package is under development, please exercise caution when using it.
-
-More information and the latest version is found here:
+See the package's website for more information:
 \url{https://github.com/fsavje/scclust-R}.
 
-More information about the underlying \code{scclust} library is found here:
+More information about the \code{scclust} C library is found here:
 \url{https://github.com/fsavje/scclust}.
 
 Bug reports and suggestions are greatly appreciated. They
