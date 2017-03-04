@@ -23,7 +23,7 @@ context("Input checking in C code")
 
 
 # ==============================================================================
-# scc_hierarchical.c
+# hierarchical.c
 # ==============================================================================
 
 c_hierarchical_clustering <- function(distances = distances::distances(matrix(as.numeric(1:16), ncol = 2)),
@@ -64,7 +64,7 @@ test_that("`Rscc_hierarchical_clustering` checks input.", {
 
 
 # ==============================================================================
-# scc_nng.c
+# sc_clustering.c
 # ==============================================================================
 
 c_sc_clustering <- function(distances = distances::distances(matrix(as.numeric(1:16), ncol = 2)),
@@ -142,7 +142,7 @@ test_that("`Rscc_sc_clustering` checks input.", {
 
 
 # ==============================================================================
-# scc_utilities.c
+# utilities.c
 # ==============================================================================
 
 temp_clustering1 <- c(1L, 1L, 0L, 1L, 1L, 0L, 0L, 0L)
@@ -173,7 +173,7 @@ test_that("`Rscc_check_clustering` checks input.", {
                regexp = "`R_size_constraint` must be integer.")
   expect_error(c_check_clustering(type_labels = letters[1:8]),
                regexp = "`R_type_labels` must be factor, integer or NULL.")
-  expect_error(c_sc_clustering(type_labels = NULL),
+  expect_error(c_check_clustering(type_labels = NULL),
                regexp = "`R_type_constraints` must be NULL when no types are supplied.")
   expect_error(c_check_clustering(type_labels = c(1L, 1L, 2L, 1L, 1L, 2L)),
                regexp = "`R_type_labels` does not match `R_clustering`.")
