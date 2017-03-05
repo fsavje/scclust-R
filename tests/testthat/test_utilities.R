@@ -99,7 +99,6 @@ all_assigned_stats <- structure(list(
   num_data_points = 10L,
   num_assigned = 10L,
   num_clusters = 3L,
-  num_populated_clusters = 3L,
   min_cluster_size = 3L,
   max_cluster_size = 4L,
   avg_cluster_size = 10/3,
@@ -116,7 +115,6 @@ some_assigned_stats <- structure(list(
   num_data_points = 10L,
   num_assigned = 7L,
   num_clusters = 2L,
-  num_populated_clusters = 2L,
   min_cluster_size = 3,
   max_cluster_size = 4,
   avg_cluster_size = 3.5,
@@ -132,8 +130,7 @@ some_assigned_stats <- structure(list(
 all_assigned_emptycl_stats <- structure(list(
   num_data_points = 10L,
   num_assigned = 10L,
-  num_clusters = 5L,
-  num_populated_clusters = 3L,
+  num_clusters = 3L,
   min_cluster_size = 3L,
   max_cluster_size = 4L,
   avg_cluster_size = 10/3,
@@ -149,8 +146,7 @@ all_assigned_emptycl_stats <- structure(list(
 some_assigned_emptycl_stats <- structure(list(
   num_data_points = 10L,
   num_assigned = 7L,
-  num_clusters = 5L,
-  num_populated_clusters = 2L,
+  num_clusters = 2L,
   min_cluster_size = 3,
   max_cluster_size = 4,
   avg_cluster_size = 3.5,
@@ -178,7 +174,6 @@ test_that("`print.scclust_stats` prints correctly", {
   expect_output(print(all_assigned_stats), "num_data_points        10.0000000", fixed = TRUE)
   expect_output(print(all_assigned_stats), "num_assigned           10.0000000", fixed = TRUE)
   expect_output(print(all_assigned_stats), "num_clusters            3.0000000", fixed = TRUE)
-  expect_output(print(all_assigned_stats), "num_populated_clusters  3.0000000", fixed = TRUE)
   expect_output(print(all_assigned_stats), "min_cluster_size        3.0000000", fixed = TRUE)
   expect_output(print(all_assigned_stats), "max_cluster_size        4.0000000", fixed = TRUE)
   expect_output(print(all_assigned_stats), "avg_cluster_size        3.3333333", fixed = TRUE)
