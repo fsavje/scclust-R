@@ -21,51 +21,67 @@ environment:
   matrix:
   - R_VERSION: oldrel
     R_ARCH: x64
+    PKGTYPE: "binary"
 
   - R_VERSION: oldrel
     R_ARCH: i386
+    PKGTYPE: "binary"
 
   - R_VERSION: release
     R_ARCH: x64
+    PKGTYPE: "binary"
 
   - R_VERSION: release
     R_ARCH: i386
+    PKGTYPE: "binary"
 
   - R_VERSION: devel
     R_ARCH: x64
+    PKGTYPE: "binary"
 
   - R_VERSION: devel
     R_ARCH: i386
+    PKGTYPE: "binary"
 
   - R_VERSION: 3.3.1
     R_ARCH: x64
+    PKGTYPE: "source"
 
   - R_VERSION: 3.3.1
     R_ARCH: i386
+    PKGTYPE: "source"
 
   - R_VERSION: 3.3.0
     R_ARCH: x64
+    PKGTYPE: "source"
 
   - R_VERSION: 3.3.0
     R_ARCH: i386
+    PKGTYPE: "source"
 
   - R_VERSION: 3.2.5
     R_ARCH: x64
+    PKGTYPE: "source"
 
   - R_VERSION: 3.2.5
     R_ARCH: i386
+    PKGTYPE: "source"
 
   - R_VERSION: 3.2.4
     R_ARCH: x64
+    PKGTYPE: "source"
 
   - R_VERSION: 3.2.4
     R_ARCH: i386
+    PKGTYPE: "source"
 
   - R_VERSION: 3.2.3
     R_ARCH: x64
+    PKGTYPE: "source"
 
   - R_VERSION: 3.2.3
     R_ARCH: i386
+    PKGTYPE: "source"
 
 
 build_script:
