@@ -19,22 +19,28 @@
 # ==============================================================================
 
 
-#' scclust: R wrapper for the scclust library
+#' scclust: R Wrapper for the scclust Library
 #'
-#' This package wraps the \code{scclust} C library for R. \code{scclust}
-#' provides functions for size constrained clustering. Besides direct wrapper
-#' function, the package provides convenience and utility functions.
+#' This package is an R wrapper for the \code{scclust} library. The library
+#' provides functions to construct near-optimal size constrained clusterings.
+#' Subject to user-specified conditions on the minimum size and composition
+#' of the clusters, scclust derives a partition of a set of data points so that
+#' the dissimilarity of points assigned to the same cluster is minimized.
 #'
-#' The clustering functions are \code{\link{sc_clustering}} and
-#' \code{\link{hierarchical_clustering}}. To get statistics about a clustering
-#' use \code{\link{get_scclust_stats}}. To construct a clustering object from
-#' an existing clustering see \code{\link{scclust}}. To check if a clustering
-#' satisfies some clustering constraints use \code{\link{check_clustering}}.
+#' The main clustering function is \code{\link{sc_clustering}}. Clusterings
+#' can also be derived with \code{\link{hierarchical_clustering}}, but using
+#' this function alone provides no optimality guarantees and it is intended to
+#' be used in conjunction with the main clustering function.
+#'
+#' Statistics about a clustering can be derived with the \code{\link{get_scclust_stats}}
+#' function. To check if a clustering satisfies some set of clustering constraints use
+#' \code{\link{check_scclust}}. To construct a \code{scclust} clustering object from
+#' an existing clustering use \code{\link{scclust}}.
 #'
 #' See the package's website for more information:
 #' \url{https://github.com/fsavje/scclust-R}.
 #'
-#' More information about the \code{scclust} C library is found here:
+#' More information about the \code{scclust} library is found here:
 #' \url{https://github.com/fsavje/scclust}.
 #'
 #' Bug reports and suggestions are greatly appreciated. They

@@ -2,56 +2,55 @@
 % Please edit documentation in R/scclust.R
 \name{scclust}
 \alias{scclust}
-\title{Constructor for scclust clustering objects.}
+\title{Constructor for scclust objects}
 \usage{
 scclust(cluster_labels, unassigned_labels = NULL, ids = NULL)
 }
 \arguments{
 \item{cluster_labels}{a vector containing each data point's cluster label.}
 
-\item{unassigned_labels}{a vector containing cluster labels that denote unassigned data points.}
+\item{unassigned_labels}{labels that denote unassigned data points. If \code{NULL},
+\code{NA} values in \code{cluster_labels} are used to
+denote unassigned points.}
 
-\item{ids}{optional IDs of the data points. Should be a vector of the same length as
+\item{ids}{IDs of the data points. Should be a vector of the same length as
 \code{cluster_labels} or \code{NULL}. If \code{NULL}, the IDs are set to
 \code{1:length(cluster_labels)}.}
 }
 \value{
-Returns a scclust cluster object to be used when calling the
-        clustering functions.
+Returns a \code{scclust} object with the clustering described by
+        the provided labels.
 }
 \description{
-\code{scclust} constructs a scclust clustering object from existing cluster
-labels. It is useful when using scclust's clustering functions to refine an
-existing clustering.
+The \code{scclust} function constructs a \code{scclust} object
+from existing cluster labels.
+}
+\details{
+\code{scclust} does not derive clusterings from sets of data points; for that
+functionality see \code{\link{sc_clustering}} and \code{\link{hierarchical_clustering}}.
 }
 \examples{
 # 10 data points in 3 clusters
-my_labels1 <- c("A", "A", "B", "C", "B", "C", "C", "A", "B", "B")
-my_clust_obj1 <- scclust(my_labels1)
+my_labels1 <- c("A", "A", "B", "C", "B",
+                "C", "C", "A", "B", "B")
+my_scclust1 <- scclust(my_labels1)
 
-# 10 data points in 3 clusters, integer labels
-my_labels2 <- c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2)
-my_clust_obj2 <- scclust(my_labels2)
+# 8 data points in 3 clusters, 2 points unassigned, integer labels
+my_labels2 <- c(1, 1, 2, 3, 2, NA, 3, 1, NA, 2)
+my_scclust2 <- scclust(my_labels2)
 
-# 8 data points in 3 clusters, and 2 points unassigned
-my_labels3 <- c("A", "A", "B", "C", "NONE", "C", "C", "NONE", "B", "B")
-my_clust_obj3 <- scclust(my_labels3, "NONE")
+# Custom labels indicating unassiged points
+my_labels3 <- c("A", "A", "B", "C", "NONE",
+                "C", "C", "NONE", "B", "B")
+my_scclust3 <- scclust(my_labels3, unassigned_labels = "NONE")
 
-# Different unassiged labels
-my_labels4 <- c("A", "A", "B", "C", "NONE", "C", "C", "0", "B", "B")
-my_clust_obj4 <- scclust(my_labels4, c("NONE", "0"))
+# Two different labels indicating unassiged points
+my_labels4 <- c("A", "A", "B", "C", "NONE",
+                "C", "C", "0", "B", "B")
+my_scclust4 <- scclust(my_labels4, unassigned_labels = c("NONE", "0"))
 
 # Custom data point IDs
-my_labels5 <- c("A", "A", "B", "C", "B", "C", "C", "A", "B", "B")
 my_ids <- letters[1:10]
-my_clust_obj5 <- scclust(my_labels5, ids = my_ids)
+my_labels1_ids <- scclust(my_labels1, ids = my_ids)
 
-}
-\seealso{
-Functions that accept the scclust cluster object as input are
-\code{\link{hierarchical_clustering}}, \code{\link{check_scclust}}
-and \code{\link{get_scclust_stats}}.
-
-\code{scclust} does not derive clusterings from data sets; for that
-functionality see \code{\link{sc_clustering}} and \code{\link{hierarchical_clustering}}.
 }

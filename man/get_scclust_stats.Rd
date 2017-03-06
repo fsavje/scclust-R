@@ -7,17 +7,16 @@
 get_scclust_stats(clustering, distances)
 }
 \arguments{
-\item{clustering}{a \code{scclust} object containing an existing non-empty clustering.}
+\item{clustering}{a \code{\link{scclust}} object containing a non-empty clustering.}
 
-\item{distances}{a distance object as produced by \code{\link[distances]{distances}}.}
+\item{distances}{a \code{\link[distances]{distances}} object describing the distances
+between the data points in \code{clustering}.}
 }
 \value{
-Returns a list of class "scclust_stats" containing important statistics
-        about the inputted clustering.
+Returns a list of class \code{scclust_stats} containing the statistics.
 }
 \description{
-\code{get_scclust_stats} calculates important statistics about a clustering, such as average
-cluster size and average within-cluster distance.
+\code{get_scclust_stats} calculates statistics about a clustering.
 }
 \details{
 The function reports the following statistics:
@@ -25,8 +24,7 @@ The function reports the following statistics:
 \tabular{ll}{
   \code{num_data_points} \tab The total number of data points. \cr
   \code{num_assigned} \tab The number of points assigned to a cluster. \cr
-  \code{num_clusters} \tab The total number of clusters. \cr
-  \code{num_populated_clusters} \tab The number of non-empty clusters. \cr
+  \code{num_clusters} \tab The number of clusters. \cr
   \code{min_cluster_size} \tab The size of the smallest cluster. \cr
   \code{max_cluster_size} \tab The size of the largest cluster. \cr
   \code{avg_cluster_size} \tab The average cluster size. \cr
@@ -40,9 +38,9 @@ The function reports the following statistics:
 }
 
 Let \eqn{d(i,j)}{d(i,j)} denote the distance between data points \eqn{i}{i} and \eqn{j}{j}. Let \eqn{c}{c} be a cluster
-containing all indices of data points assigned to the cluster. Let
+containing all indices of points assigned to the cluster. Let
 \deqn{D(c) = \{d(i,j): i,j \in c \wedge i>j\}}{D(c) = { d(i,j) : i,j in c and i > j }}
-be a set function returning all unique within-cluster distances of \eqn{c}{c}. Finally, let \eqn{C}{C} be a set containing
+be a set function returning all unique within-cluster distances in \eqn{c}{c}. Let \eqn{C}{C} be a set containing
 all clusters.
 
 \code{sum_dists} is defined as:
@@ -72,23 +70,22 @@ where \eqn{num_assigned}{num_assigned} is the number of assigned data points (se
 \deqn{\sum_{c\in C} \frac{AD(c)}{|C|}}{\sum_[c in C] AD(c) / count(C)}
 }
 \examples{
-library(distances)
+my_scclust <- scclust(c("A", "A", "B", "C", "B",
+                        "C", "C", "A", "B", "B"))
 
-my_clust_obj <- scclust(c("A", "A", "B", "C", "B",
-                                 "C", "C", "A", "B", "B"))
 my_data_points <- data.frame(x = c(0.1, 0.2, 0.3, 0.4, 0.5,
                                    0.6, 0.7, 0.8, 0.9, 1.0),
                              y = c(10, 9, 8, 7, 6,
                                    10, 9, 8, 7, 6))
-my_distance_obj <- distances(my_data_points)
 
-get_scclust_stats(my_clust_obj, my_distance_obj)
+my_distances <- distances(my_data_points)
+
+get_scclust_stats(my_scclust, my_distances)
 
 # >                        Value
 # > num_data_points        10.0000000
 # > num_assigned           10.0000000
 # > num_clusters            3.0000000
-# > num_populated_clusters  3.0000000
 # > min_cluster_size        3.0000000
 # > max_cluster_size        4.0000000
 # > avg_cluster_size        3.3333333

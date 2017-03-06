@@ -2,16 +2,25 @@
 % Please edit documentation in R/scclust.R
 \name{cluster_count}
 \alias{cluster_count}
-\title{Number of clusters in clustering}
+\title{Count the number of clusters in a clustering}
 \usage{
 cluster_count(clustering)
 }
 \arguments{
-\item{clustering}{an scclust object}
+\item{clustering}{a \code{\link{scclust}} object containing a non-empty clustering.}
 }
 \value{
 Returns an integer with the number of clusters in \code{clustering}.
 }
 \description{
 \code{cluster_count} returns the number of clusters in a clustering object.
+}
+\examples{
+# Example scclust clustering
+my_scclust <- scclust(c("A", "A", "B", "C", "B",
+                        "C", "C", "A", "B", "B"))
+
+cluster_count(my_scclust)
+# > 3
+
 }

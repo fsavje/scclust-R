@@ -4,17 +4,19 @@
 \alias{is.scclust}
 \title{Check \code{scclust} object}
 \usage{
-is.scclust(obj)
+is.scclust(x)
 }
 \arguments{
-\item{obj}{object to check.}
+\item{x}{object to check.}
 }
 \value{
-Returns \code{TRUE} if \code{obj} is a valid
-        \code{scclust} object, otherwise \code{FALSE}.
+Returns \code{TRUE} if \code{x} is a valid
+        \code{\link{scclust}} object, otherwise \code{FALSE}.
 }
 \description{
 \code{is.scclust} checks whether the provided object
-is a valid instance of the \code{scclust} class. It does
-not check whether the clustering itself is sensible.
+is a valid instance of the \code{\link{scclust}} class.
+It does not check whether the clustering itself is sensible nor
+whether the clustering satisfies some set of constraints. See
+\code{\link{check_scclust}} for that functionality.
 }

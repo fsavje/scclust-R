@@ -1,10 +1,10 @@
 Package: scclust
 Type: Package
-Title: R Wrapper For the scclust Library
+Title: R Wrapper for the scclust Library
 Version: 0.1.0
 Date: 2017-03-05
 Authors@R: c(person("Fredrik", "Savje", email = "fredrik.savje@berkeley.edu", role = c("aut", "cre")))
-Description: Provides functions for size constrained clustering. The package that
+Description: Provides functions to construct size constrained clusterings. The package
     wraps the scclust C library.
 Depends:
     R (>= 3.2.3),
@@ -12,7 +12,6 @@ Depends:
 Imports:
 Suggests:
     testthat
-Remotes: fsavje/distances
 NeedsCompilation: yes
 License: GPL (>= 3)
 LicenseNote: The scclust package includes the scclust C library

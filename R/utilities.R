@@ -27,91 +27,70 @@
 #' @param clustering a \code{\link{scclust}} object containing a non-empty clustering.
 #' @param size_constraint an integer with the required minimum cluster size. If \code{NULL},
 #'                              only the type constraints will be checked.
-#' @param type_labels a factor or integer containing the type of each data point. May be \code{NULL} when
-#'                    \code{type_constraints} is NULL.
-#' @param type_constraints a named vector containing type-specific size constraints. If \code{NULL},
-#'                              only the overall constraint will be checked.
+#' @param type_labels a vector containing the type of each data point. May be
+#'                    NULL when type_constraints is NULL.
+#' @param type_constraints a named integer vector containing type-specific size constraints.
+#'                         If \code{NULL}, only the overall constraint will be checked.
 #'
 #' @return Returns \code{TRUE} if \code{clustering} satisfies the clustering constraints, and
 #'         \code{FALSE} if it does not. Throws an error if \code{clustering} is an invalid
 #'         instance of the \code{\link{scclust}} class.
 #'
-#' @seealso See \code{\link{sc_clustering}} for details on
-#'          how to specific type labels and constraints.
+#' @seealso See \code{\link{sc_clustering}} for details on how to specify the
+#'          \code{type_labels} and \code{type_constraints} parameters.
 #
 #' @examples
-#' # Each cluster contains at least two data
-#' # points; it's valid for `size_constraint == 2`.
-#' my_clust_obj1 <- scclust(c("A", "A", "B", "C",
-#'                                   "B", "C", "C", "A",
-#'                                   "B", "B"))
-#' check_scclust(my_clust_obj1, 2)
+#' # Example scclust clustering
+#' my_scclust <- scclust(c("A", "A", "B", "C", "B",
+#'                         "C", "C", "A", "B", "B"))
+#'
+#'
+#' # Check so each cluster contains at least two data points
+#' check_scclust(my_scclust, 2)
 #' # > TRUE
 #'
 #'
-#' # One cluster contains only one point. This is
-#' # an invalid clustering for `size_constraint == 2`.
-#' my_clust_obj2 <- scclust(c("A", "A", "B", "C",
-#'                                   "B", "C", "C", "A",
-#'                                   "B", "B", "D"))
-#' check_scclust(my_clust_obj2, 2)
+#' # Check so each cluster contains at least three data points
+#' check_scclust(my_scclust, 3)
 #' # > FALSE
 #'
-#'
-#' # `my_clust_obj1` doesn't contain clusters with
-#' # at least 5 units, it's invalid for `size_constraint == 2`.
-#' check_scclust(my_clust_obj1, 5)
-#' # > FALSE
-#'
-#'
-#' # Clustering
-#' my_clust_obj3 <- scclust(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
 #'
 #' # Data point types
-#' my_types <- factor(c("x", "y", "y", "z", "z", "x", "y", "z", "x", "x"))
+#' my_types <- factor(c("x", "y", "y", "z", "z",
+#'                      "x", "y", "z", "x", "x"))
 #'
 #'
-#' # Check whether each cluster contains one point of each
-#' # of type "x", "y" and "z".
-#' check_scclust(my_clust_obj3,
-#'                  NULL,
-#'                  my_types,
-#'                  c("x" = 1, "y" = 1, "z" = 1))
+#' # Check so each cluster contains at least one point of each type
+#' check_scclust(my_scclust,
+#'               NULL,
+#'               my_types,
+#'               c("x" = 1, "y" = 1, "z" = 1))
 #' # > TRUE
 #'
 #'
-#' # Check whether each cluster contains one point of each
-#' # of type "x", "y" and "z" and at least three points in total.
-#' check_scclust(my_clust_obj3,
-#'                  3,
-#'                  my_types,
-#'                  c("x" = 1, "y" = 1, "z" = 1))
+#' # Check so each cluster contains one point of each type
+#' # and at least three points in total
+#' check_scclust(my_scclust,
+#'               3,
+#'               my_types,
+#'               c("x" = 1, "y" = 1, "z" = 1))
 #' # > TRUE
 #'
 #'
-#' # Check whether each cluster contains five data points of type "y".
-#' check_scclust(my_clust_obj3,
-#'                  NULL,
-#'                  my_types,
-#'                  c("y" = 5))
+#' # Check so each cluster contains five data points of type "y"
+#' check_scclust(my_scclust,
+#'               NULL,
+#'               my_types,
+#'               c("y" = 5))
 #' # > FALSE
 #'
 #'
-#' # Check whether each cluster contains one data point of
-#' # both "x" and "z" and at least three points in total.
-#' check_scclust(my_clust_obj3,
-#'                  3,
-#'                  my_types,
-#'                  c("x" = 1, "z" = 1))
-#' # > TRUE
-#'
-#'
-#' # Using integers as type labels.
-#' my_int_types <- c(1L, 2L, 2L, 3L, 3L, 1L, 2L, 3L, 1L, 1L)
-#' check_scclust(my_clust_obj3,
-#'                  NULL,
-#'                  my_int_types,
-#'                  c("1" = 1, "2" = 1, "3" = 1))
+#' # Check so each cluster contains one data point of both "x" and "z"
+#' # and at least three points in total
+#' check_scclust(my_scclust,
+#'               3,
+#'               my_types,
+#'               c("x" = 1, "z" = 1))
 #' # > TRUE
 #'
 #' @export
@@ -144,16 +123,14 @@ check_scclust <- function(clustering,
 
 #' Derive statistics about a clustering.
 #'
-#' \code{get_scclust_stats} calculates important statistics about a clustering, such as average
-#' cluster size and average within-cluster distance.
+#' \code{get_scclust_stats} calculates statistics about a clustering.
 #'
 #' The function reports the following statistics:
 #'
 #' \tabular{ll}{
 #'   \code{num_data_points} \tab The total number of data points. \cr
 #'   \code{num_assigned} \tab The number of points assigned to a cluster. \cr
-#'   \code{num_clusters} \tab The total number of clusters. \cr
-#'   \code{num_populated_clusters} \tab The number of non-empty clusters. \cr
+#'   \code{num_clusters} \tab The number of clusters. \cr
 #'   \code{min_cluster_size} \tab The size of the smallest cluster. \cr
 #'   \code{max_cluster_size} \tab The size of the largest cluster. \cr
 #'   \code{avg_cluster_size} \tab The average cluster size. \cr
@@ -167,9 +144,9 @@ check_scclust <- function(clustering,
 #' }
 #'
 #' Let \eqn{d(i,j)}{d(i,j)} denote the distance between data points \eqn{i}{i} and \eqn{j}{j}. Let \eqn{c}{c} be a cluster
-#' containing all indices of data points assigned to the cluster. Let
+#' containing all indices of points assigned to the cluster. Let
 #' \deqn{D(c) = \{d(i,j): i,j \in c \wedge i>j\}}{D(c) = { d(i,j) : i,j in c and i > j }}
-#' be a set function returning all unique within-cluster distances of \eqn{c}{c}. Finally, let \eqn{C}{C} be a set containing
+#' be a set function returning all unique within-cluster distances in \eqn{c}{c}. Let \eqn{C}{C} be a set containing
 #' all clusters.
 #'
 #' \code{sum_dists} is defined as:
@@ -198,30 +175,29 @@ check_scclust <- function(clustering,
 #' \code{cl_avg_dist_unweighted} is defined as:
 #' \deqn{\sum_{c\in C} \frac{AD(c)}{|C|}}{\sum_[c in C] AD(c) / count(C)}
 #'
-#' @param clustering a \code{scclust} object containing an existing non-empty clustering.
-#' @param distances a distance object as produced by \code{\link[distances]{distances}}.
+#' @param clustering a \code{\link{scclust}} object containing a non-empty clustering.
+#' @param distances a \code{\link[distances]{distances}} object describing the distances
+#'                  between the data points in \code{clustering}.
 #'
-#' @return Returns a list of class "scclust_stats" containing important statistics
-#'         about the inputted clustering.
+#' @return Returns a list of class \code{scclust_stats} containing the statistics.
 #'
 #' @examples
-#' library(distances)
+#' my_scclust <- scclust(c("A", "A", "B", "C", "B",
+#'                         "C", "C", "A", "B", "B"))
 #'
-#' my_clust_obj <- scclust(c("A", "A", "B", "C", "B",
-#'                                  "C", "C", "A", "B", "B"))
 #' my_data_points <- data.frame(x = c(0.1, 0.2, 0.3, 0.4, 0.5,
 #'                                    0.6, 0.7, 0.8, 0.9, 1.0),
 #'                              y = c(10, 9, 8, 7, 6,
 #'                                    10, 9, 8, 7, 6))
-#' my_distance_obj <- distances(my_data_points)
 #'
-#' get_scclust_stats(my_clust_obj, my_distance_obj)
+#' my_distances <- distances(my_data_points)
+#'
+#' get_scclust_stats(my_scclust, my_distances)
 #'
 #' # >                        Value
 #' # > num_data_points        10.0000000
 #' # > num_assigned           10.0000000
 #' # > num_clusters            3.0000000
-#' # > num_populated_clusters  3.0000000
 #' # > min_cluster_size        3.0000000
 #' # > max_cluster_size        4.0000000
 #' # > avg_cluster_size        3.3333333

@@ -2,58 +2,67 @@
 % Please edit documentation in R/hierarchical_clustering.R
 \name{hierarchical_clustering}
 \alias{hierarchical_clustering}
-\title{Hierarchical clustering function}
+\title{Hierarchical size constrained clustering}
 \usage{
 hierarchical_clustering(distances, size_constraint, batch_assign = TRUE,
   existing_clustering = NULL)
 }
 \arguments{
-\item{distances}{a distance object as produced by \code{\link[distances]{distances}}.}
+\item{distances}{a \code{\link[distances]{distances}} object with distances
+between the data points.}
 
 \item{size_constraint}{an integer with the required minimum cluster size.}
 
 \item{batch_assign}{a bool indicating whether data points should be assigned in batches when
-spliting clusters.}
+spliting clusters (see below for details).}
 
-\item{existing_clustering}{\code{NULL} or a \code{scclust} object containing an existing
-non-empty clustering. If \code{NULL}, the function will start with a
+\item{existing_clustering}{\code{NULL} or a \code{\link{scclust}} object containing a non-empty
+clustering. If \code{NULL}, the function will start with a
 single cluster containing all data points (i.e., it derives a clustering
 from scratch).}
 }
 \value{
-Returns a scclust cluster object containing the derived clustering.
+Returns a \code{\link{scclust}} object with the derived clustering.
 }
 \description{
-\code{hierarchical_clustering} derives a clustering statisfying a specified
-size-constraint using a hierarchical clustering algorithm. The primary purpose of
-this function is to refine clusterings produced by the nearest neighbor graph
-functions in the package.
+\code{hierarchical_clustering} serves two purposes. The primary use
+is to refine existing clusterings subject to clustering
+constraints. That is, given a (non-optimal) clustering satisfying
+some constraints, the function splits clusters so to decrease within-cluster
+distances without violating the constraints. The function can also be used to
+derive size constrained clusterings from scratch. In both cases, it
+uses a hierarchical clustering algorithm.
 }
 \details{
 While \code{hierarchical_clustering} can be used alone to derive size constrained
-clusterings, its main purpose is to be used with the nearest neighbor graph (NNG)
-functions in the package (i.e., \code{\link{sc_clustering}}). The clusterings
-produced by the NNG functions tend produce large clusters in regions with many
-data points. In some cases, it is beneficial to divide these clusters into smaller
-groups. \code{hierarchical_clustering} can be use to achieve that.
+clusterings, its main purpose is to be used together with \code{\link{sc_clustering}}.
+The clusterings produced by the main clustering function are guaranteed to be close to
+optimal (in particular, within a constant factor of the optimal solution). However,
+as \code{\link{sc_clustering}}'s solution is not exactly optimal, it is occasionally
+possible to refine it. In particular, the main function tends produce large clusters
+in regions of the metric space with many data points. In some cases, it is beneficial to divide
+these clusters into smaller groups. \code{hierarchical_clustering} splits these larger clusters
+so that all within-cluster distances weakly decreases while respecting the overall
+the size constraint.
 
 \code{hierarchical_clustering} implements a divisive hierarchical clustering
 algorithm that respect size constraints. Starting from any clustering satisfying
 the size constraints (which may be a clustering with a single cluster containing
-all data points), \code{hierarchical_clustering} seraches for clusters that can
-be broken into two or more new clusters without violating the constraints. It
-continues in this fashion until all remaining clusters are unbreakable.
+all data points), the function searches for clusters that can
+be broken into two or more new clusters without violating the constraints. When
+such a cluster is found, it breaks the cluster into two new cluster. It continues in this fashion until all remaining clusters
+are unbreakable.
 
-\code{hierarchical_clustering} breaks a cluster in three stages. First,
-it tries to find two data points as far as possible from each other in
-the cluster it is about to break. The two points are called \emph{centers},
-and they are the starting points for the two new clusters. The remaining
+Breakable clusters are broken in three stages. First,
+it tries to find two data points as far as possible from each other. The
+two points are called \emph{centers}, and they are the starting points
+for the new clusters. The remaining
 data points in the old cluster will be assigned to one of the centers.
 In the second stage, each center picks the clostest data points so that
-the new cluster satisfies the size constraint and assigns them to its
-cluster. In the last stage, data points still not assigned are assigned to
-their clostest centers either one-by-one or in batches (see below for
-discussion). When all data points are assigned to a cluster, the old
+the new two clusters satisfy the size constraint. In the last stage,
+data points that still are in the old cluster are assigned to the cluster containing
+the closest center. The final stage is done either for each point one-by-one
+or in batches (see below). When all data points are assigned to a cluster, the old
 cluster is removed and the two new are added to the clustering. If a new
 cluster is breakable, it will go through the same procedure again.
 
@@ -66,10 +75,5 @@ retained to the greatest extent possible.
 }
 \seealso{
 \code{\link{sc_clustering}} is the main clustering function in the package.
-
-         Use \code{\link{scclust}} to create scclust cluster objects from external
-         clusterings.
-
-Other clustering functions: \code{\link{sc_clustering}}
 }
 \keyword{cluster}

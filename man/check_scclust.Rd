@@ -13,11 +13,11 @@ check_scclust(clustering, size_constraint = NULL, type_labels = NULL,
 \item{size_constraint}{an integer with the required minimum cluster size. If \code{NULL},
 only the type constraints will be checked.}
 
-\item{type_labels}{a factor or integer containing the type of each data point. May be \code{NULL} when
-\code{type_constraints} is NULL.}
+\item{type_labels}{a vector containing the type of each data point. May be
+NULL when type_constraints is NULL.}
 
-\item{type_constraints}{a named vector containing type-specific size constraints. If \code{NULL},
-only the overall constraint will be checked.}
+\item{type_constraints}{a named integer vector containing type-specific size constraints.
+If \code{NULL}, only the overall constraint will be checked.}
 }
 \value{
 Returns \code{TRUE} if \code{clustering} satisfies the clustering constraints, and
@@ -29,82 +29,61 @@ Returns \code{TRUE} if \code{clustering} satisfies the clustering constraints, a
 of conditions on their size and composition.
 }
 \examples{
-# Each cluster contains at least two data
-# points; it's valid for `size_constraint == 2`.
-my_clust_obj1 <- scclust(c("A", "A", "B", "C",
-                                  "B", "C", "C", "A",
-                                  "B", "B"))
-check_scclust(my_clust_obj1, 2)
+# Example scclust clustering
+my_scclust <- scclust(c("A", "A", "B", "C", "B",
+                        "C", "C", "A", "B", "B"))
+
+
+# Check so each cluster contains at least two data points
+check_scclust(my_scclust, 2)
 # > TRUE
 
 
-# One cluster contains only one point. This is
-# an invalid clustering for `size_constraint == 2`.
-my_clust_obj2 <- scclust(c("A", "A", "B", "C",
-                                  "B", "C", "C", "A",
-                                  "B", "B", "D"))
-check_scclust(my_clust_obj2, 2)
+# Check so each cluster contains at least three data points
+check_scclust(my_scclust, 3)
 # > FALSE
 
-
-# `my_clust_obj1` doesn't contain clusters with
-# at least 5 units, it's invalid for `size_constraint == 2`.
-check_scclust(my_clust_obj1, 5)
-# > FALSE
-
-
-# Clustering
-my_clust_obj3 <- scclust(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
 
 # Data point types
-my_types <- factor(c("x", "y", "y", "z", "z", "x", "y", "z", "x", "x"))
+my_types <- factor(c("x", "y", "y", "z", "z",
+                     "x", "y", "z", "x", "x"))
 
 
-# Check whether each cluster contains one point of each
-# of type "x", "y" and "z".
-check_scclust(my_clust_obj3,
-                 NULL,
-                 my_types,
-                 c("x" = 1, "y" = 1, "z" = 1))
+# Check so each cluster contains at least one point of each type
+check_scclust(my_scclust,
+              NULL,
+              my_types,
+              c("x" = 1, "y" = 1, "z" = 1))
 # > TRUE
 
 
-# Check whether each cluster contains one point of each
-# of type "x", "y" and "z" and at least three points in total.
-check_scclust(my_clust_obj3,
-                 3,
-                 my_types,
-                 c("x" = 1, "y" = 1, "z" = 1))
+# Check so each cluster contains one point of each type
+# and at least three points in total
+check_scclust(my_scclust,
+              3,
+              my_types,
+              c("x" = 1, "y" = 1, "z" = 1))
 # > TRUE
 
 
-# Check whether each cluster contains five data points of type "y".
-check_scclust(my_clust_obj3,
-                 NULL,
-                 my_types,
-                 c("y" = 5))
+# Check so each cluster contains five data points of type "y"
+check_scclust(my_scclust,
+              NULL,
+              my_types,
+              c("y" = 5))
 # > FALSE
 
 
-# Check whether each cluster contains one data point of
-# both "x" and "z" and at least three points in total.
-check_scclust(my_clust_obj3,
-                 3,
-                 my_types,
-                 c("x" = 1, "z" = 1))
-# > TRUE
-
-
-# Using integers as type labels.
-my_int_types <- c(1L, 2L, 2L, 3L, 3L, 1L, 2L, 3L, 1L, 1L)
-check_scclust(my_clust_obj3,
-                 NULL,
-                 my_int_types,
-                 c("1" = 1, "2" = 1, "3" = 1))
+# Check so each cluster contains one data point of both "x" and "z"
+# and at least three points in total
+check_scclust(my_scclust,
+              3,
+              my_types,
+              c("x" = 1, "z" = 1))
 # > TRUE
 
 }
 \seealso{
-See \code{\link{sc_clustering}} for details on
-         how to specific type labels and constraints.
+See \code{\link{sc_clustering}} for details on how to specify the
+         \code{type_labels} and \code{type_constraints} parameters.
 }
