@@ -29,46 +29,56 @@
 #'
 #' \code{sc_clustering} implements an algorithm that first summaries the distance
 #' information between data points in a sparse graph and then constructs the clusterings
-#' based on the graph. The makes the function run fast while ensuring
-#' near-optimal performance.
+#' based on the graph. This makes the function run fast while ensuring
+#' near-optimal performance. It is possible to constrain the clustering so that each cluster contains at
+#' least a certain number of points in total. If there are different types of points, each cluster can also be
+#' constrained to contain a certain number of points of
+#' each type. For example, in a sample with
+#' "red" and "blue" data points, one can constrain the clusters so that each contains
+#' at least 10 points in total and at least 5 "blue" points.
 #'
-#' Describe constraints...
-#'
-#' Each vertex in the graph \code{sc_clustering} constructs represents a data point.
+#' The vertices in the graph that \code{sc_clustering} constructs represent data points. Arcs
+#' in the graph are weighted by the distance between the data points.
 #' The graph is the smallest graph such that the neighborhood of each vertex satsifies
 #' the clustering constraints supplied by the user. By picking vertices ("seeds") with
 #' non-overlapping neighborhoods and constructing clusters as supersets of the neighborhoods,
-#' we ensure that the clustering will satisfy the constraints.
+#' we ensure that the clustering will satisfy the constraints. While all methods of picking seeds yield near-optimal clusterings, we typically want as
+#' many seeds as possible; this will lead to many clusters and, thus, smaller clusters. The \code{seed_method} option specifies how the seeds are picked.
 #'
-#' \code{seed_method} specifies how the seeds should be picked. In general, we want as
-#' many seeds as possible (as this will lead to many clusters and, thus, smaller clusters).
-#' When \code{seed_method} is set to "lexical", seeds are picked in alphabetical order and
-#' this is the fastest option. The "exclusion_order" and "exclusion_updating" options
-#' calculates, for each vertex, how many other vertices are excluded from being seeds
-#' if the vertex is picked. By picking vertices that exclude few vertices, we maximize
+#' When \code{seed_method} is set to "lexical", seeds are picked in lexical order. This
+#' allows us to find the seeds quickly. However, we might pick points
+#' that are central in the sparse
+#' graph with this method. When central points are seeds, they will exclude many other points from being seeds and, thus, lead to larger clusters The "exclusion_order" and "exclusion_updating" options
+#' calculates, for each vertex, how many other vertices are excluded
+#' if the vertex is picked. By picking vertices that exclude few vertices, we avoid
+#' central points and, thereby, increase
 #' the number of seeds. "exclusion_updating" updates the count after each picked seed
 #' so that already excluded vertices are not counted twice; "exclusion_order" derives
 #' the count once.
 #'
 #' Deriving the exclusion count is an expensive operation. The
-#' "inwards_order" and "inwards_updating" options counts the number of inwards-pointing
-#' arcs in the graph, which approximates the exclusion count. "inwards_updating" updates
-#' the count after each picked seed, while "inwards_order" derives the count once.
-#' The "batches" option is identical to "lexical" but it derives the graph in batches.
+#' "inwards_order" and "inwards_updating" options count the number of inwards-pointing
+#' arcs in the graph, which approximates the exclusion count.  "inwards_updating" updates
+#' the count after each picked seed, while "inwards_order" derives the count once. The "batches" option is identical to "lexical" but it derives the graph in batches.
 #' This limits memory use to a constant value decided by \code{batch_size}. This can be
 #' useful with large size constraints. The "batches" option is still experimental and
 #' can currently only be used when there is no type constraints.
 #'
+#' The \code{seed_radius} option limits the maximum distance between adjencent vertices
+#' in the sparse graph. If a distance in a point's neighborhood is greater than the radius,
+#' the neighborhood will be deleted and the point cannot be a seed (it can, however, be in
+#' other points' neighborhoods). As
+#'
 #' Some data points might not be in a neighborhood of a seed and will, therefore, not be
 #' assigned to a cluster at this point. \code{primary_unassigned_method} specifies how
-#' these points are assigned. With the "ignore" option, the points are left unassigned.
+#' the unassigned points are assigned. With the "ignore" option, the points are left unassigned.
 #' With the "any_neighbor", the function re-uses the sparse graph and assigns the unassigned
 #' points to any neighborhood that is adjencent to the point in the graph. The "closest_assigned"
 #' option assigns each point to the cluster that contain its closest assigned vertex, and the
-#' "closest_seed" option does the same by instead to the closest seed. All these options
+#' "closest_seed" option assigns to the cluster that contain the closest seed. All these options
 #' ensure near-optimal clusterings.
 #'
-#' Radius ...
+#' Radius ..
 #'
 #' Occasionally, some data points in our clustering problem are allowed to be left unassigned.
 #' For example, assume that we are using clustering for a prediction problem. We have a set of
@@ -101,16 +111,16 @@
 #' @param size_constraint an integer with the required minimum cluster size.
 #'
 #' @param type_labels a vector containing the type of each data point. May be
-#'                    NULL when type_constraints is NULL.
+#'                    \code{NULL} when \code{type_constraints} is \code{NULL}.
 #'
 #' @param type_constraints a named integer vector containing type-specific size constraints.
 #'                         If \code{NULL}, only the overall constraint given by
-#'                         \code{size_constraint} will be imposed.
+#'                         \code{size_constraint} will be imposed on the clustering.
 #'
 #' @param seed_method a character scalar indicating how seeds should be found.
 #'
 #' @param primary_data_points a vector specifying primary data points, either by point indices
-#'                            or by a logical vector of length equal to the number of points.
+#'                            or with a logical vector of length equal to the number of points.
 #'                            \code{NULL} indicates that all data points are "primary".
 #'
 #' @param primary_unassigned_method a character scalar indicating how unassigned (primary) points
@@ -144,6 +154,53 @@
 #'
 #' @seealso \code{\link{hierarchical_clustering}} can be used to refine the clustering
 #'          constructed by \code{sc_clustering}.
+#'
+#' @examples
+#' # Make example data
+#' my_data <- data.frame(id = 1:100000,
+#'                       type = factor(rbinom(100000, 3, 0.3),
+#'                                     labels = c("A", "B", "C", "D")),
+#'                       x1 = rnorm(100000),
+#'                       x2 = rnorm(100000),
+#'                       x3 = rnorm(100000))
+#'
+#' # Construct distance metric
+#' my_dist <- distances(my_data,
+#'                      id_variable = "id",
+#'                      dist_variables = c("x1", "x2", "x3"),
+#'                      normalize = "mahalanobize")
+#'
+#' # Make clustering with at least 3 data points in each cluster
+#' my_clustering <- sc_clustering(my_dist, 3)
+#'
+#' # Check so clustering satisfies constraints
+#' check_scclust(my_clustering, 3)
+#' # > TRUE
+#'
+#' # Get statistics about the clustering
+#' get_scclust_stats(my_clustering, my_dist)
+#' # > num_data_points        1.000000e+05
+#' # > ...
+#'
+#' # Make clustering with at least one point of each type in each cluster
+#' my_clustering <- sc_clustering(my_dist,
+#'                                type_labels = my_data$type,
+#'                                type_constraints = c("A" = 1, "B" = 1,
+#'                                                     "C" = 1, "D" = 1))
+#'
+#' # Check so clustering satisfies constraints
+#' check_scclust(my_clustering,
+#'               type_labels = my_data$type,
+#'               type_constraints = c("A" = 1, "B" = 1,
+#'                                    "C" = 1, "D" = 1))
+#' # > TRUE
+#'
+#' # Make clustering with at least 8 points in total of which at least
+#' # one must be "A" and 2 "Bs" and five can be any type
+#' my_clustering <- sc_clustering(my_dist,
+#'                                size_constraint = 8,
+#'                                type_labels = my_data$type,
+#'                                type_constraints = c("A" = 1, "B" = 2))
 #'
 #' @keywords cluster
 #' @export

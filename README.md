@@ -25,100 +25,51 @@ The package contains compiled code, and you must have a development environment 
 
 The following snippet shows how scclust can be used to make clusterings with both size and type constraints:
 
-```R
-library("scclust")
-
-set.seed(123456)
-
+```{r}
 # Make example data
 my_data <- data.frame(id = 1:100000,
-											type = factor(rbinom(100000, 3, 0.3),
-																		labels = c("A", "B", "C", "D")),
-											x1 = rnorm(100000),
-											x2 = rnorm(100000),
-											x3 = rnorm(100000))
+                      type = factor(rbinom(100000, 3, 0.3),
+                                    labels = c("A", "B", "C", "D")),
+                      x1 = rnorm(100000),
+                      x2 = rnorm(100000),
+                      x3 = rnorm(100000))
 
-### Construct distance metric
-my_dist <- make_distances(my_data,
-													id_variable = "id",
-													dist_variables = c("x1", "x2", "x3"),
-													normalize = "mahalanobize")
+# Construct distance metric
+my_dist <- distances(my_data,
+                     id_variable = "id",
+                     dist_variables = c("x1", "x2", "x3"),
+                     normalize = "mahalanobize")
 
-### Make clustering with one data point of each type in each cluster
-clustering1 <- nng_clustering_types(distance_object = my_dist,
-																		type_labels = my_data$type,
-																		type_size_constraints = c("A" = 1,
-																															"B" = 1,
-																															"C" = 1,
-																															"D" = 1))
+# Make clustering with at least 3 data points in each cluster
+my_clustering <- sc_clustering(my_dist, 3)
 
-### Check that clustering fulfills constraints
-check_clustering_types(clustering = clustering1,
-											 type_labels = my_data$type,
-											 type_size_constraints = c("A" = 1,
-																								 "B" = 1,
-																								 "C" = 1,
-																								 "D" = 1))
+# Check so clustering satisfies constraints
+check_scclust(my_clustering, 3)
+# > TRUE
 
-### Get statistics about the clustering
-get_clustering_stats(clustering = clustering1,
-										 distance_object = my_dist)
+# Get statistics about the clustering
+get_scclust_stats(my_clustering, my_dist)
+# > num_data_points        1.000000e+05
+# > ...
 
-### Clustering with at least 2 "Bs" in each cluster
-clustering2 <- nng_clustering_types(distance_object = my_dist,
-																		type_labels = my_data$type,
-																		type_size_constraints = c("A" = 1,
-																															"B" = 2,
-																															"C" = 1,
-																															"D" = 1))
+# Make clustering with at least one point of each type in each cluster
+my_clustering <- sc_clustering(my_dist,
+                               type_labels = my_data$type,
+                               type_constraints = c("A" = 1, "B" = 1,
+                                                    "C" = 1, "D" = 1))
 
-### At least 8 data points in each cluster in total
-clustering3 <- nng_clustering_types(distance_object = my_dist,
-																		type_labels = my_data$type,
-																		type_size_constraints = c("A" = 1,
-																															"B" = 1,
-																															"C" = 1,
-																															"D" = 1),
-																		total_size_constraint = 8)
+# Check so clustering satisfies constraints
+check_scclust(my_clustering,
+              type_labels = my_data$type,
+              type_constraints = c("A" = 1, "B" = 1,
+                                   "C" = 1, "D" = 1))
+# > TRUE
 
-### Use a radius of 0.5 in the distance metric
-clustering4 <- nng_clustering_types(distance_object = my_dist,
-																		type_labels = my_data$type,
-																		type_size_constraints = c("A" = 1,
-																															"B" = 1,
-																															"C" = 1,
-																															"D" = 1),
-																		radius = 0.1)
+# Make clustering with at least 8 points in total of which at least
+# one must be "A" and 2 "Bs" and five can be any type
+my_clustering <- sc_clustering(my_dist,
+                               size_constraint = 8,
+                               type_labels = my_data$type,
+                               type_constraints = c("A" = 1, "B" = 2))
 
-### Use a different seed finding function
-clustering5 <- nng_clustering_types(distance_object = my_dist,
-																		type_labels = my_data$type,
-																		type_size_constraints = c("A" = 1,
-																															"B" = 1,
-																															"C" = 1,
-																															"D" = 1),
-																		seed_method = "lexical")
-# All options for `seed_method`:
-# "lexical"
-# "inwards_order"
-# "inwards_updating"
-# "inwards_alt_updating"
-# "exclusion_order"
-# "exclusion_updating"
-
-### Use a different assign function
-clustering6 <- nng_clustering_types(distance_object = my_dist,
-																		type_labels = my_data$type,
-																		type_size_constraints = c("A" = 1,
-																															"B" = 1,
-																															"C" = 1,
-																															"D" = 1),
-																		unassigned_method = "closest_assigned")
-# All options for `unassigned_method`:
-# "ignore"
-# "by_nng"
-# "closest_assigned"
-# "closest_seed"
-# "estimated_radius_closest_seed"
 ```
-

@@ -14,7 +14,7 @@ check_scclust(clustering, size_constraint = NULL, type_labels = NULL,
 only the type constraints will be checked.}
 
 \item{type_labels}{a vector containing the type of each data point. May be
-NULL when type_constraints is NULL.}
+\code{NULL} when \code{type_constraints} is \code{NULL}.}
 
 \item{type_constraints}{a named integer vector containing type-specific size constraints.
 If \code{NULL}, only the overall constraint will be checked.}

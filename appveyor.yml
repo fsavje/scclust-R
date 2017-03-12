@@ -43,6 +43,14 @@ environment:
     R_ARCH: i386
     PKGTYPE: "binary"
 
+  - R_VERSION: 3.3.2
+    R_ARCH: x64
+    PKGTYPE: "source"
+
+  - R_VERSION: 3.3.2
+    R_ARCH: i386
+    PKGTYPE: "source"
+
   - R_VERSION: 3.3.1
     R_ARCH: x64
     PKGTYPE: "source"

@@ -28,7 +28,7 @@
 #' @param size_constraint an integer with the required minimum cluster size. If \code{NULL},
 #'                              only the type constraints will be checked.
 #' @param type_labels a vector containing the type of each data point. May be
-#'                    NULL when type_constraints is NULL.
+#'                    \code{NULL} when \code{type_constraints} is \code{NULL}.
 #' @param type_constraints a named integer vector containing type-specific size constraints.
 #'                         If \code{NULL}, only the overall constraint will be checked.
 #'
@@ -38,7 +38,7 @@
 #'
 #' @seealso See \code{\link{sc_clustering}} for details on how to specify the
 #'          \code{type_labels} and \code{type_constraints} parameters.
-#
+#'
 #' @examples
 #' # Example scclust clustering
 #' my_scclust <- scclust(c("A", "A", "B", "C", "B",
