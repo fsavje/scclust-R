@@ -3,7 +3,9 @@ Type: Package
 Title: R Wrapper for the scclust Library
 Version: 0.1.0
 Date: 2017-03-05
-Authors@R: c(person("Fredrik", "Savje", email = "fredrik.savje@berkeley.edu", role = c("aut", "cre")))
+Authors@R: c(
+    person("Fredrik", "Savje", email = "fredrik.savje@berkeley.edu", role = c("aut", "cre")),
+    person("Jasjeet", "Sekhon", role = "aut"))
 Description: Provides functions to construct size constrained clusterings. The package
     wraps the scclust C library.
 Depends:

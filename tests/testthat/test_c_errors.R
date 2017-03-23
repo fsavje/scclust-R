@@ -150,12 +150,12 @@ attr(temp_clustering1, "cluster_count") <- 2L
 temp_clustering2 <- c(1L, 1L, 0L, 1L, 1L, 0L, 0L, 0L)
 attr(temp_clustering2, "cluster_count") <- 0L
 
-c_check_scclust <- function(clustering = temp_clustering1,
-                            size_constraint = 2L,
-                            type_labels = c(1L, 2L, 1L, 1L, 2L, 1L, 2L, 2L),
-                            type_constraints = c("0" = 0L, "1" = 1L, "2" = 1L),
-                            primary_data_points = NULL) {
-  .Call(Rscc_check_scclust,
+c_check_clustering <- function(clustering = temp_clustering1,
+                               size_constraint = 2L,
+                               type_labels = c(1L, 2L, 1L, 1L, 2L, 1L, 2L, 2L),
+                               type_constraints = c("0" = 0L, "1" = 1L, "2" = 1L),
+                               primary_data_points = NULL) {
+  .Call(Rscc_check_clustering,
         clustering,
         size_constraint,
         unclass(type_labels),
@@ -163,51 +163,51 @@ c_check_scclust <- function(clustering = temp_clustering1,
         primary_data_points)
 }
 
-test_that("`Rscc_check_scclust` checks input.", {
-  expect_silent(c_check_scclust())
-  expect_error(c_check_scclust(clustering = letters[1:8]),
+test_that("`Rscc_check_clustering` checks input.", {
+  expect_silent(c_check_clustering())
+  expect_error(c_check_clustering(clustering = letters[1:8]),
                regexp = "`R_clustering` is not a valid clustering object.")
-  expect_error(c_check_scclust(clustering = 1:8),
+  expect_error(c_check_clustering(clustering = 1:8),
                regexp = "`R_clustering` is not a valid clustering object.")
-  expect_error(c_check_scclust(clustering = temp_clustering2),
+  expect_error(c_check_clustering(clustering = temp_clustering2),
                regexp = "`R_clustering` is empty.")
-  expect_error(c_check_scclust(size_constraint = 2.5),
+  expect_error(c_check_clustering(size_constraint = 2.5),
                regexp = "`R_size_constraint` must be integer.")
-  expect_error(c_check_scclust(type_labels = letters[1:8]),
+  expect_error(c_check_clustering(type_labels = letters[1:8]),
                regexp = "`R_type_labels` must be factor, integer or NULL.")
-  expect_error(c_check_scclust(type_labels = NULL),
+  expect_error(c_check_clustering(type_labels = NULL),
                regexp = "`R_type_constraints` must be NULL when no types are supplied.")
-  expect_error(c_check_scclust(type_labels = c(1L, 1L, 2L, 1L, 1L, 2L)),
+  expect_error(c_check_clustering(type_labels = c(1L, 1L, 2L, 1L, 1L, 2L)),
                regexp = "`R_type_labels` does not match `R_clustering`.")
-  expect_error(c_check_scclust(type_constraints = c("0", "1", "2")),
+  expect_error(c_check_clustering(type_constraints = c("0", "1", "2")),
                regexp = "`R_type_constraints` must be integer.")
-  expect_error(c_check_scclust(type_constraints = c("0" = 0L, "1" = -1L, "2" = 1L)),
+  expect_error(c_check_clustering(type_constraints = c("0" = 0L, "1" = -1L, "2" = 1L)),
                regexp = "Negative type size constraint.")
-  expect_error(c_check_scclust(primary_data_points = "a"),
+  expect_error(c_check_clustering(primary_data_points = "a"),
                regexp = "`R_primary_data_points` must be NULL or integer.")
 })
 
 
-c_get_scclust_stats <- function(distances = distances::distances(matrix(as.numeric(1:16), ncol = 2)),
-                                clustering = temp_clustering1) {
-  .Call(Rscc_get_scclust_stats,
+c_get_clustering_stats <- function(distances = distances::distances(matrix(as.numeric(1:16), ncol = 2)),
+                                   clustering = temp_clustering1) {
+  .Call(Rscc_get_clustering_stats,
         distances,
         clustering)
 }
 
-test_that("`Rscc_get_scclust_stats` checks input.", {
-  expect_silent(c_get_scclust_stats())
-  expect_error(c_get_scclust_stats(clustering = letters[1:8]),
+test_that("`Rscc_get_clustering_stats` checks input.", {
+  expect_silent(c_get_clustering_stats())
+  expect_error(c_get_clustering_stats(clustering = letters[1:8]),
                regexp = "`R_clustering` is not a valid clustering object.")
-  expect_error(c_get_scclust_stats(clustering = 1:8),
+  expect_error(c_get_clustering_stats(clustering = 1:8),
                regexp = "`R_clustering` is not a valid clustering object.")
-  expect_error(c_get_scclust_stats(clustering = temp_clustering2),
+  expect_error(c_get_clustering_stats(clustering = temp_clustering2),
                regexp = "`R_clustering` is empty.")
-  expect_error(c_get_scclust_stats(distances = as.numeric(1:16)),
+  expect_error(c_get_clustering_stats(distances = as.numeric(1:16)),
                regexp = "`R_distances` is not a valid distance object.")
-  expect_error(c_get_scclust_stats(distances = matrix(1:16, ncol = 8)),
+  expect_error(c_get_clustering_stats(distances = matrix(1:16, ncol = 8)),
                regexp = "`R_distances` is not a valid distance object.")
-  expect_error(c_get_scclust_stats(distances = distances::distances(matrix(as.numeric(1:14), ncol = 7))),
+  expect_error(c_get_clustering_stats(distances = distances::distances(matrix(as.numeric(1:14), ncol = 7))),
                regexp = "`R_distances` does not match `R_clustering`.")
 })
 

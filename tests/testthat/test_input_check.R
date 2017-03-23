@@ -291,6 +291,29 @@ test_that("`coerce_data_point_indices` coerces correctly.", {
 
 
 # ==============================================================================
+# coerce_scalar_indicator
+# ==============================================================================
+
+t_coerce_scalar_indicator <- function(t_x = TRUE) {
+  coerce_scalar_indicator(t_x)
+}
+
+test_that("`coerce_scalar_indicator` checks input.", {
+  expect_silent(t_coerce_scalar_indicator())
+  expect_error(t_coerce_scalar_indicator(t_x = "A"),
+               regexp = "`t_x` must be TRUE or FALSE.")
+})
+
+test_that("`coerce_scalar_indicator` coerces correctly.", {
+  expect_equal(t_coerce_scalar_indicator(), TRUE)
+  expect_equal(t_coerce_scalar_indicator(FALSE), FALSE)
+  expect_equal(t_coerce_scalar_indicator("TRUE"), TRUE)
+  expect_equal(t_coerce_scalar_indicator("T"), TRUE)
+  expect_equal(t_coerce_scalar_indicator(NULL), FALSE)
+})
+
+
+# ==============================================================================
 # coerce_radius
 # ==============================================================================
 

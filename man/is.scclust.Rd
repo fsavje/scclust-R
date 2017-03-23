@@ -18,5 +18,5 @@ Returns \code{TRUE} if \code{x} is a valid
 is a valid instance of the \code{\link{scclust}} class.
 It does not check whether the clustering itself is sensible nor
 whether the clustering satisfies some set of constraints. See
-\code{\link{check_scclust}} for that functionality.
+\code{\link{check_clustering}} for that functionality.
 }

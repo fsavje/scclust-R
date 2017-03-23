@@ -13,7 +13,7 @@ cluster_count(clustering)
 Returns an integer with the number of clusters in \code{clustering}.
 }
 \description{
-\code{cluster_count} returns the number of clusters in a clustering object.
+\code{cluster_count} returns the number of clusters in a clustering.
 }
 \examples{
 # Example scclust clustering

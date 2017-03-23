@@ -214,6 +214,18 @@ coerce_data_point_indices <- function(indices,
 }
 
 
+coerce_scalar_indicator <- function(x) {
+  if (is.null(x)) {
+    x <- FALSE
+  }
+  x <- as.logical(x)[1]
+  if (is.na(x)) {
+    new_error("`", match.call()$x, "` must be TRUE or FALSE.")
+  }
+  x
+}
+
+
 # Coerce `radius` to NULL or a scalar, positive, non-na, numeric
 coerce_radius <- function(radius,
                           is_seed = FALSE) {

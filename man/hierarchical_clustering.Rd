@@ -40,18 +40,18 @@ The clusterings produced by the main clustering function are guaranteed to be cl
 optimal (in particular, within a constant factor of the optimal solution). However,
 as \code{\link{sc_clustering}}'s solution is not exactly optimal, it is occasionally
 possible to refine it. In particular, the main function tends produce large clusters
-in regions of the metric space with many data points. In some cases, it is beneficial to divide
-these clusters into smaller groups. \code{hierarchical_clustering} splits these larger clusters
-so that all within-cluster distances weakly decreases while respecting the overall
-the size constraint.
+in regions of the metric space with many data points. In some cases, it is beneficial
+to divide these clusters into smaller groups. \code{hierarchical_clustering} splits
+these larger clusters so that all within-cluster distances weakly decreases while
+respecting the overall the size constraint.
 
 \code{hierarchical_clustering} implements a divisive hierarchical clustering
 algorithm that respect size constraints. Starting from any clustering satisfying
 the size constraints (which may be a clustering with a single cluster containing
 all data points), the function searches for clusters that can
 be broken into two or more new clusters without violating the constraints. When
-such a cluster is found, it breaks the cluster into two new cluster. It continues in this fashion until all remaining clusters
-are unbreakable.
+such a cluster is found, it breaks the cluster into two new cluster. It continues
+in this fashion until all remaining clusters are unbreakable.
 
 Breakable clusters are broken in three stages. First,
 it tries to find two data points as far as possible from each other. The

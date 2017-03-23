@@ -24,8 +24,9 @@
 #' The \code{scclust} function constructs a \code{scclust} object
 #' from existing cluster labels.
 #'
-#' \code{scclust} does not derive clusterings from sets of data points; for that
-#' functionality see \code{\link{sc_clustering}} and \code{\link{hierarchical_clustering}}.
+#' \code{scclust} does not derive clusterings from sets of data points; see
+#' \code{\link{sc_clustering}} and \code{\link{hierarchical_clustering}} for
+#' that functionality.
 #'
 #' @param cluster_labels a vector containing each data point's cluster label.
 #' @param unassigned_labels labels that denote unassigned data points. If \code{NULL},
@@ -81,9 +82,9 @@ scclust <- function(cluster_labels,
 #'
 #' \code{is.scclust} checks whether the provided object
 #' is a valid instance of the \code{\link{scclust}} class.
-#' It does not check whether the clustering itself is sensible nor
+#' It does not check whether the clustering itself is sensible or
 #' whether the clustering satisfies some set of constraints. See
-#' \code{\link{check_scclust}} for that functionality.
+#' \code{\link{check_clustering}} for that functionality.
 #'
 #'
 #' @param x  object to check.
@@ -103,7 +104,7 @@ is.scclust <- function(x) {
 
 #' Count the number of clusters in a clustering
 #'
-#' \code{cluster_count} returns the number of clusters in a clustering object.
+#' \code{cluster_count} returns the number of clusters in a clustering.
 #'
 #' @param clustering a \code{\link{scclust}} object containing a non-empty clustering.
 #'

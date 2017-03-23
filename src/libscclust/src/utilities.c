@@ -212,10 +212,10 @@ scc_ErrorCode scc_get_clustering_stats(void* const data_set,
 		.sum_dists = 0.0,
 		.min_dist = DBL_MAX,
 		.max_dist = 0.0,
-		.cl_avg_min_dist = 0.0,
-		.cl_avg_max_dist = 0.0,
-		.cl_avg_dist_weighted = 0.0,
-		.cl_avg_dist_unweighted = 0.0,
+		.avg_min_dist = 0.0,
+		.avg_max_dist = 0.0,
+		.avg_dist_weighted = 0.0,
+		.avg_dist_unweighted = 0.0,
 	};
 
 	for (size_t c = 0; c < clustering->num_clusters; ++c) {
@@ -299,18 +299,18 @@ scc_ErrorCode scc_get_clustering_stats(void* const data_set,
 		if (tmp_stats.max_dist < cluster_max) {
 			tmp_stats.max_dist = cluster_max;
 		}
-		tmp_stats.cl_avg_min_dist += cluster_min;
-		tmp_stats.cl_avg_max_dist += cluster_max;
+		tmp_stats.avg_min_dist += cluster_min;
+		tmp_stats.avg_max_dist += cluster_max;
 
-		tmp_stats.cl_avg_dist_weighted += ((double) cluster_size[c]) * cluster_sum_dists / ((double) size_dist_matrix);
-		tmp_stats.cl_avg_dist_unweighted += cluster_sum_dists / ((double) size_dist_matrix);
+		tmp_stats.avg_dist_weighted += ((double) cluster_size[c]) * cluster_sum_dists / ((double) size_dist_matrix);
+		tmp_stats.avg_dist_unweighted += cluster_sum_dists / ((double) size_dist_matrix);
 	}
 
 	tmp_stats.avg_cluster_size = ((double) tmp_stats.num_assigned) / ((double) tmp_stats.num_populated_clusters);
-	tmp_stats.cl_avg_min_dist = tmp_stats.cl_avg_min_dist / ((double) tmp_stats.num_populated_clusters);
-	tmp_stats.cl_avg_max_dist = tmp_stats.cl_avg_max_dist / ((double) tmp_stats.num_populated_clusters);
-	tmp_stats.cl_avg_dist_weighted = tmp_stats.cl_avg_dist_weighted / ((double) tmp_stats.num_assigned);
-	tmp_stats.cl_avg_dist_unweighted = tmp_stats.cl_avg_dist_unweighted / ((double) tmp_stats.num_populated_clusters);
+	tmp_stats.avg_min_dist = tmp_stats.avg_min_dist / ((double) tmp_stats.num_populated_clusters);
+	tmp_stats.avg_max_dist = tmp_stats.avg_max_dist / ((double) tmp_stats.num_populated_clusters);
+	tmp_stats.avg_dist_weighted = tmp_stats.avg_dist_weighted / ((double) tmp_stats.num_assigned);
+	tmp_stats.avg_dist_unweighted = tmp_stats.avg_dist_unweighted / ((double) tmp_stats.num_populated_clusters);
 
 	free(cluster_size);
 	free(id_store);
@@ -320,36 +320,6 @@ scc_ErrorCode scc_get_clustering_stats(void* const data_set,
 	*out_stats = tmp_stats;
 
 	return iscc_no_error();
-}
-
-
-scc_ErrorCode scc_get_cluster_seeds(void* const data_set,
-                                    const scc_ClusterOptions* const options,
-                                    scc_SeedVector* const out_seed_vector)
-{
-	if (!iscc_check_data_set(data_set)) {
-		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Invalid data set object.");
-	}
-	scc_ErrorCode ec;
-	if ((ec = iscc_check_cluster_options(options, iscc_num_data_points(data_set))) != SCC_ER_OK) {
-		return ec;
-	}
-	if (out_seed_vector->seeds != NULL) {
-		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "`out_seed_vector->seeds` must be NULL.");
-	}
-	return iscc_make_error(SCC_ER_NOT_IMPLEMENTED);
-}
-
-
-void scc_free_seed_vector(scc_SeedVector* const seed_vector)
-{
-	if (seed_vector != NULL) {
-		free(seed_vector->seeds);
-		*seed_vector = (scc_SeedVector) {
-			.num_seeds = 0,
-			.seeds = NULL,
-		};
-	}
 }
 
 

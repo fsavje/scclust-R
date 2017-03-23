@@ -30,39 +30,41 @@
 #' \code{sc_clustering} implements an algorithm that first summaries the distance
 #' information between data points in a sparse graph and then constructs the clusterings
 #' based on the graph. This makes the function run fast while ensuring
-#' near-optimal performance. It is possible to constrain the clustering so that each cluster contains at
-#' least a certain number of points in total. If there are different types of points, each cluster can also be
-#' constrained to contain a certain number of points of
-#' each type. For example, in a sample with
-#' "red" and "blue" data points, one can constrain the clusters so that each contains
-#' at least 10 points in total and at least 5 "blue" points.
+#' near-optimal performance. It is possible to constrain the clustering so that each
+#' cluster contains at least a certain number of points in total. If there are different
+#' types of points, each cluster can also be constrained to contain a certain number of
+#' points of each type. For example, in a sample with "red" and "blue" data points, one
+#' can constrain the clusters so that each contains at least 10 points in total and at
+#' least 5 "blue" points.
 #'
 #' The vertices in the graph that \code{sc_clustering} constructs represent data points. Arcs
 #' in the graph are weighted by the distance between the data points.
 #' The graph is the smallest graph such that the neighborhood of each vertex satsifies
 #' the clustering constraints supplied by the user. By picking vertices ("seeds") with
 #' non-overlapping neighborhoods and constructing clusters as supersets of the neighborhoods,
-#' we ensure that the clustering will satisfy the constraints. While all methods of picking seeds yield near-optimal clusterings, we typically want as
-#' many seeds as possible; this will lead to many clusters and, thus, smaller clusters. The \code{seed_method} option specifies how the seeds are picked.
+#' we ensure that the clustering will satisfy the constraints. While all methods of picking
+#' seeds yield near-optimal clusterings, we typically want as many seeds as possible; this
+#' will lead to many clusters and, thus, smaller clusters. The \code{seed_method} option
+#' specifies how the seeds are picked.
 #'
 #' When \code{seed_method} is set to "lexical", seeds are picked in lexical order. This
-#' allows us to find the seeds quickly. However, we might pick points
-#' that are central in the sparse
-#' graph with this method. When central points are seeds, they will exclude many other points from being seeds and, thus, lead to larger clusters The "exclusion_order" and "exclusion_updating" options
-#' calculates, for each vertex, how many other vertices are excluded
-#' if the vertex is picked. By picking vertices that exclude few vertices, we avoid
-#' central points and, thereby, increase
-#' the number of seeds. "exclusion_updating" updates the count after each picked seed
-#' so that already excluded vertices are not counted twice; "exclusion_order" derives
-#' the count once.
+#' allows us to find the seeds quickly. However, we might pick points that are central
+#' in the sparse graph with this method. When central points are seeds, they will exclude
+#' many other points from being seeds and, thus, lead to larger clusters The "exclusion_order"
+#' and "exclusion_updating" options calculates, for each vertex, how many other vertices are
+#' excluded if the vertex is picked. By picking vertices that exclude few vertices, we avoid
+#' central points and, thereby, increase the number of seeds. "exclusion_updating" updates
+#' the count after each picked seed so that already excluded vertices are not counted twice;
+#' "exclusion_order" derives the count once.
 #'
-#' Deriving the exclusion count is an expensive operation. The
-#' "inwards_order" and "inwards_updating" options count the number of inwards-pointing
-#' arcs in the graph, which approximates the exclusion count.  "inwards_updating" updates
-#' the count after each picked seed, while "inwards_order" derives the count once. The "batches" option is identical to "lexical" but it derives the graph in batches.
-#' This limits memory use to a constant value decided by \code{batch_size}. This can be
-#' useful with large size constraints. The "batches" option is still experimental and
-#' can currently only be used when there is no type constraints.
+#' Deriving the exclusion count is an expensive operation. The "inwards_order" and
+#' "inwards_updating" options count the number of inwards-pointing arcs in the graph,
+#' which approximates the exclusion count.  "inwards_updating" updates the count after
+#' each picked seed, while "inwards_order" derives the count once. The "batches" option
+#' is identical to "lexical" but it derives the graph in batches. This limits memory use
+#' to a constant value decided by \code{batch_size}. This can be useful with large size
+#' constraints. The "batches" option is still experimental and can currently only be used
+#' when there is no type constraints.
 #'
 #' The \code{seed_radius} option limits the maximum distance between adjencent vertices
 #' in the sparse graph. If a distance in a point's neighborhood is greater than the radius,
@@ -174,11 +176,11 @@
 #' my_clustering <- sc_clustering(my_dist, 3)
 #'
 #' # Check so clustering satisfies constraints
-#' check_scclust(my_clustering, 3)
+#' check_clustering(my_clustering, 3)
 #' # > TRUE
 #'
 #' # Get statistics about the clustering
-#' get_scclust_stats(my_dist, my_clustering)
+#' get_clustering_stats(my_dist, my_clustering)
 #' # > num_data_points        1.000000e+05
 #' # > ...
 #'
@@ -189,10 +191,10 @@
 #'                                                     "C" = 1, "D" = 1))
 #'
 #' # Check so clustering satisfies constraints
-#' check_scclust(my_clustering,
-#'               type_labels = my_data$type,
-#'               type_constraints = c("A" = 1, "B" = 1,
-#'                                    "C" = 1, "D" = 1))
+#' check_clustering(my_clustering,
+#'                  type_labels = my_data$type,
+#'                  type_constraints = c("A" = 1, "B" = 1,
+#'                                       "C" = 1, "D" = 1))
 #' # > TRUE
 #'
 #' # Make clustering with at least 8 points in total of which at least

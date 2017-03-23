@@ -21,7 +21,7 @@
 
 #' Hierarchical size constrained clustering
 #'
-#' \code{hierarchical_clustering} serves two purposes. The primary use
+#' \code{hierarchical_clustering} serves two purposes. Its primary use
 #' is to refine existing clusterings subject to clustering
 #' constraints. That is, given a (non-optimal) clustering satisfying
 #' some constraints, the function splits clusters so to decrease within-cluster
@@ -35,18 +35,18 @@
 #' optimal (in particular, within a constant factor of the optimal solution). However,
 #' as \code{\link{sc_clustering}}'s solution is not exactly optimal, it is occasionally
 #' possible to refine it. In particular, the main function tends produce large clusters
-#' in regions of the metric space with many data points. In some cases, it is beneficial to divide
-#' these clusters into smaller groups. \code{hierarchical_clustering} splits these larger clusters
-#' so that all within-cluster distances weakly decreases while respecting the overall
-#' the size constraint.
+#' in regions of the metric space with many data points. In some cases, it is beneficial
+#' to divide these clusters into smaller groups. \code{hierarchical_clustering} splits
+#' these larger clusters so that all within-cluster distances weakly decreases while
+#' respecting the overall the size constraint.
 #'
 #' \code{hierarchical_clustering} implements a divisive hierarchical clustering
 #' algorithm that respect size constraints. Starting from any clustering satisfying
 #' the size constraints (which may be a clustering with a single cluster containing
 #' all data points), the function searches for clusters that can
 #' be broken into two or more new clusters without violating the constraints. When
-#' such a cluster is found, it breaks the cluster into two new cluster. It continues in this fashion until all remaining clusters
-#' are unbreakable.
+#' such a cluster is found, it breaks the cluster into two new cluster. It continues
+#' in this fashion until all remaining clusters are unbreakable.
 #'
 #' Breakable clusters are broken in three stages. First,
 #' it tries to find two data points as far as possible from each other. The
@@ -91,7 +91,7 @@ hierarchical_clustering <- function(distances,
   ensure_distances(distances)
   num_data_points <- length(distances)
   size_constraint <- coerce_size_constraint(size_constraint, num_data_points)
-  ensure_indicators(batch_assign, 1L)
+  batch_assign <- coerce_scalar_indicator(batch_assign)
   if (!is.null(existing_clustering)) {
     ensure_scclust(existing_clustering, num_data_points)
   }

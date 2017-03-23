@@ -7,20 +7,21 @@
 \description{
 This package is an R wrapper for the \code{scclust} library. The library
 provides functions to construct near-optimal size constrained clusterings.
-Subject to user-specified conditions on the minimum size and composition
-of the clusters, scclust derives a partition of a set of data points so that
-the dissimilarity of points assigned to the same cluster is minimized.
+Subject to user-specified constraints on the minimum size and composition
+of the clusters, \code{scclust} derives a partition of a set of data points
+so that the dissimilarity of points assigned to the same cluster is minimized.
 }
 \details{
-The main clustering function is \code{\link{sc_clustering}}. Clusterings
-can also be derived with \code{\link{hierarchical_clustering}}, but using
-this function alone provides no optimality guarantees and it is intended to
-be used in conjunction with the main clustering function.
-
-Statistics about a clustering can be derived with the \code{\link{get_scclust_stats}}
-function. To check if a clustering satisfies some set of clustering constraints use
-\code{\link{check_scclust}}. To construct a \code{scclust} clustering object from
+The main clustering function is \code{\link{sc_clustering}}. Statistics about
+clusterings can be derived with the \code{\link{get_clustering_stats}} function.
+To check if a clustering satisfies some set of clustering constraints use
+\code{\link{check_clustering}}. To construct a \code{scclust} clustering object from
 an existing clustering use \code{\link{scclust}}.
+
+Clusterings can also be constructed with \code{\link{hierarchical_clustering}}.
+However, this function only support a subset of constraint options and
+does not provide optimality guarantees. Its main use is to refine clusterings
+produced by the \code{\link{sc_clustering}} function.
 
 See the package's website for more information:
 \url{https://github.com/fsavje/scclust-R}.

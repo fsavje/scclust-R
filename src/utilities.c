@@ -33,11 +33,11 @@
 // External function implementations
 // =============================================================================
 
-SEXP Rscc_check_scclust(const SEXP R_clustering,
-                        const SEXP R_size_constraint,
-                        const SEXP R_type_labels,
-                        const SEXP R_type_constraints,
-                        const SEXP R_primary_data_points)
+SEXP Rscc_check_clustering(const SEXP R_clustering,
+                           const SEXP R_size_constraint,
+                           const SEXP R_type_labels,
+                           const SEXP R_type_constraints,
+                           const SEXP R_primary_data_points)
 {
 	if (!isInteger(R_clustering)) {
 		iRscc_error("`R_clustering` is not a valid clustering object.");
@@ -127,8 +127,8 @@ SEXP Rscc_check_scclust(const SEXP R_clustering,
 }
 
 
-SEXP Rscc_get_scclust_stats(const SEXP R_distances,
-                            const SEXP R_clustering)
+SEXP Rscc_get_clustering_stats(const SEXP R_distances,
+                               const SEXP R_clustering)
 {
 	Rscc_set_dist_functions();
 
@@ -188,10 +188,10 @@ SEXP Rscc_get_scclust_stats(const SEXP R_distances,
 	SET_VECTOR_ELT(R_clust_stats, 6, ScalarReal(clust_stats.sum_dists));
 	SET_VECTOR_ELT(R_clust_stats, 7, ScalarReal(clust_stats.min_dist));
 	SET_VECTOR_ELT(R_clust_stats, 8, ScalarReal(clust_stats.max_dist));
-	SET_VECTOR_ELT(R_clust_stats, 9, ScalarReal(clust_stats.cl_avg_min_dist));
-	SET_VECTOR_ELT(R_clust_stats, 10, ScalarReal(clust_stats.cl_avg_max_dist));
-	SET_VECTOR_ELT(R_clust_stats, 11, ScalarReal(clust_stats.cl_avg_dist_weighted));
-	SET_VECTOR_ELT(R_clust_stats, 12, ScalarReal(clust_stats.cl_avg_dist_unweighted));
+	SET_VECTOR_ELT(R_clust_stats, 9, ScalarReal(clust_stats.avg_min_dist));
+	SET_VECTOR_ELT(R_clust_stats, 10, ScalarReal(clust_stats.avg_max_dist));
+	SET_VECTOR_ELT(R_clust_stats, 11, ScalarReal(clust_stats.avg_dist_weighted));
+	SET_VECTOR_ELT(R_clust_stats, 12, ScalarReal(clust_stats.avg_dist_unweighted));
 
 	const SEXP R_clust_stats_names = PROTECT(allocVector(STRSXP, 13));
 	SET_STRING_ELT(R_clust_stats_names, 0, mkChar("num_data_points"));
@@ -203,10 +203,10 @@ SEXP Rscc_get_scclust_stats(const SEXP R_distances,
 	SET_STRING_ELT(R_clust_stats_names, 6, mkChar("sum_dists"));
 	SET_STRING_ELT(R_clust_stats_names, 7, mkChar("min_dist"));
 	SET_STRING_ELT(R_clust_stats_names, 8, mkChar("max_dist"));
-	SET_STRING_ELT(R_clust_stats_names, 9, mkChar("cl_avg_min_dist"));
-	SET_STRING_ELT(R_clust_stats_names, 10, mkChar("cl_avg_max_dist"));
-	SET_STRING_ELT(R_clust_stats_names, 11, mkChar("cl_avg_dist_weighted"));
-	SET_STRING_ELT(R_clust_stats_names, 12, mkChar("cl_avg_dist_unweighted"));
+	SET_STRING_ELT(R_clust_stats_names, 9, mkChar("avg_min_dist"));
+	SET_STRING_ELT(R_clust_stats_names, 10, mkChar("avg_max_dist"));
+	SET_STRING_ELT(R_clust_stats_names, 11, mkChar("avg_dist_weighted"));
+	SET_STRING_ELT(R_clust_stats_names, 12, mkChar("avg_dist_unweighted"));
 	setAttrib(R_clust_stats, R_NamesSymbol, R_clust_stats_names);
 
 	UNPROTECT(2);
