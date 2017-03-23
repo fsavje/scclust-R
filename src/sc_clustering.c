@@ -2,7 +2,7 @@
  * scclust for R -- R wrapper for the scclust library
  * https://github.com/fsavje/scclust-R
  *
- * Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2016-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,9 +100,9 @@ SEXP Rscc_sc_clustering(const SEXP R_distances,
 		iRscc_error("`R_batch_size` must be NULL or integer.");
 	}
 
-	const uintmax_t num_data_points = (uintmax_t) idist_num_data_points(R_distances);
+	const uint64_t num_data_points = (uint64_t) idist_num_data_points(R_distances);
 
-	scc_ClusterOptions options = scc_default_cluster_options;
+	scc_ClusterOptions options = scc_get_default_options();
 
 	options.size_constraint = (uint32_t) asInteger(R_size_constraint);
 	options.seed_method = iRscc_parse_seed_method(R_seed_method);
@@ -110,7 +110,7 @@ SEXP Rscc_sc_clustering(const SEXP R_distances,
 	options.secondary_unassigned_method = iRscc_parse_unassigned_method(R_secondary_unassigned_method);
 
 	if (isInteger(R_type_labels) && isInteger(R_type_constraints)) {
-		const uintmax_t num_types = (uintmax_t) xlength(R_type_constraints);
+		const uint32_t num_types = (uint32_t) xlength(R_type_constraints);
 		const size_t len_type_labels = (size_t) xlength(R_type_labels);
 		if (len_type_labels != num_data_points) {
 			iRscc_error("`R_type_labels` does not match `R_distances`.");
@@ -192,14 +192,14 @@ SEXP Rscc_sc_clustering(const SEXP R_distances,
 		iRscc_scc_error();
 	}
 
-	if ((ec = scc_make_clustering(Rscc_get_distances_pointer(R_distances),
-	                              clustering,
-	                              &options)) != SCC_ER_OK) {
+	if ((ec = scc_sc_clustering(Rscc_get_distances_pointer(R_distances),
+	                            &options,
+	                            clustering)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
 		iRscc_scc_error();
 	}
 
-	uintmax_t num_clusters = 0;
+	uint64_t num_clusters = 0;
 	if ((ec = scc_get_clustering_info(clustering,
 	                                  NULL,
 	                                  &num_clusters)) != SCC_ER_OK) {
@@ -243,8 +243,6 @@ static scc_SeedMethod iRscc_parse_seed_method(const SEXP R_seed_method)
 		return SCC_SM_INWARDS_ORDER;
 	} else if (strcmp(seed_method_string, "inwards_updating") == 0) {
 		return SCC_SM_INWARDS_UPDATING;
-	} else if (strcmp(seed_method_string, "inwards_alt_updating") == 0) {
-		return SCC_SM_INWARDS_ALT_UPDATING;
 	} else if (strcmp(seed_method_string, "exclusion_order") == 0) {
 		return SCC_SM_EXCLUSION_ORDER;
 	} else if (strcmp(seed_method_string, "exclusion_updating") == 0) {

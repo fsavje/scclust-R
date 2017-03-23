@@ -32,7 +32,6 @@ test_that("Constants are correct", {
                      "batches",
                      "inwards_order",
                      "inwards_updating",
-                     "inwards_alt_updating",
                      "exclusion_order",
                      "exclusion_updating"))
 })

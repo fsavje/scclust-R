@@ -2,7 +2,7 @@
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
- * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2015-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -46,42 +46,44 @@ struct iscc_hi_DistanceEdge {
 	iscc_hi_DistanceEdge* next_dist;
 };
 
-typedef struct iscc_hi_ClusterItem iscc_hi_ClusterItem;
-struct iscc_hi_ClusterItem {
+
+typedef struct iscc_hi_ClusterItem {
 	size_t size;
 	uint_fast16_t marker;
 	scc_PointIndex* members;
-};
+} iscc_hi_ClusterItem;
 
-typedef struct iscc_hi_ClusterStack iscc_hi_ClusterStack;
-struct iscc_hi_ClusterStack {
+
+typedef struct iscc_hi_ClusterStack {
 	size_t capacity;
 	size_t items;
 	iscc_hi_ClusterItem* clusters;
 	scc_PointIndex* pointindex_store;
-};
+} iscc_hi_ClusterStack;
 
-typedef struct iscc_hi_WorkArea iscc_hi_WorkArea;
-struct iscc_hi_WorkArea {
+
+typedef struct iscc_hi_WorkArea {
 	scc_PointIndex* const pointindex_array1;
 	scc_PointIndex* const pointindex_array2;
 	double* const dist_array;
 	uint_fast16_t* const vertex_markers;
 	iscc_hi_DistanceEdge* const edge_store1;
 	iscc_hi_DistanceEdge* const edge_store2;
-};
+} iscc_hi_WorkArea;
 
 
 // =============================================================================
-// Internal function prototypes
+// Static function prototypes
 // =============================================================================
 
 static scc_ErrorCode iscc_hi_empty_cl_stack(size_t num_data_points,
                                             iscc_hi_ClusterStack* out_cl_stack);
 
+
 static scc_ErrorCode iscc_hi_init_cl_stack(const scc_Clustering* in_cl,
                                            iscc_hi_ClusterStack* out_cl_stack,
                                            size_t* out_size_largest_cluster);
+
 
 static scc_ErrorCode iscc_hi_run_hierarchical_clustering(iscc_hi_ClusterStack* cl_stack,
                                                          scc_Clustering* cl,
@@ -90,8 +92,10 @@ static scc_ErrorCode iscc_hi_run_hierarchical_clustering(iscc_hi_ClusterStack* c
                                                          uint32_t size_constraint,
                                                          bool batch_assign);
 
+
 static scc_ErrorCode iscc_hi_push_to_stack(iscc_hi_ClusterStack* cl_stack,
                                            iscc_hi_ClusterItem** cl);
+
 
 static scc_ErrorCode iscc_hi_break_cluster_into_two(iscc_hi_ClusterItem* cluster_to_break,
                                                     void* data_set,
@@ -100,8 +104,10 @@ static scc_ErrorCode iscc_hi_break_cluster_into_two(iscc_hi_ClusterItem* cluster
                                                     bool batch_assign,
                                                     iscc_hi_ClusterItem* out_new_cluster);
 
+
 static inline uint_fast16_t iscc_hi_get_next_marker(iscc_hi_ClusterItem* cl,
                                                     uint_fast16_t vertex_markers[]);
+
 
 static inline iscc_hi_DistanceEdge* iscc_hi_get_next_k_nn(iscc_hi_DistanceEdge* prev_dist,
                                                           uint32_t k,
@@ -109,19 +115,23 @@ static inline iscc_hi_DistanceEdge* iscc_hi_get_next_k_nn(iscc_hi_DistanceEdge* 
                                                           uint_fast16_t curr_marker,
                                                           scc_PointIndex out_dist_array[static k]);
 
+
 static inline iscc_hi_DistanceEdge* iscc_hi_get_next_dist(iscc_hi_DistanceEdge* prev_dist,
                                                           const uint_fast16_t vertex_markers[],
                                                           uint_fast16_t curr_marker);
+
 
 static inline void iscc_hi_move_point_to_cluster1(scc_PointIndex id,
                                                   iscc_hi_ClusterItem* cl,
                                                   uint_fast16_t vertex_markers[],
                                                   uint_fast16_t curr_marker);
 
+
 static inline void iscc_hi_move_point_to_cluster2(scc_PointIndex id,
                                                   iscc_hi_ClusterItem* cl,
                                                   uint_fast16_t vertex_markers[],
                                                   uint_fast16_t curr_marker);
+
 
 static inline void iscc_hi_move_array_to_cluster1(uint32_t len_ids,
                                                   const scc_PointIndex ids[static len_ids],
@@ -129,11 +139,13 @@ static inline void iscc_hi_move_array_to_cluster1(uint32_t len_ids,
                                                   uint_fast16_t vertex_markers[],
                                                   uint_fast16_t curr_marker);
 
+
 static inline void iscc_hi_move_array_to_cluster2(uint32_t len_ids,
                                                   const scc_PointIndex ids[static len_ids],
                                                   iscc_hi_ClusterItem* cl,
                                                   uint_fast16_t vertex_markers[],
                                                   uint_fast16_t curr_marker);
+
 
 static scc_ErrorCode iscc_hi_find_centers(iscc_hi_ClusterItem* cl,
                                           void* data_set,
@@ -141,59 +153,65 @@ static scc_ErrorCode iscc_hi_find_centers(iscc_hi_ClusterItem* cl,
                                           scc_PointIndex* out_center1,
                                           scc_PointIndex* out_center2);
 
+
 static scc_ErrorCode iscc_hi_populate_edge_lists(const iscc_hi_ClusterItem* cl,
                                                  void* data_set,
                                                  scc_PointIndex center1,
                                                  scc_PointIndex center2,
                                                  iscc_hi_WorkArea* work_area);
 
+
 static inline void iscc_hi_sort_edge_list(const iscc_hi_ClusterItem* cl,
                                           scc_PointIndex center,
                                           const double row_dists[static cl->size],
                                           iscc_hi_DistanceEdge edge_store[static cl->size]);
+
 
 static int iscc_hi_compare_dist_edges(const void* a,
                                       const void* b);
 
 
 // =============================================================================
-// External function implementations
+// Public function implementations
 // =============================================================================
 
 scc_ErrorCode scc_hierarchical_clustering(void* const data_set,
-                                          scc_Clustering* const clustering,
                                           const uint32_t size_constraint,
-                                          const bool batch_assign)
+                                          const bool batch_assign,
+                                          scc_Clustering* const out_clustering)
 {
-	if (!iscc_check_input_clustering(clustering)) {
+	if (!iscc_check_input_clustering(out_clustering)) {
 		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Invalid clustering object.");
 	}
-	if (!iscc_check_data_set(data_set, clustering->num_data_points)) {
+	if (!iscc_check_data_set(data_set)) {
 		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Invalid data set object.");
+	}
+	if (iscc_num_data_points(data_set) != out_clustering->num_data_points) {
+		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Number of data points in data set does not match clustering object.");
 	}
 	if (size_constraint < 2) {
 		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Size constraint must be 2 or greater.");
 	}
-	if (clustering->num_data_points < size_constraint) {
+	if (out_clustering->num_data_points < size_constraint) {
 		return iscc_make_error_msg(SCC_ER_NO_SOLUTION, "Fewer data points than size constraint.");
 	}
 
 	scc_ErrorCode ec;
 	size_t size_largest_cluster = 0; // Initialize to avoid gcc warning
 	iscc_hi_ClusterStack cl_stack;
-	if (clustering->num_clusters == 0) {
-		if (clustering->cluster_label == NULL) {
-			clustering->external_labels = false;
-			clustering->cluster_label = malloc(sizeof(scc_Clabel[clustering->num_data_points]));
-			if (clustering->cluster_label == NULL) return iscc_make_error(SCC_ER_NO_MEMORY);
+	if (out_clustering->num_clusters == 0) {
+		if (out_clustering->cluster_label == NULL) {
+			out_clustering->external_labels = false;
+			out_clustering->cluster_label = malloc(sizeof(scc_Clabel[out_clustering->num_data_points]));
+			if (out_clustering->cluster_label == NULL) return iscc_make_error(SCC_ER_NO_MEMORY);
 		}
 
-		size_largest_cluster = clustering->num_data_points;
-		if ((ec = iscc_hi_empty_cl_stack(clustering->num_data_points, &cl_stack)) != SCC_ER_OK) {
+		size_largest_cluster = out_clustering->num_data_points;
+		if ((ec = iscc_hi_empty_cl_stack(out_clustering->num_data_points, &cl_stack)) != SCC_ER_OK) {
 			return ec;
 		}
 	} else {
-		if ((ec = iscc_hi_init_cl_stack(clustering, &cl_stack, &size_largest_cluster)) != SCC_ER_OK) {
+		if ((ec = iscc_hi_init_cl_stack(out_clustering, &cl_stack, &size_largest_cluster)) != SCC_ER_OK) {
 			return ec;
 		}
 	}
@@ -208,7 +226,7 @@ scc_ErrorCode scc_hierarchical_clustering(void* const data_set,
 		.pointindex_array1 = malloc(sizeof(scc_PointIndex[size_pointindex_array])),
 		.pointindex_array2 = malloc(sizeof(scc_PointIndex[size_pointindex_array])),
 		.dist_array = malloc(sizeof(double[size_dist_array])),
-		.vertex_markers = calloc(clustering->num_data_points, sizeof(uint_fast16_t)),
+		.vertex_markers = calloc(out_clustering->num_data_points, sizeof(uint_fast16_t)),
 		.edge_store1 = malloc(sizeof(iscc_hi_DistanceEdge[size_largest_cluster])),
 		.edge_store2 = malloc(sizeof(iscc_hi_DistanceEdge[size_largest_cluster])),
 	};
@@ -221,7 +239,7 @@ scc_ErrorCode scc_hierarchical_clustering(void* const data_set,
 
 	if (ec == SCC_ER_OK) {
 		ec = iscc_hi_run_hierarchical_clustering(&cl_stack,
-		                                         clustering,
+		                                         out_clustering,
 		                                         data_set,
 		                                         &work_area,
 		                                         size_constraint,
@@ -242,7 +260,7 @@ scc_ErrorCode scc_hierarchical_clustering(void* const data_set,
 
 
 // =============================================================================
-// Internal function implementations
+// Static function implementations
 // =============================================================================
 
 static scc_ErrorCode iscc_hi_empty_cl_stack(const size_t num_data_points,
@@ -348,7 +366,8 @@ static scc_ErrorCode iscc_hi_run_hierarchical_clustering(iscc_hi_ClusterStack* c
 	assert(cl_stack->clusters != NULL);
 	assert(cl_stack->pointindex_store != NULL);
 	assert(iscc_check_input_clustering(cl));
-	assert(iscc_check_data_set(data_set, cl->num_data_points));
+	assert(iscc_check_data_set(data_set));
+	assert(iscc_num_data_points(data_set) == cl->num_data_points);
 	assert(work_area != NULL);
 	assert(size_constraint >= 2);
 
@@ -428,7 +447,7 @@ static scc_ErrorCode iscc_hi_break_cluster_into_two(iscc_hi_ClusterItem* const c
 	assert(cluster_to_break != NULL);
 	assert(cluster_to_break->size >= 2 * size_constraint);
 	assert(cluster_to_break->members != NULL);
-	assert(iscc_check_data_set(data_set, 0));
+	assert(iscc_check_data_set(data_set));
 	assert(work_area != NULL);
 	assert(work_area->pointindex_array1 != NULL);
 	assert(work_area->pointindex_array2 != NULL);
@@ -701,7 +720,7 @@ static scc_ErrorCode iscc_hi_find_centers(iscc_hi_ClusterItem* const cl,
 	assert(cl != NULL);
 	assert(cl->size >= 4);
 	assert(cl->members != NULL);
-	assert(iscc_check_data_set(data_set, 0));
+	assert(iscc_check_data_set(data_set));
 	assert(work_area != NULL);
 	assert(work_area->pointindex_array1 != NULL);
 	assert(work_area->pointindex_array2 != NULL);
@@ -777,7 +796,7 @@ static scc_ErrorCode iscc_hi_populate_edge_lists(const iscc_hi_ClusterItem* cons
 	assert(cl->size >= 4);
 	assert(cl->members != NULL);
 	assert(center1 != center2);
-	assert(iscc_check_data_set(data_set, 0));
+	assert(iscc_check_data_set(data_set));
 	assert(work_area != NULL);
 	assert(work_area->dist_array != NULL);
 	assert(work_area->edge_store1 != NULL);

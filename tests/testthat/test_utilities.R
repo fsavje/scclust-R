@@ -30,6 +30,7 @@ cl1 <- scclust(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2))
 cl2 <- scclust(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1)
 cl3 <- scclust(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), ids = letters[1:10])
 cl4 <- scclust(c(1, 1, 2, 3, 2, 3, 3, 1, 2, 2), 1, ids = letters[1:10])
+cl5 <- scclust(c(1, 1, 2, NA, 2, 3, 3, 1, NA, 2))
 dp_types <- factor(c("x", "y", "y", "z", "z", "x", "y", "z", "x", "x"))
 
 test_that("`check_scclust` returns correct output", {
@@ -73,6 +74,9 @@ test_that("`check_scclust` returns correct output", {
   expect_equal(check_scclust(cl4, 3, dp_types, c("y" = 1, "z" = 1)), TRUE)
   expect_equal(check_scclust(cl4, 4, dp_types, c("x" = 1, "y" = 1, "z" = 1)), FALSE)
   expect_equal(check_scclust(cl4, NULL, dp_types, c("x" = 3, "y" = 1, "z" = 1)), FALSE)
+
+  expect_equal(check_scclust(cl5, 2), TRUE)
+  expect_equal(check_scclust(cl5, 2, primary_data_points = c(1, 2, 3, 5, 6, 7, 8, 10)), TRUE)
 })
 
 
@@ -160,14 +164,14 @@ some_assigned_emptycl_stats <- structure(list(
 ), class = c("scclust_stats"))
 
 test_that("`get_scclust_stats` returns correct output", {
-  expect_equal(get_scclust_stats(cl1, distances::distances(dp_data)), all_assigned_stats)
-  expect_equal(get_scclust_stats(cl2, distances::distances(dp_data)), some_assigned_stats)
-  expect_equal(get_scclust_stats(cl3, distances::distances(dp_data)), all_assigned_stats)
-  expect_equal(get_scclust_stats(cl4, distances::distances(dp_data)), some_assigned_stats)
-  expect_equal(get_scclust_stats(cl5, distances::distances(dp_data)), all_assigned_emptycl_stats)
-  expect_equal(get_scclust_stats(cl6, distances::distances(dp_data)), some_assigned_emptycl_stats)
-  expect_equal(get_scclust_stats(cl7, distances::distances(dp_data)), all_assigned_emptycl_stats)
-  expect_equal(get_scclust_stats(cl8, distances::distances(dp_data)), some_assigned_emptycl_stats)
+  expect_equal(get_scclust_stats(distances::distances(dp_data), cl1), all_assigned_stats)
+  expect_equal(get_scclust_stats(distances::distances(dp_data), cl2), some_assigned_stats)
+  expect_equal(get_scclust_stats(distances::distances(dp_data), cl3), all_assigned_stats)
+  expect_equal(get_scclust_stats(distances::distances(dp_data), cl4), some_assigned_stats)
+  expect_equal(get_scclust_stats(distances::distances(dp_data), cl5), all_assigned_emptycl_stats)
+  expect_equal(get_scclust_stats(distances::distances(dp_data), cl6), some_assigned_emptycl_stats)
+  expect_equal(get_scclust_stats(distances::distances(dp_data), cl7), all_assigned_emptycl_stats)
+  expect_equal(get_scclust_stats(distances::distances(dp_data), cl8), some_assigned_emptycl_stats)
 })
 
 test_that("`print.scclust_stats` prints correctly", {

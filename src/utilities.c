@@ -2,7 +2,7 @@
  * scclust for R -- R wrapper for the scclust library
  * https://github.com/fsavje/scclust-R
  *
- * Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2016-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,8 @@
 SEXP Rscc_check_scclust(const SEXP R_clustering,
                         const SEXP R_size_constraint,
                         const SEXP R_type_labels,
-                        const SEXP R_type_constraints)
+                        const SEXP R_type_constraints,
+                        const SEXP R_primary_data_points)
 {
 	if (!isInteger(R_clustering)) {
 		iRscc_error("`R_clustering` is not a valid clustering object.");
@@ -59,27 +60,28 @@ SEXP Rscc_check_scclust(const SEXP R_clustering,
 			iRscc_error("`R_type_constraints` must be integer.");
 		}
 	}
+	if (!isNull(R_primary_data_points) && !isInteger(R_primary_data_points)) {
+		iRscc_error("`R_primary_data_points` must be NULL or integer.");
+	}
 
-	const uintmax_t num_data_points = (uintmax_t) xlength(R_clustering);
-	const uintmax_t num_clusters = (uintmax_t) asInteger(getAttrib(R_clustering, install("cluster_count")));
+	const uint64_t num_data_points = (uint64_t) xlength(R_clustering);
+	const uint64_t num_clusters = (uint64_t) asInteger(getAttrib(R_clustering, install("cluster_count")));
 	if (num_clusters == 0) {
 		iRscc_error("`R_clustering` is empty.");
 	}
 
-	const uint32_t size_constraint = (uint32_t) asInteger(R_size_constraint);
-   uintmax_t num_types = 0;
-   uint32_t* type_constraints = NULL;
-   size_t len_type_labels = 0;
-   const int* type_labels = NULL;
+	scc_ClusterOptions options = scc_get_default_options();
+
+	options.size_constraint = (uint32_t) asInteger(R_size_constraint);
 
 	if (isInteger(R_type_labels) && isInteger(R_type_constraints)) {
-		num_types = (uintmax_t) xlength(R_type_constraints);
-		len_type_labels = (size_t) xlength(R_type_labels);
+		const uint32_t num_types = (uint32_t) xlength(R_type_constraints);
+		const size_t len_type_labels = (size_t) xlength(R_type_labels);
 		if (len_type_labels != num_data_points) {
 			iRscc_error("`R_type_labels` does not match `R_clustering`.");
 		}
 		if (num_types >= 2) {
-			type_constraints = (uint32_t*) R_alloc(num_types, sizeof(uint32_t)); // Automatically freed by R on return
+			uint32_t* const type_constraints = (uint32_t*) R_alloc(num_types, sizeof(uint32_t)); // Automatically freed by R on return
 			if (type_constraints == NULL) iRscc_error("Could not allocate memory.");
 			const int* const tmp_type_constraints = INTEGER(R_type_constraints);
 			for (size_t i = 0; i < num_types; ++i) {
@@ -88,8 +90,17 @@ SEXP Rscc_check_scclust(const SEXP R_clustering,
 				}
 				type_constraints[i] = (uint32_t) tmp_type_constraints[i];
 			}
-			type_labels = INTEGER(R_type_labels);
+
+			options.num_types = num_types;
+			options.type_constraints = type_constraints;
+			options.len_type_labels = len_type_labels;
+			options.type_labels = INTEGER(R_type_labels);
 		}
+	}
+
+	if (isInteger(R_primary_data_points)) {
+		options.len_primary_data_points = (size_t) xlength(R_primary_data_points);
+		options.primary_data_points = INTEGER(R_primary_data_points);
 	}
 
 	scc_ErrorCode ec;
@@ -104,11 +115,7 @@ SEXP Rscc_check_scclust(const SEXP R_clustering,
 
 	bool is_OK = false;
 	if ((ec = scc_check_clustering(clustering,
-	                               size_constraint,
-	                               num_types,
-	                               type_constraints,
-	                               len_type_labels,
-	                               type_labels,
+	                               &options,
 	                               &is_OK)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
 		iRscc_scc_error();
@@ -120,8 +127,8 @@ SEXP Rscc_check_scclust(const SEXP R_clustering,
 }
 
 
-SEXP Rscc_get_scclust_stats(const SEXP R_clustering,
-                            const SEXP R_distances)
+SEXP Rscc_get_scclust_stats(const SEXP R_distances,
+                            const SEXP R_clustering)
 {
 	Rscc_set_dist_functions();
 
@@ -135,10 +142,10 @@ SEXP Rscc_get_scclust_stats(const SEXP R_clustering,
 		iRscc_error("`R_distances` is not a valid distance object.");
 	}
 
-	const uintmax_t num_data_points = (uintmax_t) idist_num_data_points(R_distances);
-	const uintmax_t num_clusters = (uintmax_t) asInteger(getAttrib(R_clustering, install("cluster_count")));
+	const uint64_t num_data_points = (uint64_t) idist_num_data_points(R_distances);
+	const uint64_t num_clusters = (uint64_t) asInteger(getAttrib(R_clustering, install("cluster_count")));
 
-	if (((uintmax_t) xlength(R_clustering)) != num_data_points) {
+	if (((uint64_t) xlength(R_clustering)) != num_data_points) {
 		iRscc_error("`R_distances` does not match `R_clustering`.");
 	}
 	if (num_clusters == 0) {
@@ -156,8 +163,8 @@ SEXP Rscc_get_scclust_stats(const SEXP R_clustering,
 	}
 
 	scc_ClusteringStats clust_stats;
-	if ((ec = scc_get_clustering_stats(clustering,
-	                                   Rscc_get_distances_pointer(R_distances),
+	if ((ec = scc_get_clustering_stats(Rscc_get_distances_pointer(R_distances),
+	                                   clustering,
 	                                   &clust_stats)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
 		iRscc_scc_error();

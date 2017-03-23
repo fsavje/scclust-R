@@ -2,7 +2,7 @@
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
- * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2015-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,11 +37,8 @@
 
 
 // =============================================================================
-// Structs, types and variables
+// Structs and variables
 // =============================================================================
-
-/// Typedef for scc_Digraph struct
-typedef struct iscc_Digraph iscc_Digraph;
 
 /** Main digraph struct stored as sparse matrix.
  *
@@ -53,8 +50,7 @@ typedef struct iscc_Digraph iscc_Digraph;
  *
  *  In other words, if there is an arc `i` -> `j`, there exists some `k` such that `#tail_ptr[i] <= k < #tail_ptr[i+1]` and `#head[k]==j`.
  */
-struct iscc_Digraph {
-
+typedef struct iscc_Digraph {
 	/** Number of vertices in the digraph. May not be greater than `ISCC_POINTINDEX_MAX`.
 	 *
 	 *  \note Valid vertices in this digraph is any `i` such that `0 <= i < #vertices`.
@@ -81,7 +77,8 @@ struct iscc_Digraph {
 	 *  we must have `#tail_ptr[i] <= #tail_ptr[i+1] <= #max_arcs`.
 	 */
 	iscc_ArcIndex* tail_ptr;
-};
+} iscc_Digraph;
+
 
 /** The null digraph.
  *
@@ -102,6 +99,7 @@ static const iscc_Digraph ISCC_NULL_DIGRAPH = { 0, 0, NULL, NULL };
  */
 void iscc_free_digraph(iscc_Digraph* dg);
 
+
 /** Checks whether provided digraph is initialized.
  *
  *  This function returns \c true if \p dg is initialized. That is, scc_Digraph::tail_ptr
@@ -117,6 +115,7 @@ void iscc_free_digraph(iscc_Digraph* dg);
  */
 bool iscc_digraph_is_initialized(const iscc_Digraph* dg);
 
+
 /** Checks whether provided digraph is valid.
  *
  *  This function returns \c true if \p dg is a valid scc_Digraph instance. That is,
@@ -127,6 +126,7 @@ bool iscc_digraph_is_initialized(const iscc_Digraph* dg);
  *  \return \c true if \p dg is valid, otherwise \c false.
  */
 bool iscc_digraph_is_valid(const iscc_Digraph* dg);
+
 
 /** Checks whether provided digraph is empty.
  *
@@ -140,6 +140,7 @@ bool iscc_digraph_is_valid(const iscc_Digraph* dg);
  *        the information is sound.
  */
 bool iscc_digraph_is_empty(const iscc_Digraph* dg);
+
 
 /** Generic constructor for digraphs.
  *
@@ -155,6 +156,7 @@ scc_ErrorCode iscc_init_digraph(size_t vertices,
                                 uintmax_t max_arcs,
                                 iscc_Digraph* out_dg);
 
+
 /** Construct an empty digraph.
  *
  *  This function returns a digraph where all elements of scc_Digraph::tail_ptr are set to `0`.
@@ -167,6 +169,7 @@ scc_ErrorCode iscc_init_digraph(size_t vertices,
 scc_ErrorCode iscc_empty_digraph(size_t vertices,
                                  uintmax_t max_arcs,
                                  iscc_Digraph* out_dg);
+
 
 /** Reallocate arc memory.
  *

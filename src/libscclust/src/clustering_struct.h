@@ -2,7 +2,7 @@
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
- * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2015-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,6 +26,10 @@
 #include <stdint.h>
 #include "../include/scclust.h"
 
+
+// =============================================================================
+// Macros, structs and variables
+// =============================================================================
 
 /// Macro for internal clustering checks.
 #define iscc_check_input_clustering(cl) scc_is_initialized_clustering(cl)
@@ -56,8 +60,10 @@ struct scc_Clustering {
 	bool external_labels;
 };
 
+
 /// Current version of the clustering struct.
 static const int32_t ISCC_CLUSTERING_STRUCT_VERSION = 722587001;
+
 
 /** The null clustering.
  *

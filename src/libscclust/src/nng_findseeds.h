@@ -2,7 +2,7 @@
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
- * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2015-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,15 +28,14 @@
 
 
 // =============================================================================
-// Structs, types and variables
+// Structs
 // =============================================================================
 
-typedef struct iscc_SeedResult iscc_SeedResult;
-struct iscc_SeedResult {
+typedef struct iscc_SeedResult {
 	size_t capacity;
 	size_t count;
 	scc_PointIndex* seeds;
-};
+} iscc_SeedResult;
 
 
 // =============================================================================

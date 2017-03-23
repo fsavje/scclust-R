@@ -2,7 +2,7 @@
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
- * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2015-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,20 +40,19 @@
 // Internal structs & variables
 // =============================================================================
 
-typedef struct iscc_TypeCount iscc_TypeCount;
-struct iscc_TypeCount {
+typedef struct iscc_TypeCount {
 	uint32_t sum_type_constraints;
 	size_t* type_group_size;
 	scc_PointIndex* point_store;
 	scc_PointIndex** type_groups;
-};
+} iscc_TypeCount;
 
 
 static const size_t ISCC_ESTIMATE_AVG_MAX_SAMPLE = 1000;
 
 
 // =============================================================================
-// Internal function prototypes
+// Static function prototypes
 // =============================================================================
 
 static scc_ErrorCode iscc_make_nng(void* data_set,
@@ -69,6 +68,7 @@ static scc_ErrorCode iscc_make_nng(void* data_set,
                                    scc_PointIndex out_query_indices[],
                                    iscc_Digraph* out_nng);
 
+
 static scc_ErrorCode iscc_make_nng_from_search_object(iscc_NNSearchObject* nn_search_object,
                                                       size_t num_data_points,
                                                       size_t len_query_indices,
@@ -80,9 +80,11 @@ static scc_ErrorCode iscc_make_nng_from_search_object(iscc_NNSearchObject* nn_se
                                                       scc_PointIndex out_query_indices[],
                                                       iscc_Digraph* out_nng);
 
+
 static inline void iscc_ensure_self_match(iscc_Digraph* nng,
                                           size_t len_search_indices,
                                           const scc_PointIndex search_indices[]);
+
 
 static scc_ErrorCode iscc_type_count(size_t num_data_points,
                                      uint32_t size_constraint,
@@ -91,12 +93,15 @@ static scc_ErrorCode iscc_type_count(size_t num_data_points,
                                      const scc_TypeLabel type_labels[static num_data_points],
                                      iscc_TypeCount* out_type_result);
 
+
 static size_t iscc_assign_seeds_and_neighbors(scc_Clustering* clustering,
                                               const iscc_SeedResult* seed_result,
                                               iscc_Digraph* nng);
 
+
 static size_t iscc_assign_by_nng(scc_Clustering* clustering,
                                  iscc_Digraph* nng);
+
 
 static scc_ErrorCode iscc_assign_by_nn_search(scc_Clustering* clustering,
                                               iscc_NNSearchObject* nn_search_object,
@@ -104,6 +109,7 @@ static scc_ErrorCode iscc_assign_by_nn_search(scc_Clustering* clustering,
                                               scc_PointIndex to_assign[restrict static num_to_assign],
                                               bool radius_constraint,
                                               double radius);
+
 
 #ifdef SCC_STABLE_NNG
 
@@ -125,7 +131,8 @@ scc_ErrorCode iscc_get_nng_with_size_constraint(void* const data_set,
                                                 const double radius,
                                                 iscc_Digraph* const out_nng)
 {
-	assert(iscc_check_data_set(data_set, num_data_points));
+	assert(iscc_check_data_set(data_set));
+	assert(iscc_num_data_points(data_set) == num_data_points);
 	assert(num_data_points >= 2);
 	assert(size_constraint <= num_data_points);
 	assert(size_constraint >= 2);
@@ -187,7 +194,8 @@ scc_ErrorCode iscc_get_nng_with_type_constraint(void* const data_set,
                                                 const double radius,
                                                 iscc_Digraph* const out_nng)
 {
-	assert(iscc_check_data_set(data_set, num_data_points));
+	assert(iscc_check_data_set(data_set));
+	assert(iscc_num_data_points(data_set) == num_data_points);
 	assert(num_data_points >= 2);
 	assert(size_constraint <= num_data_points);
 	assert(size_constraint >= 2);
@@ -351,7 +359,8 @@ scc_ErrorCode iscc_estimate_avg_seed_dist(void* const data_set,
                                           const uint32_t size_constraint,
                                           double* const out_avg_seed_dist)
 {
-	assert(iscc_check_data_set(data_set, nng->vertices));
+	assert(iscc_check_data_set(data_set));
+	assert(iscc_num_data_points(data_set) == nng->vertices);
 	assert(seed_result->count > 0);
 	assert(seed_result->seeds != NULL);
 	assert(iscc_digraph_is_valid(nng));
@@ -424,7 +433,8 @@ scc_ErrorCode iscc_make_nng_clusters_from_seeds(scc_Clustering* const clustering
                                                 const double secondary_radius)
 {
 	assert(iscc_check_input_clustering(clustering));
-	assert(iscc_check_data_set(data_set, clustering->num_data_points));
+	assert(iscc_check_data_set(data_set));
+	assert(iscc_num_data_points(data_set) == clustering->num_data_points);
 	assert(seed_result->count > 0);
 	assert(seed_result->seeds != NULL);
 	assert(iscc_digraph_is_valid(nng));
@@ -625,7 +635,7 @@ scc_ErrorCode iscc_make_nng_clusters_from_seeds(scc_Clustering* const clustering
 
 
 // =============================================================================
-// Internal function implementations
+// Static function implementations
 // =============================================================================
 
 static scc_ErrorCode iscc_make_nng(void* const data_set,
@@ -641,7 +651,7 @@ static scc_ErrorCode iscc_make_nng(void* const data_set,
                                    scc_PointIndex out_query_indices[const],
                                    iscc_Digraph* const out_nng)
 {
-	assert(iscc_check_data_set(data_set, len_query_indices));
+	assert(iscc_check_data_set(data_set));
 	assert(len_search_indices > 0);
 	assert(len_query_indices > 0);
 	assert(k > 0);
@@ -1037,6 +1047,7 @@ static int iscc_compare_PointIndex(const void* const a, const void* const b)
     const scc_PointIndex arg2 = *(const scc_PointIndex* const)b;
     return (arg1 > arg2) - (arg1 < arg2);
 }
+
 
 static void iscc_sort_nng(iscc_Digraph* const nng)
 {

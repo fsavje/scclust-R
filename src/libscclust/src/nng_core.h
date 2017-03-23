@@ -2,7 +2,7 @@
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
- * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2015-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,6 +42,7 @@ scc_ErrorCode iscc_get_nng_with_size_constraint(void* data_set,
                                                 double radius,
                                                 iscc_Digraph* out_nng);
 
+
 scc_ErrorCode iscc_get_nng_with_type_constraint(void* data_set,
                                                 size_t num_data_points,
                                                 uint32_t size_constraint,
@@ -54,11 +55,13 @@ scc_ErrorCode iscc_get_nng_with_type_constraint(void* data_set,
                                                 double radius,
                                                 iscc_Digraph* out_nng);
 
+
 scc_ErrorCode iscc_estimate_avg_seed_dist(void* data_set,
                                           const iscc_SeedResult* seed_result,
                                           const iscc_Digraph* nng,
                                           uint32_t size_constraint,
                                           double* out_avg_seed_dist);
+
 
 scc_ErrorCode iscc_make_nng_clusters_from_seeds(scc_Clustering* clustering,
                                                 void* data_set,

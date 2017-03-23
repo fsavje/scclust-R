@@ -2,7 +2,7 @@
  * scclust for R -- R wrapper for the scclust library
  * https://github.com/fsavje/scclust-R
  *
- * Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2016-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ SEXP Rscc_hierarchical_clustering(const SEXP R_distances,
 		iRscc_error("`R_existing_clustering` is not a valid clustering object.");
 	}
 
-	const uintmax_t num_data_points = (uintmax_t) idist_num_data_points(R_distances);
+	const uint64_t num_data_points = (uint64_t) idist_num_data_points(R_distances);
 	const uint32_t size_constraint = (uint32_t) asInteger(R_size_constraint);
 	const bool batch_assign = (bool) asLogical(R_batch_assign);
 
@@ -72,10 +72,10 @@ SEXP Rscc_hierarchical_clustering(const SEXP R_distances,
 		if (!isInteger(getAttrib(R_existing_clustering, install("cluster_count")))) {
 			iRscc_error("`R_existing_clustering` is not a valid clustering object.");
 		}
-		if (((uintmax_t) xlength(R_existing_clustering)) != num_data_points) {
+		if (((uint64_t) xlength(R_existing_clustering)) != num_data_points) {
 			iRscc_error("`R_existing_clustering` does not match `R_distances`.");
 		}
-		const uintmax_t existing_num_clusters = (uintmax_t) asInteger(getAttrib(R_existing_clustering, install("cluster_count")));
+		const uint64_t existing_num_clusters = (uint64_t) asInteger(getAttrib(R_existing_clustering, install("cluster_count")));
 		if (existing_num_clusters == 0) {
 			iRscc_error("`R_existing_clustering` is empty.");
 		}
@@ -95,14 +95,14 @@ SEXP Rscc_hierarchical_clustering(const SEXP R_distances,
 	}
 
 	if ((ec = scc_hierarchical_clustering(Rscc_get_distances_pointer(R_distances),
-	                                      clustering,
 	                                      size_constraint,
-	                                      batch_assign)) != SCC_ER_OK) {
+	                                      batch_assign,
+	                                      clustering)) != SCC_ER_OK) {
 		scc_free_clustering(&clustering);
 		iRscc_scc_error();
 	}
 
-	uintmax_t num_clusters = 0;
+	uint64_t num_clusters = 0;
 	if ((ec = scc_get_clustering_info(clustering,
 	                                  NULL,
 	                                  &num_clusters)) != SCC_ER_OK) {

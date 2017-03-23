@@ -2,7 +2,7 @@
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
- * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2015-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,7 +32,7 @@ extern "C" {
 
 
 // =============================================================================
-// Structs, types and variables
+// Structs and variables
 // =============================================================================
 
 struct scc_DataSet {
@@ -42,7 +42,9 @@ struct scc_DataSet {
 	const double* data_matrix;
 };
 
+
 static const int32_t ISCC_DATASET_STRUCT_VERSION = 722328001;
+
 
 #ifdef __cplusplus
 }

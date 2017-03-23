@@ -2,7 +2,7 @@
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
- * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2015-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,8 +25,14 @@
 #include "dist_search_imp.h"
 
 
+// =============================================================================
+// External variable initialization
+// =============================================================================
+
+// See "dist_search.h" for definition
 iscc_dist_functions_struct iscc_dist_functions = {
 	.check_data_set = iscc_imp_check_data_set,
+	.num_data_points = iscc_imp_num_data_points,
 	.get_dist_matrix = iscc_imp_get_dist_matrix,
 	.get_dist_rows = iscc_imp_get_dist_rows,
 	.init_max_dist_object = iscc_imp_init_max_dist_object,
@@ -38,10 +44,15 @@ iscc_dist_functions_struct iscc_dist_functions = {
 };
 
 
+// =============================================================================
+// Public function implementations
+// =============================================================================
+
 bool scc_reset_dist_functions(void)
 {
 	iscc_dist_functions = (iscc_dist_functions_struct) {
 		.check_data_set = iscc_imp_check_data_set,
+		.num_data_points = iscc_imp_num_data_points,
 		.get_dist_matrix = iscc_imp_get_dist_matrix,
 		.get_dist_rows = iscc_imp_get_dist_rows,
 		.init_max_dist_object = iscc_imp_init_max_dist_object,
@@ -57,6 +68,7 @@ bool scc_reset_dist_functions(void)
 
 
 bool scc_set_dist_functions(scc_check_data_set check_data_set,
+                            scc_num_data_points num_data_points,
                             scc_get_dist_matrix get_dist_matrix,
                             scc_get_dist_rows get_dist_rows,
                             scc_init_max_dist_object init_max_dist_object,
@@ -68,6 +80,10 @@ bool scc_set_dist_functions(scc_check_data_set check_data_set,
 {
 	if (check_data_set != NULL) {
 		iscc_dist_functions.check_data_set = check_data_set;
+	}
+
+	if (num_data_points != NULL) {
+		iscc_dist_functions.num_data_points = num_data_points;
 	}
 
 	if (get_dist_matrix != NULL) {

@@ -2,7 +2,7 @@
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
- * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2015-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -60,14 +60,21 @@ static inline double iscc_get_sq_dist(const scc_DataSet* const data_set,
 // Miscellaneous functions implementations
 // =============================================================================
 
-bool iscc_imp_check_data_set(void* const data_set,
-                             const size_t num_data_points)
+bool iscc_imp_check_data_set(void* const data_set)
 {
 	if (data_set == NULL) return false;
 	const scc_DataSet* const data_set_cast = (const scc_DataSet*) data_set;
 	if (!scc_is_initialized_data_set(data_set_cast)) return false;
-	if (data_set_cast->num_data_points < num_data_points) return false;
 	return true;
+}
+
+
+size_t iscc_imp_num_data_points(void* const data_set)
+{
+	assert(iscc_imp_check_data_set(data_set));
+	if (data_set == NULL) return 0;
+	const scc_DataSet* const data_set_cast = (const scc_DataSet*) data_set;
+	return data_set_cast->num_data_points;
 }
 
 
@@ -76,7 +83,7 @@ bool iscc_imp_get_dist_matrix(void* const data_set,
                               const scc_PointIndex point_indices[const],
                               double output_dists[])
 {
-	assert(iscc_imp_check_data_set(data_set, 0));
+	assert(iscc_imp_check_data_set(data_set));
 	assert(len_point_indices > 1);
 	assert(output_dists != NULL);
 
@@ -107,7 +114,7 @@ bool iscc_imp_get_dist_rows(void* const data_set,
                             const scc_PointIndex column_indices[const],
                             double output_dists[])
 {
-	assert(iscc_imp_check_data_set(data_set, 0));
+	assert(iscc_imp_check_data_set(data_set));
 	assert(len_query_indices > 0);
 	assert(len_column_indices > 0);
 	assert(output_dists != NULL);
@@ -160,6 +167,7 @@ struct iscc_MaxDistObject {
 	const scc_PointIndex* search_indices;
 };
 
+
 static const int32_t ISCC_MAXDIST_STRUCT_VERSION = 722439001;
 
 
@@ -168,7 +176,7 @@ bool iscc_imp_init_max_dist_object(void* const data_set,
                                    const scc_PointIndex search_indices[const],
                                    iscc_MaxDistObject** const out_max_dist_object)
 {
-	assert(iscc_imp_check_data_set(data_set, 0));
+	assert(iscc_imp_check_data_set(data_set));
 	assert(len_search_indices > 0);
 	assert(out_max_dist_object != NULL);
 
@@ -198,7 +206,7 @@ bool iscc_imp_get_max_dist(iscc_MaxDistObject* const max_dist_object,
 	const size_t len_search_indices = max_dist_object->len_search_indices;
 	const scc_PointIndex* const search_indices = max_dist_object->search_indices;
 
-	assert(iscc_imp_check_data_set(data_set, 0));
+	assert(iscc_imp_check_data_set(data_set));
 	assert(len_search_indices > 0);
 	assert(len_query_indices > 0);
 	assert(out_max_indices != NULL);
@@ -286,6 +294,7 @@ struct iscc_NNSearchObject {
 	const scc_PointIndex* search_indices;
 };
 
+
 static const int32_t ISCC_NN_SEARCH_STRUCT_VERSION = 722294001;
 
 
@@ -313,7 +322,7 @@ bool iscc_imp_init_nn_search_object(void* const data_set,
                                     const scc_PointIndex search_indices[const],
                                     iscc_NNSearchObject** const out_nn_search_object)
 {
-	assert(iscc_imp_check_data_set(data_set, 0));
+	assert(iscc_imp_check_data_set(data_set));
 	assert(len_search_indices > 0);
 	assert(out_nn_search_object != NULL);
 
@@ -347,7 +356,7 @@ bool iscc_imp_nearest_neighbor_search(iscc_NNSearchObject* const nn_search_objec
 	const size_t len_search_indices = nn_search_object->len_search_indices;
 	const scc_PointIndex* const search_indices = nn_search_object->search_indices;
 
-	assert(iscc_imp_check_data_set(data_set, 0));
+	assert(iscc_imp_check_data_set(data_set));
 	assert(len_search_indices > 0);
 	assert(len_query_indices > 0);
 	assert(k > 0);

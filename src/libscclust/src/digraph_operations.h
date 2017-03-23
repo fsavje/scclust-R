@@ -2,7 +2,7 @@
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
- * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2015-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -47,6 +47,7 @@
  *  \note The deletion is stable so that the internal ordering of remaining arcs in \p dg->head is unchanged.
  */
 scc_ErrorCode iscc_delete_loops(iscc_Digraph* dg);
+
 
 /** Calculates the union of arbitrary number of digraphs.
  *
@@ -98,9 +99,11 @@ scc_ErrorCode iscc_digraph_union_and_delete(uint_fast16_t num_in_dgs,
                                             bool keep_self_loops,
                                             iscc_Digraph* out_dg);
 
+
 scc_ErrorCode iscc_digraph_difference(iscc_Digraph* minuend_dg,
                                       const iscc_Digraph* subtrahend_dg,
                                       uint32_t max_out_degree);
+
 
 /** Derives the digraph transpose a digraph.
  *
@@ -129,6 +132,7 @@ scc_ErrorCode iscc_digraph_difference(iscc_Digraph* minuend_dg,
  */
 scc_ErrorCode iscc_digraph_transpose(const iscc_Digraph* in_dg,
                                      iscc_Digraph* out_dg);
+
 
 /** Calculates the product of the adjacency matrices of two digraphs.
  *

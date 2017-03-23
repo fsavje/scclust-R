@@ -4,13 +4,13 @@
 \alias{get_scclust_stats}
 \title{Derive statistics about a clustering.}
 \usage{
-get_scclust_stats(clustering, distances)
+get_scclust_stats(distances, clustering)
 }
 \arguments{
-\item{clustering}{a \code{\link{scclust}} object containing a non-empty clustering.}
-
 \item{distances}{a \code{\link[distances]{distances}} object describing the distances
 between the data points in \code{clustering}.}
+
+\item{clustering}{a \code{\link{scclust}} object containing a non-empty clustering.}
 }
 \value{
 Returns a list of class \code{scclust_stats} containing the statistics.

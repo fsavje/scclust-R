@@ -153,12 +153,14 @@ attr(temp_clustering2, "cluster_count") <- 0L
 c_check_scclust <- function(clustering = temp_clustering1,
                             size_constraint = 2L,
                             type_labels = c(1L, 2L, 1L, 1L, 2L, 1L, 2L, 2L),
-                            type_constraints = c("0" = 0L, "1" = 1L, "2" = 1L)) {
+                            type_constraints = c("0" = 0L, "1" = 1L, "2" = 1L),
+                            primary_data_points = NULL) {
   .Call(Rscc_check_scclust,
         clustering,
         size_constraint,
         unclass(type_labels),
-        type_constraints)
+        type_constraints,
+        primary_data_points)
 }
 
 test_that("`Rscc_check_scclust` checks input.", {
@@ -181,14 +183,16 @@ test_that("`Rscc_check_scclust` checks input.", {
                regexp = "`R_type_constraints` must be integer.")
   expect_error(c_check_scclust(type_constraints = c("0" = 0L, "1" = -1L, "2" = 1L)),
                regexp = "Negative type size constraint.")
+  expect_error(c_check_scclust(primary_data_points = "a"),
+               regexp = "`R_primary_data_points` must be NULL or integer.")
 })
 
 
-c_get_scclust_stats <- function(clustering = temp_clustering1,
-                                distances = distances::distances(matrix(as.numeric(1:16), ncol = 2))) {
+c_get_scclust_stats <- function(distances = distances::distances(matrix(as.numeric(1:16), ncol = 2)),
+                                clustering = temp_clustering1) {
   .Call(Rscc_get_scclust_stats,
-        clustering,
-        distances)
+        distances,
+        clustering)
 }
 
 test_that("`Rscc_get_scclust_stats` checks input.", {

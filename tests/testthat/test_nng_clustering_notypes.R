@@ -75,7 +75,7 @@ test_that("`nng_clustering` returns correct output", {
                            NULL)
   test_nng_against_replica(test_distances1,
                            2L,
-                           "inwards_alt_updating",
+                           "inwards_updating",
                            "ignore",
                            NULL,
                            NULL,
@@ -132,7 +132,7 @@ test_that("`nng_clustering` returns correct output", {
                            NULL)
   test_nng_against_replica(test_distances1,
                            2L,
-                           "inwards_alt_updating",
+                           "inwards_updating",
                            "ignore",
                            NULL,
                            primary_data_points,
@@ -306,7 +306,6 @@ test_that("`nng_clustering` returns correct output (combinations)", {
   for (seed_method in c("lexical",
                         "inwards_order",
                         "inwards_updating",
-                        "inwards_alt_updating",
                         "exclusion_order",
                         "exclusion_updating")) {
     for (unassigned_method in c("ignore",
@@ -323,7 +322,6 @@ test_that("`nng_clustering` returns correct output (combinations)", {
       # scclust with the -DSCC_STABLE_NNG flag make the arc order the same as
       # in R. See <test_nng_clustering_notypes_stable.R>.
       if (seed_method %in% c("inwards_updating",
-                             "inwards_alt_updating",
                              "exclusion_updating")) {
         sc_to_test <- 2L
       }

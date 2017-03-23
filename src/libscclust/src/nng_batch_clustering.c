@@ -2,7 +2,7 @@
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
- * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2015-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,7 +33,7 @@
 
 
 // =============================================================================
-// Internal function prototypes
+// Static function prototypes
 // =============================================================================
 
 #ifdef SCC_STABLE_NNG
@@ -42,17 +42,18 @@ static int iscc_compare_PointIndex(const void* a, const void* b);
 
 #endif // ifdef SCC_STABLE_NNG
 
-scc_ErrorCode iscc_run_nng_batches(scc_Clustering* clustering,
-                                   iscc_NNSearchObject* nn_search_object,
-                                   uint32_t size_constraint,
-                                   bool ignore_unassigned,
-                                   bool radius_constraint,
-                                   double radius,
-                                   const bool primary_data_points[],
-                                   uint32_t batch_size,
-                                   scc_PointIndex* batch_indices,
-                                   scc_PointIndex* out_indices,
-                                   bool* assigned);
+
+static scc_ErrorCode iscc_run_nng_batches(scc_Clustering* clustering,
+                                          iscc_NNSearchObject* nn_search_object,
+                                          uint32_t size_constraint,
+                                          bool ignore_unassigned,
+                                          bool radius_constraint,
+                                          double radius,
+                                          const bool primary_data_points[],
+                                          uint32_t batch_size,
+                                          scc_PointIndex* batch_indices,
+                                          scc_PointIndex* out_indices,
+                                          bool* assigned);
 
 
 // =============================================================================
@@ -72,8 +73,11 @@ scc_ErrorCode scc_nng_clustering_batches(scc_Clustering* const clustering,
 	if (!iscc_check_input_clustering(clustering)) {
 		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Invalid clustering object.");
 	}
-	if (!iscc_check_data_set(data_set, clustering->num_data_points)) {
+	if (!iscc_check_data_set(data_set)) {
 		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Invalid data set object.");
+	}
+	if (iscc_num_data_points(data_set) != clustering->num_data_points) {
+		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Number of data points in data set does not match clustering object.");
 	}
 	if (size_constraint < 2) {
 		return iscc_make_error_msg(SCC_ER_INVALID_INPUT, "Size constraint must be 2 or greater.");
@@ -165,7 +169,7 @@ scc_ErrorCode scc_nng_clustering_batches(scc_Clustering* const clustering,
 
 
 // =============================================================================
-// Internal function implementations
+// Static function implementations
 // =============================================================================
 
 #ifdef SCC_STABLE_NNG
@@ -180,17 +184,17 @@ static int iscc_compare_PointIndex(const void* const a, const void* const b)
 #endif // ifdef SCC_STABLE_NNG
 
 
-scc_ErrorCode iscc_run_nng_batches(scc_Clustering* const clustering,
-                                   iscc_NNSearchObject* const nn_search_object,
-                                   const uint32_t size_constraint,
-                                   const bool ignore_unassigned,
-                                   const bool radius_constraint,
-                                   const double radius,
-                                   const bool primary_data_points[const],
-                                   const uint32_t batch_size,
-                                   scc_PointIndex* const batch_indices,
-                                   scc_PointIndex* const out_indices,
-                                   bool* const assigned)
+static scc_ErrorCode iscc_run_nng_batches(scc_Clustering* const clustering,
+                                          iscc_NNSearchObject* const nn_search_object,
+                                          const uint32_t size_constraint,
+                                          const bool ignore_unassigned,
+                                          const bool radius_constraint,
+                                          const double radius,
+                                          const bool primary_data_points[const],
+                                          const uint32_t batch_size,
+                                          scc_PointIndex* const batch_indices,
+                                          scc_PointIndex* const out_indices,
+                                          bool* const assigned)
 {
 	assert(iscc_check_input_clustering(clustering));
 	assert(clustering->cluster_label != NULL);

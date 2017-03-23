@@ -5,7 +5,7 @@
 \title{Check clustering constraints}
 \usage{
 check_scclust(clustering, size_constraint = NULL, type_labels = NULL,
-  type_constraints = NULL)
+  type_constraints = NULL, primary_data_points = NULL)
 }
 \arguments{
 \item{clustering}{a \code{\link{scclust}} object containing a non-empty clustering.}
@@ -18,6 +18,11 @@ only the type constraints will be checked.}
 
 \item{type_constraints}{a named integer vector containing type-specific size constraints.
 If \code{NULL}, only the overall constraint will be checked.}
+
+\item{primary_data_points}{a vector specifying primary data points, either by point indices
+or with a logical vector of length equal to the number of points.
+\code{NULL} indicates that all data points are "primary".
+\code{check_scclust} checks so no primary data point is unassigned.}
 }
 \value{
 Returns \code{TRUE} if \code{clustering} satisfies the clustering constraints, and

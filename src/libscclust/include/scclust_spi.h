@@ -42,6 +42,7 @@ extern "C" {
 
 typedef struct iscc_MaxDistObject iscc_MaxDistObject;
 
+
 typedef struct iscc_NNSearchObject iscc_NNSearchObject;
 
 
@@ -49,13 +50,17 @@ typedef struct iscc_NNSearchObject iscc_NNSearchObject;
 // Distance search functions
 // =============================================================================
 
-typedef bool (*scc_check_data_set) (void*,
-                                    size_t);
+typedef bool (*scc_check_data_set) (void*);
+
+
+typedef size_t (*scc_num_data_points) (void*);
+
 
 typedef bool (*scc_get_dist_matrix) (void*,
                                      size_t,
                                      const scc_PointIndex*,
                                      double*);
+
 
 typedef bool (*scc_get_dist_rows) (void*,
                                    size_t,
@@ -64,10 +69,12 @@ typedef bool (*scc_get_dist_rows) (void*,
                                    const scc_PointIndex*,
                                    double*);
 
+
 typedef bool (*scc_init_max_dist_object) (void*,
                                           size_t,
                                           const scc_PointIndex*,
                                           iscc_MaxDistObject**);
+
 
 typedef bool (*scc_get_max_dist) (iscc_MaxDistObject*,
                                   size_t,
@@ -75,12 +82,15 @@ typedef bool (*scc_get_max_dist) (iscc_MaxDistObject*,
                                   scc_PointIndex*,
                                   double*);
 
+
 typedef bool (*scc_close_max_dist_object) (iscc_MaxDistObject**);
+
 
 typedef bool (*scc_init_nn_search_object) (void*,
                                            size_t,
                                            const scc_PointIndex*,
                                            iscc_NNSearchObject**);
+
 
 typedef bool (*scc_nearest_neighbor_search) (iscc_NNSearchObject*,
                                              size_t,
@@ -92,6 +102,7 @@ typedef bool (*scc_nearest_neighbor_search) (iscc_NNSearchObject*,
                                              scc_PointIndex*,
                                              scc_PointIndex*);
 
+
 typedef bool (*scc_close_nn_search_object) (iscc_NNSearchObject**);
 
 
@@ -101,7 +112,9 @@ typedef bool (*scc_close_nn_search_object) (iscc_NNSearchObject**);
 
 bool scc_reset_dist_functions(void);
 
+
 bool scc_set_dist_functions(scc_check_data_set,
+                            scc_num_data_points,
                             scc_get_dist_matrix,
                             scc_get_dist_rows,
                             scc_init_max_dist_object,

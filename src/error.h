@@ -2,7 +2,7 @@
  * scclust for R -- R wrapper for the scclust library
  * https://github.com/fsavje/scclust-R
  *
- * Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2016-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,12 +21,16 @@
 #ifndef RSCC_ERROR_HG
 #define RSCC_ERROR_HG
 
+
 #define iRscc_error(msg) (iRscc_error__(msg, __FILE__, __LINE__))
+
 
 void iRscc_error__(const char* msg,
                    const char* file,
                    int line);
 
+
 void iRscc_scc_error();
+
 
 #endif // ifndef RSCC_ERROR_HG

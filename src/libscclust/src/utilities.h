@@ -18,26 +18,19 @@
  * License along with this library. If not, see http://www.gnu.org/licenses/
  * ========================================================================== */
 
+#ifndef SCC_UTILITIES_HG
+#define SCC_UTILITIES_HG
 
-#ifndef SCC_CMOCKA_HEADERS_HG
-#define SCC_CMOCKA_HEADERS_HG
-
-#include <stdarg.h>
 #include <stddef.h>
-#include <setjmp.h>
-#include <cmocka.h>
+#include "../include/scclust.h"
 
-#include <stdlib.h>
-#include <assert.h>
 
-#define malloc(size) _test_malloc(size, __FILE__, __LINE__)
-#define calloc(num, size) _test_calloc(num, size, __FILE__, __LINE__)
-#define realloc(ptr, size) _test_realloc(ptr, size, __FILE__, __LINE__)
-#define free(ptr) _test_free(ptr, __FILE__, __LINE__)
+// =============================================================================
+// Function prototypes
+// =============================================================================
 
-#ifndef NDEBUG
-#undef assert
-#define assert(expression) mock_assert((int)(expression), #expression, __LINE__)
-#endif
+scc_ErrorCode iscc_check_cluster_options(const scc_ClusterOptions* options,
+                                         size_t num_data_points);
 
-#endif // SCC_CMOCKA_HEADERS_HG
+
+#endif // ifndef SCC_UTILITIES_HG

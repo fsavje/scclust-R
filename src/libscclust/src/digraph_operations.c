@@ -2,7 +2,7 @@
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
- * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2015-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,7 +31,7 @@
 
 
 // =============================================================================
-// Internal function prototypes
+// Static function prototypes
 // =============================================================================
 
 static inline uintmax_t iscc_do_union_and_delete(uint_fast16_t num_dgs,
@@ -43,6 +43,7 @@ static inline uintmax_t iscc_do_union_and_delete(uint_fast16_t num_dgs,
                                                  bool write,
                                                  iscc_ArcIndex out_tail_ptr[restrict],
                                                  scc_PointIndex out_head[restrict]);
+
 
 static inline uintmax_t iscc_do_adjacency_product(const iscc_Digraph* dg_a,
                                                   const iscc_Digraph* dg_b,
@@ -296,7 +297,7 @@ scc_ErrorCode iscc_adjacency_product(const iscc_Digraph* const in_dg_a,
 
 
 // =============================================================================
-// Internal function implementations
+// Static function implementations
 // =============================================================================
 
 static inline uintmax_t iscc_do_union_and_delete(const uint_fast16_t num_dgs,

@@ -38,7 +38,6 @@ test_that("`nng_clustering` (stable) returns correct output", {
   for (seed_method in c("lexical",
                         "inwards_order",
                         "inwards_updating",
-                        "inwards_alt_updating",
                         "exclusion_order",
                         "exclusion_updating")) {
     for (unassigned_method in c("ignore",

@@ -2,7 +2,7 @@
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
- * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2015-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -53,6 +53,7 @@
 bool iscc_is_balanced_digraph(const iscc_Digraph* dg,
                               iscc_ArcIndex arcs_per_vertex);
 
+
 /** Checks whether two digraphs are logically identical.
  *
  *  Two digraphs are considered logically identical if they contain
@@ -66,6 +67,7 @@ bool iscc_is_balanced_digraph(const iscc_Digraph* dg,
  */
 bool iscc_digraphs_equal(const iscc_Digraph* dg_a,
                          const iscc_Digraph* dg_b);
+
 
 /** Constructs digraph from separate struct parts.
  *
@@ -83,6 +85,7 @@ scc_ErrorCode iscc_digraph_from_pieces(size_t vertices,
                                        const iscc_ArcIndex tail_ptr[static vertices + 1],
                                        const scc_PointIndex head[static max_arcs],
                                        iscc_Digraph* out_dg);
+
 
 /** Constructs digraph from human readable strings.
  *
@@ -108,6 +111,7 @@ scc_ErrorCode iscc_digraph_from_pieces(size_t vertices,
 scc_ErrorCode iscc_digraph_from_string(const char dg_str[],
                                        iscc_Digraph* out_dg);
 
+
 /** Deep copy of a digraph.
  *
  *  This function produces a deep copy of the inputted digraph.
@@ -120,6 +124,7 @@ scc_ErrorCode iscc_digraph_from_string(const char dg_str[],
  */
 scc_ErrorCode iscc_copy_digraph(const iscc_Digraph* in_dg,
                                 iscc_Digraph* out_dg);
+
 
 /** Print a digraph in human readable format.
  *

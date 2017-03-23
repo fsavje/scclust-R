@@ -2,7 +2,7 @@
  * scclust -- A C library for size constrained clustering
  * https://github.com/fsavje/scclust
  *
- * Copyright (C) 2015-2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2015-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,11 +32,11 @@
 
 
 // =============================================================================
-// External function implementations
+// Public function implementations
 // =============================================================================
 
-scc_ErrorCode scc_init_data_set(const uintmax_t num_data_points,
-                                const uintmax_t num_dimensions,
+scc_ErrorCode scc_init_data_set(const uint64_t num_data_points,
+                                const uint32_t num_dimensions,
                                 const size_t len_data_matrix,
                                 const double data_matrix[const],
                                 scc_DataSet** const out_data_set)

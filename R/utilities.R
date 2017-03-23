@@ -2,7 +2,7 @@
 # scclust for R -- R wrapper for the scclust library
 # https://github.com/fsavje/scclust-R
 #
-# Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
+# Copyright (C) 2016-2017  Fredrik Savje -- http://fredriksavje.com
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,6 +31,10 @@
 #'                    \code{NULL} when \code{type_constraints} is \code{NULL}.
 #' @param type_constraints a named integer vector containing type-specific size constraints.
 #'                         If \code{NULL}, only the overall constraint will be checked.
+#' @param primary_data_points a vector specifying primary data points, either by point indices
+#'                            or with a logical vector of length equal to the number of points.
+#'                            \code{NULL} indicates that all data points are "primary".
+#'                            \code{check_scclust} checks so no primary data point is unassigned.
 #'
 #' @return Returns \code{TRUE} if \code{clustering} satisfies the clustering constraints, and
 #'         \code{FALSE} if it does not. Throws an error if \code{clustering} is an invalid
@@ -97,7 +101,8 @@
 check_scclust <- function(clustering,
                           size_constraint = NULL,
                           type_labels = NULL,
-                          type_constraints = NULL) {
+                          type_constraints = NULL,
+                          primary_data_points = NULL) {
   ensure_scclust(clustering)
   num_data_points <- length(clustering)
   if (is.null(type_constraints)) {
@@ -113,11 +118,19 @@ check_scclust <- function(clustering,
                                                     num_data_points)
   }
 
+  primary_data_points <- coerce_data_point_indices(primary_data_points, num_data_points)
+  if (is.logical(primary_data_points)) {
+    primary_data_points <- which(primary_data_points) - 1L
+  } else if (is.integer(primary_data_points)) {
+    primary_data_points <- primary_data_points - 1L
+  }
+
   .Call(Rscc_check_scclust,
         clustering,
         size_constraint,
         unclass(type_labels),
-        type_constraints)
+        type_constraints,
+        primary_data_points)
 }
 
 
@@ -210,15 +223,15 @@ check_scclust <- function(clustering,
 #' # > cl_avg_dist_unweighted  1.5847484
 #'
 #' @export
-get_scclust_stats <- function(clustering,
-                              distances) {
+get_scclust_stats <- function(distances,
+                              clustering) {
   ensure_scclust(clustering)
   num_data_points <- length(clustering)
   ensure_distances(distances, num_data_points)
 
   clust_stats <- .Call(Rscc_get_scclust_stats,
-                       clustering,
-                       distances)
+                       distances,
+                       clustering)
   structure(clust_stats,
             class = c("scclust_stats"))
 }

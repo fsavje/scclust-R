@@ -2,7 +2,7 @@
  * scclust for R -- R wrapper for the scclust library
  * https://github.com/fsavje/scclust-R
  *
- * Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
+ * Copyright (C) 2016-2017  Fredrik Savje -- http://fredriksavje.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 static const R_CallMethodDef callMethods[] = {
 	{"Rscc_hierarchical_clustering",  (DL_FUNC) &Rscc_hierarchical_clustering,  4},
 	{"Rscc_sc_clustering",            (DL_FUNC) &Rscc_sc_clustering,           12},
-	{"Rscc_check_scclust",            (DL_FUNC) &Rscc_check_scclust,            4},
+	{"Rscc_check_scclust",            (DL_FUNC) &Rscc_check_scclust,            5},
 	{"Rscc_get_scclust_stats",        (DL_FUNC) &Rscc_get_scclust_stats,        2},
 	{NULL,                            NULL,                                     0}
 };
