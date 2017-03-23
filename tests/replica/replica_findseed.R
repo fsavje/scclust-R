@@ -7,8 +7,6 @@ findseeds <- function(nng,
     seeds <- findseeds_inwards_order(nng)
   } else if (seed_method == "inwards_updating") {
     seeds <- findseeds_inwards_updating(nng)
-  } else if (seed_method == "inwards_alt_updating") {
-    seeds <- findseeds_inwards_alt_updating(nng)
   } else if (seed_method == "exclusion_order") {
     seeds <- findseeds_exclusion_order(nng)
   } else if (seed_method == "exclusion_updating") {
@@ -44,35 +42,6 @@ findseeds_inwards_order <- function(nng) {
 
 
 findseeds_inwards_updating <- function(nng) {
-  seeds <- NULL
-  assigned <- rep(FALSE, ncol(nng))
-  inwards_count <- rowSums(nng - diag(diag(nng)))
-  check_order <- order(inwards_count)
-
-  while (length(check_order) > 0) {
-    i <- check_order[1]
-    check_order <- check_order[-1]
-    if (any(nng[, i]) && !any(assigned[nng[, i]])) {
-      seeds <- c(seeds, i)
-      assigned[nng[, i]] <- TRUE
-
-      for (e in which(nng[, i])) {
-        for (nne in intersect(which(nng[, e]), check_order)) {
-          if (any(nng[, nne]) && !assigned[nne]) {
-            swap_pos <- which(inwards_count[check_order] == inwards_count[nne])[1]
-            check_order[check_order == nne] <- check_order[swap_pos]
-            check_order[swap_pos] <- nne
-            inwards_count[nne] <- inwards_count[nne] - 1
-          }
-        }
-      }
-    }
-  }
-  seeds
-}
-
-
-findseeds_inwards_alt_updating <- function(nng) {
   seeds <- NULL
   assigned <- rep(FALSE, ncol(nng))
   inwards_count <- rowSums(nng - diag(diag(nng)))

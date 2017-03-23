@@ -178,7 +178,7 @@
 #' # > TRUE
 #'
 #' # Get statistics about the clustering
-#' get_scclust_stats(my_clustering, my_dist)
+#' get_scclust_stats(my_dist, my_clustering)
 #' # > num_data_points        1.000000e+05
 #' # > ...
 #'

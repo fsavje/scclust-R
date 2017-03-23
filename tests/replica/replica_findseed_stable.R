@@ -4,25 +4,6 @@ findseeds_inwards_updating <- function(nng) {
   tobechecked <- 1:ncol(nng)
 
   while (length(tobechecked) > 0) {
-    i <- tobechecked[order(rowSums(nng[tobechecked, !assigned, drop = FALSE]))[1]]
-    tobechecked <- setdiff(tobechecked, i)
-    if (any(nng[, i]) && !any(assigned[nng[, i]])) {
-      seeds <- c(seeds, i)
-      tobechecked <- setdiff(tobechecked, which(nng[, i]))
-      assigned[nng[, i]] <- TRUE
-    }
-  }
-
-  seeds
-}
-
-
-findseeds_inwards_alt_updating <- function(nng) {
-  seeds <- NULL
-  assigned <- rep(FALSE, ncol(nng))
-  tobechecked <- 1:ncol(nng)
-
-  while (length(tobechecked) > 0) {
     i <- tobechecked[order(rowSums(nng[tobechecked, intersect(which(!assigned), tobechecked), drop = FALSE]))[1]]
     tobechecked <- setdiff(tobechecked, i)
     if (any(nng[, i]) && !any(assigned[nng[, i]])) {

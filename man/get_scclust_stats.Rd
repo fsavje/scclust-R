@@ -70,9 +70,6 @@ where \eqn{num_assigned}{num_assigned} is the number of assigned data points (se
 \deqn{\sum_{c\in C} \frac{AD(c)}{|C|}}{\sum_[c in C] AD(c) / count(C)}
 }
 \examples{
-my_scclust <- scclust(c("A", "A", "B", "C", "B",
-                        "C", "C", "A", "B", "B"))
-
 my_data_points <- data.frame(x = c(0.1, 0.2, 0.3, 0.4, 0.5,
                                    0.6, 0.7, 0.8, 0.9, 1.0),
                              y = c(10, 9, 8, 7, 6,
@@ -80,7 +77,10 @@ my_data_points <- data.frame(x = c(0.1, 0.2, 0.3, 0.4, 0.5,
 
 my_distances <- distances(my_data_points)
 
-get_scclust_stats(my_scclust, my_distances)
+my_scclust <- scclust(c("A", "A", "B", "C", "B",
+                        "C", "C", "A", "B", "B"))
+
+get_scclust_stats(my_distances, my_scclust)
 
 # >                        Value
 # > num_data_points        10.0000000
