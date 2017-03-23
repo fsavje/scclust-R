@@ -26,8 +26,9 @@ The \code{scclust} function constructs a \code{scclust} object
 from existing cluster labels.
 }
 \details{
-\code{scclust} does not derive clusterings from sets of data points; for that
-functionality see \code{\link{sc_clustering}} and \code{\link{hierarchical_clustering}}.
+\code{scclust} does not derive clusterings from sets of data points; see
+\code{\link{sc_clustering}} and \code{\link{hierarchical_clustering}} for
+that functionality.
 }
 \examples{
 # 10 data points in 3 clusters

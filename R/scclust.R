@@ -78,7 +78,7 @@ scclust <- function(cluster_labels,
 }
 
 
-#' Check \code{scclust} object
+#' Check scclust object
 #'
 #' \code{is.scclust} checks whether the provided object
 #' is a valid instance of the \code{\link{scclust}} class.
@@ -102,7 +102,7 @@ is.scclust <- function(x) {
 }
 
 
-#' Count the number of clusters in a clustering
+#' Count number of clusters
 #'
 #' \code{cluster_count} returns the number of clusters in a clustering.
 #'

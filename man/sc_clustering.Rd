@@ -2,7 +2,7 @@
 % Please edit documentation in R/sc_clustering.R
 \name{sc_clustering}
 \alias{sc_clustering}
-\title{Size constrained clustering}
+\title{Size-constrained clustering}
 \usage{
 sc_clustering(distances, size_constraint = NULL, type_labels = NULL,
   type_constraints = NULL, seed_method = "exclusion_updating",
@@ -61,7 +61,7 @@ details). \code{NULL} indicates no radius restriction.}
 Returns a \code{\link{scclust}} object with the derived clustering.
 }
 \description{
-\code{sc_clustering} constructs near-optimal size constrained clusterings.
+\code{sc_clustering} constructs near-optimal size-constrained clusterings.
 Subject to user-specified conditions on the minimum size and composition
 of the clusters, the function derives a partition of a set of data points
 so that the dissimilarity of points assigned to the same cluster is

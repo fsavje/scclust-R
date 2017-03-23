@@ -19,17 +19,17 @@
 # ==============================================================================
 
 
-#' Hierarchical size constrained clustering
+#' Hierarchical size-constrained clustering
 #'
 #' \code{hierarchical_clustering} serves two purposes. Its primary use
 #' is to refine existing clusterings subject to clustering
 #' constraints. That is, given a (non-optimal) clustering satisfying
 #' some constraints, the function splits clusters so to decrease within-cluster
 #' distances without violating the constraints. The function can also be used to
-#' derive size constrained clusterings from scratch. In both cases, it
+#' derive size-constrained clusterings from scratch. In both cases, it
 #' uses a hierarchical clustering algorithm.
 #'
-#' While \code{hierarchical_clustering} can be used alone to derive size constrained
+#' While \code{hierarchical_clustering} can be used alone to derive size-constrained
 #' clusterings, its main purpose is to be used together with \code{\link{sc_clustering}}.
 #' The clusterings produced by the main clustering function are guaranteed to be close to
 #' optimal (in particular, within a constant factor of the optimal solution). However,

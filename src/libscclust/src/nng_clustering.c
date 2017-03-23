@@ -1,5 +1,5 @@
 /* =============================================================================
- * scclust -- A C library for size constrained clustering
+ * scclust -- A C library for size-constrained clustering
  * https://github.com/fsavje/scclust
  *
  * Copyright (C) 2015-2017  Fredrik Savje -- http://fredriksavje.com

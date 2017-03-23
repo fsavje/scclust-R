@@ -19,9 +19,9 @@
 # ==============================================================================
 
 
-#' Size constrained clustering
+#' Size-constrained clustering
 #'
-#' \code{sc_clustering} constructs near-optimal size constrained clusterings.
+#' \code{sc_clustering} constructs near-optimal size-constrained clusterings.
 #' Subject to user-specified conditions on the minimum size and composition
 #' of the clusters, the function derives a partition of a set of data points
 #' so that the dissimilarity of points assigned to the same cluster is

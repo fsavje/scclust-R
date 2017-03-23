@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{get_clustering_stats}
 \alias{get_clustering_stats}
-\title{Clustering statistics}
+\title{Get clustering statistics}
 \usage{
 get_clustering_stats(distances, clustering)
 }
@@ -16,7 +16,7 @@ between the data points in \code{clustering}.}
 Returns a list of class \code{clustering_stats} containing the statistics.
 }
 \description{
-\code{get_clustering_stats} calculates statistics for a clustering.
+\code{get_clustering_stats} calculates statistics about a clustering.
 }
 \details{
 The function reports the following measures:
@@ -31,16 +31,16 @@ The function reports the following measures:
   \code{sum_dists} \tab sum of all within-cluster distances \cr
   \code{min_dist} \tab smallest within-cluster distance \cr
   \code{max_dist} \tab largest within-cluster distance \cr
-  \code{avg_min_dist} \tab average of the clusters' smallest distance \cr
-  \code{avg_max_dist} \tab average of the clusters' largest distance \cr
-  \code{avg_dist_weighted} \tab average of the clusters' average distance weighed by cluster size \cr
-  \code{avg_dist_unweighted} \tab average of the clusters' average distance (unweighed)  \cr
+  \code{avg_min_dist} \tab average of the clusters' smallest distances \cr
+  \code{avg_max_dist} \tab average of the clusters' largest distances \cr
+  \code{avg_dist_weighted} \tab average of the clusters' average distances weighed by cluster size \cr
+  \code{avg_dist_unweighted} \tab average of the clusters' average distances (unweighed)  \cr
 }
 
 Let \eqn{d(i,j)}{d(i,j)} denote the distance between data points \eqn{i}{i} and \eqn{j}{j}. Let \eqn{c}{c} be a cluster
-containing all indices of points assigned to the cluster. Let
+containing the indices of points assigned to the cluster. Let
 \deqn{D(c) = \{d(i,j): i,j \in c \wedge i>j\}}{D(c) = { d(i,j) : i,j in c and i > j }}
-be a set function returning all unique within-cluster distances in \eqn{c}{c}. Let \eqn{C}{C} be a set containing
+be a set function returning all within-cluster distances in \eqn{c}{c}. Let \eqn{C}{C} be a set containing
 all clusters.
 
 \code{sum_dists} is defined as:

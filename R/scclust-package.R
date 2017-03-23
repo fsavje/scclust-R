@@ -19,10 +19,10 @@
 # ==============================================================================
 
 
-#' scclust: R Wrapper for the scclust Library
+#' scclust: Size-constrained clustering
 #'
 #' This package is an R wrapper for the \code{scclust} library. The library
-#' provides functions to construct near-optimal size constrained clusterings.
+#' provides functions to construct near-optimal size-constrained clusterings.
 #' Subject to user-specified constraints on the minimum size and composition
 #' of the clusters, \code{scclust} derives a partition of a set of data points
 #' so that the dissimilarity of points assigned to the same cluster is minimized.

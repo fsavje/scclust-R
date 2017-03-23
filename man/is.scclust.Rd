@@ -2,7 +2,7 @@
 % Please edit documentation in R/scclust.R
 \name{is.scclust}
 \alias{is.scclust}
-\title{Check \code{scclust} object}
+\title{Check scclust object}
 \usage{
 is.scclust(x)
 }
@@ -16,7 +16,7 @@ Returns \code{TRUE} if \code{x} is a valid
 \description{
 \code{is.scclust} checks whether the provided object
 is a valid instance of the \code{\link{scclust}} class.
-It does not check whether the clustering itself is sensible nor
+It does not check whether the clustering itself is sensible or
 whether the clustering satisfies some set of constraints. See
 \code{\link{check_clustering}} for that functionality.
 }

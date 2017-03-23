@@ -134,7 +134,7 @@ check_clustering <- function(clustering,
 }
 
 
-#' Clustering statistics
+#' Get clustering statistics
 #'
 #' \code{get_clustering_stats} calculates statistics about a clustering.
 #'
