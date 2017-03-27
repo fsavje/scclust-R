@@ -7,8 +7,9 @@ Authors@R: c(
     person("Fredrik", "Savje", email = "fredrik.savje@berkeley.edu", role = c("aut", "cre")),
     person("Jasjeet", "Sekhon", role = "aut"))
 Description:
-    Provides functions for computationally efficient size-constrained clustering
-    with near-optimal performance. The package wraps for the `scclust` C library.
+    The package provides wrappers for 'scclust', a C library for computationally
+    efficient size-constrained clustering with near-optimal performance.
+    See <https://github.com/fsavje/scclust> for more information.
 Depends:
     R (>= 3.2.3),
     distances

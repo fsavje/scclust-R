@@ -1,5 +1,11 @@
 ## This is a new package not currently on CRAN
 
+## Resubmission
+ 
+ This is a resubmission. Compared to the previously submitted version, I have:
+ 
+   * Changed the package description, as suggested.
+ 
 
 ## Test environments
 
