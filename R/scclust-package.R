@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-#' scclust: Size-constrained clustering
+#' scclust: Size-Constrained Clustering
 #'
 #' The \code{scclust} package is an R wrapper for the \code{scclust} library.
 #' The package provides functions to construct near-optimal size-constrained

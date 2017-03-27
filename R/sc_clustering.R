@@ -245,12 +245,12 @@
 #'
 #' @examples
 #' # Make example data
-#' my_data <- data.frame(id = 1:100000,
-#'                       type = factor(rbinom(100000, 3, 0.3),
+#' my_data <- data.frame(id = 1:50000,
+#'                       type = factor(rbinom(50000, 3, 0.3),
 #'                                     labels = c("A", "B", "C", "D")),
-#'                       x1 = rnorm(100000),
-#'                       x2 = rnorm(100000),
-#'                       x3 = rnorm(100000))
+#'                       x1 = rnorm(50000),
+#'                       x2 = rnorm(50000),
+#'                       x3 = rnorm(50000))
 #'
 #' # Construct distance metric
 #' my_dist <- distances(my_data,
@@ -266,7 +266,7 @@
 #'
 #' # Get statistics about the clustering
 #' get_clustering_stats(my_dist, my_clustering)
-#' # > num_data_points        1.000000e+05
+#' # > num_data_points        5.000000e+04
 #' # > ...
 #'
 #' # Make clustering with at least one point of each type in each cluster

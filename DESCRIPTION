@@ -1,13 +1,14 @@
 Package: scclust
 Type: Package
-Title: Size-constrained clustering
+Title: Size-Constrained Clustering
 Version: 0.1.0
 Date: 2017-03-23
 Authors@R: c(
     person("Fredrik", "Savje", email = "fredrik.savje@berkeley.edu", role = c("aut", "cre")),
     person("Jasjeet", "Sekhon", role = "aut"))
-Description: Package to construct near-optimal size-constrained clusterings.
-    The package wraps the scclust C library.
+Description:
+    Provides functions for computationally efficient size-constrained clustering
+    with near-optimal performance. The package wraps for the `scclust` C library.
 Depends:
     R (>= 3.2.3),
     distances
