@@ -2,7 +2,7 @@
 % Please edit documentation in R/scclust.R
 \name{cluster_count}
 \alias{cluster_count}
-\title{Count number of clusters}
+\title{Count the number of clusters}
 \usage{
 cluster_count(clustering)
 }

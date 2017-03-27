@@ -10,28 +10,28 @@ check_clustering(clustering, size_constraint = NULL, type_labels = NULL,
 \arguments{
 \item{clustering}{a \code{\link{scclust}} object containing a non-empty clustering.}
 
-\item{size_constraint}{an integer with the required minimum cluster size. If \code{NULL},
-only the type constraints will be checked.}
+\item{size_constraint}{an integer with the required minimum cluster size. If \code{NULL}, only
+the type constraints will be checked.}
 
-\item{type_labels}{a vector containing the type of each data point. May be
-\code{NULL} when \code{type_constraints} is \code{NULL}.}
+\item{type_labels}{a vector containing the type of each data point. May be \code{NULL} when
+\code{type_constraints} is \code{NULL}.}
 
-\item{type_constraints}{a named integer vector containing type-specific size constraints.
-If \code{NULL}, only the overall constraint will be checked.}
+\item{type_constraints}{a named integer vector containing type-specific size constraints. If
+\code{NULL}, only the overall constraint will be checked.}
 
-\item{primary_data_points}{a vector specifying primary data points, either by point indices
-or with a logical vector of length equal to the number of points.
+\item{primary_data_points}{a vector specifying primary data points, either by point indices or with
+a logical vector of length equal to the number of points.
 \code{check_clustering} checks so all primary data points are assigned
-to a cluster. \code{NULL} indicates no such check should be made.}
+to a cluster. \code{NULL} indicates that no such check should be done.}
 }
 \value{
 Returns \code{TRUE} if \code{clustering} satisfies the constraints, and
-        \code{FALSE} if it does not. Throws an error if \code{clustering} is an invalid
-        instance of the \code{\link{scclust}} class.
+   \code{FALSE} if it does not. Throws an error if \code{clustering} is an
+   invalid instance of the \code{\link{scclust}} class.
 }
 \description{
-\code{check_clustering} checks whether a clustering satisfies a set
-of constraints on the size and composition of the clusters.
+\code{check_clustering} checks whether a clustering satisfies constraints
+on the size and composition of the clusters.
 }
 \examples{
 # Example scclust clustering
@@ -62,12 +62,12 @@ check_clustering(my_scclust,
 # > TRUE
 
 
-# Check so each cluster contains one point of each type
+# Check so each cluster contains one data point of both "x" and "z"
 # and at least three points in total
 check_clustering(my_scclust,
                  3,
                  my_types,
-                 c("x" = 1, "y" = 1, "z" = 1))
+                 c("x" = 1, "z" = 1))
 # > TRUE
 
 
@@ -78,17 +78,8 @@ check_clustering(my_scclust,
                  c("y" = 5))
 # > FALSE
 
-
-# Check so each cluster contains one data point of both "x" and "z"
-# and at least three points in total
-check_clustering(my_scclust,
-                 3,
-                 my_types,
-                 c("x" = 1, "z" = 1))
-# > TRUE
-
 }
 \seealso{
 See \code{\link{sc_clustering}} for details on how to specify the
-         \code{type_labels} and \code{type_constraints} parameters.
+   \code{type_labels} and \code{type_constraints} parameters.
 }

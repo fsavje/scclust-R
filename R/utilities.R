@@ -21,27 +21,34 @@
 
 #' Check clustering constraints
 #'
-#' \code{check_clustering} checks whether a clustering satisfies a set
-#' of constraints on the size and composition of the clusters.
+#' \code{check_clustering} checks whether a clustering satisfies constraints
+#' on the size and composition of the clusters.
 #'
-#' @param clustering a \code{\link{scclust}} object containing a non-empty clustering.
-#' @param size_constraint an integer with the required minimum cluster size. If \code{NULL},
-#'                              only the type constraints will be checked.
-#' @param type_labels a vector containing the type of each data point. May be
-#'                    \code{NULL} when \code{type_constraints} is \code{NULL}.
-#' @param type_constraints a named integer vector containing type-specific size constraints.
-#'                         If \code{NULL}, only the overall constraint will be checked.
-#' @param primary_data_points a vector specifying primary data points, either by point indices
-#'                            or with a logical vector of length equal to the number of points.
-#'                            \code{check_clustering} checks so all primary data points are assigned
-#'                            to a cluster. \code{NULL} indicates no such check should be made.
+#' @param clustering
+#'    a \code{\link{scclust}} object containing a non-empty clustering.
+#' @param size_constraint
+#'    an integer with the required minimum cluster size. If \code{NULL}, only
+#'    the type constraints will be checked.
+#' @param type_labels
+#'    a vector containing the type of each data point. May be \code{NULL} when
+#'    \code{type_constraints} is \code{NULL}.
+#' @param type_constraints
+#'    a named integer vector containing type-specific size constraints. If
+#'    \code{NULL}, only the overall constraint will be checked.
+#' @param primary_data_points
+#'    a vector specifying primary data points, either by point indices or with
+#'    a logical vector of length equal to the number of points.
+#'    \code{check_clustering} checks so all primary data points are assigned
+#'    to a cluster. \code{NULL} indicates that no such check should be done.
 #'
-#' @return Returns \code{TRUE} if \code{clustering} satisfies the constraints, and
-#'         \code{FALSE} if it does not. Throws an error if \code{clustering} is an invalid
-#'         instance of the \code{\link{scclust}} class.
+#' @return
+#'    Returns \code{TRUE} if \code{clustering} satisfies the constraints, and
+#'    \code{FALSE} if it does not. Throws an error if \code{clustering} is an
+#'    invalid instance of the \code{\link{scclust}} class.
 #'
-#' @seealso See \code{\link{sc_clustering}} for details on how to specify the
-#'          \code{type_labels} and \code{type_constraints} parameters.
+#' @seealso
+#'    See \code{\link{sc_clustering}} for details on how to specify the
+#'    \code{type_labels} and \code{type_constraints} parameters.
 #'
 #' @examples
 #' # Example scclust clustering
@@ -72,12 +79,12 @@
 #' # > TRUE
 #'
 #'
-#' # Check so each cluster contains one point of each type
+#' # Check so each cluster contains one data point of both "x" and "z"
 #' # and at least three points in total
 #' check_clustering(my_scclust,
 #'                  3,
 #'                  my_types,
-#'                  c("x" = 1, "y" = 1, "z" = 1))
+#'                  c("x" = 1, "z" = 1))
 #' # > TRUE
 #'
 #'
@@ -87,15 +94,6 @@
 #'                  my_types,
 #'                  c("y" = 5))
 #' # > FALSE
-#'
-#'
-#' # Check so each cluster contains one data point of both "x" and "z"
-#' # and at least three points in total
-#' check_clustering(my_scclust,
-#'                  3,
-#'                  my_types,
-#'                  c("x" = 1, "z" = 1))
-#' # > TRUE
 #'
 #' @export
 check_clustering <- function(clustering,
@@ -136,7 +134,7 @@ check_clustering <- function(clustering,
 
 #' Get clustering statistics
 #'
-#' \code{get_clustering_stats} calculates statistics about a clustering.
+#' \code{get_clustering_stats} calculates statistics of a clustering.
 #'
 #' The function reports the following measures:
 #'
@@ -152,15 +150,17 @@ check_clustering <- function(clustering,
 #'   \code{max_dist} \tab largest within-cluster distance \cr
 #'   \code{avg_min_dist} \tab average of the clusters' smallest distances \cr
 #'   \code{avg_max_dist} \tab average of the clusters' largest distances \cr
-#'   \code{avg_dist_weighted} \tab average of the clusters' average distances weighed by cluster size \cr
-#'   \code{avg_dist_unweighted} \tab average of the clusters' average distances (unweighed)  \cr
+#'   \code{avg_dist_weighted} \tab average of the clusters' average distances
+#'      weighed by cluster size \cr
+#'   \code{avg_dist_unweighted} \tab average of the clusters' average distances
+#'      (unweighed)  \cr
 #' }
 #'
-#' Let \eqn{d(i,j)}{d(i,j)} denote the distance between data points \eqn{i}{i} and \eqn{j}{j}. Let \eqn{c}{c} be a cluster
-#' containing the indices of points assigned to the cluster. Let
-#' \deqn{D(c) = \{d(i,j): i,j \in c \wedge i>j\}}{D(c) = { d(i,j) : i,j in c and i > j }}
-#' be a set function returning all within-cluster distances in \eqn{c}{c}. Let \eqn{C}{C} be a set containing
-#' all clusters.
+#' Let \eqn{d(i,j)}{d(i,j)} denote the distance between data points \eqn{i}{i}
+#' and \eqn{j}{j}. Let \eqn{c}{c} be a cluster containing the indices of points
+#' assigned to the cluster. Let \deqn{D(c) = \{d(i,j): i,j \in c \wedge i>j\}}{D(c) = { d(i,j) : i,j in c and i > j }}
+#' be a function returning all within-cluster distances in \eqn{c}{c}. Let
+#' \eqn{C}{C} be a set containing all clusters.
 #'
 #' \code{sum_dists} is defined as:
 #' \deqn{\sum_{c\in C} sum(D(c))}{\sum_[c in C] sum(D(c))}
@@ -183,16 +183,20 @@ check_clustering <- function(clustering,
 #'
 #' \code{avg_dist_weighted} is defined as:
 #' \deqn{\sum_{c\in C} \frac{|c| AD(c)}{num_assigned}}{\sum_[c in C] count(c) * AD(c) / num_assigned}
-#' where \eqn{num_assigned}{num_assigned} is the number of assigned data points (see above).
+#' where \eqn{num_assigned}{num_assigned} is the number of assigned data
+#' points (see above).
 #'
 #' \code{avg_dist_unweighted} is defined as:
 #' \deqn{\sum_{c\in C} \frac{AD(c)}{|C|}}{\sum_[c in C] AD(c) / count(C)}
 #'
-#' @param clustering a \code{\link{scclust}} object containing a non-empty clustering.
-#' @param distances a \code{\link[distances]{distances}} object describing the distances
-#'                  between the data points in \code{clustering}.
+#' @param clustering
+#'    a \code{\link{scclust}} object containing a non-empty clustering.
+#' @param distances
+#'    a \code{\link[distances]{distances}} object describing the distances
+#'    between the data points in \code{clustering}.
 #'
-#' @return Returns a list of class \code{clustering_stats} containing the statistics.
+#' @return
+#'    Returns a list of class \code{clustering_stats} containing the statistics.
 #'
 #' @examples
 #' my_data_points <- data.frame(x = c(0.1, 0.2, 0.3, 0.4, 0.5,

@@ -18,50 +18,52 @@
 # along with this program. If not, see http://www.gnu.org/licenses/
 # ==============================================================================
 
-
 #' Constructor for scclust objects
 #'
-#' The \code{scclust} function constructs a \code{scclust} object
-#' from existing cluster labels.
+#' The \code{scclust} function constructs a \code{scclust} object from existing
+#' cluster labels.
 #'
-#' \code{scclust} does not derive clusterings from sets of data points; see
+#' \code{scclust} does not derive clusters from sets of data points; see
 #' \code{\link{sc_clustering}} and \code{\link{hierarchical_clustering}} for
 #' that functionality.
 #'
-#' @param cluster_labels a vector containing each data point's cluster label.
-#' @param unassigned_labels labels that denote unassigned data points. If \code{NULL},
-#'                          \code{NA} values in \code{cluster_labels} are used to
-#'                          denote unassigned points.
-#' @param ids IDs of the data points. Should be a vector of the same length as
-#'            \code{cluster_labels} or \code{NULL}. If \code{NULL}, the IDs are set to
-#'            \code{1:length(cluster_labels)}.
+#' @param cluster_labels
+#'    a vector containing each data point's cluster label.
+#' @param unassigned_labels
+#'    labels that denote unassigned data points. If \code{NULL}, \code{NA}
+#'    values in \code{cluster_labels} are used to denote unassigned points.
+#' @param ids
+#'    IDs of the data points. Should be a vector of the same length as
+#'    \code{cluster_labels} or \code{NULL}. If \code{NULL}, the IDs are set
+#'    to \code{1:length(cluster_labels)}.
 #'
-#' @return Returns a \code{scclust} object with the clustering described by
-#'         the provided labels.
+#' @return
+#'    Returns a \code{scclust} object with the clustering described by the
+#'    provided labels.
 #'
 #' @examples
 #' # 10 data points in 3 clusters
-#' my_labels1 <- c("A", "A", "B", "C", "B",
-#'                 "C", "C", "A", "B", "B")
-#' my_scclust1 <- scclust(my_labels1)
+#' my_scclust1 <- scclust(c("A", "A", "B", "C", "B",
+#'                          "C", "C", "A", "B", "B"))
 #'
-#' # 8 data points in 3 clusters, 2 points unassigned, integer labels
-#' my_labels2 <- c(1, 1, 2, 3, 2, NA, 3, 1, NA, 2)
-#' my_scclust2 <- scclust(my_labels2)
+#' # 8 data points in 3 clusters, 2 points unassigned
+#' my_scclust2 <- scclust(c(1, 1, 2, 3, 2,
+#'                          NA, 3, 1, NA, 2))
 #'
 #' # Custom labels indicating unassiged points
-#' my_labels3 <- c("A", "A", "B", "C", "NONE",
-#'                 "C", "C", "NONE", "B", "B")
-#' my_scclust3 <- scclust(my_labels3, unassigned_labels = "NONE")
+#' my_scclust3 <- scclust(c("A", "A", "B", "C", "NONE",
+#'                          "C", "C", "NONE", "B", "B"),
+#'                        unassigned_labels = "NONE")
 #'
 #' # Two different labels indicating unassiged points
-#' my_labels4 <- c("A", "A", "B", "C", "NONE",
-#'                 "C", "C", "0", "B", "B")
-#' my_scclust4 <- scclust(my_labels4, unassigned_labels = c("NONE", "0"))
+#' my_scclust4 <- scclust(c("A", "A", "B", "C", "NONE",
+#'                          "C", "C", "0", "B", "B"),
+#'                        unassigned_labels = c("NONE", "0"))
 #'
 #' # Custom data point IDs
-#' my_ids <- letters[1:10]
-#' my_labels1_ids <- scclust(my_labels1, ids = my_ids)
+#' my_labels5 <- scclust(c("A", "A", "B", "C", "B",
+#'                         "C", "C", "A", "B", "B"),
+#'                       ids = letters[1:10])
 #'
 #' @export
 scclust <- function(cluster_labels,
@@ -80,17 +82,19 @@ scclust <- function(cluster_labels,
 
 #' Check scclust object
 #'
-#' \code{is.scclust} checks whether the provided object
-#' is a valid instance of the \code{\link{scclust}} class.
-#' It does not check whether the clustering itself is sensible or
-#' whether the clustering satisfies some set of constraints. See
+#' \code{is.scclust} checks whether the provided object is a valid instance of
+#' the \code{\link{scclust}} class.
+#'
+#' \code{is.scclust} does not check whether the clustering itself is sensible
+#' or whether the clustering satisfies some set of constraints. See
 #' \code{\link{check_clustering}} for that functionality.
 #'
+#' @param x
+#'    object to check.
 #'
-#' @param x  object to check.
-#'
-#' @return Returns \code{TRUE} if \code{x} is a valid
-#'         \code{\link{scclust}} object, otherwise \code{FALSE}.
+#' @return
+#'    Returns \code{TRUE} if \code{x} is a valid \code{\link{scclust}} object,
+#'    otherwise \code{FALSE}.
 #'
 #' @export
 is.scclust <- function(x) {
@@ -102,13 +106,15 @@ is.scclust <- function(x) {
 }
 
 
-#' Count number of clusters
+#' Count the number of clusters
 #'
 #' \code{cluster_count} returns the number of clusters in a clustering.
 #'
-#' @param clustering a \code{\link{scclust}} object containing a non-empty clustering.
+#' @param clustering
+#'    a \code{\link{scclust}} object containing a non-empty clustering.
 #'
-#' @return Returns an integer with the number of clusters in \code{clustering}.
+#' @return
+#'    Returns an integer with the number of clusters in \code{clustering}.
 #'
 #' @examples
 #' # Example scclust clustering

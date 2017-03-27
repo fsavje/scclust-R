@@ -10,13 +10,15 @@ is.scclust(x)
 \item{x}{object to check.}
 }
 \value{
-Returns \code{TRUE} if \code{x} is a valid
-        \code{\link{scclust}} object, otherwise \code{FALSE}.
+Returns \code{TRUE} if \code{x} is a valid \code{\link{scclust}} object,
+   otherwise \code{FALSE}.
 }
 \description{
-\code{is.scclust} checks whether the provided object
-is a valid instance of the \code{\link{scclust}} class.
-It does not check whether the clustering itself is sensible or
-whether the clustering satisfies some set of constraints. See
+\code{is.scclust} checks whether the provided object is a valid instance of
+the \code{\link{scclust}} class.
+}
+\details{
+\code{is.scclust} does not check whether the clustering itself is sensible
+or whether the clustering satisfies some set of constraints. See
 \code{\link{check_clustering}} for that functionality.
 }

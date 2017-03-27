@@ -3,25 +3,26 @@
 \docType{package}
 \name{scclust-package}
 \alias{scclust-package}
-\title{scclust: R Wrapper for the scclust Library}
+\title{scclust: Size-constrained clustering}
 \description{
-This package is an R wrapper for the \code{scclust} library. The library
-provides functions to construct near-optimal size-constrained clusterings.
-Subject to user-specified constraints on the minimum size and composition
-of the clusters, \code{scclust} derives a partition of a set of data points
-so that the dissimilarity of points assigned to the same cluster is minimized.
+The \code{scclust} package is an R wrapper for the \code{scclust} library.
+The package provides functions to construct near-optimal size-constrained
+clusterings. Subject to user-specified constraints on the minimum size and
+composition of the clusters, \code{scclust} constructs a partition of a
+sample of data points so that the within-cluster pair-wise distances are
+minimized.
 }
 \details{
 The main clustering function is \code{\link{sc_clustering}}. Statistics about
-clusterings can be derived with the \code{\link{get_clustering_stats}} function.
-To check if a clustering satisfies some set of clustering constraints use
-\code{\link{check_clustering}}. To construct a \code{scclust} clustering object from
-an existing clustering use \code{\link{scclust}}.
+clusters can be derived with the \code{\link{get_clustering_stats}}
+function. To check if a clustering satisfies some set of
+constraints, use \code{\link{check_clustering}}. Use \code{\link{scclust}} to
+construct a \code{scclust} object from an existing clustering.
 
-Clusterings can also be constructed with \code{\link{hierarchical_clustering}}.
-However, this function only support a subset of constraint options and
-does not provide optimality guarantees. Its main use is to refine clusterings
-produced by the \code{\link{sc_clustering}} function.
+Clusters can also be constructed with \code{\link{hierarchical_clustering}}.
+However, this function does not support type constraints and does not provide
+optimality guarantees. Its main use is to refine clusterings constructed with
+the \code{\link{sc_clustering}} function.
 
 See the package's website for more information:
 \url{https://github.com/fsavje/scclust-R}.
@@ -29,7 +30,16 @@ See the package's website for more information:
 More information about the \code{scclust} library is found here:
 \url{https://github.com/fsavje/scclust}.
 
-Bug reports and suggestions are greatly appreciated. They
-are best reported here:
-\url{https://github.com/fsavje/scclust-R/issues}.
+Bug reports and suggestions are greatly appreciated. They are best reported
+here: \url{https://github.com/fsavje/scclust-R/issues}.
+}
+\references{
+Higgins, Michael J., Fredrik Savje and Jasjeet S. Sekhon (2016),
+\sQuote{Improving massive experiments with threshold blocking},
+\emph{Proceedings of the National Academy of Sciences}, \bold{113:27}, 7369--7376.
+\url{http://www.pnas.org/lookup/doi/10.1073/pnas.1510504113}
+
+Savje, Fredrik and Michael J. Higgins and Jasjeet S. Sekhon (2017),
+\sQuote{Generalized Full Matching}, arXiv 1703.03882.
+\url{https://arxiv.org/abs/1703.03882}
 }

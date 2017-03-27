@@ -2,7 +2,7 @@
 # scclust for R -- R wrapper for the scclust library
 # https://github.com/fsavje/scclust-R
 #
-# Copyright (C) 2016  Fredrik Savje -- http://fredriksavje.com
+# Copyright (C) 2016-2017  Fredrik Savje -- http://fredriksavje.com
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

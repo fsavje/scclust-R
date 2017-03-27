@@ -6,8 +6,8 @@ Date: 2017-03-23
 Authors@R: c(
     person("Fredrik", "Savje", email = "fredrik.savje@berkeley.edu", role = c("aut", "cre")),
     person("Jasjeet", "Sekhon", role = "aut"))
-Description: Provides functions to construct size-constrained clusterings. The package
-    wraps the scclust C library.
+Description: Package to construct near-optimal size-constrained clusterings.
+    The package wraps the scclust C library.
 Depends:
     R (>= 3.2.3),
     distances

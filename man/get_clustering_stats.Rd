@@ -16,7 +16,7 @@ between the data points in \code{clustering}.}
 Returns a list of class \code{clustering_stats} containing the statistics.
 }
 \description{
-\code{get_clustering_stats} calculates statistics about a clustering.
+\code{get_clustering_stats} calculates statistics of a clustering.
 }
 \details{
 The function reports the following measures:
@@ -33,15 +33,17 @@ The function reports the following measures:
   \code{max_dist} \tab largest within-cluster distance \cr
   \code{avg_min_dist} \tab average of the clusters' smallest distances \cr
   \code{avg_max_dist} \tab average of the clusters' largest distances \cr
-  \code{avg_dist_weighted} \tab average of the clusters' average distances weighed by cluster size \cr
-  \code{avg_dist_unweighted} \tab average of the clusters' average distances (unweighed)  \cr
+  \code{avg_dist_weighted} \tab average of the clusters' average distances
+     weighed by cluster size \cr
+  \code{avg_dist_unweighted} \tab average of the clusters' average distances
+     (unweighed)  \cr
 }
 
-Let \eqn{d(i,j)}{d(i,j)} denote the distance between data points \eqn{i}{i} and \eqn{j}{j}. Let \eqn{c}{c} be a cluster
-containing the indices of points assigned to the cluster. Let
-\deqn{D(c) = \{d(i,j): i,j \in c \wedge i>j\}}{D(c) = { d(i,j) : i,j in c and i > j }}
-be a set function returning all within-cluster distances in \eqn{c}{c}. Let \eqn{C}{C} be a set containing
-all clusters.
+Let \eqn{d(i,j)}{d(i,j)} denote the distance between data points \eqn{i}{i}
+and \eqn{j}{j}. Let \eqn{c}{c} be a cluster containing the indices of points
+assigned to the cluster. Let \deqn{D(c) = \{d(i,j): i,j \in c \wedge i>j\}}{D(c) = { d(i,j) : i,j in c and i > j }}
+be a function returning all within-cluster distances in \eqn{c}{c}. Let
+\eqn{C}{C} be a set containing all clusters.
 
 \code{sum_dists} is defined as:
 \deqn{\sum_{c\in C} sum(D(c))}{\sum_[c in C] sum(D(c))}
@@ -64,7 +66,8 @@ be the average within-cluster distance in cluster \eqn{c}{c}.
 
 \code{avg_dist_weighted} is defined as:
 \deqn{\sum_{c\in C} \frac{|c| AD(c)}{num_assigned}}{\sum_[c in C] count(c) * AD(c) / num_assigned}
-where \eqn{num_assigned}{num_assigned} is the number of assigned data points (see above).
+where \eqn{num_assigned}{num_assigned} is the number of assigned data
+points (see above).
 
 \code{avg_dist_unweighted} is defined as:
 \deqn{\sum_{c\in C} \frac{AD(c)}{|C|}}{\sum_[c in C] AD(c) / count(C)}

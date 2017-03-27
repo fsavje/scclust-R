@@ -22,140 +22,212 @@
 #' Size-constrained clustering
 #'
 #' \code{sc_clustering} constructs near-optimal size-constrained clusterings.
-#' Subject to user-specified conditions on the minimum size and composition
-#' of the clusters, the function derives a partition of a set of data points
-#' so that the dissimilarity of points assigned to the same cluster is
-#' minimized.
+#' Subject to user-specified constraints on the size and composition
+#' of the clusters, a clustering
+#' is constructed so that within-cluster pair-wise distances are minimized. The
+#' function does not restrict the number of clusters.
 #'
-#' \code{sc_clustering} implements an algorithm that first summaries the distance
-#' information between data points in a sparse graph and then constructs the clusterings
-#' based on the graph. This makes the function run fast while ensuring
-#' near-optimal performance. It is possible to constrain the clustering so that each
-#' cluster contains at least a certain number of points in total. If there are different
-#' types of points, each cluster can also be constrained to contain a certain number of
-#' points of each type. For example, in a sample with "red" and "blue" data points, one
-#' can constrain the clusters so that each contains at least 10 points in total and at
-#' least 5 "blue" points.
+#' \code{sc_clustering} constructs a clustering so to minimize within-cluster
+#' dissimilarities while ensuring that constraints on the size and
+#' composition of the clusters are satisfied. It is possible to impose an overall size
+#' constraint so that each cluster must contain at least a certain number of
+#' points in total. It is also possible to impose constraints on the composition
+#' of the clusters so that each cluster must contain a certain number of points
+#' of different types. For example, in a sample with "red" and "blue" data
+#' points, one can constrain the clustering so that each cluster must contain at least
+#' 10 points in total of which at least 3 must be "red" and at least 2 must be
+#' "blue".
 #'
-#' The vertices in the graph that \code{sc_clustering} constructs represent data points. Arcs
-#' in the graph are weighted by the distance between the data points.
-#' The graph is the smallest graph such that the neighborhood of each vertex satsifies
-#' the clustering constraints supplied by the user. By picking vertices ("seeds") with
-#' non-overlapping neighborhoods and constructing clusters as supersets of the neighborhoods,
-#' we ensure that the clustering will satisfy the constraints. While all methods of picking
-#' seeds yield near-optimal clusterings, we typically want as many seeds as possible; this
-#' will lead to many clusters and, thus, smaller clusters. The \code{seed_method} option
-#' specifies how the seeds are picked.
+#' The function implements an algorithm that first summaries the distances
+#' between data points in a sparse graph and then constructs the
+#' clustering based on the graph. This admits fast execution while ensuring
+#' near-optimal performance. In particular, the maximum within-cluster distance
+#' is garantueed
+#' to be at most four times the maximum distance in the optimal clustering. The average
+#' performance is much close to optimal than the worst case bound.
 #'
-#' When \code{seed_method} is set to "lexical", seeds are picked in lexical order. This
-#' allows us to find the seeds quickly. However, we might pick points that are central
-#' in the sparse graph with this method. When central points are seeds, they will exclude
-#' many other points from being seeds and, thus, lead to larger clusters The "exclusion_order"
-#' and "exclusion_updating" options calculates, for each vertex, how many other vertices are
-#' excluded if the vertex is picked. By picking vertices that exclude few vertices, we avoid
-#' central points and, thereby, increase the number of seeds. "exclusion_updating" updates
-#' the count after each picked seed so that already excluded vertices are not counted twice;
-#' "exclusion_order" derives the count once.
+#' In more detail, the clustering algorithm has four steps:
 #'
-#' Deriving the exclusion count is an expensive operation. The "inwards_order" and
-#' "inwards_updating" options count the number of inwards-pointing arcs in the graph,
-#' which approximates the exclusion count.  "inwards_updating" updates the count after
-#' each picked seed, while "inwards_order" derives the count once. The "batches" option
-#' is identical to "lexical" but it derives the graph in batches. This limits memory use
-#' to a constant value decided by \code{batch_size}. This can be useful with large size
-#' constraints. The "batches" option is still experimental and can currently only be used
-#' when there is no type constraints.
+#' \enumerate{
+#'   \item Construct sparse graph encoding clustering constraints.
+#'   \item Select a set of vertices in the graph to act as "seeds".
+#'   \item Construct initial clusters from the seeds' neighborhoods in the graph.
+#'   \item Assign remaining data points to clusters.
+#' }
 #'
-#' The \code{seed_radius} option limits the maximum distance between adjencent vertices
-#' in the sparse graph. If a distance in a point's neighborhood is greater than the radius,
-#' the neighborhood will be deleted and the point cannot be a seed (it can, however, be in
-#' other points' neighborhoods). As
+#' Each data point is represented by a vertex in the sparse graph, and arcs are
+#' weighted by the distance between the data points they connect. The graph is
+#' constructed so that each vertex's neighborhood satisfies the clustering
+#' constraints supplied by the user. For example, if the clusters must contain
+#' at least five points, each closed neighborhood in the graph will contain five
+#' vertices. \code{sc_clustering} constructs the graph that minimize the arc
+#' weights subject to the neighborhood constraints; this ensures near-optimal
+#' performance. The function selects "seeds" that have non-overlapping
+#' neighborhood in the graph. By constructing clusters as supersets of the
+#' neighborhoods, it ensures that the clustering will satisfy the constraints
+#' imposed by the user.
 #'
-#' Some data points might not be in a neighborhood of a seed and will, therefore, not be
-#' assigned to a cluster at this point. \code{primary_unassigned_method} specifies how
-#' the unassigned points are assigned. With the "ignore" option, the points are left unassigned.
-#' With the "any_neighbor", the function re-uses the sparse graph and assigns the unassigned
-#' points to any neighborhood that is adjencent to the point in the graph. The "closest_assigned"
-#' option assigns each point to the cluster that contain its closest assigned vertex, and the
-#' "closest_seed" option assigns to the cluster that contain the closest seed. All these options
-#' ensure near-optimal clusterings.
+#' The \code{seed_method} option decides how the seeds are chosen. Any set of
+#' seeds yields a near-optimal clustering, but, heuristically, performance can
+#' be improved by picking the seeds more carefully. In most cases, smaller
+#' clusters are desirable since they tend to minimize within-cluster distances.
+#' As the number of data points is fixed, we minimize the cluster size by
+#' maximizing the number of clusters (and, thus, the number of seeds). When
+#' \code{seed_method} is set to "lexical", seeds are chosen in lexical order.
+#' This admits a fast solution, but the function might pick points that are
+#' central in the graph. Central points tend to exclude many other points from
+#' being seeds and, thus, lead to larger clusters.
 #'
-#' Radius ..
+#' The "exclusion_order" and "exclusion_updating" options calculates, for each
+#' vertex, how many other vertices are excluded if a vertex is picked as a seed.
+#' By picking seeds that exclude few other vertices, the function avoids
+#' central points and increases the number of seeds. "exclusion_updating"
+#' updates the count after each picked seed so that already excluded vertices
+#' are not counted twice; "exclusion_order" derives the count once. The former
+#' option is, thus, better-performing but slower.
 #'
-#' Occasionally, some data points in our clustering problem are allowed to be left unassigned.
-#' For example, assume that we are using clustering for a prediction problem. We have a set of
-#' training points with known values of some outcome of interest, and a set of test points
-#' whose values we want to predict. Clustering the points, we can use the cluster mean of the
-#' training point to predict the values of the test points in the cluster. To make this viable,
-#' we need that each cluster contains at least one training point -- this is exactly what
-#' \code{type_labels} and \code{type_constraints} do for us. We also need that each test point
-#' is assigned to a cluster. We do, however, not need that each training point is assigned.
-#' In this case, by specifying only the test points in \code{primary_data_points}, we ensure
-#' that each of these points will be assigned to clusters. The points not specified in
-#' \code{primary_data_points} (i.e., the training points in our case) will be assigned to
-#' clustering only insofar that it is needed to satisfy the clustering constraints. These
-#' points are called "secondary". This can lead to large improvements in the clustering
-#' if the types of points are unevenly spaced.
+#' Deriving the exclusion count is an expensive operation, and it might not be
+#' feasible to use the option in very large samples. The "inwards_order" and
+#' "inwards_updating" options count the number of inwards-pointing arcs in the
+#' graph, which approximates the exclusion count. "inwards_updating" updates
+#' the count after each picked seed, while "inwards_order" derives the count
+#' once. The "batches" option is identical to "lexical" but it derives the
+#' graph in batches. This limits the memory complexity to a constant value proportional to
+#' \code{batch_size}. This can be useful when one imposes large size constraints. The
+#' "batches" option is still experimental and can currently only be used when
+#' one does not impose type constraints.
 #'
-#' In most cases, we do not want to discard all unassigned secondary points -- some of them
-#' will, occasionally, be close to a cluster and contain useful information. Similar to
-#' \code{primary_unassigned_method}, we can use the \code{secondary_unassigned_method}
-#' to specify how the leftover secondary points should be assigned. The three possible
-#' options are "ignore", "closest_assigned" and "closest_seed".
+#' Once the function has selected seeds so that no additional points can be
+#' selected without creating overlap in the graph, it constructs the initial
+#' clusters. A unique cluster label is assigned to each seed, and all points
+#' in the seed's neighborhood is assigned the same label. Some
+#' data points might not be in a neighborhood of a seed and will, therefore,
+#' not be assigned to a cluster after the initial clusters have been formed.
+#' \code{primary_unassigned_method} specifies how the unassigned points are
+#' assigned. With the "ignore" option, the points are left unassigned. With the
+#' "any_neighbor", the function re-uses the sparse graph and assigns the
+#' unassigned points to any adjacent cluster in the graph. The "closest_assigned"
+#' option assigns the points to the clusters that contain their closest assigned
+#' vertex, and the "closest_seed" option assigns to the cluster that contain
+#' the closest seed. All these options ensure that the clustering is near-optimal.
 #'
-#' Radius...
+#' Occasionally, some data points are allowed to be
+#' left unassigned.  Consider the following prediction problem as an example. We
+#' have a set of data points with a known outcome value ("training points") and
+#' another set of points for which the outcome is unknown ("prediction points").
+#' We want to use the training points to predict the outcome for the prediction
+#' points. By clustering the data, we can use the cluster mean of the training
+#' points to predict the values of the prediction points in the same cluster. To
+#' make this viable, we need to ensure that each cluster contains at least one training
+#' point (the cluster mean would otherwise be undefined). We can impose this constraint using the \code{type_labels} and \code{type_constraints}
+#' options. We also need to make sure that each prediction point is assigned to a cluster. We
+#' do, however, not need that all training points are assigned a cluster; some training points might not provide useful information (e.g.,  if they are very dissimilar to all prediction points). In this case, by
+#' specifying only the prediction points in \code{primary_data_points}, we ensure
+#' that all those points are assigned to clusters. The points not
+#' specified in \code{primary_data_points} (i.e., the training points) will be assigned to clustering only insofar that it is needed to
+#' satisfy the clustering constraints. This can lead to large improvements in the clustering if the types of points
+#' are unevenly distributed in the metric space. Points not specified in \code{primary_data_points} are called "secondary".
 #'
+#' Generally, one does not want to discard all unassigned secondary points --
+#' some of them will, occasionally, be close to a cluster and contain useful
+#' information. Similar to \code{primary_unassigned_method}, we can use the
+#' \code{secondary_unassigned_method} to specify how the leftover secondary
+#' points should be assigned. The three possible options are "ignore",
+#' "closest_assigned" and "closest_seed". In nearly all cases, it is beneficial to
+#' impose a radius constraint when assigning secondary points (see below for
+#' details).
 #'
+#' \code{sc_clustering} tries to minimize within-cluster distances subject to that all
+#' (primary) data points are assigned to clusters. In some cases, it might be
+#' beneficial to leave some points unassigned to avoid clusters with very dissimilar points. The
+#' function has options that can be used to indirectly constrain the maximum within-cluster
+#' distance. Specifically, by restricting the maximum distance in the four steps of the function,
+#' we can bound the maximum within-cluster distance. The bound is, however, a blunt tool. A too
+#' small bound might lead to that only a few data points are assigned to clusters.
+#' If a bound is needed, it is recommended to use a very liberal bound. This will avoid the very dissimilar clusters, but let the function optimize
+#' the remaining cluster assignments.
 #'
-#' @param distances a \code{\link[distances]{distances}} object with distances
-#'                  between the data points.
+#' The \code{seed_radius} option limits the maximum distance between
+#' adjacent vertices in the sparse graph. If the distance to a neighbor in a point's
+#' neighborhood is greater than \code{seed_radius}, the neighborhood will be deleted and
+#' the point is not allowed be a seed (it can, however, still be in other points'
+#' neighborhoods). The \code{primary_radius} option limits the maximum distance
+#' when a primary point is assigned to in the fourth step. When \code{primary_radius} is set
+#' to a positive numeric value, this will be used to as the radius restriction. "no_radius" and \code{NULL} indicate
+#' no restriction. "seed_radius" indicates that the same restriction as \code{seed_radius} should be used, and "estimated_radius"
+#' sets the restriction to the estimated average distance between the seeds and their neighbors. When \code{primary_unassigned_method}
+#' is set to "any_neighbor", \code{primary_radius} must be set to "seed_radius".
 #'
-#' @param size_constraint an integer with the required minimum cluster size.
+#' The way the radius constraints restrict the maximum within-cluster distance depends on the \code{primary_unassigned_method}
+#' option. When \code{primary_unassigned_method} is "ignore", the maximum distance is bounded by 2 * \code{seed_radius}.
+#' When \code{primary_unassigned_method} is "any_neighbor", it is bounded by 4 * \code{seed_radius}. When \code{primary_unassigned_method} is "closest_assigned",
+#' it is bounded by 2 * \code{seed_radius} + 2 * \code{primary_radius}. When \code{primary_unassigned_method} is "closest_seed",
+#' it is bounded by the maximum of 2 * \code{seed_radius} and 2 * \code{primary_radius}.
 #'
-#' @param type_labels a vector containing the type of each data point. May be
-#'                    \code{NULL} when \code{type_constraints} is \code{NULL}.
+#' The \code{secondary_radius} option restricts how secondary points are assigned, but is otherwise identical to the \code{primary_radius} option.
 #'
-#' @param type_constraints a named integer vector containing type-specific size constraints.
-#'                         If \code{NULL}, only the overall constraint given by
-#'                         \code{size_constraint} will be imposed on the clustering.
+#' @param distances
+#'    a \code{\link[distances]{distances}} object with distances between the
+#'    data points.
+#' @param size_constraint
+#'    an integer with the required minimum cluster size.
+#' @param type_labels
+#'    a vector containing the type of each data point. May be \code{NULL} when
+#'    \code{type_constraints} is \code{NULL}.
+#' @param type_constraints
+#'    a named integer vector containing type-specific size constraints. If
+#'    \code{NULL}, only the overall constraint given by \code{size_constraint}
+#'    will be imposed on the clustering.
+#' @param seed_method
+#'    a character scalar indicating how seeds should be selected.
+#' @param primary_data_points
+#'    a vector specifying primary data points, either with point indices or with
+#'    a logical vector of length equal to the number of points. \code{NULL}
+#'    indicates that all data points are "primary".
+#' @param primary_unassigned_method
+#'    a character scalar indicating how unassigned (primary) points should be
+#'    assigned to clusters.
+#' @param secondary_unassigned_method
+#'    a character scalar indicating how unassigned secondary points should be
+#'    assigned to clusters.
+#' @param seed_radius
+#'    a positive numeric scalar restricting the maximum length of an edge in the
+#'    graph used to construct the clustering. \code{NULL} indicates no restriction.
+#'    This parameter (together with \code{primary_radius} and \code{secondary_radius})
+#'    can be used to control the maximum distance between points assigned to the
+#'    same cluster (see below for details).
+#' @param primary_radius
+#'    a positive numeric scalar, a character scalar or NULL restricting the match
+#'    distance for unassigned primary points. If numeric, the value is used to
+#'    restrict the distances. If character, it must be one of "no_radius",
+#'    "seed_radius" or "estimated_radius" (see below for details). \code{NULL}
+#'    indicates no radius restriction.
+#' @param secondary_radius
+#'    a positive numeric scalar, a character scalar or NULL restricting the match
+#'    distance for unassigned secondary points. If numeric, the value is used to
+#'    restrict the distances. If character, it must be one of "no_radius",
+#'    "seed_radius" or "estimated_radius" (see below for details). \code{NULL}
+#'    indicates no radius restriction.
+#' @param batch_size
+#'    an integer scalar specifying batch size when \code{seed_method} is set to
+#'    "batches".
 #'
-#' @param seed_method a character scalar indicating how seeds should be found.
+#' @return
+#'    Returns a \code{\link{scclust}} object with the derived clustering.
 #'
-#' @param primary_data_points a vector specifying primary data points, either by point indices
-#'                            or with a logical vector of length equal to the number of points.
-#'                            \code{NULL} indicates that all data points are "primary".
+#' @seealso
+#'    \code{\link{hierarchical_clustering}} can be used to refine the clustering
+#'    constructed by \code{sc_clustering}.
 #'
-#' @param primary_unassigned_method a character scalar indicating how unassigned (primary) points
-#'                                  should be assigned to clusters.
+#' @references
+#' Higgins, Michael J., Fredrik Savje and Jasjeet S. Sekhon (2016),
+#' \sQuote{Improving massive experiments with threshold blocking},
+#' \emph{Proceedings of the National Academy of Sciences}, \bold{113:27}, 7369--7376.
+#' \url{http://www.pnas.org/lookup/doi/10.1073/pnas.1510504113}
 #'
-#' @param secondary_unassigned_method a character scalar indicating how unassigned secondary points
-#'                                    should be assigned to clusters.
-#'
-#' @param seed_radius a positive numeric scalar restricting the maximum length of an edge in the
-#'                    graph used to construct the clustering. \code{NULL} indicates
-#'                    no restriction. This parameter (together with \code{primary_radius} and
-#'                    \code{secondary_radius}) can be used to control the maximum distance
-#'                    between points assigned to the same cluster (see below for details).
-#'
-#' @param primary_radius a positive numeric scalar, a character scalar or NULL restricting the
-#'                       match distance for unassigned primary points. If numeric, the value
-#'                       is used to restrict the distances. If character, it must be one of
-#'                       "no_radius", "seed_radius" or "estimated_radius" (see below for
-#'                       details). \code{NULL} indicates no radius restriction.
-#'
-#' @param secondary_radius a positive numeric scalar, a character scalar or NULL restricting the
-#'                         match distance for unassigned primary points. If numeric, the value
-#'                         is used to restrict the distances. If character, it must be one of
-#'                         "no_radius", "seed_radius" or "estimated_radius" (see below for
-#'                         details). \code{NULL} indicates no radius restriction.
-#'
-#' @param batch_size an integer scalar specifying batch size when \code{seed_method} is set to
-#'                   "batches".
-#'
-#' @return Returns a \code{\link{scclust}} object with the derived clustering.
-#'
-#' @seealso \code{\link{hierarchical_clustering}} can be used to refine the clustering
-#'          constructed by \code{sc_clustering}.
+#' Savje, Fredrik and Michael J. Higgins and Jasjeet S. Sekhon (2017),
+#' \sQuote{Generalized Full Matching}, arXiv 1703.03882.
+#' \url{https://arxiv.org/abs/1703.03882}
 #'
 #' @examples
 #' # Make example data
@@ -169,8 +241,7 @@
 #' # Construct distance metric
 #' my_dist <- distances(my_data,
 #'                      id_variable = "id",
-#'                      dist_variables = c("x1", "x2", "x3"),
-#'                      normalize = "mahalanobize")
+#'                      dist_variables = c("x1", "x2", "x3"))
 #'
 #' # Make clustering with at least 3 data points in each cluster
 #' my_clustering <- sc_clustering(my_dist, 3)
@@ -198,7 +269,7 @@
 #' # > TRUE
 #'
 #' # Make clustering with at least 8 points in total of which at least
-#' # one must be "A" and 2 "Bs" and five can be any type
+#' # one must be "A", two must be "B" and five can be any type
 #' my_clustering <- sc_clustering(my_dist,
 #'                                size_constraint = 8,
 #'                                type_labels = my_data$type,
@@ -216,7 +287,7 @@ sc_clustering <- function(distances,
                           secondary_unassigned_method = "ignore",
                           seed_radius = NULL,
                           primary_radius = "seed_radius",
-                          secondary_radius = NULL,
+                          secondary_radius = "estimated_radius",
                           batch_size = 100L) {
   ensure_distances(distances)
   num_data_points <- length(distances)
