@@ -37,9 +37,6 @@
     > Maintainer: 'Fredrik Savje <fredrik.savje@berkeley.edu>'
     >
     > New submission
-    >
-    > Possibly mis-spelled words in DESCRIPTION:
-    >  scclust (11:63)
 
 
 ## Downstream dependencies
