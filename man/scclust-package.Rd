@@ -7,10 +7,9 @@
 \description{
 The \code{scclust} package is an R wrapper for the \code{scclust} library.
 The package provides functions to construct near-optimal size-constrained
-clusterings. Subject to user-specified constraints on the minimum size and
-composition of the clusters, \code{scclust} constructs a partition of a
-sample of data points so that the within-cluster pair-wise distances are
-minimized.
+clusterings. Subject to user-specified constraints on the size and composition
+of the clusters, \code{scclust} constructs a clustering so that within-cluster
+pair-wise distances are minimized.
 }
 \details{
 The main clustering function is \code{\link{sc_clustering}}. Statistics about
@@ -23,6 +22,9 @@ Clusters can also be constructed with \code{\link{hierarchical_clustering}}.
 However, this function does not support type constraints and does not provide
 optimality guarantees. Its main use is to refine clusterings constructed with
 the \code{\link{sc_clustering}} function.
+
+\code{scclust} was made with large data sets in mind, and it can cluster tens
+of millions of data points within minutes on an ordinary desktop computer.
 
 See the package's website for more information:
 \url{https://github.com/fsavje/scclust-R}.

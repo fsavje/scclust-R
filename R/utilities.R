@@ -21,8 +21,8 @@
 
 #' Check clustering constraints
 #'
-#' \code{check_clustering} checks whether a clustering satisfies constraints
-#' on the size and composition of the clusters.
+#' \code{check_clustering} checks whether a clustering satisfies constraints on
+#' the size and composition of the clusters.
 #'
 #' @param clustering
 #'    a \code{\link{scclust}} object containing a non-empty clustering.

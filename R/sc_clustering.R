@@ -22,29 +22,28 @@
 #' Size-constrained clustering
 #'
 #' \code{sc_clustering} constructs near-optimal size-constrained clusterings.
-#' Subject to user-specified constraints on the size and composition
-#' of the clusters, a clustering
-#' is constructed so that within-cluster pair-wise distances are minimized. The
-#' function does not restrict the number of clusters.
+#' Subject to user-specified constraints on the size and composition of the
+#' clusters, a clustering is constructed so that within-cluster pair-wise
+#' distances are minimized. The function does not restrict the number of
+#' clusters.
 #'
 #' \code{sc_clustering} constructs a clustering so to minimize within-cluster
-#' dissimilarities while ensuring that constraints on the size and
-#' composition of the clusters are satisfied. It is possible to impose an overall size
+#' dissimilarities while ensuring that constraints on the size and composition
+#' of the clusters are satisfied. It is possible to impose an overall size
 #' constraint so that each cluster must contain at least a certain number of
 #' points in total. It is also possible to impose constraints on the composition
 #' of the clusters so that each cluster must contain a certain number of points
 #' of different types. For example, in a sample with "red" and "blue" data
-#' points, one can constrain the clustering so that each cluster must contain at least
-#' 10 points in total of which at least 3 must be "red" and at least 2 must be
-#' "blue".
+#' points, one can constrain the clustering so that each cluster must contain
+#' at least 10 points in total of which at least 3 must be "red" and at least
+#' 2 must be "blue".
 #'
 #' The function implements an algorithm that first summaries the distances
-#' between data points in a sparse graph and then constructs the
-#' clustering based on the graph. This admits fast execution while ensuring
-#' near-optimal performance. In particular, the maximum within-cluster distance
-#' is garantueed
-#' to be at most four times the maximum distance in the optimal clustering. The average
-#' performance is much close to optimal than the worst case bound.
+#' between data points in a sparse graph and then constructs the clustering
+#' based on the graph. This admits fast execution while ensuring near-optimal
+#' performance. In particular, the maximum within-cluster distance is garantueed
+#' to be at most four times the maximum distance in the optimal clustering.
+#' The average performance is much closer to optimal than the worst case bound.
 #'
 #' In more detail, the clustering algorithm has four steps:
 #'
@@ -92,10 +91,10 @@
 #' graph, which approximates the exclusion count. "inwards_updating" updates
 #' the count after each picked seed, while "inwards_order" derives the count
 #' once. The "batches" option is identical to "lexical" but it derives the
-#' graph in batches. This limits the memory complexity to a constant value proportional to
-#' \code{batch_size}. This can be useful when one imposes large size constraints. The
-#' "batches" option is still experimental and can currently only be used when
-#' one does not impose type constraints.
+#' graph in batches. This limits the memory complexity to a constant value
+#' proportional to \code{batch_size}. This can be useful when one imposes large
+#' size constraints. The "batches" option is still experimental and can
+#' currently only be used when one does not impose type constraints.
 #'
 #' Once the function has selected seeds so that no additional points can be
 #' selected without creating overlap in the graph, it constructs the initial
@@ -118,53 +117,68 @@
 #' We want to use the training points to predict the outcome for the prediction
 #' points. By clustering the data, we can use the cluster mean of the training
 #' points to predict the values of the prediction points in the same cluster. To
-#' make this viable, we need to ensure that each cluster contains at least one training
-#' point (the cluster mean would otherwise be undefined). We can impose this constraint using the \code{type_labels} and \code{type_constraints}
-#' options. We also need to make sure that each prediction point is assigned to a cluster. We
-#' do, however, not need that all training points are assigned a cluster; some training points might not provide useful information (e.g.,  if they are very dissimilar to all prediction points). In this case, by
-#' specifying only the prediction points in \code{primary_data_points}, we ensure
-#' that all those points are assigned to clusters. The points not
-#' specified in \code{primary_data_points} (i.e., the training points) will be assigned to clustering only insofar that it is needed to
-#' satisfy the clustering constraints. This can lead to large improvements in the clustering if the types of points
-#' are unevenly distributed in the metric space. Points not specified in \code{primary_data_points} are called "secondary".
+#' make this viable, we need to ensure that each cluster contains at least one
+#' training point (the cluster mean would otherwise be undefined). We can impose
+#' this constraint using the \code{type_labels} and \code{type_constraints}
+#' options. We also need to make sure that each prediction point is assigned to
+#' a cluster. We do, however, not need that all training points are assigned a
+#' cluster; some training points might not provide useful information (e.g.,
+#' if they are very dissimilar to all prediction points). In this case, by
+#' specifying only the prediction points in \code{primary_data_points}, we
+#' ensure that all those points are assigned to clusters. The points not
+#' specified in \code{primary_data_points} (i.e., the training points) will
+#' be assigned to clustering only insofar that it is needed to satisfy the
+#' clustering constraints. This can lead to large improvements in the clustering
+#' if the types of points are unevenly distributed in the metric space. Points
+#' not specified in \code{primary_data_points} are called "secondary".
 #'
 #' Generally, one does not want to discard all unassigned secondary points --
 #' some of them will, occasionally, be close to a cluster and contain useful
 #' information. Similar to \code{primary_unassigned_method}, we can use the
 #' \code{secondary_unassigned_method} to specify how the leftover secondary
 #' points should be assigned. The three possible options are "ignore",
-#' "closest_assigned" and "closest_seed". In nearly all cases, it is beneficial to
-#' impose a radius constraint when assigning secondary points (see below for
+#' "closest_assigned" and "closest_seed". In nearly all cases, it is beneficial
+#' to impose a radius constraint when assigning secondary points (see below for
 #' details).
 #'
-#' \code{sc_clustering} tries to minimize within-cluster distances subject to that all
-#' (primary) data points are assigned to clusters. In some cases, it might be
-#' beneficial to leave some points unassigned to avoid clusters with very dissimilar points. The
-#' function has options that can be used to indirectly constrain the maximum within-cluster
-#' distance. Specifically, by restricting the maximum distance in the four steps of the function,
-#' we can bound the maximum within-cluster distance. The bound is, however, a blunt tool. A too
-#' small bound might lead to that only a few data points are assigned to clusters.
-#' If a bound is needed, it is recommended to use a very liberal bound. This will avoid the very dissimilar clusters, but let the function optimize
-#' the remaining cluster assignments.
+#' \code{sc_clustering} tries to minimize within-cluster distances subject to
+#' that all (primary) data points are assigned to clusters. In some cases, it
+#' might be beneficial to leave some points unassigned to avoid clusters with
+#' very dissimilar points. The function has options that can be used to
+#' indirectly constrain the maximum within-cluster distance. Specifically, by
+#' restricting the maximum distance in the four steps of the function, we can
+#' bound the maximum within-cluster distance. The bound is, however, a blunt
+#' tool. A too small bound might lead to that only a few data points are
+#' assigned to clusters. If a bound is needed, it is recommended to use a very
+#' liberal bound. This will avoid the very dissimilar clusters, but let the
+#' function optimize the remaining cluster assignments.
 #'
-#' The \code{seed_radius} option limits the maximum distance between
-#' adjacent vertices in the sparse graph. If the distance to a neighbor in a point's
-#' neighborhood is greater than \code{seed_radius}, the neighborhood will be deleted and
-#' the point is not allowed be a seed (it can, however, still be in other points'
-#' neighborhoods). The \code{primary_radius} option limits the maximum distance
-#' when a primary point is assigned to in the fourth step. When \code{primary_radius} is set
-#' to a positive numeric value, this will be used to as the radius restriction. "no_radius" and \code{NULL} indicate
-#' no restriction. "seed_radius" indicates that the same restriction as \code{seed_radius} should be used, and "estimated_radius"
-#' sets the restriction to the estimated average distance between the seeds and their neighbors. When \code{primary_unassigned_method}
-#' is set to "any_neighbor", \code{primary_radius} must be set to "seed_radius".
+#' The \code{seed_radius} option limits the maximum distance between adjacent
+#' vertices in the sparse graph. If the distance to a neighbor in a point's
+#' neighborhood is greater than \code{seed_radius}, the neighborhood will be
+#' deleted and the point is not allowed be a seed (it can, however, still be
+#' in other points' neighborhoods). The \code{primary_radius} option limits
+#' the maximum distance when a primary point is assigned to in the fourth step.
+#' When \code{primary_radius} is set to a positive numeric value, this will be
+#' used to as the radius restriction. "no_radius" and \code{NULL} indicate no
+#' restriction. "seed_radius" indicates that the same restriction as
+#' \code{seed_radius} should be used, and "estimated_radius" sets the
+#' restriction to the estimated average distance between the seeds and their
+#' neighbors. When \code{primary_unassigned_method} is set to "any_neighbor",
+#' \code{primary_radius} must be set to "seed_radius".
 #'
-#' The way the radius constraints restrict the maximum within-cluster distance depends on the \code{primary_unassigned_method}
-#' option. When \code{primary_unassigned_method} is "ignore", the maximum distance is bounded by 2 * \code{seed_radius}.
-#' When \code{primary_unassigned_method} is "any_neighbor", it is bounded by 4 * \code{seed_radius}. When \code{primary_unassigned_method} is "closest_assigned",
-#' it is bounded by 2 * \code{seed_radius} + 2 * \code{primary_radius}. When \code{primary_unassigned_method} is "closest_seed",
-#' it is bounded by the maximum of 2 * \code{seed_radius} and 2 * \code{primary_radius}.
+#' The way the radius constraints restrict the maximum within-cluster distance
+#' depends on the \code{primary_unassigned_method} option. When
+#' \code{primary_unassigned_method} is "ignore", the maximum distance is bounded
+#' by 2 * \code{seed_radius}. When \code{primary_unassigned_method} is
+#' "any_neighbor", it is bounded by 4 * \code{seed_radius}. When
+#' \code{primary_unassigned_method} is "closest_assigned", it is bounded by
+#' 2 * \code{seed_radius} + 2 * \code{primary_radius}. When
+#' \code{primary_unassigned_method} is "closest_seed", it is bounded by the
+#' maximum of 2 * \code{seed_radius} and 2 * \code{primary_radius}.
 #'
-#' The \code{secondary_radius} option restricts how secondary points are assigned, but is otherwise identical to the \code{primary_radius} option.
+#' The \code{secondary_radius} option restricts how secondary points are
+#' assigned, but is otherwise identical to the \code{primary_radius} option.
 #'
 #' @param distances
 #'    a \code{\link[distances]{distances}} object with distances between the

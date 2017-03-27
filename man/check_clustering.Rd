@@ -30,8 +30,8 @@ Returns \code{TRUE} if \code{clustering} satisfies the constraints, and
    invalid instance of the \code{\link{scclust}} class.
 }
 \description{
-\code{check_clustering} checks whether a clustering satisfies constraints
-on the size and composition of the clusters.
+\code{check_clustering} checks whether a clustering satisfies constraints on
+the size and composition of the clusters.
 }
 \examples{
 # Example scclust clustering

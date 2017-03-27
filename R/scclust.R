@@ -18,6 +18,7 @@
 # along with this program. If not, see http://www.gnu.org/licenses/
 # ==============================================================================
 
+
 #' Constructor for scclust objects
 #'
 #' The \code{scclust} function constructs a \code{scclust} object from existing
