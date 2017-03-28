@@ -1,12 +1,3 @@
-## This is a new package not currently on CRAN
-
-## Resubmission
- 
- This is a resubmission. Compared to the previously submitted version, I have:
- 
-   * Changed the package description, as suggested.
- 
-
 ## Test environments
 
   * x86_64-apple-darwin16.1.0 (local machine)
@@ -31,12 +22,7 @@
 
   * No WARNINGs. 
 
-  * 1 NOTE:
-
-    > * checking CRAN incoming feasibility ... NOTE
-    > Maintainer: 'Fredrik Savje <fredrik.savje@berkeley.edu>'
-    >
-    > New submission
+  * No NOTEs.
 
 
 ## Downstream dependencies
