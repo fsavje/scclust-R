@@ -51,27 +51,6 @@ test_that("`make_scclust` constructs correct object", {
 
 
 # ==============================================================================
-# make_type_indicators
-# ==============================================================================
-
-test_that("`make_type_indicators` checks input.", {
-  expect_silent(make_type_indicators(c(1L, 3L), rep(1:3, 100L)))
-  expect_silent(make_type_indicators(c("1", "3"), factor(rep(1:3, 100L))))
-  expect_error(make_type_indicators(c(1L, 1L, 3L), rep(1:3, 100L)))
-  expect_error(make_type_indicators(c(1L, 3L), letters))
-  expect_error(make_type_indicators(c(1L, 3L, 4L), rep(1:3, 100L)))
-  expect_error(make_type_indicators(c("1", "3", "a"), factor(rep(1:3, 100L))))
-})
-
-test_that("`make_type_indicators` returns correct output.", {
-  expect_identical(make_type_indicators(c(1L, 3L), rep(1:3, 100L)),
-                   c("0" = FALSE, "1" = TRUE, "2" = FALSE, "3" = TRUE))
-  expect_identical(make_type_indicators(c("1", "3"), factor(rep(1:3, 100L))),
-                   c("0" = FALSE, "1" = TRUE, "2" = FALSE, "3" = TRUE))
-})
-
-
-# ==============================================================================
 # make_type_size_constraints
 # ==============================================================================
 

@@ -49,27 +49,6 @@ make_scclust <- function(cluster_labels,
 # Translation functions (from R to C)
 # ==============================================================================
 
-make_type_indicators <- function(targets,
-                                 type_labels) {
-  stopifnot(!anyDuplicated(as.character(targets)),
-            is.factor(type_labels) || is.integer(type_labels))
-  if (is.factor(type_labels)) {
-    out_indicators <- rep(FALSE, nlevels(type_labels))
-    names(out_indicators) <- levels(type_labels)
-    stopifnot(all(as.character(targets) %in% names(out_indicators)))
-    out_indicators[as.character(targets)] <- TRUE
-    out_indicators <- c("0" = FALSE, out_indicators)
-  } else if (is.integer(type_labels)) {
-    max_label <- max(type_labels)
-    out_indicators <- rep(FALSE, max_label + 1L)
-    names(out_indicators) <- as.character(0L:max_label)
-    stopifnot(all(as.character(targets) %in% names(out_indicators)))
-    out_indicators[as.character(targets)] <- TRUE
-  }
-  out_indicators
-}
-
-
 make_type_size_constraints <- function(type_constraints,
                                        type_labels) {
   stopifnot(is.integer(type_constraints),
