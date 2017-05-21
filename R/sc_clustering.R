@@ -234,12 +234,12 @@
 #'    constructed by \code{sc_clustering}.
 #'
 #' @references
-#' Higgins, Michael J., Fredrik Savje and Jasjeet S. Sekhon (2016),
+#' Higgins, Michael J., Fredrik Sävje and Jasjeet S. Sekhon (2016),
 #' \sQuote{Improving massive experiments with threshold blocking},
 #' \emph{Proceedings of the National Academy of Sciences}, \bold{113:27}, 7369--7376.
 #' \url{http://www.pnas.org/lookup/doi/10.1073/pnas.1510504113}
 #'
-#' Savje, Fredrik and Michael J. Higgins and Jasjeet S. Sekhon (2017),
+#' Sävje, Fredrik and Michael J. Higgins and Jasjeet S. Sekhon (2017),
 #' \sQuote{Generalized Full Matching}, arXiv 1703.03882.
 #' \url{https://arxiv.org/abs/1703.03882}
 #'

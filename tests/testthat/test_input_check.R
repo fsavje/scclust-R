@@ -79,7 +79,7 @@ test_that("`ensure_distances` checks input.", {
   expect_silent(t_ensure_distances())
   expect_silent(t_ensure_distances(t_req_length = 5))
   expect_error(t_ensure_distances(t_distances = "a"),
-               regexp = "`t_distances` is not a `scc_distances` object.")
+               regexp = "`t_distances` is not a `distances` object.")
   expect_error(t_ensure_distances(t_req_length = 4),
                regexp = "`t_distances` does not contain `t_req_length` data points.")
 })

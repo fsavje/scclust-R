@@ -5,6 +5,7 @@ Version: 0.1.0.9000
 Date: 2017-03-27
 Authors@R: c(
     person("Fredrik", "Savje", email = "fredrik.savje@berkeley.edu", role = c("aut", "cre")),
+    person("Michael", "Higgins", role = "aut"),
     person("Jasjeet", "Sekhon", role = "aut"))
 Description:
     Provides wrappers for 'scclust', a C library for computationally efficient

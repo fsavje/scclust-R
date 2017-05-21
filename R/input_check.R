@@ -62,7 +62,7 @@ is.numeric_integer <- function(x) {
 ensure_distances <- function(distances,
                              req_length = NULL) {
   if (!distances::is.distances(distances)) {
-    new_error("`", match.call()$distances, "` is not a `scc_distances` object.")
+    new_error("`", match.call()$distances, "` is not a `distances` object.")
   }
   if (!is.null(req_length) && (length(distances) != req_length)) {
     new_error("`", match.call()$distances, "` does not contain `", match.call()$req_length, "` data points.")
