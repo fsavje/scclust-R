@@ -20,33 +20,33 @@ XTRA_FLAGS = -DNDEBUG
 
 LIBOUT = lib/libscclust.a
 
-LIBOBJ = \\
-	data_set.o \\
-	digraph_core.o \\
-	digraph_operations.o \\
-	dist_search_imp.o \\
-	error.o \\
-	hierarchical_clustering.o \\
-	nng_batch_clustering.o \\
-	nng_clustering.o \\
-	nng_core.o \\
-	nng_findseeds.o \\
-	scclust_spi.o \\
-	scclust.o \\
-	utilities.o
+LIBOBJS = \\
+	src/data_set.o \\
+	src/digraph_core.o \\
+	src/digraph_operations.o \\
+	src/dist_search_imp.o \\
+	src/error.o \\
+	src/hierarchical_clustering.o \\
+	src/nng_batch_clustering.o \\
+	src/nng_clustering.o \\
+	src/nng_core.o \\
+	src/nng_findseeds.o \\
+	src/scclust_spi.o \\
+	src/scclust.o \\
+	src/utilities.o
 
-.PHONY : all clean
+.PHONY: all clean
 
-all : \$(LIBOUT)
+all: \$(LIBOUT)
 
-\$(LIBOUT) : \$(addprefix src/,\$(LIBOBJ))
+\$(LIBOUT): \$(LIBOBJS)
 	mkdir -p lib
 	\$(AR) -rcs \$(LIBOUT) \$^
 
 %.o: %.c
 	\$(CC) -c \$(ALL_CPPFLAGS) \$(ALL_CFLAGS) \$(XTRA_FLAGS) \$< -o \$@
 
-clean :
+clean:
 	\$(RM) -rf lib src/*.o
 EOF
 
