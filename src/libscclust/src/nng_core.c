@@ -825,9 +825,10 @@ static inline void iscc_ensure_self_match(iscc_Digraph* const nng,
 		for (scc_PointIndex search_point = 0; search_point < len_search_indices_pi; ++search_point) {
 			scc_PointIndex* v_arc = nng->head + nng->tail_ptr[search_point];
 			const scc_PointIndex* const v_arc_stop = nng->head + nng->tail_ptr[search_point + 1];
-			if ((*v_arc == search_point) || (v_arc == v_arc_stop)) continue;
-			for (++v_arc; (*v_arc != search_point) && (v_arc != v_arc_stop); ++v_arc);
-			if (v_arc == v_arc_stop) *(v_arc - 1) = search_point;
+			if ((v_arc != v_arc_stop) && (*v_arc != search_point)) {
+				for (++v_arc; (v_arc != v_arc_stop) && (*v_arc != search_point); ++v_arc);
+				if (v_arc == v_arc_stop) *(v_arc - 1) = search_point;
+			}
 		}
 
 	} else if (search_indices != NULL) {
@@ -835,9 +836,10 @@ static inline void iscc_ensure_self_match(iscc_Digraph* const nng,
 			const scc_PointIndex search_point = search_indices[s];
 			scc_PointIndex* v_arc = nng->head + nng->tail_ptr[search_point];
 			const scc_PointIndex* const v_arc_stop = nng->head + nng->tail_ptr[search_point + 1];
-			if ((*v_arc == search_point) || (v_arc == v_arc_stop)) continue;
-			for (++v_arc; (*v_arc != search_point) && (v_arc != v_arc_stop); ++v_arc);
-			if (v_arc == v_arc_stop) *(v_arc - 1) = search_point;
+			if ((v_arc != v_arc_stop) && (*v_arc != search_point)) {
+				for (++v_arc; (v_arc != v_arc_stop) && (*v_arc != search_point); ++v_arc);
+				if (v_arc == v_arc_stop) *(v_arc - 1) = search_point;
+			}
 		}
 	}
 }
