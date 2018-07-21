@@ -22,9 +22,11 @@
 
   * No ERRORs.
 
-  * No WARNINGs. 
+  * No WARNINGs.
 
-  * No NOTEs.
+  * 1 NOTE:
+
+     > CRAN repository db conflicts: 'Maintainer'
 
 
 ## Downstream dependencies

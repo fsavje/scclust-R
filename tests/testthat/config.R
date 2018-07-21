@@ -26,6 +26,9 @@ if (identical(Sys.getenv("TRAVIS"), "true")) {
   run_slow_tests <- FALSE
 }
 
+# Remember to recompile the C library with corresponding flags
+# set in the Makefile
+
 compiled_with_stable_nng <- FALSE
 
 compiled_with_stable_findseed <- FALSE
