@@ -20,7 +20,7 @@
 	- Update `cran-comments.md` with correct information
 	- Update travis and appveyor with current versions
 * Commit and push to github so automatic tests run
-* Run `load_all(recompile = TRUE)` and `check()`
+* Run `load_all(recompile = TRUE)`, `test()` and `check()`
 * Run `build_win(version = "R-release")` and `build_win(version = "R-devel")`
 * Run `revdep_check()`, remove revdep folder when done
 * Wait until all tests are done
@@ -40,6 +40,3 @@
 	- Set date in `DESCRIPTION`
 	- Add "scclust devel" to `NEWS.md`
 	- Commit and push to github
-
-
-
