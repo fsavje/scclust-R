@@ -1,4 +1,6 @@
-# scclust devel
+# scclust 0.1.2
+
+  * Updates maintainer information.
 
 
 # scclust 0.1.1

@@ -1,8 +1,8 @@
 Package: scclust
 Type: Package
 Title: Size-Constrained Clustering
-Version: 0.1.1.9000
-Date: 2017-05-21
+Version: 0.1.2
+Date: 2017-07-21
 Authors@R: c(
     person("Fredrik", "Savje", email = "fredrik.savje@yale.edu", role = c("aut", "cre")),
     person("Michael", "Higgins", role = "aut"),
@@ -12,7 +12,7 @@ Description:
     size-constrained clustering with near-optimal performance.
     See <https://github.com/fsavje/scclust> for more information.
 Depends:
-    R (>= 3.2.3),
+    R (>= 3.4.0),
     distances
 Imports:
 Suggests:
