@@ -1,7 +1,7 @@
 ## Submit release
 
 * Check and fix any errors at https://cran.r-project.org/web/checks/check_results_scclust.html
-* Update documentation with `document()`
+* Delete content of `NAMESPACE` and run `document()`
 * Run `load_all(recompile = TRUE)` and `check()`
 * Run `build_win(version = "R-release")` and `build_win(version = "R-devel")`
 * Run `revdep_check()`, remove `revdep` folder when done
