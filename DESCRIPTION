@@ -24,4 +24,4 @@ LicenseNote: The scclust package includes the scclust C library
 URL: https://github.com/fsavje/scclust-R
 BugReports: https://github.com/fsavje/scclust-R/issues
 Encoding: UTF-8
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

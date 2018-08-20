@@ -155,6 +155,26 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
 	scc_RadiusMethod secondary_radius = options->secondary_radius;
 	double secondary_supplied_radius = options->secondary_supplied_radius;
 
+	if (options->primary_unassigned_method == SCC_UM_IGNORE) {
+		primary_radius = SCC_RM_NO_RADIUS;
+		primary_supplied_radius = 0.0;
+	}
+
+	if (options->secondary_unassigned_method == SCC_UM_IGNORE) {
+		secondary_radius = SCC_RM_NO_RADIUS;
+		secondary_supplied_radius = 0.0;
+	}
+
+	if (primary_radius == SCC_RM_USE_SEED_RADIUS) {
+		primary_radius = options->seed_radius;
+		primary_supplied_radius = options->seed_supplied_radius;
+	}
+
+	if (secondary_radius == SCC_RM_USE_SEED_RADIUS) {
+		secondary_radius = options->seed_radius;
+		secondary_supplied_radius = options->seed_supplied_radius;
+	}
+
 	// Estimate assign radius if we need to, and modify options
 	if ((primary_radius == SCC_RM_USE_ESTIMATED) ||
 	        (secondary_radius == SCC_RM_USE_ESTIMATED)) {
@@ -187,16 +207,6 @@ static scc_ErrorCode iscc_make_clustering_from_nng(scc_Clustering* const cluster
 				return iscc_make_error_msg(SCC_ER_NO_SOLUTION, "Infeasible radius constraint.");
 			}
 		}
-	}
-
-	if (primary_radius == SCC_RM_USE_SEED_RADIUS) {
-		primary_radius = options->seed_radius;
-		primary_supplied_radius = options->seed_supplied_radius;
-	}
-
-	if (secondary_radius == SCC_RM_USE_SEED_RADIUS) {
-		secondary_radius = options->seed_radius;
-		secondary_supplied_radius = options->seed_supplied_radius;
 	}
 
 	assert((primary_radius == SCC_RM_NO_RADIUS) || (primary_radius == SCC_RM_USE_SUPPLIED));

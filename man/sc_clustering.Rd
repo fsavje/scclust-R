@@ -6,10 +6,11 @@
 \usage{
 sc_clustering(distances, size_constraint = NULL, type_labels = NULL,
   type_constraints = NULL, seed_method = "exclusion_updating",
-  primary_data_points = NULL, primary_unassigned_method = "closest_seed",
+  primary_data_points = NULL,
+  primary_unassigned_method = "closest_seed",
   secondary_unassigned_method = "ignore", seed_radius = NULL,
-  primary_radius = "seed_radius", secondary_radius = "estimated_radius",
-  batch_size = 100L)
+  primary_radius = "seed_radius",
+  secondary_radius = "estimated_radius", batch_size = 100L)
 }
 \arguments{
 \item{distances}{a \code{\link[distances]{distances}} object with distances between the
