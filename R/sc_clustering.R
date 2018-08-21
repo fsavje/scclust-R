@@ -66,7 +66,7 @@
 #' neighborhoods, it ensures that the clustering will satisfy the constraints
 #' imposed by the user.
 #'
-#' The \code{seed_method} option decides how the seeds are chosen. Any set of
+#' The \code{seed_method} option governs how the seeds are chosen. Any set of
 #' seeds yields a near-optimal clustering, but, heuristically, performance can
 #' be improved by picking the seeds more carefully. In most cases, smaller
 #' clusters are desirable since they tend to minimize within-cluster distances.
@@ -77,24 +77,39 @@
 #' central in the graph. Central points tend to exclude many other points from
 #' being seeds and, thus, lead to larger clusters.
 #'
-#' The "exclusion_order" and "exclusion_updating" options calculates, for each
-#' vertex, how many other vertices are excluded if a vertex is picked as a seed.
+#' The "exclusion_order" and "exclusion_updating" options calculate for each
+#' vertex how many other vertices are excluded if the vertex is picked as a seed.
 #' By picking seeds that exclude few other vertices, the function avoids
 #' central points and increases the number of seeds. "exclusion_updating"
 #' updates the count after each picked seed so that already excluded vertices
 #' are not counted twice; "exclusion_order" derives the count once. The former
 #' option is, thus, better-performing but slower.
 #'
-#' Deriving the exclusion count is an expensive operation, and it might not be
-#' feasible to use the option in very large samples. The "inwards_order" and
-#' "inwards_updating" options count the number of inwards-pointing arcs in the
-#' graph, which approximates the exclusion count. "inwards_updating" updates
-#' the count after each picked seed, while "inwards_order" derives the count
-#' once. The "batches" option is identical to "lexical" but it derives the
-#' graph in batches. This limits the memory complexity to a constant value
-#' proportional to \code{batch_size}. This can be useful when one imposes large
-#' size constraints. The "batches" option is still experimental and can
-#' currently only be used when one does not impose type constraints.
+#' Deriving the exclusion count when using the "exclusion_order" and "exclusion_updating"
+#' options is an expensive operation, and it might not be feasible to do so in
+#' large samples. This is particularly problematic when the data points have
+#' equidistant nearest neighbors, which tends to happen when the dataset contains
+#' only discrete variables. It also happens when the dataset contains many
+#' identical data points. The exclusion count operation may in these cases take
+#' several orders of magnitude longer to run than the rest of the operations
+#' combined. To ensure sane behavior for the default options, the exclusion
+#' count is not used by default. If the dataset contains at least one continuous
+#' variable, it is generally safe to call \code{sc_clustering} with either
+#' "exclusion_order" or "exclusion_updating", and this will often improve performance
+#' over the default.
+#'
+#' The "inwards_order" and "inwards_updating" options count the number of
+#' inwards-pointing arcs in the graph, which approximates the exclusion count.
+#' "inwards_updating" updates the count after each picked seed, while
+#' "inwards_order" derives the count once. The inwards counting options work
+#' well with nearly all types of data, and "inwards_updating" is the default.
+#'
+#' The "batches" option is identical to "lexical" but it derives the graph in
+#' batches. This limits the use of memory to a value proportional to
+#' \code{batch_size} irrespectively of the size of the dataset. This can be
+#' useful when imposing large size constraints, which consume a lot of memory
+#' in large datasets. The "batches" option is still experimental and can currently
+#' only be used when one does not impose type constraints.
 #'
 #' Once the function has selected seeds so that no additional points can be
 #' selected without creating overlap in the graph, it constructs the initial
@@ -295,7 +310,7 @@ sc_clustering <- function(distances,
                           size_constraint = NULL,
                           type_labels = NULL,
                           type_constraints = NULL,
-                          seed_method = "exclusion_updating",
+                          seed_method = "inwards_updating",
                           primary_data_points = NULL,
                           primary_unassigned_method = "closest_seed",
                           secondary_unassigned_method = "ignore",
