@@ -1,3 +1,7 @@
+# scclust devel
+
+
+
 # scclust 0.2.0
 
   * Makes defaults friendlier with discrete data
