@@ -8,11 +8,11 @@
 * Run comprehensive tests locally
 	- Change `run_slow_tests <- TRUE` in `tests/testthat/config.R`
 	- Run `load_all(recompile = TRUE)` and `test()` with the following settings
+	- Remember to change the flag in the Makefile as well
 		- stable_nng = FALSE, stable_findseed = FALSE
 		- stable_nng = TRUE, stable_findseed = FALSE
 		- stable_nng = FALSE, stable_findseed = TRUE
 		- stable_nng = TRUE, stable_findseed = TRUE
-	- Remember to change the flag in the Makefile as well
 	- Change `tests/testthat/config.R` and Makefile to original state
 * Update package information
 	- Set new version number in `DESCRIPTION`
