@@ -1,14 +1,3 @@
--## Submit comment
-
-One downstream dependency (quickmatch) has a failed test with the new version
-of scclust. One of the fixes to scclust in this version is that an erroneous error
-message is no longer generated. The test that quickmatch fails is exactly that it
-expect that error message from scclust. Note that the error message was produced
-without any error present. Thus, the user experience is unaffected by the failed
-test in quickmatch, so no existing code should be affected. quickmatch will be
-updated to have proper tests as soon as the new version of scclust is on CRAN.
-
-
 ## Test environments
 
   * x86_64-apple-darwin15.6.0 (local machine)
@@ -44,4 +33,4 @@ updated to have proper tests as soon as the new version of scclust is on CRAN.
 
   * quickblock: 0 errors | 0 warnings | 0 notes
 
-  * quickmatch: 1 errors | 0 warnings | 0 notes
+  * quickmatch: 0 errors | 0 warnings | 0 notes
