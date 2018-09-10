@@ -44,7 +44,7 @@ all: \$(LIBOUT)
 	\$(AR) -rcs \$(LIBOUT) \$^
 
 %.o: %.c
-	\$(CC) -c \$(ALL_CPPFLAGS) \$(ALL_CFLAGS) \$(XTRA_FLAGS) \$< -o \$@
+	\$(CC) -c -std=c99 \$(ALL_CPPFLAGS) \$(ALL_CFLAGS) \$(XTRA_FLAGS) \$< -o \$@
 
 clean:
 	\$(RM) -rf lib src/*.o
