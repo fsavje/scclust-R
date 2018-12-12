@@ -1,6 +1,6 @@
 # Use 64-bit arc ref: -DSCC_ARC64
-# Use stable findseed: -DSCC_STABLE_FINDSEED
 # Use stable NNG: -DSCC_STABLE_NNG
+# Use stable findseed: -DSCC_STABLE_FINDSEED
 XTRA_FLAGS =
 
 LIBOBJS = \

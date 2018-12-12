@@ -7,12 +7,12 @@
 * Run `revdepcheck::revdep_check()`, remove "revdep" folder when done
 * Run comprehensive tests locally
 	- Change `run_slow_tests <- TRUE` in `tests/testthat/config.R`
-	- Run `devtools::load_all(recompile = TRUE)` and `test()` with the following settings
+	- Run `devtools::load_all(recompile = TRUE)` and `devtools::test()` with the following settings
 	- Remember to change the flag in the Makefile as well
-		- stable_nng = FALSE, stable_findseed = FALSE
-		- stable_nng = TRUE, stable_findseed = FALSE
-		- stable_nng = FALSE, stable_findseed = TRUE
-		- stable_nng = TRUE, stable_findseed = TRUE
+		- stable_nng = FALSE, stable_findseed = FALSE (medium time)
+		- stable_nng = TRUE, stable_findseed = FALSE (long time)
+		- stable_nng = FALSE, stable_findseed = TRUE (short time)
+		- stable_nng = TRUE, stable_findseed = TRUE (long time)
 	- Change `tests/testthat/config.R` and Makefile to original state
 * Update package information
 	- Set new version number in `DESCRIPTION`

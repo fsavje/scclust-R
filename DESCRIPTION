@@ -1,7 +1,7 @@
 Package: scclust
 Type: Package
 Title: Size-Constrained Clustering
-Version: 0.2.1
+Version: 0.2.1.9000
 Date: 2018-12-11
 Authors@R: c(
     person("Fredrik", "Savje", email = "fredrik.savje@yale.edu", role = c("aut", "cre")),

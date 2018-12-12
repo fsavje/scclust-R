@@ -1,3 +1,7 @@
+# scclust devel
+
+
+
 # scclust 0.2.1
 
   * Fixes so compilation uses local Makeconf file.
