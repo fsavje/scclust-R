@@ -1,15 +1,12 @@
-MAKECONF = $(R_HOME)/etc$(R_ARCH)/Makeconf
-
 PKG_CPPFLAGS = -Ilibscclust/include
-PKG_LIBS = libscclust/lib/libscclust.a
+PKG_LIBS = libscclust/libscclust.a
 
-.PHONY: clean
+$(SHLIB): libscclust/libscclust.a
 
-$(SHLIB): libscclust/lib/libscclust.a
-
-libscclust/lib/libscclust.a:
-	(cd libscclust && MAKECONF="$(MAKECONF)" $(MAKE)) || exit 1;
+libscclust/libscclust.a:
+	(cd libscclust && R_AR="$(AR)" R_CC="$(CC)" R_CPPFLAGS="-DNDEBUG $(CPPFLAGS)" R_CFLAGS="$(CPICFLAGS) $(CFLAGS)" $(MAKE)) || exit 1;
 
 clean:
-	$(RM) $(SHLIB) *.o
-	(cd libscclust && MAKECONF="$(MAKECONF)" $(MAKE) clean) || exit 1;
+	(cd libscclust && R_RM="$(RM)" $(MAKE) clean) || exit 1;
+
+.PHONY: clean

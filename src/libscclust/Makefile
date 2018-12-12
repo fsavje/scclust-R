@@ -1,11 +1,7 @@
-include $(MAKECONF)
-
 # Use 64-bit arc ref: -DSCC_ARC64
 # Use stable findseed: -DSCC_STABLE_FINDSEED
 # Use stable NNG: -DSCC_STABLE_NNG
-XTRA_FLAGS = -DNDEBUG
-
-LIBOUT = lib/libscclust.a
+XTRA_FLAGS =
 
 LIBOBJS = \
 	src/data_set.o \
@@ -22,16 +18,13 @@ LIBOBJS = \
 	src/scclust.o \
 	src/utilities.o
 
-.PHONY: all clean
+libscclust.a: $(LIBOBJS)
+	$(R_AR) -rcs libscclust.a $^
 
-all: $(LIBOUT)
-
-$(LIBOUT): $(LIBOBJS)
-	mkdir -p lib
-	$(AR) -rcs $(LIBOUT) $^
-
-%.o: %.c
-	$(CC) -c -std=c99 $(ALL_CPPFLAGS) $(ALL_CFLAGS) $(XTRA_FLAGS) $< -o $@
+.c.o:
+	$(R_CC) $(R_CPPFLAGS) $(R_CFLAGS) $(XTRA_FLAGS) -c $< -o $@
 
 clean:
-	$(RM) -rf lib src/*.o
+	$(R_RM) libscclust.a $(LIBOBJS)
+
+.PHONY: clean
