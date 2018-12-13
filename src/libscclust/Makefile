@@ -21,7 +21,7 @@ LIBOBJS = \
 libscclust.a: $(LIBOBJS)
 	$(R_AR) -rcs libscclust.a $^
 
-.c.o:
+%.o: %.c
 	$(R_CC) $(R_CPPFLAGS) $(R_CFLAGS) $(XTRA_FLAGS) -c $< -o $@
 
 clean:
