@@ -1,3 +1,9 @@
+## Submission comment
+
+Please excuse the two close submission. New version fixes a compilation error
+on Solaris due to incompatibility with Sun make.
+
+
 ## Test environments
 
   * x86_64-apple-darwin15.6.0 (local machine)
@@ -24,7 +30,8 @@
 
   * No WARNINGs.
 
-  * No NOTEs.
+  * 1 NOTE:
+    - Days since last update: 1
 
 
 ## Downstream dependencies
