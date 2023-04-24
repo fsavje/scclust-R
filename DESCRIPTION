@@ -1,8 +1,8 @@
 Package: scclust
 Type: Package
 Title: Size-Constrained Clustering
-Version: 0.2.2.9000
-Date: 2018-12-13
+Version: 0.2.3
+Date: 2023-04-24
 Authors@R: c(
     person("Fredrik", "Savje", email = "fredrik.savje@yale.edu", role = c("aut", "cre")),
     person("Michael", "Higgins", role = "aut"),
@@ -24,4 +24,4 @@ LicenseNote: The scclust package includes the scclust C library
 URL: https://github.com/fsavje/scclust-R
 BugReports: https://github.com/fsavje/scclust-R/issues
 Encoding: UTF-8
-RoxygenNote: 6.1.1
+RoxygenNote: 7.2.3
