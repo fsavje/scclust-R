@@ -1,21 +1,10 @@
 ## Test environments
 
-  * x86_64-apple-darwin15.6.0 (local machine)
-     - 3.5.1
+  * aarch64-apple-darwin20 (local machine)
+     - 4.2.1
 
   * x86_64-w64-mingw32 (win-builder)
-     - 3.4.4, 3.5.1, devel
-
-  * x86_64-pc-linux-gnu (travis-ci)
-     - 3.4.0, 3.4.1, 3.4.2, 3.4.3, 3.4.4, 3.5.0,
-       3.5.1, devel
-
-  * x86_64-w64-mingw32/x64 (appveyor)
-     - 3.4.0, 3.4.1, 3.4.2, 3.4.3, 3.4.4, 3.5.0,
-       3.5.1, devel
-
-  * i386-w64-mingw32/i386 (appveyor)
-     - 3.4.4, 3.5.1, devel
+     - 4.2.3, 4.3.0, devel
 
 
 ## R CMD check results
