@@ -19,8 +19,7 @@
     - Set release date in `DESCRIPTION`
     - Change "scclust devel" to "scclust VERSION" in `NEWS.md`
     - Update `cran-comments.md` with correct information
-    - Update travis and appveyor with current versions
-* Commit and push to github so automatic tests run
+* Commit and push to github
 * Run `devtools::load_all(recompile = TRUE)`, `devtools::test()` and `devtools::check()`
 * Run `devtools::check_win_devel()`, `devtools::check_win_release()` and `devtools::check_win_oldrelease()`
 * Run `revdepcheck::revdep_check()`, remove "revdep" folder when done
