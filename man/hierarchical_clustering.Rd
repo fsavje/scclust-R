@@ -4,8 +4,12 @@
 \alias{hierarchical_clustering}
 \title{Hierarchical size-constrained clustering}
 \usage{
-hierarchical_clustering(distances, size_constraint, batch_assign = TRUE,
-  existing_clustering = NULL)
+hierarchical_clustering(
+  distances,
+  size_constraint,
+  batch_assign = TRUE,
+  existing_clustering = NULL
+)
 }
 \arguments{
 \item{distances}{a \code{\link[distances]{distances}} object with distances between the
