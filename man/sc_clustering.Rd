@@ -4,13 +4,20 @@
 \alias{sc_clustering}
 \title{Size-constrained clustering}
 \usage{
-sc_clustering(distances, size_constraint = NULL, type_labels = NULL,
-  type_constraints = NULL, seed_method = "inwards_updating",
+sc_clustering(
+  distances,
+  size_constraint = NULL,
+  type_labels = NULL,
+  type_constraints = NULL,
+  seed_method = "inwards_updating",
   primary_data_points = NULL,
   primary_unassigned_method = "closest_seed",
-  secondary_unassigned_method = "ignore", seed_radius = NULL,
+  secondary_unassigned_method = "ignore",
+  seed_radius = NULL,
   primary_radius = "seed_radius",
-  secondary_radius = "estimated_radius", batch_size = 100L)
+  secondary_radius = "estimated_radius",
+  batch_size = 100L
+)
 }
 \arguments{
 \item{distances}{a \code{\link[distances]{distances}} object with distances between the
@@ -288,7 +295,7 @@ my_clustering <- sc_clustering(my_dist,
 Higgins, Michael J., Fredrik Sävje and Jasjeet S. Sekhon (2016),
 \sQuote{Improving massive experiments with threshold blocking},
 \emph{Proceedings of the National Academy of Sciences}, \bold{113:27}, 7369--7376.
-\url{http://www.pnas.org/lookup/doi/10.1073/pnas.1510504113}
+\url{https://www.pnas.org/doi/10.1073/pnas.1510504113}
 
 Sävje, Fredrik and Michael J. Higgins and Jasjeet S. Sekhon (2017),
 \sQuote{Generalized Full Matching}, arXiv 1703.03882.
