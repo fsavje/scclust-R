@@ -1,9 +1,6 @@
 # scclust for R
 
 [![CRAN Status](https://www.r-pkg.org/badges/version/scclust)](https://cran.r-project.org/package=scclust)
-[![Build Status](https://travis-ci.org/fsavje/scclust-R.svg?branch=master)](https://travis-ci.org/fsavje/scclust-R)
-[![Build status](https://ci.appveyor.com/api/projects/status/27c35hhx7vpigs7k/branch/master?svg=true)](https://ci.appveyor.com/project/fsavje/scclust-r/branch/master)
-[![codecov](https://codecov.io/gh/fsavje/scclust-R/branch/master/graph/badge.svg)](https://codecov.io/gh/fsavje/scclust-R)
 
 The `scclust` package is an R wrapper for the [scclust library](https://github.com/fsavje/scclust). The package provides functions to construct near-optimal size-constrained clusterings.
 
