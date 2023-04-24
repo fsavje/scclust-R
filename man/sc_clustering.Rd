@@ -295,7 +295,6 @@ my_clustering <- sc_clustering(my_dist,
 Higgins, Michael J., Fredrik Sävje and Jasjeet S. Sekhon (2016),
 \sQuote{Improving massive experiments with threshold blocking},
 \emph{Proceedings of the National Academy of Sciences}, \bold{113:27}, 7369--7376.
-\url{https://www.pnas.org/doi/10.1073/pnas.1510504113}
 
 Sävje, Fredrik and Michael J. Higgins and Jasjeet S. Sekhon (2017),
 \sQuote{Generalized Full Matching}, arXiv 1703.03882.
