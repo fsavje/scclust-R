@@ -93,8 +93,11 @@ static scc_ErrorCode iscc_hi_run_hierarchical_clustering(iscc_hi_ClusterStack* c
                                                          bool batch_assign);
 
 
-static scc_ErrorCode iscc_hi_push_to_stack(iscc_hi_ClusterStack* cl_stack,
-                                           iscc_hi_ClusterItem** cl);
+static scc_ErrorCode iscc_hi_check_capacity(iscc_hi_ClusterStack* cl_stack);
+
+
+static inline void iscc_hi_push_to_stack(iscc_hi_ClusterStack* cl_stack,
+                                         iscc_hi_ClusterItem** cl);
 
 
 static scc_ErrorCode iscc_hi_break_cluster_into_two(iscc_hi_ClusterItem* cluster_to_break,
@@ -374,6 +377,11 @@ static scc_ErrorCode iscc_hi_run_hierarchical_clustering(iscc_hi_ClusterStack* c
 	scc_ErrorCode ec;
 	scc_Clabel current_label = 0;
 	while (cl_stack->items > 0) {
+
+		if ((ec = iscc_hi_check_capacity(cl_stack)) != SCC_ER_OK) {
+			return ec;
+		}
+
 		iscc_hi_ClusterItem* current_cluster = &cl_stack->clusters[cl_stack->items - 1];
 
 		if (current_cluster->size < (2 * size_constraint)) {
@@ -389,9 +397,7 @@ static scc_ErrorCode iscc_hi_run_hierarchical_clustering(iscc_hi_ClusterStack* c
 			--(cl_stack->items);
 		} else {
 			iscc_hi_ClusterItem* new_cluster = NULL; // Initialize to avoid gcc warning
-			if ((ec = iscc_hi_push_to_stack(cl_stack, &new_cluster)) != SCC_ER_OK) {
-				return ec;
-			}
+			iscc_hi_push_to_stack(cl_stack, &new_cluster);
 			if ((ec = iscc_hi_break_cluster_into_two(current_cluster,
 			                                         data_set,
 			                                         work_area,
@@ -411,13 +417,11 @@ static scc_ErrorCode iscc_hi_run_hierarchical_clustering(iscc_hi_ClusterStack* c
 }
 
 
-static scc_ErrorCode iscc_hi_push_to_stack(iscc_hi_ClusterStack* const cl_stack,
-                                           iscc_hi_ClusterItem** const cl)
+static scc_ErrorCode iscc_hi_check_capacity(iscc_hi_ClusterStack* const cl_stack)
 {
 	assert(cl_stack != NULL);
 	assert(cl_stack->items <= cl_stack->capacity);
 	assert(cl_stack->clusters != NULL);
-	assert(cl != NULL);
 
 	if (cl_stack->items == cl_stack->capacity) {
 		const uintmax_t capacity_tmp = cl_stack->capacity + 16 + (cl_stack->capacity >> 4);
@@ -430,10 +434,20 @@ static scc_ErrorCode iscc_hi_push_to_stack(iscc_hi_ClusterStack* const cl_stack,
 		cl_stack->capacity = (size_t) capacity_tmp;
 	}
 
+	return iscc_no_error();
+}
+
+
+static inline void iscc_hi_push_to_stack(iscc_hi_ClusterStack* const cl_stack,
+                                         iscc_hi_ClusterItem** const cl)
+{
+	assert(cl_stack != NULL);
+	assert(cl_stack->items <= cl_stack->capacity);
+	assert(cl_stack->clusters != NULL);
+	assert(cl != NULL);
+
 	*cl = &cl_stack->clusters[cl_stack->items];
 	++(cl_stack->items);
-
-	return iscc_no_error();
 }
 
 
