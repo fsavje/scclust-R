@@ -4,9 +4,13 @@
 \alias{check_clustering}
 \title{Check clustering constraints}
 \usage{
-check_clustering(clustering, size_constraint = NULL,
-  type_labels = NULL, type_constraints = NULL,
-  primary_data_points = NULL)
+check_clustering(
+  clustering,
+  size_constraint = NULL,
+  type_labels = NULL,
+  type_constraints = NULL,
+  primary_data_points = NULL
+)
 }
 \arguments{
 \item{clustering}{a \code{\link{scclust}} object containing a non-empty clustering.}
