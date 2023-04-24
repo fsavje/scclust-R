@@ -30,7 +30,7 @@ void iRscc_error__(const char* msg,
                    int line);
 
 
-void iRscc_scc_error();
+void iRscc_scc_error(void);
 
 
 #endif // ifndef RSCC_ERROR_HG
