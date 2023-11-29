@@ -29,12 +29,12 @@ void iRscc_error__(const char* const msg,
                    const int line) {
 	char error_buffer[255];
 	snprintf(error_buffer, 255, "(%s:%d) %s", file, line, msg);
-	error(error_buffer);
+	error("%s", error_buffer);
 }
 
 
 void iRscc_scc_error(void) {
 	char error_buffer[255];
 	scc_get_latest_error(255, error_buffer);
-	error(error_buffer);
+	error("%s", error_buffer);
 }
