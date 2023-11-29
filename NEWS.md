@@ -1,4 +1,6 @@
-# scclust devel
+# scclust 0.2.4
+
+  * Use string literals when calling R internal function `error()` for error messaging.
 
 
 # scclust 0.2.3
